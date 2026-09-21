@@ -125,3 +125,12 @@
     transition: width 0.12s ease-out, height 0.12s ease-out, border-color 0.12s ease;
   }
 }
+#particleCanvas {
+  display: none;
+}
+body {
+  background: radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+              #05030A;
+  background-attachment: fixed;
+}

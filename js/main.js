@@ -1,11 +1,10 @@
-// 0. Theme Toggle (Dark / Light Mode)
+// 0. Theme Toggle (التبديل بين الدارك مود واللايت مود)
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeToggleBtnMobile = document.getElementById('themeToggleBtnMobile');
 const themeIcon = document.getElementById('themeIcon');
 const themeIconMobile = document.getElementById('themeIconMobile');
 const htmlEl = document.documentElement;
 
-// التحقق من الوضع المحفوظ مسبقاً
 const savedTheme = localStorage.getItem('theme') || 'dark';
 if (savedTheme === 'light') {
   htmlEl.classList.remove('dark');
@@ -30,7 +29,7 @@ function toggleTheme() {
 if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
 if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
 
-// 1. Splash Screen إخفاء فوري
+// 1. Splash Screen إخفاء فوري لشاشة البداية
 window.addEventListener('load', () => {
   const splash = document.getElementById('introSplash');
   if (splash) {
@@ -48,7 +47,7 @@ if (currentYearEl) {
   currentYearEl.textContent = new Date().getFullYear();
 }
 
-// 3. شريط تقدم السكرول
+// 3. شريط تقدم التمرير
 window.addEventListener('scroll', () => {
   const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
   const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -121,7 +120,7 @@ if (timerEl) {
   }, 1000);
 }
 
-// 7. إشعار المقابلة (يظهر مرتين فقط)
+// 7. إشعار المقابلة (يظهر مرتين فقط للزائر)
 const ticker = document.getElementById('interviewTicker');
 if (ticker) {
   let countTicker = 0;
@@ -163,3 +162,20 @@ if (mBtn && mMenu) {
   mBtn.addEventListener('click', () => mMenu.classList.toggle('hidden'));
   mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mMenu.classList.add('hidden')));
 }
+
+// 10. تفاعلية أكورديون الأسئلة الشائعة (FAQ Accordion)
+document.querySelectorAll('.faq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector('i');
+    const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+    document.querySelectorAll('.faq-content').forEach(c => c.style.maxHeight = '0px');
+    document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
+
+    if (!isOpen) {
+      content.style.maxHeight = content.scrollHeight + 'px';
+      icon.style.transform = 'rotate(180deg)';
+    }
+  });
+});

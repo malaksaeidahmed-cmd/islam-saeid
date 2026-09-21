@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://islamsaeid.me/sitemap.xml

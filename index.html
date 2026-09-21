@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إسلام سعيد | Islam Saeed - خبير الميديا باينج والنمو الرقمي</title>
+  <meta name="description" content="الموقع الرسمي لإسلام سعيد - Senior Social Media Specialist & Media Buyer. استراتيجيات إعلانية قائمة على التحليل النفسي وسلوك المستهلك وتحقيق أعلى عوائد استثمارية ROAS." />
+
+  <!-- Google Fonts: Cairo & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              purple: '#5B21B6',
+              violet: '#7C3AED',
+              magenta: '#D946EF',
+              fuchsia: '#EC4899',
+              orange: '#F97316',
+              gold: '#F59E0B',
+              dark: '#0B0914',
+              surface: '#130E26',
+              surfaceCard: '#1B1438'
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'Cairo', 'sans-serif']
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 3s ease-in-out infinite alternate'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' }
+            },
+            glow: {
+              '0%': { filter: 'drop-shadow(0 0 15px rgba(217, 70, 239, 0.4))' },
+              '100%': { filter: 'drop-shadow(0 0 30px rgba(249, 115, 22, 0.7))' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #080612;
+      color: #F3F4F6;
+      overflow-x: hidden;
+    }
+    
+    /* Gradients مستوحاة من ألوان اللوجو */
+    .brand-gradient {
+      background: linear-gradient(135deg, #7C3AED 0%, #D946EF 50%, #F97316 100%);
+    }
+    .brand-gradient-text {
+      background: linear-gradient(135deg, #A855F7 0%, #EC4899 45%, #F97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-border-gradient {
+      border-image: linear-gradient(135deg, #7C3AED, #EC4899, #F97316) 1;
+    }
+    .glass-card {
+      background: rgba(19, 14, 38, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(217, 70, 239, 0.18);
+    }
+    .glass-card:hover {
+      border-color: rgba(249, 115, 22, 0.45);
+      box-shadow: 0 12px 35px -8px rgba(217, 70, 239, 0.25);
+    }
+    .glass-nav {
+      background: rgba(8, 6, 18, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+    }
+    /* تأثير الدوائر المتوهجة في الخلفية */
+    .radial-glow-violet {
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(8, 6, 18, 0) 70%);
+    }
+    .radial-glow-orange {
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, rgba(8, 6, 18, 0) 70%);
+    }
+    .radial-glow-magenta {
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, rgba(8, 6, 18, 0) 70%);
+    }
+    /* تخصيص السكرول بار */
+    ::-webkit-scrollbar {
+      width: 9px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080612;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #7C3AED, #D946EF);
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F97316;
+    }
+  </style>
+</head>
+<body class="selection:bg-brand-magenta selection:text-white">
+
+  <!-- خلفيات الإضاءة النيونية المستمرة -->
+  <div class="fixed top-0 right-0 w-[550px] h-[550px] radial-glow-violet pointer-events-none -z-10 blur-3xl"></div>
+  <div class="fixed bottom-10 left-0 w-[600px] h-[600px] radial-glow-orange pointer-events-none -z-10 blur-3xl"></div>
+  <div class="fixed top-1/2 left-1/3 w-[500px] h-[500px] radial-glow-magenta pointer-events-none -z-10 blur-3xl"></div>
+
+  <!-- الهيدر والنافبار -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- شعار الهوية المقتبس من ألوان اللوجو -->
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-xl brand-gradient flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-brand-magenta/30 group-hover:scale-105 transition-transform duration-300">
+          IS
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg leading-tight tracking-wide text-white group-hover:text-brand-magenta transition-colors">إسلام سعيد</span>
+          <span class="text-[11px] font-sans tracking-widest text-gray-400 uppercase">Islam Saeed</span>
+        </div>
+      </a>
+
+      <!-- روابط القائمة الرئيسية -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="#about" class="text-gray-300 hover:text-white transition-colors relative hover:after:w-full after:w-0 after:h-0.5 after:brand-gradient after:absolute after:-bottom-1 after:right-0 after:transition-all">من أنا</a>
+        <a href="#services" class="text-gray-300 hover:text-white transition-colors relative hover:after:w-full after:w-0 after:h-0.5 after:brand-gradient after:absolute after:-bottom-1 after:right-0 after:transition-all">الخبرات والخدمات</a>
+        <a href="#portfolio" class="text-gray-300 hover:text-white transition-colors relative hover:after:w-full after:w-0 after:h-0.5 after:brand-gradient after:absolute after:-bottom-1 after:right-0 after:transition-all">سابقة الأعمال</a>
+        <a href="#calculator" class="text-gray-300 hover:text-white transition-colors relative hover:after:w-full after:w-0 after:h-0.5 after:brand-gradient after:absolute after:-bottom-1 after:right-0 after:transition-all">حاسبة ROAS</a>
+        <a href="#course" class="text-brand-orange hover:text-brand-gold transition-colors font-semibold flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-orange animate-ping"></span>
+          الكورس القادم
+        </a>
+      </nav>
+
+      <!-- زر التواصل المباشر -->
+      <div class="hidden md:flex items-center gap-4">
+        <a href="https://wa.me/201021252183?text=أهلاً%20إسلام،%20اطلعت%20على%20موقعك%20وأود%20الاستفسار%20عن%20استشارة%20تسويقية" target="_blank" class="px-5 py-2.5 rounded-full brand-gradient text-white text-sm font-semibold shadow-lg shadow-brand-magenta/30 hover:shadow-brand-orange/40 hover:opacity-95 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-base"></i>
+          تواصل معي
+        </a>
+      </div>
+
+      <!-- زر القائمة للهواتف -->
+      <button id="mobileMenuBtn" class="md:hidden text-gray-300 hover:text-white focus:outline-none p-2" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <!-- قائمة الهاتف المحمول -->
+    <div id="mobileMenu" class="hidden md:hidden px-6 pt-3 pb-6 bg-[#0E0B1F] border-b border-brand-violet/20 flex flex-col gap-4 text-center">
+      <a href="#about" class="text-gray-300 py-2 border-b border-white/5">من أنا</a>
+      <a href="#services" class="text-gray-300 py-2 border-b border-white/5">الخبرات والخدمات</a>
+      <a href="#portfolio" class="text-gray-300 py-2 border-b border-white/5">سابقة الأعمال</a>
+      <a href="#calculator" class="text-gray-300 py-2 border-b border-white/5">حاسبة ROAS</a>
+      <a href="#course" class="text-brand-orange py-2 font-bold">الكورس الجديد</a>
+      <a href="https://wa.me/201021252183" target="_blank" class="w-full py-2.5 rounded-xl brand-gradient text-white font-bold">تواصل واتساب</a>
+    </div>
+  </header>
+
+  <!-- القسم الافتتاحي (Hero Section) -->
+  <section id="home" class="relative pt-36 pb-20 md:pt-44 md:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- النصوص الترحيبية ونقاط القوة -->
+        <div class="lg:col-span-7 space-y-7 text-center lg:text-right">
+          
+          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-card border border-brand-magenta/30 text-xs sm:text-sm font-medium">
+            <span class="flex h-2.5 w-2.5 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-orange"></span>
+            </span>
+            <span class="text-gray-300">متاح لاستقبال مشاريع وحملات واستشارات إعلانية</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+            نحول ميزانيتك الإعلانية إلى <br />
+            <span class="brand-gradient-text">نمو وأرباح مستدامة تصل إلى 30x ROAS</span>
+          </h1>
+
+          <p class="text-gray-300 text-base sm:text-lg lg:text-xl max-w-2xl leading-relaxed mx-auto lg:mx-0">
+            أنا <strong class="text-white font-bold">إسلام سعيد</strong>، أخصائي أول ميديا باينج ونمو رقمي (Senior Social Media Specialist & Performance Marketer). متخصص في قيادة الحملات الإعلانية الضخمة، هندسة رحلة العميل (Full-Funnel)، وتحليل سلوك المستهلك وصناعة المحتوى الإعلاني الموجه لتحقيق أعلى عائد استثماري.
+          </p>
+
+          <!-- أزرار الإجراءات الأساسية -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+            <a href="#course" class="px-7 py-3.5 rounded-xl brand-gradient text-white font-bold text-base shadow-xl shadow-brand-magenta/30 hover:scale-105 transition-transform duration-300 flex items-center gap-2">
+              <i class="fa-solid fa-graduation-cap"></i>
+              انضم لقائمة انتظار الكورس
+            </a>
+            <a href="#portfolio" class="px-7 py-3.5 rounded-xl glass-card text-white font-semibold text-base hover:bg-white/10 transition-colors duration-300 flex items-center gap-2 border border-white/10">
+              <i class="fa-solid fa-chart-line text-brand-orange"></i>
+              استعرض سابقة الأعمال
+            </a>
+          </div>
+
+          <!-- إحصائيات سريعة وموثقة من واقع الخبرة -->
+          <div class="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 max-w-lg mx-auto lg:mx-0">
+            <div class="text-center lg:text-right">
+              <div class="text-2xl sm:text-3xl font-extrabold brand-gradient-text">30x</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">أعلى عائد استثماري ROAS</div>
+            </div>
+            <div class="text-center lg:text-right">
+              <div class="text-2xl sm:text-3xl font-extrabold text-white">3M+ EGP</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">مبيعات من حملة واحدة (100k)</div>
+            </div>
+            <div class="text-center lg:text-right">
+              <div class="text-2xl sm:text-3xl font-extrabold text-brand-orange">150k+</div>
+              <div class="text-xs sm:text-sm text-gray-400 mt-1">ميزانيات شهرية مدارة لكل براند</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- اللوجو والهوية المجسمة ثلاثية الأبعاد التفاعلية -->
+        <div class="lg:col-span-5 flex justify-center relative">
+          <div class="relative w-72 sm:w-96 aspect-square flex items-center justify-center">
+            <!-- الهالات المتوهجة خلف اللوجو -->
+            <div class="absolute inset-0 rounded-3xl brand-gradient opacity-30 filter blur-2xl animate-pulse-slow"></div>
+            
+            <!-- حاوية اللوجو مع إطار زجاجي مودرن -->
+            <div class="relative z-10 w-full h-full p-5 rounded-3xl glass-card flex flex-col items-center justify-center shadow-2xl animate-float border border-brand-magenta/40">
+              
+              <!-- اللوجو الخاص بإسلام سعيد بدقة وتدرج ألوانه الكاملة -->
+              <svg viewBox="0 0 500 500" class="w-full h-full max-w-[320px] max-h-[320px] filter drop-shadow-[0_15px_30px_rgba(217,70,239,0.35)]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <!-- تدرجات الألوان الرسمية من اللوجو -->
+                  <linearGradient id="logoGradIS_Left" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#581C87" />
+                    <stop offset="25%" stop-color="#7C3AED" />
+                    <stop offset="65%" stop-color="#D946EF" />
+                    <stop offset="100%" stop-color="#F97316" />
+                  </linearGradient>
+                  <linearGradient id="logoGradIS_Right" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7C3AED" />
+                    <stop offset="40%" stop-color="#EC4899" />
+                    <stop offset="75%" stop-color="#F97316" />
+                    <stop offset="100%" stop-color="#FBBF24" />
+                  </linearGradient>
+                  <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#8B5CF6" />
+                    <stop offset="35%" stop-color="#D946EF" />
+                    <stop offset="70%" stop-color="#F43F5E" />
+                    <stop offset="100%" stop-color="#FBBF24" />
+                  </linearGradient>
+                </defs>
+
+                <!-- الحرف الأول I / الزاوية اليسرى المائلة -->
+                <path d="M120 150 L180 120 L180 320 L120 350 Z" fill="url(#logoGradIS_Left)" />
+                
+                <!-- الحرف S وشريط الدمج المتدفق المتصل بـ IS -->
+                <path d="M190 190 C220 125, 330 115, 340 185 C345 220, 270 240, 220 260 C170 280, 150 340, 250 350 C310 355, 350 320, 360 295 L330 285 C315 320, 260 330, 220 315 C180 300, 210 270, 260 250 C320 230, 380 200, 365 155 C345 90, 210 95, 160 170 Z" fill="url(#logoGradIS_Right)" />
+
+                <!-- الاسم العربي أسفل اللوجو (إسلام سعيد) -->
+                <text x="250" y="420" font-family="'Cairo', sans-serif" font-size="52" font-weight="900" text-anchor="middle" fill="url(#textGrad)">إسلام سعيد</text>
+                
+                <!-- الاسم الإنجليزي (ISLAM SAEED) -->
+                <text x="250" y="460" font-family="'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="800" letter-spacing="8" text-anchor="middle" fill="#E2E8F0">ISLAM SAEED</text>
+              </svg>
+
+              <!-- وسام التحقق والتخصص -->
+              <div class="mt-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-brand-gold flex items-center gap-1.5 border border-white/10">
+                <i class="fa-solid fa-circle-check text-brand-orange"></i>
+                Senior Media Buyer & Performance Marketer
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- شريط العلامات التجارية وثقة العملاء (Marquee / Logos) -->
+  <section class="py-12 border-y border-white/10 bg-brand-surface/40">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-xs uppercase tracking-widest text-gray-400 font-semibold mb-6">
+        شركاء النجاح وعلامات تجارية قادت حملاتها الإعلانية نحو الصدارة
+      </p>
+      
+      <!-- شبكة البراندات المأخوذة من بورتفوليو إسلام سعيد -->
+      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-14 text-gray-400 font-bold text-lg md:text-xl">
+        <span class="hover:text-white transition-colors">لوكسير (Luxer)</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">B-Smart</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">Woody Kitchens</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">ملك الشاورما (King Shawerma)</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">كبابجي فرحات الشرقاوي</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">حلواني الشيبي</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">United EGY</span>
+        <span class="text-brand-magenta font-black">/</span>
+        <span class="hover:text-white transition-colors">مخبوزات فليفر</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم من أنا ورؤية العمل (About Me) -->
+  <section id="about" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-5 space-y-6">
+          <div class="relative rounded-2xl overflow-hidden glass-card p-8 border border-brand-violet/30">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-brain text-brand-magenta"></i>
+              فلسفتي في الميديا باينج
+            </h3>
+            <p class="text-gray-300 leading-relaxed text-sm sm:text-base">
+              الإعلانات الممولة ليست مجرد ضغط على أزرار Meta أو TikTok Ads Manager؛ بل هي مزيج دقيق بين <strong class="text-white">سيكولوجية اتخاذ القرار، صياغة الرسالة الإعلانية المقنعة، والتحليل الحسابي الصارم للبيانات</strong>. أتعامل مع كل جنيه ينفقه العميل كأنه استثمار في سهم يجب أن يحقق أعلى قيمة مضافة للمشروع.
+            </p>
+            <div class="mt-6 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
+              <span>خريج نظم معلومات إدارية MIS</span>
+              <span class="text-brand-orange font-bold">Cairo, Egypt</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-block text-brand-orange font-bold text-sm tracking-wider uppercase">نبذة مهنية</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-snug">
+            إدارة الميزانيات الضخمة <span class="brand-gradient-text">برؤية استراتيجية ونتائج قياسية</span>
+          </h2>
+          <p class="text-gray-300 leading-relaxed">
+            بصفتي Senior Social Media Specialist و Media Buyer، توليت مسؤولية بناء وإدارة ميزانيات تفوق الـ 150,000 جنيه شهرياً لكل براند، وصناعة خطط نمو متكاملة عبر Meta (Facebook & Instagram), TikTok, و Google. أقود فرق العمل الإبداعية، وأوجه إنتاج الفيديوهات القصيرة (Reels / TikToks) لتتحول الحملات إلى ماكينة بيع مستمرة بأعلى معدلات تحويل (CRO).
+          </p>
+
+          <!-- بطاقات الخبرات الرئيسية -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div class="p-4 rounded-xl glass-card border border-white/5">
+              <div class="text-brand-magenta text-xl mb-2"><i class="fa-solid fa-chart-pie"></i></div>
+              <h4 class="font-bold text-white mb-1">Full-Funnel Advertising</h4>
+              <p class="text-xs text-gray-400">تغطية كافة مراحل رحلة العميل: الوعي، التفاعل، التحويل، وإعادة الاستهداف الذكي (Retargeting).</p>
+            </div>
+            <div class="p-4 rounded-xl glass-card border border-white/5">
+              <div class="text-brand-orange text-xl mb-2"><i class="fa-solid fa-video"></i></div>
+              <h4 class="font-bold text-white mb-1">Creative Direction</h4>
+              <p class="text-xs text-gray-400">إدارة سيناريوهات وتصوير الإعلانات ذات معدلات التفاعل العالية وخطف الانتباه في أول ثانيتين.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم الخدمات والمهارات (Services) -->
+  <section id="services" class="py-20 bg-brand-surface/20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        <span class="text-brand-magenta font-bold text-sm tracking-widest uppercase">ماذا أقدم؟</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">حلول نمو تسويقية متكاملة تضمن أرباحك</h2>
+        <p class="text-gray-400 text-sm sm:text-base">خدمات احترافية مصممة للشركات والمتاجر الإلكترونية التي تسعى للريادة والانتشار الفعلي.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- خدمة 1 -->
+        <div class="glass-card p-7 rounded-2xl transition-all duration-300 group hover:-translate-y-2 border border-white/5">
+          <div class="w-14 h-14 rounded-xl brand-gradient flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-brand-magenta/30">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-magenta transition-colors">إدارة الحملات الإعلانية الممولة (Paid Ads)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            تخطيط وتنفيذ حملات إعلانية عالية الدقة على منصات Meta و TikTok بميزانيات كبرى وربط الـ Pixel وتتبع الـ Events بدقة متناهية.
+          </p>
+          <ul class="text-xs text-gray-300 space-y-2">
+            <li><i class="fa-solid fa-check text-brand-orange ml-2"></i>تحقيق ROAS يصل لـ 8x - 30x</li>
+            <li><i class="fa-solid fa-check text-brand-orange ml-2"></i>إدارة الميزانيات وتخفيض تكلفة الاستحواذ (CPA)</li>
+          </ul>
+        </div>
+
+        <!-- خدمة 2 -->
+        <div class="glass-card p-7 rounded-2xl transition-all duration-300 group hover:-translate-y-2 border border-white/5">
+          <div class="w-14 h-14 rounded-xl brand-gradient flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-brand-orange/30">
+            <i class="fa-solid fa-film"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-orange transition-colors">التوجيه الإبداعي وصناعة المحتوى</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            تحويل الأفكار الإبداعية إلى محتوى فيديو مرئي وسكربتات قوية تؤثر في سلوك الجمهور المستهدف وتدفعه مباشرة للشراء أو حجز الخدمة.
+          </p>
+          <ul class="text-xs text-gray-300 space-y-2">
+            <li><i class="fa-solid fa-check text-brand-magenta ml-2"></i>كتابة سكربتات إعلانية نفسية (Hook, Story, Offer)</li>
+            <li><i class="fa-solid fa-check text-brand-magenta ml-2"></i>إشراف وتوجيه تصوير الميديا</li>
+          </ul>
+        </div>
+
+        <!-- خدمة 3 -->
+        <div class="glass-card p-7 rounded-2xl transition-all duration-300 group hover:-translate-y-2 border border-white/5">
+          <div class="w-14 h-14 rounded-xl brand-gradient flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-brand-violet/30">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 group-hover:text-brand-violet transition-colors">تحليل البيانات وتطوير معدل التحويل (CRO)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            تحليل معمق لصفحات الهبوط (Landing Pages) وفانل البيع، واختبارات الـ A/B Testing للوصول إلى أقصى كفاءة بيعية ممكنة من الزيارات.
+          </p>
+          <ul class="text-xs text-gray-300 space-y-2">
+            <li><i class="fa-solid fa-check text-brand-gold ml-2"></i>تحسين Funnel المتاجر الإلكترونية</li>
+            <li><i class="fa-solid fa-check text-brand-gold ml-2"></i>تقارير دورية متقدمة لقياس الأداء الحقيقي</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم سابقة الأعمال الحقيقية (Case Studies & Portfolio) -->
+  <section id="portfolio" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div class="space-y-3">
+          <span class="text-brand-orange font-bold text-sm tracking-wider uppercase">دراسات حالة ونتائج حقيقية</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white">نماذج من نتائج الحملات بالأرقام</h2>
+          <p class="text-gray-400 text-sm sm:text-base max-w-xl">أرقام موثقة من مدير الإعلانات تؤكد الوصول لمئات الآلاف بأقل تكلفة تفاعل ومبيعات قياسية.</p>
+        </div>
+        <div>
+          <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أريد%20الاطلاع%20على%20ملف%20سابقة%20الأعمال%20الكامل%20PDF" target="_blank" class="px-5 py-2.5 rounded-xl border border-white/20 glass-card text-white text-sm font-semibold hover:border-brand-magenta transition-all flex items-center gap-2">
+            <i class="fa-solid fa-download text-brand-magenta"></i>
+            طلب البورتفوليو التفصيلي PDF
+          </a>
+        </div>
+      </div>
+
+      <!-- بطاقات دراسات الحالة -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- دراسة حالة 1: Woody مطابخ ودريسينج -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-white/5 group hover:border-brand-magenta/40 transition-all">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-purple/30 text-purple-300 border border-brand-purple/50">Luxury Kitchens</span>
+              <span class="text-xs text-gray-400">حملة وعي ومبيعات</span>
+            </div>
+            <h3 class="text-xl font-bold text-white">براند Woody - للمطابخ والدريسينج</h3>
+            <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+              إدارة حملات الوعي والتفاعل وجلب العملاء المحتملين (Leads) لبراند الديكور والمطابخ الراقية.
+            </p>
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">مرات الظهور (Impressions):</span>
+                <span class="font-bold text-brand-gold">406,460+</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">الوصول الفعلي (Reach):</span>
+                <span class="font-bold text-brand-magenta">393,098 شخص</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">تكلفة الألف وصول:</span>
+                <span class="font-bold text-green-400">2.54 ج.م فقط</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- دراسة حالة 2: ملك الشاورما (King Shawerma) -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-white/5 group hover:border-brand-orange/40 transition-all">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-orange/20 text-orange-300 border border-brand-orange/50">F&B Brand</span>
+              <span class="text-xs text-gray-400">حملات تفاعل وطلبات ريلز</span>
+            </div>
+            <h3 class="text-xl font-bold text-white">سلسلة ملك الشاورما & Fried Chicken</h3>
+            <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+              إطلاق عروض قوية (عرض الفورمة، عرض الملوك، ريلز هيخطفك) لتحقيق انتشار فيروسي وزيادة مبيعات الفروع والدليفري.
+            </p>
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">تفاعل منشور واحد (Reels):</span>
+                <span class="font-bold text-brand-gold">43,302 عملية تفاعل</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">تكلفة التفاعل الواحد:</span>
+                <span class="font-bold text-green-400">0.0115 ج.م</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">نتائج المسابقات الأسبوعية:</span>
+                <span class="font-bold text-white">آلاف الطلبات المباشرة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- دراسة حالة 3: الأداء القياسي 30x ROAS -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-brand-magenta/30 group hover:border-brand-magenta transition-all bg-gradient-to-b from-brand-surface to-brand-purple/20">
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full text-xs font-bold brand-gradient text-white">النتيجة القياسية</span>
+              <span class="text-xs text-brand-gold font-bold">E-Commerce Growth</span>
+            </div>
+            <h3 class="text-xl font-bold text-white">حملة براند Luxer & B-Smart</h3>
+            <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+              تطبيق استراتيجية التحويل المباشر مع استهداف متقدم وإعلانات فيديو معدة باحترافية لتحقيق طفرة مبيعات تاريخية.
+            </p>
+            <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">ميزانية الحملة:</span>
+                <span class="font-bold text-white">100,000 ج.م</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">المبيعات المحققة:</span>
+                <span class="font-bold text-green-400 text-sm">3,000,000+ ج.م</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">معدل العائد (ROAS):</span>
+                <span class="font-extrabold text-brand-magenta text-sm">30x ROAS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- أداة تفاعلية: حاسبة الـ ROAS والعائد التقديري -->
+  <section id="calculator" class="py-20 bg-brand-surface/30 relative border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center space-y-3 mb-10">
+        <span class="text-brand-magenta font-bold text-xs uppercase tracking-widest">أداة تفاعلية لأصحاب الأعمال</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">احسب العائد المتوقع على ميزانيتك الإعلانية</h2>
+        <p class="text-gray-400 text-xs sm:text-sm">جرب حاسبة الميديا باينج التقديرية لترى كيف يمكن للميزانية أن تتضاعف باستراتيجيات التحويل المحكمة.</p>
+      </div>
+
+      <div class="glass-card p-6 sm:p-10 rounded-3xl border border-brand-violet/30 shadow-2xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          
+          <div class="space-y-6">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-2">الميزانية الإعلانية المقترحة (جنيه مصري):</label>
+              <div class="relative">
+                <input type="number" id="budgetInput" value="20000" min="1000" step="1000" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-lg font-bold focus:outline-none focus:border-brand-magenta transition-colors pl-12" />
+                <span class="absolute left-4 top-3.5 text-xs text-gray-500 font-bold">EGP</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-2">معدل العائد المتوقع (ROAS Multiplier):</label>
+              <div class="flex items-center gap-4">
+                <input type="range" id="roasSlider" min="3" max="25" value="6" step="1" class="w-full accent-brand-magenta cursor-pointer" />
+                <span id="roasValue" class="text-lg font-extrabold text-brand-orange w-12 text-center">6x</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              * التقديرات تعتمد على خبرات عملية حقيقية في قطاعات التجارة الإلكترونية، الأغذية والمشروبات (F&B)، والمطابخ والتشطيبات.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-black/50 border border-brand-magenta/20 text-center space-y-4">
+            <span class="text-xs text-gray-400 uppercase tracking-wider block">المبيعات المتوقعة (Estimated Revenue)</span>
+            <div id="revenueOutput" class="text-3xl sm:text-4xl font-black brand-gradient-text">120,000 ج.م</div>
+            
+            <div class="pt-4 border-t border-white/10 flex justify-around text-xs">
+              <div>
+                <span class="text-gray-400 block">صافي العائد التقديري</span>
+                <span id="netProfitOutput" class="font-bold text-green-400 text-sm mt-1">100,000 ج.م</span>
+              </div>
+              <div>
+                <span class="text-gray-400 block">كفاءة الفانل</span>
+                <span class="font-bold text-brand-gold text-sm mt-1">High Scale</span>
+              </div>
+            </div>
+
+            <a id="consultCalcBtn" href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20قمت%20بحساب%20ميزانية%20إعلانية%20بمبلغ%2020000%20وأود%20تحقيق%20عائد%20مماثل%20لحملاتك" target="_blank" class="block w-full py-3 rounded-xl brand-gradient text-white font-bold text-xs shadow-lg hover:opacity-90 transition-opacity mt-4">
+              ناقش هذه الخطة معي عبر واتساب
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- قسم الكورس القادم (Upcoming Course & VIP Waitlist) -->
+  <section id="course" class="py-24 relative overflow-hidden">
+    <!-- خلفية مضيئة إضافية للفت الانتباه للكورس -->
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-purple/20 via-brand-magenta/10 to-brand-orange/20 -z-10"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 lg:p-16 border-2 border-brand-magenta/40 shadow-2xl relative">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 space-y-6">
+            
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-extrabold border border-brand-orange/40">
+              <i class="fa-solid fa-fire"></i>
+              قريباً جداً - إطلاق الكورس الحصري
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+              أسرار الميديا باينج وتحقيق العوائد الخارقة <span class="brand-gradient-text">(The 30x ROAS Blueprint)</span>
+            </h2>
+
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+              كورس تطبيقي وعملي 100% بدون أي حشو أكاديمي؛ أشاركك فيه عصارة تجاربي في إدارة الميزانيات الضخمة وتجاوز عقبات خوارزميات Meta و TikTok، وكيفية بناء استراتيجيات قمع البيع (Funnels) القائمة على علم النفس، وطريقة توجيه صناع المحتوى لكتابة إعلانات تبيع من اللحظة الأولى.
+            </p>
+
+            <!-- محاور الكورس -->
+            <div class="space-y-3 pt-2">
+              <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-brand-magenta/20 text-brand-magenta flex items-center justify-center text-xs mt-1 flex-shrink-0">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-300"><strong class="text-white">من الصفر إلى الميزانيات الكبرى:</strong> كيف تدير حملات بمئات الآلاف شهرياً بثقة وتحكم كامل.</p>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-brand-orange/20 text-brand-orange flex items-center justify-center text-xs mt-1 flex-shrink-0">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-300"><strong class="text-white">سيكولوجية المشاهد والإعلان:</strong> هندسة إعلانات الريلز والفيديوهات التي توقف المستخدم عن التمرير.</p>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-brand-violet/20 text-brand-violet flex items-center justify-center text-xs mt-1 flex-shrink-0">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-300"><strong class="text-white">قراءة الأرقام واتخاذ القرارات:</strong> متى تزيد الميزانية (Scaling) وكيف تتعامل مع الحملات المنهكة.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- نموذج التسجيل المباشر في قائمة الانتظار -->
+          <div class="lg:col-span-5">
+            <div class="bg-black/60 p-6 sm:p-8 rounded-2xl border border-white/10 shadow-xl relative">
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-2">احجز مكانك في قائمة الـ VIP</h3>
+              <p class="text-xs text-gray-400 mb-6">سجل الآن لتحصل على خصم الإطلاق المبكر (Early Bird) وأولوية الحضور فور فتح الباب.</p>
+
+              <form id="waitlistForm" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">الاسم بالكامل</label>
+                  <input type="text" id="subscriberName" required placeholder="مثال: أحمد محمود" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-magenta transition-colors" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">رقم الواتساب</label>
+                  <input type="tel" id="subscriberPhone" required placeholder="01xxxxxxxxx" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-magenta transition-colors text-left" dir="ltr" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">مستواك الحالي في الإعلانات</label>
+                  <select id="subscriberLevel" class="w-full bg-[#1A1433] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-magenta transition-colors">
+                    <option value="مبتدئ">مبتدئ (أريد دخول المجال بقوة)</option>
+                    <option value="متوسط">متوسط (أطلق حملات وأريد سكيلينج وROAS أعلى)</option>
+                    <option value="صاحب مشروع">صاحب بيزنس / متجر إلكتروني</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl brand-gradient text-white font-bold text-sm shadow-xl shadow-brand-magenta/30 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  تأكيد الانضمام لقائمة الانتظار
+                </button>
+              </form>
+
+              <!-- رسالة النجاح المنبثقة -->
+              <div id="waitlistSuccess" class="hidden mt-4 p-4 rounded-xl bg-green-500/20 border border-green-500/40 text-center space-y-2">
+                <i class="fa-solid fa-circle-check text-green-400 text-2xl"></i>
+                <p class="text-xs font-bold text-white">تم تسجيلك بنجاح في قائمة الـ VIP!</p>
+                <p class="text-[11px] text-gray-300">سيتم توجيهك إلى واتساب لتأكيد مكانك مباشرة.</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم التواصل السريع والفوتر -->
+  <footer class="pt-16 pb-12 border-t border-white/10 bg-[#06040E]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/5">
+        
+        <!-- نبذة ومختصر الهوية -->
+        <div class="md:col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl brand-gradient flex items-center justify-center font-bold text-white text-lg shadow-lg">
+              IS
+            </div>
+            <div>
+              <span class="font-bold text-lg text-white">إسلام سعيد</span>
+              <span class="block text-xs text-gray-400">Media Buyer & Performance Marketer</span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 leading-relaxed max-w-md">
+            شغفي هو مساعدة البراندات وأصحاب الأعمال على الانتشار الواسع ومضاعفة المبيعات من خلال إعلانات ممولة مبنية على الأرقام والسلوك البشري.
+          </p>
+        </div>
+
+        <!-- أرقام الهواتف والاتصال المباشر -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-white uppercase tracking-wider">الاتصال المباشر</h4>
+          <ul class="text-xs space-y-2 text-gray-300">
+            <li>
+              <a href="tel:01021252183" class="hover:text-brand-orange transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-phone text-brand-magenta"></i>
+                <span dir="ltr">01021252183</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:01008761913" class="hover:text-brand-orange transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-phone text-brand-magenta"></i>
+                <span dir="ltr">01008761913</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:islamsaeidahmed@gmail.com" class="hover:text-brand-orange transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-brand-magenta"></i>
+                islamsaeidahmed@gmail.com
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- السوشيال ميديا ومقر العمل -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-white uppercase tracking-wider">المقر والشبكات</h4>
+          <p class="text-xs text-gray-400">القاهرة، جمهورية مصر العربية</p>
+          <div class="flex items-center gap-3 pt-2">
+            <a href="https://linkedin.com/in/islamsaeid" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-brand-violet transition-colors">
+              <i class="fa-brands fa-linkedin-in text-sm"></i>
+            </a>
+            <a href="https://wa.me/201021252183" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-green-600 transition-colors">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+            </a>
+            <a href="mailto:islamsaeidahmed@gmail.com" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-brand-orange transition-colors">
+              <i class="fa-solid fa-envelope text-sm"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- حقوق الملكية الفكرية والدومين الرسمي -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+        <div>
+          جميع الحقوق محفوظة &copy; <span id="yearSpan"></span> إسلام سعيد | <a href="https://islamsaeid.me" class="text-gray-400 hover:text-brand-magenta">islamsaeid.me</a>
+        </div>
+        <div class="flex gap-4">
+          <span>Cairo, Egypt</span>
+          <span>&bull;</span>
+          <span>Performance Driven</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- الأكواد البرمجية التفاعلية للـ JavaScript -->
+  <script>
+    // تحديث السنة تلقائياً
+    document.getElementById('yearSpan').textContent = new Date().getFullYear();
+
+    // قائمة الهاتف المحمول
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // إغلاق قائمة الهاتف عند الضغط على أي رابط
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+
+    // تفاعلية حاسبة الـ ROAS
+    const budgetInput = document.getElementById('budgetInput');
+    const roasSlider = document.getElementById('roasSlider');
+    const roasValue = document.getElementById('roasValue');
+    const revenueOutput = document.getElementById('revenueOutput');
+    const netProfitOutput = document.getElementById('netProfitOutput');
+    const consultCalcBtn = document.getElementById('consultCalcBtn');
+
+    function calculateROAS() {
+      const budget = parseFloat(budgetInput.value) || 0;
+      const roas = parseFloat(roasSlider.value) || 1;
+      
+      roasValue.textContent = roas + 'x';
+      
+      const revenue = budget * roas;
+      const netProfit = revenue - budget;
+
+      revenueOutput.textContent = revenue.toLocaleString('ar-EG') + ' ج.م';
+      netProfitOutput.textContent = netProfit.toLocaleString('ar-EG') + ' ج.م';
+
+      // تحديث رابط الواتساب التلقائي بالقيم
+      const msg = encodeURIComponent(`مرحباً إسلام، قمت بحساب ميزانية مقترحة بقيمة ${budget} ج.م مع عائد ${roas}x وأرغب في مناقشة تفاصيل الحملة معك.`);
+      consultCalcBtn.href = `https://wa.me/201021252183?text=${msg}`;
+    }
+
+    budgetInput.addEventListener('input', calculateROAS);
+    roasSlider.addEventListener('input', calculateROAS);
+
+    // نموذج الانضمام لقائمة انتظار الكورس
+    const waitlistForm = document.getElementById('waitlistForm');
+    const waitlistSuccess = document.getElementById('waitlistSuccess');
+
+    waitlistForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('subscriberName').value;
+      const phone = document.getElementById('subscriberPhone').value;
+      const level = document.getElementById('subscriberLevel').value;
+
+      // حفظ محلي في المتصفح لضمان عدم ضياع البيانات
+      const subscribers = JSON.parse(localStorage.getItem('course_waitlist') || '[]');
+      subscribers.push({ name, phone, level, date: new Date().toISOString() });
+      localStorage.setItem('course_waitlist', JSON.stringify(subscribers));
+
+      waitlistForm.classList.add('hidden');
+      waitlistSuccess.classList.remove('hidden');
+
+      // توجيه تلقائي بعد ثانية واحدة إلى واتساب إسلام سعيد برسالة جاهزة
+      setTimeout(() => {
+        const text = encodeURIComponent(`أهلاً إسلام، أنا ${name} سجلت في قائمة انتظار كورس الميديا باينج القادم. مستواي الحالي: (${level}) ورقمي: ${phone}`);
+        window.open(`https://wa.me/201021252183?text=${text}`, '_blank');
+      }, 1200);
+    });
+  </script>
+
+</body>
+</html>

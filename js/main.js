@@ -1,26 +1,64 @@
-// 1. Splash Screen
+// 0. Theme Toggle (Dark / Light Mode)
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeToggleBtnMobile = document.getElementById('themeToggleBtnMobile');
+const themeIcon = document.getElementById('themeIcon');
+const themeIconMobile = document.getElementById('themeIconMobile');
+const htmlEl = document.documentElement;
+
+// التحقق من الوضع المحفوظ مسبقاً
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+  htmlEl.classList.remove('dark');
+  updateIcons(false);
+} else {
+  htmlEl.classList.add('dark');
+  updateIcons(true);
+}
+
+function updateIcons(isDark) {
+  const iconClass = isDark ? 'fa-sun' : 'fa-moon';
+  if (themeIcon) themeIcon.className = `fa-solid ${iconClass} text-base`;
+  if (themeIconMobile) themeIconMobile.className = `fa-solid ${iconClass} text-sm`;
+}
+
+function toggleTheme() {
+  const isDark = htmlEl.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateIcons(isDark);
+}
+
+if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+// 1. Splash Screen إخفاء فوري
 window.addEventListener('load', () => {
   const splash = document.getElementById('introSplash');
   if (splash) {
     setTimeout(() => {
       splash.style.opacity = '0';
       splash.style.pointerEvents = 'none';
-      setTimeout(() => splash.remove(), 600);
-    }, 450);
+      setTimeout(() => splash.remove(), 400);
+    }, 250);
   }
 });
 
-// 2. Year update
-document.getElementById('currentYear').textContent = new Date().getFullYear();
+// 2. تحديث السنة
+const currentYearEl = document.getElementById('currentYear');
+if (currentYearEl) {
+  currentYearEl.textContent = new Date().getFullYear();
+}
 
-// 3. Scroll progress
+// 3. شريط تقدم السكرول
 window.addEventListener('scroll', () => {
   const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
   const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  document.getElementById('progressBar').style.width = ((winScroll / height) * 100) + '%';
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar && height > 0) {
+    progressBar.style.width = ((winScroll / height) * 100) + '%';
+  }
 }, { passive: true });
 
-// 4. Custom Cursor
+// 4. مؤشر الماوس
 const cursorDot = document.getElementById('cursorDot');
 const cursorCircle = document.getElementById('cursorCircle');
 if (window.innerWidth >= 1024 && cursorDot && cursorCircle) {
@@ -33,69 +71,19 @@ if (window.innerWidth >= 1024 && cursorDot && cursorCircle) {
 
   document.querySelectorAll('a, button, input, select').forEach(el => {
     el.addEventListener('mouseenter', () => {
-      cursorCircle.style.width = '48px';
-      cursorCircle.style.height = '48px';
+      cursorCircle.style.width = '44px';
+      cursorCircle.style.height = '44px';
       cursorCircle.style.borderColor = '#F97316';
     });
     el.addEventListener('mouseleave', () => {
-      cursorCircle.style.width = '32px';
-      cursorCircle.style.height = '32px';
+      cursorCircle.style.width = '30px';
+      cursorCircle.style.height = '30px';
       cursorCircle.style.borderColor = 'rgba(217, 70, 239, 0.65)';
     });
   });
 }
 
-// 5. Canvas Particles
-const canvas = document.getElementById('particleCanvas');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize, { passive: true });
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 2 + 0.8;
-      this.vx = (Math.random() - 0.5) * 0.7;
-      this.vy = (Math.random() - 0.5) * 0.7;
-      this.color = Math.random() > 0.5 ? '#7C3AED' : '#D946EF';
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.globalAlpha = 0.35;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  const count = Math.min(35, Math.floor((window.innerWidth * window.innerHeight) / 30000));
-  for (let i = 0; i < count; i++) particles.push(new Particle());
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-      particles[i].draw();
-    }
-    requestAnimationFrame(animate);
-  }
-  animate();
-}
-
-// 6. Counters Animation
+// 5. عدادات الأرقام التفاعلية
 const counters = document.querySelectorAll('.counter');
 let counted = false;
 window.addEventListener('scroll', () => {
@@ -104,12 +92,12 @@ window.addEventListener('scroll', () => {
     counters.forEach(c => {
       const target = +c.getAttribute('data-target');
       let val = 0;
-      const inc = target / 30;
+      const inc = target / 25;
       const run = () => {
         val += inc;
         if (val < target) {
           c.innerText = Math.ceil(val);
-          setTimeout(run, 30);
+          setTimeout(run, 25);
         } else {
           c.innerText = target;
         }
@@ -120,7 +108,7 @@ window.addEventListener('scroll', () => {
   }
 }, { passive: true });
 
-// 7. Early Bird Timer (48 Hours)
+// 6. عداد الحجز المبكر (48 ساعة)
 let secondsLeft = 48 * 3600;
 const timerEl = document.getElementById('earlyBirdTimer');
 if (timerEl) {
@@ -133,22 +121,22 @@ if (timerEl) {
   }, 1000);
 }
 
-// 8. Ticker Trigger (يظهر مرتين فقط للزائر)
+// 7. إشعار المقابلة (يظهر مرتين فقط)
 const ticker = document.getElementById('interviewTicker');
 if (ticker) {
   let countTicker = 0;
   const tInterval = setInterval(() => {
     if (countTicker < 2) {
       ticker.classList.remove('opacity-0', 'translate-y-4');
-      setTimeout(() => ticker.classList.add('opacity-0', 'translate-y-4'), 4000);
+      setTimeout(() => ticker.classList.add('opacity-0', 'translate-y-4'), 3500);
       countTicker++;
     } else {
       clearInterval(tInterval);
     }
-  }, 12000);
+  }, 10000);
 }
 
-// 9. Course Form Submit
+// 8. نموذج التسجيل ونقل البيانات لواتساب
 const form = document.getElementById('waitlistForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -161,11 +149,11 @@ if (form) {
     setTimeout(() => {
       const text = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج التدريبي الأوفلاين في القاهرة (الدفعة المغلقة - 20 مقعداً). صفتي: [${field}] ورقمي: ${phone}.`);
       window.open(`https://wa.me/201021252183?text=${text}`, '_blank');
-    }, 1200);
+    }, 1000);
   });
 }
 
-// 10. Mobile Menu
+// 9. قائمة الموبايل
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {

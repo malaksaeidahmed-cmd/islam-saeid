@@ -207,3 +207,8 @@ html:not(.dark) .glass-nav {
     transition: width 0.1s ease-out, height 0.1s ease-out, border-color 0.1s ease;
   }
 }
+
+/* Safe Area Bottom for Mobile Navigation */
+.safe-area-bottom {
+  margin-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}

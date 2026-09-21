@@ -26,7 +26,7 @@ html:not(.dark) body {
   color: #0F172A;
 }
 
-/* Dynamic Classes for Elements */
+/* Dynamic Text & Section Colors */
 html.dark .dynamic-heading { color: #FFFFFF; }
 html:not(.dark) .dynamic-heading { color: #090615; }
 
@@ -143,19 +143,6 @@ html:not(.dark) .glass-nav {
   text-align: center;
 }
 
-.splash-logo {
-  width: 75px;
-  height: 75px;
-  border-radius: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #fff;
-  box-shadow: 0 10px 25px rgba(217, 70, 239, 0.35);
-}
-
 .splash-content h2 {
   font-size: 1.2rem;
   font-weight: 900;
@@ -184,6 +171,11 @@ html:not(.dark) .glass-nav {
   will-change: width;
 }
 
+/* Safe Area Bottom */
+.safe-area-bottom {
+  margin-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
 /* Custom Cursor */
 @media (min-width: 1024px) {
   .cursor-dot, .cursor-circle {
@@ -206,9 +198,4 @@ html:not(.dark) .glass-nav {
     border: 2px solid rgba(217, 70, 239, 0.65);
     transition: width 0.1s ease-out, height 0.1s ease-out, border-color 0.1s ease;
   }
-}
-
-/* Safe Area Bottom for Mobile Navigation */
-.safe-area-bottom {
-  margin-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }

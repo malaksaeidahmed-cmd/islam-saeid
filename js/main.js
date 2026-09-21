@@ -143,11 +143,14 @@ if (form) {
     e.preventDefault();
     const name = document.getElementById('subName').value;
     const phone = document.getElementById('subPhone').value;
-    const field = document.getElementById('subField').value;
+    const budget = document.getElementById('subBudget').value;
+    const challenge = document.getElementById('subChallenge').value;
+    
     form.classList.add('hidden');
     document.getElementById('waitlistSuccess').classList.remove('hidden');
+    
     setTimeout(() => {
-      const text = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج التدريبي الأوفلاين في القاهرة (الدفعة المغلقة - 20 مقعداً). صفتي: [${field}] ورقمي: ${phone}.`);
+      const text = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج الأوفلاين في القاهرة (الدفعة المحدودة - 20 مقعداً).\n- رقمي: ${phone}\n- ميزانيتي الشهرية الحالية: ${budget}\n- التحدي المطلوب حله: ${challenge}\nبانتظار تحديد موعد المقابلة.`);
       window.open(`https://wa.me/201021252183?text=${text}`, '_blank');
     }, 1000);
   });

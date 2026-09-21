@@ -2,12 +2,18 @@
 <html lang="ar" dir="rtl" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>إسلام سعيد | مهندس النمو الإعلاني وهندسة الأداء المالي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>إسلام سعيد | مستشار النمو الإعلاني وهندسة الأداء المالي</title>
   <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج وتحقيق أعلى عوائد استثمارية ROAS. إدارة ميزانيات كبرى وبرنامج تدريبي أوفلاين مكثف بنظام المقابلة الشخصية بالقاهرة." />
   
-  <meta property="og:title" content="إسلام سعيد | مستشار النمو الإعلاني والـ 30x ROAS" />
+  <!-- الأيقونة الرسمية (Favicon) من شعارك -->
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+
+  <!-- Open Graph / Social Media Preview -->
+  <meta property="og:title" content="إسلام سعيد | مهندس النمو الإعلاني والـ 30x ROAS" />
   <meta property="og:description" content="إدارة الحملات الإعلانية الممولة وهندسة اقتصاديات الوحدة لاقتناص أعلى العوائد الصافية." />
+  <meta property="og:image" content="logo.png" />
   <meta property="og:url" content="https://islamsaeid.me" />
   <meta property="og:type" content="website" />
 
@@ -44,13 +50,11 @@
 </head>
 <body class="selection:bg-brand-magenta selection:text-white relative bg-[#05030A] dark:bg-[#05030A] text-slate-100 font-cairo transition-colors duration-300">
 
-  <!-- شاشة الدخول اللحظية -->
+  <!-- Splash Screen -->
   <div id="introSplash">
     <div class="splash-content">
-      <div class="splash-logo brand-gradient">
-        <span>IS</span>
-      </div>
-      <h2>إسلام سعيد</h2>[cite: 4]
+      <img src="logo.png" alt="إسلام سعيد" class="w-20 h-20 rounded-2xl shadow-2xl shadow-brand-magenta/50 object-contain p-1 bg-black/40 border border-brand-magenta/40" />
+      <h2>إسلام سعيد</h2>
       <p>Performance & Unit Economics</p>
     </div>
   </div>
@@ -59,7 +63,7 @@
   <div class="cursor-dot hidden lg:block" id="cursorDot"></div>
   <div class="cursor-circle hidden lg:block" id="cursorCircle"></div>
 
-  <!-- إشعار طلبات المقابلات الحية (يظهر مرتين فقط) -->
+  <!-- Live Admission Ticker -->
   <div id="interviewTicker" class="fixed bottom-24 right-5 z-40 max-w-sm glass-card p-4 rounded-2xl border border-brand-orange/30 flex items-center gap-3 shadow-2xl opacity-0 transition-all duration-500 translate-y-4 pointer-events-none">
     <div class="w-10 h-10 rounded-full bg-brand-orange/20 text-brand-orange flex items-center justify-center flex-shrink-0 text-base">
       <i class="fa-solid fa-user-clock"></i>
@@ -70,8 +74,8 @@
     </div>
   </div>
 
-  <!-- شريط التحويل السفلي الذكي -->
-  <div class="fixed bottom-4 left-4 right-4 z-40 max-w-2xl mx-auto glass-card py-2.5 px-5 rounded-full flex items-center justify-between shadow-2xl border border-brand-magenta/30">
+  <!-- Bottom Floating CTA -->
+  <div class="fixed bottom-4 left-4 right-4 z-40 max-w-2xl mx-auto glass-card py-2.5 px-5 rounded-full flex items-center justify-between shadow-2xl border border-brand-magenta/30 safe-area-bottom">
     <div class="flex items-center gap-2.5">
       <span class="w-2.5 h-2.5 rounded-full bg-brand-orange animate-ping"></span>
       <span class="text-xs font-bold dynamic-title hidden sm:inline">برنامج القاهرة: 20 مقعداً فقط تخضع لمعايير المقابلة الشخصية</span>
@@ -83,31 +87,29 @@
     </div>
   </div>
 
-  <!-- الهيدر والتنقل -->
+  <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <a href="#home" class="flex items-center gap-3 group">
-        <div class="w-11 h-11 rounded-xl brand-gradient flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-brand-magenta/30 group-hover:scale-105 transition-transform">
-          IS
-        </div>
+        <img src="logo.png" alt="إسلام سعيد" class="w-11 h-11 rounded-xl object-contain p-0.5 bg-black/40 border border-brand-magenta/30 group-hover:scale-105 transition-transform" />
         <div class="flex flex-col">
-          <span class="font-extrabold text-lg leading-tight tracking-wide dynamic-title group-hover:text-brand-magenta transition-colors">إسلام سعيد</span>[cite: 4]
-          <span class="text-[10px] font-sans tracking-widest text-gray-400 uppercase font-bold">Islam Saeed</span>[cite: 3, 4]
+          <span class="font-extrabold text-lg leading-tight tracking-wide dynamic-title group-hover:text-brand-magenta transition-colors">إسلام سعيد</span>
+          <span class="text-[10px] font-sans tracking-widest text-gray-400 uppercase font-bold">Islam Saeed</span>
         </div>
       </a>
 
       <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
         <a href="#about" class="dynamic-nav-link transition-colors">المنهجية التنفيذية</a>
         <a href="#portfolio" class="dynamic-nav-link transition-colors">سابقة الأعمال</a>
-        <a href="#calculator" class="dynamic-nav-link transition-colors">أداة اتخاذ القرار المالي</a>
+        <a href="#calculator" class="dynamic-nav-link transition-colors">أداة القرار المالي</a>
         <a href="#course" class="px-4 py-1.5 rounded-full bg-brand-orange/15 text-brand-orange border border-brand-orange/40 hover:bg-brand-orange hover:text-white transition-all text-xs font-bold flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-brand-orange animate-ping"></span>
-          برنامج القاهرة الأوفلاين (20 مقعداً)
+          برنامج القاهرة (20 مقعداً)
         </a>
       </nav>
 
       <div class="hidden md:flex items-center gap-3">
-        <button id="themeToggleBtn" aria-label="Toggle Dark/Light Mode" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-brand-orange transition-colors border border-brand-violet/30">
+        <button id="themeToggleBtn" aria-label="Toggle Mode" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-brand-orange transition-colors border border-brand-violet/30">
           <i id="themeIcon" class="fa-solid fa-sun text-base"></i>
         </button>
 
@@ -130,8 +132,8 @@
     <div id="mobileMenu" class="hidden md:hidden px-6 pt-3 pb-6 bg-[#0B0718] dark:bg-[#0B0718] border-b border-brand-violet/20 flex flex-col gap-4 text-center">
       <a href="#about" class="dynamic-nav-link py-2 border-b border-white/5 font-semibold">المنهجية التنفيذية</a>
       <a href="#portfolio" class="dynamic-nav-link py-2 border-b border-white/5 font-semibold">سابقة الأعمال</a>
-      <a href="#calculator" class="dynamic-nav-link py-2 border-b border-white/5 font-semibold">أداة اتخاذ القرار المالي</a>
-      <a href="#course" class="text-brand-orange py-2 font-bold">برنامج القاهرة الأوفلاين (20 مقعداً)</a>
+      <a href="#calculator" class="dynamic-nav-link py-2 border-b border-white/5 font-semibold">أداة القرار المالي</a>
+      <a href="#course" class="text-brand-orange py-2 font-bold">برنامج القاهرة (20 مقعداً)</a>
     </div>
   </header>
 
@@ -152,7 +154,7 @@
           </h1>
           
           <p class="dynamic-text text-base sm:text-lg max-w-2xl leading-relaxed mx-auto lg:mx-0 font-normal">
-            أنا <strong class="dynamic-title font-bold">إسلام سعيد</strong>[cite: 3]. لا أتعامل مع الحملات الإعلانية كأرقام عابرة على الشاشة، بل كمنظومة مالية متكاملة تقوم على <strong class="dynamic-title">ضبط اقتصاديات الوحدة، فك شفرات سلوك المستهلك، والتوجيه الإبداعي الموجه للمبيعات</strong>[cite: 3].
+            أنا <strong class="dynamic-title font-bold">إسلام سعيد</strong>[cite: 3]. لا أتعامل مع الحملات الإعلانية كأرقام عابرة، بل كمنظومة مالية متكاملة تقوم على <strong class="dynamic-title">ضبط اقتصاديات الوحدة، فك شفرات سلوك المستهلك، والتوجيه الإبداعي الموجه للمبيعات</strong>[cite: 3].
           </p>
 
           <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
@@ -185,10 +187,8 @@
         <div class="lg:col-span-5 flex justify-center relative">
           <div class="relative w-72 sm:w-96 aspect-square flex items-center justify-center">
             <div class="absolute inset-0 rounded-full brand-gradient opacity-25 filter blur-3xl animate-pulse"></div>
-            <div class="relative z-10 w-full h-full p-6 rounded-3xl glass-card flex flex-col items-center justify-center shadow-2xl border-2 border-brand-magenta/40">
-              <div class="w-48 h-48 rounded-2xl brand-gradient flex items-center justify-center shadow-2xl shadow-brand-magenta/40">
-                <span class="text-white text-6xl font-black">IS</span>
-              </div>
+            <div class="relative z-10 w-full h-full p-8 rounded-3xl glass-card flex flex-col items-center justify-center shadow-2xl border-2 border-brand-magenta/40">
+              <img src="logo.png" alt="شعار إسلام سعيد الرسمي" class="w-48 h-48 object-contain filter drop-shadow-[0_15px_30px_rgba(217,70,239,0.4)] hover:scale-105 transition-transform duration-300" />
               <div class="mt-4 text-center">
                 <h3 class="text-xl font-black dynamic-title">إسلام سعيد</h3>[cite: 4]
                 <p class="text-xs font-sans tracking-widest text-brand-gold uppercase font-bold mt-1">Growth & Unit Economics Strategist</p>[cite: 3]
@@ -270,7 +270,7 @@
     </div>
   </section>
 
-  <!-- أداة اتخاذ القرار المالي لاقتصاديات الوحدة (Decision-Making Engine) -->
+  <!-- أداة اتخاذ القرار المالي لاقتصاديات الوحدة -->
   <section id="calculator" class="py-24 dynamic-calc-bg relative border-t border-white/5">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
       
@@ -283,7 +283,6 @@
       <div class="glass-card p-8 sm:p-12 rounded-3xl border border-brand-violet/30 shadow-2xl">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          <!-- المدخلات -->
           <div class="lg:col-span-6 space-y-5">
             <div>
               <label class="block text-xs font-bold dynamic-title mb-1.5">متوسط سعر بيع الوحدة / الطلب (AOV):</label>
@@ -294,7 +293,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold dynamic-title mb-1.5">التكلفة المباشرة للوحدة بدون الإعلانات (COGS + الشحن والتغليف):</label>
+              <label class="block text-xs font-bold dynamic-title mb-1.5">التكلفة المباشرة للوحدة بدون الإعلانات (COGS + الشحن):</label>
               <div class="relative">
                 <input type="number" id="unitCostInput" value="420" min="0" step="50" class="w-full dynamic-input rounded-xl px-4 py-3 text-base font-bold focus:outline-none focus:border-brand-magenta pl-14" />
                 <span class="absolute left-4 top-3 text-xs dynamic-subtitle font-bold">ج.م</span>
@@ -311,7 +310,7 @@
 
             <div>
               <div class="flex justify-between items-center mb-1.5">
-                <label class="text-xs font-bold dynamic-title">معدل التحويل المتوقع لصفحة الهبوط / المتجر (CR%):</label>
+                <label class="text-xs font-bold dynamic-title">معدل التحويل المتوقع لصفحة الهبوط (CR%):</label>
                 <span id="targetCrVal" class="text-sm font-black text-brand-orange bg-brand-orange/20 px-2.5 py-0.5 rounded-lg border border-brand-orange/30">2.5%</span>
               </div>
               <input type="range" id="targetCrSlider" min="0.5" max="8" value="2.5" step="0.5" class="w-full accent-brand-magenta cursor-pointer h-2 bg-white/10 rounded-lg" />
@@ -326,10 +325,8 @@
             </div>
           </div>
 
-          <!-- بطاقة القرار والمخرجات التنفيذية -->
           <div class="lg:col-span-6 p-7 rounded-3xl dynamic-result-box border border-brand-magenta/30 space-y-4 text-center">
             
-            <!-- توصية القرار التلقائية -->
             <div id="decisionBadge" class="p-3.5 rounded-2xl bg-brand-violet/20 border border-brand-violet/40 text-right">
               <div class="flex items-center gap-2 mb-1">
                 <i class="fa-solid fa-compass text-brand-orange text-sm"></i>
@@ -365,7 +362,7 @@
             <div class="p-3.5 rounded-2xl bg-green-500/10 border border-green-500/30 text-right flex items-center justify-between">
               <div>
                 <span class="text-xs dynamic-title font-bold block">صافي الربح الحقيقي المتوقع:</span>
-                <span class="text-[11px] dynamic-subtitle">بعد سداد تكلفة البضاعة والميزانية بالكامل</span>
+                <span class="text-[11px] dynamic-subtitle">بعد سداد تكلفة البضاعة والميزانية</span>
               </div>
               <span id="netProfitReal" class="text-xl font-black text-green-500 dark:text-green-400">60,421 ج.م</span>
             </div>
@@ -381,51 +378,80 @@
     </div>
   </section>
 
-  <!-- Portfolio Section -->
+  <!-- Portfolio Section (مدعومة بالمعاينة البصرية للحملات الحقيقية) -->
   <section id="portfolio" class="py-24 relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="space-y-3 mb-12 text-center md:text-right">
         <span class="text-brand-orange font-bold text-xs uppercase tracking-widest">سجلات الأداء الموثقة</span>
-        <h2 class="text-3xl sm:text-4xl font-black dynamic-heading">نتائج استثنائية في قطاعات رائدة</h2>
-        <p class="dynamic-subtitle text-sm max-w-xl">بيانات حقيقية مستخلصة من لوحات التحكم الإعلانية تؤكد دقة المنهجية وتحقيق أعلى كفاءة رأسمالية[cite: 2, 3].</p>
+        <h2 class="text-3xl sm:text-4xl font-black dynamic-heading">نتائج استثنائية مدعومة بالأرقام</h2>
+        <p class="dynamic-subtitle text-sm max-w-xl">بيانات وإعلانات حقيقية مستخلصة من لوحات التحكم تؤكد تحقيق أعلى كفاءة رأسمالية[cite: 2, 3].</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         
-        <div class="glass-card rounded-3xl p-7 flex flex-col justify-between border-2 border-brand-magenta/40">
-          <div class="space-y-4">
-            <span class="px-3 py-1 rounded-full text-xs font-black brand-gradient text-white">الأداء القياسي</span>
-            <h3 class="text-xl font-bold dynamic-title">براندات Luxer & B-Smart</h3>[cite: 3]
-            <p class="dynamic-text text-xs leading-relaxed">تحقيق طفرة مبيعات تاريخية وتوسع تسويقي متسارع بالاعتماد على إعادة الاستهداف الذكي[cite: 3].</p>
-            <div class="p-4 rounded-2xl dynamic-inner-card border border-white/10 space-y-2 text-xs">
-              <div class="flex justify-between"><span class="dynamic-subtitle">الميزانية:</span><span class="font-bold dynamic-title">100,000 ج.م</span></div>[cite: 3]
-              <div class="flex justify-between"><span class="dynamic-subtitle">المبيعات:</span><span class="font-bold text-green-500 dark:text-green-400">3,000,000+ ج.م</span></div>[cite: 3]
-              <div class="flex justify-between"><span class="dynamic-subtitle">العائد (ROAS):</span><span class="font-black text-brand-magenta">30x ROAS</span></div>[cite: 3]
+        <!-- كارت Luxer 30x ROAS -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between border-2 border-brand-magenta/40">
+          <div class="h-40 bg-gradient-to-br from-brand-purple/40 to-brand-magenta/30 p-4 flex flex-col justify-between relative border-b border-brand-magenta/20">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black brand-gradient text-white">E-Commerce Scale</span>[cite: 3]
+              <span class="text-xs font-black text-brand-gold bg-black/40 px-2 py-0.5 rounded-md">30x ROAS</span>[cite: 3]
+            </div>
+            <div>
+              <span class="text-[11px] text-gray-300 block">إجمالي الإيرادات المحققة</span>
+              <span class="text-2xl font-black text-white">3,000,000+ ج.م</span>[cite: 3]
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold dynamic-title">براندات لوكسير & B-Smart</h3>[cite: 3]
+            <p class="dynamic-text text-xs leading-relaxed">طفرة مبيعات تاريخية وتوسع تسويقي بالاعتماد على الفانل المباشر وإعادة الاستهداف المتقدم[cite: 3].</p>
+            <div class="p-3.5 rounded-2xl dynamic-inner-card border border-white/10 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="dynamic-subtitle">الميزانية المستثمرة:</span><span class="font-bold dynamic-title">100,000 ج.م</span></div>[cite: 3]
+              <div class="flex justify-between"><span class="dynamic-subtitle">صافي الأرباح المقدرة:</span><span class="font-bold text-green-500 dark:text-green-400">نمو غير مسبوق</span></div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card rounded-3xl p-7 flex flex-col justify-between">
-          <div class="space-y-4">
-            <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-violet/20 text-purple-400 dark:text-purple-300 border border-brand-violet/40">Luxury Interiors</span>
+        <!-- كارت Woody مطابخ -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between">
+          <div class="h-40 bg-gradient-to-br from-brand-violet/30 to-black/40 p-4 flex flex-col justify-between relative border-b border-white/10">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-violet/40 text-purple-300 border border-brand-violet/50">Luxury Kitchens</span>[cite: 2]
+              <span class="text-xs font-bold text-green-400 bg-black/40 px-2 py-0.5 rounded-md">2.54 ج.م / 1k</span>[cite: 2]
+            </div>
+            <div>
+              <span class="text-[11px] text-gray-300 block">الوصول الفعلي المباشر</span>
+              <span class="text-2xl font-black text-white">393,098 عميل</span>[cite: 2]
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
             <h3 class="text-xl font-bold dynamic-title">Woody للمطابخ والدريسينج</h3>[cite: 2]
-            <p class="dynamic-text text-xs leading-relaxed">استهداف دقيق لمالكي الوحدات السكنية الراقية وتحقيق وصول هائل بأقل تكلفة ظهور[cite: 2].</p>
-            <div class="p-4 rounded-2xl dynamic-inner-card border border-white/10 space-y-2 text-xs">
-              <div class="flex justify-between"><span class="dynamic-subtitle">الوصول الفعلي:</span><span class="font-bold text-brand-magenta">393,098 عميل</span></div>[cite: 2]
-              <div class="flex justify-between"><span class="dynamic-subtitle">تكلفة الـ 1,000 وصول:</span><span class="font-bold text-green-500 dark:text-green-400">2.54 ج.م</span></div>[cite: 2]
+            <p class="dynamic-text text-xs leading-relaxed">استهداف دقيق لمالكي الفيلات والوحدات السكنية مع إبراز الخامات بجودة سينمائية فائقة[cite: 2].</p>
+            <div class="p-3.5 rounded-2xl dynamic-inner-card border border-white/10 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="dynamic-subtitle">مرات الظهور:</span><span class="font-bold dynamic-title">406,460+</span></div>[cite: 2]
+              <div class="flex justify-between"><span class="dynamic-subtitle">نوع التحويل:</span><span class="font-bold text-brand-gold">حجوزات معاينة</span></div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card rounded-3xl p-7 flex flex-col justify-between">
-          <div class="space-y-4">
-            <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-orange/20 text-orange-400 dark:text-orange-300 border border-brand-orange/40">F&B Chains</span>
+        <!-- كارت ملك الشاورما -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between">
+          <div class="h-40 bg-gradient-to-br from-brand-orange/30 to-black/40 p-4 flex flex-col justify-between relative border-b border-white/10">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-orange/40 text-orange-300 border border-brand-orange/50">F&B Viral Growth</span>[cite: 2]
+              <span class="text-xs font-bold text-green-400 bg-black/40 px-2 py-0.5 rounded-md">0.0115 ج.م / تفاعل</span>[cite: 2]
+            </div>
+            <div>
+              <span class="text-[11px] text-gray-300 block">تفاعل ريلز فردي</span>
+              <span class="text-2xl font-black text-white">43,302 تفاعل</span>[cite: 2]
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
             <h3 class="text-xl font-bold dynamic-title">سلسلة مطاعم ملك الشاورما</h3>[cite: 2]
-            <p class="dynamic-text text-xs leading-relaxed">حملات عروض تجارية سريعة ومقاطع فيديو تفاعلية رفعت معدلات الطلبات المباشرة وزيارات الفروع[cite: 2].</p>
-            <div class="p-4 rounded-2xl dynamic-inner-card border border-white/10 space-y-2 text-xs">
-              <div class="flex justify-between"><span class="dynamic-subtitle">تفاعل منشور واحد:</span><span class="font-bold text-brand-gold">43,302 تفاعل</span></div>[cite: 2]
-              <div class="flex justify-between"><span class="dynamic-subtitle">تكلفة التفاعل:</span><span class="font-bold text-green-500 dark:text-green-400">0.0115 ج.م</span></div>[cite: 2]
+            <p class="dynamic-text text-xs leading-relaxed">حملات ريلز فيروسية وعروض تجارية سريعة حققت كلفة تفاعل لا تتعدى قرشاً واحداً ورفعت مبيعات الفروع[cite: 2].</p>
+            <div class="p-3.5 rounded-2xl dynamic-inner-card border border-white/10 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="dynamic-subtitle">عروض الملوك:</span><span class="font-bold dynamic-title">17,475+ تفاعل</span></div>[cite: 2]
+              <div class="flex justify-between"><span class="dynamic-subtitle">قناة المبيعات:</span><span class="font-bold text-brand-orange">دليفري + فروع</span></div>
             </div>
           </div>
         </div>
@@ -434,7 +460,7 @@
     </div>
   </section>
 
-  <!-- Offline Cairo Course Section -->
+  <!-- Offline Cairo Course Section (معايير الفلترة الصارمة) -->
   <section id="course" class="py-24 relative overflow-hidden dynamic-course-bg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="glass-card rounded-3xl p-8 sm:p-12 lg:p-16 border-2 border-brand-orange/40 shadow-2xl relative">
@@ -485,12 +511,17 @@
                   <input type="tel" id="subPhone" required placeholder="01xxxxxxxxx" class="w-full dynamic-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-magenta text-left" dir="ltr" />
                 </div>
                 <div>
-                  <label class="block text-xs font-bold dynamic-title mb-1.5">الصفة المهنية</label>
-                  <select id="subField" class="w-full dynamic-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-magenta">
-                    <option value="ميديا باير يسعى لاحتراف الـ Scaling">ميديا باير يسعى لاحتراف الـ Scaling</option>
-                    <option value="صاحب مشروع / مدير تنفيذي لعلامة تجارية">صاحب مشروع / مدير تنفيذي</option>
-                    <option value="مسوق رقمي يهدف للتخصص المالي المتقدم">مسوق رقمي يهدف للتخصص المالي المتقدم</option>
+                  <label class="block text-xs font-bold dynamic-title mb-1.5">حجم إنفاقك الإعلاني الشهري حالياً</label>
+                  <select id="subBudget" class="w-full dynamic-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-magenta">
+                    <option value="أقل من 20 ألف جنيه شهرياً">أقل من 20,000 ج.م شهرياً</option>
+                    <option value="من 20 إلى 100 ألف جنيه شهرياً">من 20,000 إلى 100,000 ج.م شهرياً</option>
+                    <option value="أكثر من 100 ألف جنيه شهرياً">أكثر من 100,000 ج.م شهرياً</option>
+                    <option value="لا أنفق حالياً (بداية جديدة)">لا أنفق حالياً (تأسيس من الصفر)</option>
                   </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold dynamic-title mb-1.5">ما هو التحدي الأكبر الذي تريد حله في المعسكر؟</label>
+                  <input type="text" id="subChallenge" required placeholder="مثال: ارتفاع تكلفة الشراء، ضعف المبيعات، مشاكل الـ Scaling" class="w-full dynamic-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-magenta" />
                 </div>
                 <button type="submit" class="w-full py-4 rounded-xl brand-gradient text-white font-bold text-sm shadow-xl shadow-brand-magenta/30 hover:scale-102 transition-transform flex items-center justify-center gap-2">
                   <i class="fa-solid fa-user-check"></i> إرسال طلب الترشح للمقابلة
@@ -516,7 +547,7 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/5">
         <div class="md:col-span-2 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl brand-gradient flex items-center justify-center font-black text-white text-lg shadow-lg">IS</div>
+            <img src="logo.png" alt="إسلام سعيد" class="w-10 h-10 rounded-xl object-contain p-0.5 bg-black/40 border border-brand-magenta/30" />
             <div>
               <span class="font-extrabold text-lg dynamic-title">إسلام سعيد</span>[cite: 4]
               <span class="block text-xs dynamic-subtitle font-sans">Senior Performance Marketer & Growth Strategist</span>[cite: 3]

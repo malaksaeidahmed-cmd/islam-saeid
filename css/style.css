@@ -9,34 +9,118 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* خلفية متدرجة ثابتة وخفيفة للغاية بديلة عن محرك الجزيئات */
-body {
+/* Base Light / Dark Modes */
+html.dark body {
   background: radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.14) 0%, transparent 45%),
               radial-gradient(circle at 15% 85%, rgba(249, 115, 22, 0.09) 0%, transparent 45%),
               #05030A;
   background-attachment: fixed;
+  color: #F8FAFC;
+}
+
+html:not(.dark) body {
+  background: radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.08) 0%, transparent 45%),
+              radial-gradient(circle at 15% 85%, rgba(249, 115, 22, 0.06) 0%, transparent 45%),
+              #F8FAFC;
+  background-attachment: fixed;
+  color: #0F172A;
+}
+
+/* Dynamic Classes for Elements */
+html.dark .dynamic-heading { color: #FFFFFF; }
+html:not(.dark) .dynamic-heading { color: #090615; }
+
+html.dark .dynamic-title { color: #F8FAFC; }
+html:not(.dark) .dynamic-title { color: #0F172A; }
+
+html.dark .dynamic-text { color: #CBD5E1; }
+html:not(.dark) .dynamic-text { color: #334155; }
+
+html.dark .dynamic-subtitle { color: #94A3B8; }
+html:not(.dark) .dynamic-subtitle { color: #64748B; }
+
+html.dark .dynamic-nav-link { color: #CBD5E1; }
+html.dark .dynamic-nav-link:hover { color: #FFFFFF; }
+html:not(.dark) .dynamic-nav-link { color: #475569; }
+html:not(.dark) .dynamic-nav-link:hover { color: #7C3AED; }
+
+html.dark .dynamic-brand-bar { background-color: #080514; }
+html:not(.dark) .dynamic-brand-bar { background-color: #F1F5F9; }
+
+html.dark .dynamic-calc-bg { background-color: #090615; }
+html:not(.dark) .dynamic-calc-bg { background-color: #EEF2F6; }
+
+html.dark .dynamic-course-bg { background-color: #070412; }
+html:not(.dark) .dynamic-course-bg { background-color: #F8FAFC; }
+
+html.dark .dynamic-footer { background-color: #040208; }
+html:not(.dark) .dynamic-footer { background-color: #E2E8F0; }
+
+html.dark .dynamic-input {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+html:not(.dark) .dynamic-input {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  color: #0F172A;
+}
+
+html.dark .dynamic-result-box {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+html:not(.dark) .dynamic-result-box {
+  background-color: #FFFFFF;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+html.dark .dynamic-inner-card {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+html:not(.dark) .dynamic-inner-card {
+  background-color: #F1F5F9;
 }
 
 /* Glassmorphism Cards */
-.glass-card {
+html.dark .glass-card {
   background: rgba(11, 7, 24, 0.75);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(217, 70, 239, 0.16);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
 }
-
-.glass-card:hover {
+html.dark .glass-card:hover {
   transform: translateY(-3px);
   border-color: rgba(249, 115, 22, 0.45);
   box-shadow: 0 12px 30px -8px rgba(217, 70, 239, 0.2);
 }
 
-.glass-nav {
+html:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+html:not(.dark) .glass-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 12px 30px -8px rgba(124, 58, 237, 0.15);
+}
+
+/* Nav */
+html.dark .glass-nav {
   background: rgba(5, 3, 10, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+}
+html:not(.dark) .glass-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 /* Splash Screen */

@@ -8,7 +8,7 @@
   
   <link rel="icon" type="image/png" href="logo.png" />
 
-  <!-- خط IBM Plex Sans Arabic للأناقة والوضوح التام -->
+  <!-- خط IBM Plex Sans Arabic -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -58,6 +58,7 @@
       <!-- الروابط -->
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
         <a href="#about" class="hover:text-white transition-colors">المنهجية</a>
+        <a href="#brands" class="hover:text-white transition-colors">شركاء النجاح</a>
         <a href="#portfolio" class="hover:text-white transition-colors">سابقة الأعمال</a>
         <a href="#calculator" class="hover:text-white transition-colors">حاسبة القرار المالي</a>
         <a href="#course" class="hover:text-white transition-colors">برنامج القاهرة (20 مقعداً)</a>
@@ -84,6 +85,7 @@
     <!-- قائمة الموبايل -->
     <div id="mobileMenu" class="hidden md:hidden bg-[#0C0A18] border-b border-white/10 px-6 py-4 flex flex-col gap-3 text-sm">
       <a href="#about" class="py-2 border-b border-white/5">المنهجية</a>
+      <a href="#brands" class="py-2 border-b border-white/5">شركاء النجاح</a>
       <a href="#portfolio" class="py-2 border-b border-white/5">سابقة الأعمال</a>
       <a href="#calculator" class="py-2 border-b border-white/5">حاسبة القرار المالي</a>
       <a href="#course" class="py-2 border-b border-white/5 text-brand-orange">برنامج القاهرة (20 مقعداً)</a>
@@ -137,26 +139,28 @@
     </div>
   </section>
 
-  <!-- سابقة الأعمال وعملاء حقيقيون -->
-  <section class="py-12 border-y border-white/5 bg-white/[0.01]">
-    <div class="max-w-6xl mx-auto px-5 text-center">
-      <p class="text-xs uppercase tracking-widest text-slate-400 font-medium mb-6">علامات تجارية وشركاء نجاح موثقون</p>
-      <div class="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-slate-300 font-semibold text-sm sm:text-base">
-        <span>لوكسير (Luxer)</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>B-Smart</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>Woody Kitchens</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>ملك الشاورما</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>كبابجي فرحات الشرقاوي</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>حلواني الشيبي</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>شركة United EGY</span>
-        <span class="text-slate-600">&bull;</span>
-        <span>بن المتوكل</span>
+  <!-- Brands & Partners Section (قسم الشركاء والـ 27 براند المرفقة) -->
+  <section id="brands" class="py-16 border-y border-white/5 bg-white/[0.01] overflow-hidden">
+    <div class="max-w-6xl mx-auto px-5 text-center mb-8">
+      <span class="text-xs font-bold text-brand-orange uppercase tracking-widest">شركاء النجاح</span>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">علامات تجارية وضعت ثقتها في نتائجنا</h2>
+      <p class="text-xs text-slate-400 mt-2">أكثر من 27 علامة تجارية في مختلف القطاعات (مطاعم، تجارة إلكترونية، تشطيبات، وأغذية)</p>
+    </div>
+
+    <!-- Infinite Auto-Scroll Carousel -->
+    <div class="relative w-full overflow-hidden py-4 border-y border-white/5 bg-black/20">
+      <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#07060E] to-transparent z-10 pointer-events-none"></div>
+      <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#07060E] to-transparent z-10 pointer-events-none"></div>
+
+      <div id="brandsMarquee" class="flex items-center gap-6 w-max animate-marquee">
+        <!-- يتم توليد الصور تلقائياً عبر JavaScript من مجلد assets -->
+      </div>
+    </div>
+
+    <!-- Responsive Grid View -->
+    <div class="max-w-6xl mx-auto px-5 mt-10">
+      <div id="brandsGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-3">
+        <!-- يتم توليد الشبكة تلقائياً عبر JavaScript من مجلد assets -->
       </div>
     </div>
   </section>

@@ -1,4 +1,4 @@
-// Unit Economics & Real Decision Engine + Direct Printable PDF
+// Unit Economics Decision Engine + Printable PDF Report
 function initStrategicDecisionEngine() {
   const unitPriceInput = document.getElementById('unitPriceInput');
   const unitCostInput = document.getElementById('unitCostInput');
@@ -50,7 +50,7 @@ function initStrategicDecisionEngine() {
     const netProfit = estRevenue - totalCosts;
     netProfitReal.textContent = Math.round(netProfit).toLocaleString('ar-EG') + ' ج.م';
 
-    // 5. التوصية التنفيذية
+    // 5. التوصية
     let statusText = '';
     if (grossMarginRatio >= 0.55 && targetRoas >= breakEvenRoas * 1.5) {
       decisionBadge.className = 'p-3 rounded-xl bg-green-500/20 border border-green-500/40 text-right text-xs';
@@ -88,7 +88,7 @@ function initStrategicDecisionEngine() {
   targetRoasSlider.addEventListener('input', recalculate);
   recalculate();
 
-  // توليد وتحميل ملف الـ PDF بضمان التعبئة واللغة العربية
+  // تصدير الـ PDF
   if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener('click', () => {
       const container = document.createElement('div');

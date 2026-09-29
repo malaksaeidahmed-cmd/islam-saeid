@@ -37,40 +37,62 @@ if (timerEl) {
   }, 1000);
 }
 
-// 4. تحميل وعرض البراندات الـ 27 تلقائياً من مجلد assets
-const brandNames = [
-  "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
-  "المتوكل", "زين الدين", "فليفر - Flavor", "يحيى العطار", "زمزم"
+// 4. الأسماء المستخرجة من لقطات الشاشة المرفقة للبراندات الـ 27
+const realBrandNames = [
+  "King Burger",
+  "ملك الشاورما",
+  "على الشرقاوي",
+  "الشيبي",
+  "كبابجي فرحات الشرقاوي",
+  "المتوكل",
+  "زين الدين",
+  "فليفر - Flavor",
+  "يحيى العطار",
+  "زمزم",
+  "جمهورية مصر العربية",
+  "Energy Sport",
+  "B.S.T Best Soccer Teams",
+  "Woody",
+  "Store Leen",
+  "AS International",
+  "Nile Eagle",
+  "360 Ballons",
+  "Gift & Toys",
+  "Crazy Toys",
+  "B-Smart",
+  "Luxer",
+  "Anhagar Egypt",
+  "Bubbleino",
+  "Brand 25",
+  "Brand 26",
+  "Brand 27"
 ];
 
-const brandsList = [];
-for (let i = 1; i <= 27; i++) {
-  brandsList.push({
-    id: i,
-    name: brandNames[i - 1] || `Partner ${i}`,
-    ext: [1, 3, 5, 9, 10].includes(i) ? "jpg" : "png"
-  });
-}
+// مصفوفة البراندات بالصيغة الحديثة webp
+const brandsList = realBrandNames.map((name, index) => ({
+  id: index + 1,
+  name: name
+}));
 
-function renderBrands() {
+function renderBrandsMarquee() {
   const marqueeContainer = document.getElementById('brandsMarquee');
-  const gridContainer = document.getElementById('brandsGrid');
+  if (!marqueeContainer) return;
 
-  if (!marqueeContainer || !gridContainer) return;
+  // تكرار القائمة مرتين لإنشاء حركة أفقية دائرية متصلة ومستمرة بدون انقطاع
+  const seamlessBrands = [...brandsList, ...brandsList];
 
-  // 1. الشريط المتحرك
-  const doubleBrands = [...brandsList, ...brandsList];
-  marqueeContainer.innerHTML = doubleBrands.map(brand => `
-    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/[0.03] border border-white/10 p-2.5 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 hover:bg-white/5 transition-all group">
-      <img src="assets/${brand.id}.${brand.ext}" alt="${brand.name}" class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all duration-300" loading="lazy" onError="this.onerror=null; this.src='assets/${brand.id}.${brand.ext === 'jpg' ? 'png' : 'jpg'}';" />
-    </div>
-  `).join('');
-
-  // 2. الشبكة التفاعلية
-  gridContainer.innerHTML = brandsList.map(brand => `
-    <div class="aspect-square rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex items-center justify-center hover:border-brand-magenta/40 hover:bg-white/5 transition-all group relative">
-      <img src="assets/${brand.id}.${brand.ext}" alt="${brand.name}" class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300" loading="lazy" onError="this.onerror=null; this.src='assets/${brand.id}.${brand.ext === 'jpg' ? 'png' : 'jpg'}';" />
-      <span class="absolute -bottom-2 bg-black/90 text-[9px] text-slate-300 px-1.5 py-0.5 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">${brand.name}</span>
+  marqueeContainer.innerHTML = seamlessBrands.map(brand => `
+    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 hover:bg-white/5 transition-all group relative">
+      <img 
+        src="assets/${brand.id}.webp" 
+        alt="${brand.name}" 
+        class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-300" 
+        loading="lazy" 
+        onError="this.onerror=null; this.src='assets/${brand.id}.png';" 
+      />
+      <span class="absolute -bottom-2 bg-black/90 text-[9px] text-slate-300 px-2 py-0.5 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
+        ${brand.name}
+      </span>
     </div>
   `).join('');
 }
@@ -120,4 +142,4 @@ if (mBtn && mMenu) {
   mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mMenu.classList.add('hidden')));
 }
 
-document.addEventListener('DOMContentLoaded', renderBrands);
+document.addEventListener('DOMContentLoaded', renderBrandsMarquee);

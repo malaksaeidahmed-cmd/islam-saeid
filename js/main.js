@@ -37,7 +37,7 @@ if (timerEl) {
   }, 1000);
 }
 
-// 4. الأسماء المستخرجة من لقطات الشاشة المرفقة للبراندات الـ 27
+// 4. الأسماء المعدلة والدقيقة للبراندات الـ 27
 const realBrandNames = [
   "King Burger",
   "ملك الشاورما",
@@ -48,8 +48,8 @@ const realBrandNames = [
   "زين الدين",
   "فليفر - Flavor",
   "يحيى العطار",
-  "زمزم",
-  "جمهورية مصر العربية",
+  "لؤلؤة الدقي",
+  "محمصات الجمهورية",
   "Energy Sport",
   "B.S.T Best Soccer Teams",
   "Woody",
@@ -68,7 +68,7 @@ const realBrandNames = [
   "Brand 27"
 ];
 
-// مصفوفة البراندات بالصيغة الحديثة webp
+// مصفوفة البراندات
 const brandsList = realBrandNames.map((name, index) => ({
   id: index + 1,
   name: name
@@ -78,11 +78,11 @@ function renderBrandsMarquee() {
   const marqueeContainer = document.getElementById('brandsMarquee');
   if (!marqueeContainer) return;
 
-  // تكرار القائمة مرتين لإنشاء حركة أفقية دائرية متصلة ومستمرة بدون انقطاع
+  // مضاعفة المصفوفة مرتين لخلق لفة دائرية متصلة 100% (True Loop)
   const seamlessBrands = [...brandsList, ...brandsList];
 
   marqueeContainer.innerHTML = seamlessBrands.map(brand => `
-    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 hover:bg-white/5 transition-all group relative">
+    <div class="brand-card w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 transition-all group relative">
       <img 
         src="assets/${brand.id}.webp" 
         alt="${brand.name}" 

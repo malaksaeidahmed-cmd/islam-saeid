@@ -8,7 +8,7 @@
   
   <link rel="icon" type="image/png" href="logo.png" />
 
-  <!-- خط IBM Plex Sans Arabic -->
+  <!-- خط IBM Plex Sans Arabic للأناقة والوضوح التام -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -48,7 +48,7 @@
       
       <!-- اللوجو الأنيق بحجمه الصحيح فقط -->
       <a href="#home" class="flex items-center gap-3">
-        <img src="logo.png" alt="إسلام سعيد" class="w-10 h-10 object-contain rounded-lg" />
+        <img src="logo.png" alt="إسلام سعيد" class="w-10 h-10 object-contain rounded-lg" onError="this.style.display='none'" />
         <div class="flex flex-col">
           <span class="font-bold text-base text-white tracking-wide">إسلام سعيد</span>
           <span class="text-[10px] font-sans text-brand-orange uppercase tracking-wider font-semibold">Media Buyer</span>
@@ -139,28 +139,28 @@
     </div>
   </section>
 
-  <!-- Brands & Partners Section (قسم الشركاء والـ 27 براند المرفقة) -->
+  <!-- Brands & Partners Section (الـ 27 براند المرفوعة بملف assets) -->
   <section id="brands" class="py-16 border-y border-white/5 bg-white/[0.01] overflow-hidden">
     <div class="max-w-6xl mx-auto px-5 text-center mb-8">
       <span class="text-xs font-bold text-brand-orange uppercase tracking-widest">شركاء النجاح</span>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">علامات تجارية وضعت ثقتها في نتائجنا</h2>
-      <p class="text-xs text-slate-400 mt-2">أكثر من 27 علامة تجارية في مختلف القطاعات (مطاعم، تجارة إلكترونية، تشطيبات، وأغذية)</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا</h2>
+      <p class="text-xs text-slate-400 mt-2">نستعرض هنا أبرز 27 شريك نجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات</p>
     </div>
 
-    <!-- Infinite Auto-Scroll Carousel -->
+    <!-- Infinite Auto-Scroll Carousel (شريط متحرك) -->
     <div class="relative w-full overflow-hidden py-4 border-y border-white/5 bg-black/20">
       <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#07060E] to-transparent z-10 pointer-events-none"></div>
       <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#07060E] to-transparent z-10 pointer-events-none"></div>
 
       <div id="brandsMarquee" class="flex items-center gap-6 w-max animate-marquee">
-        <!-- يتم توليد الصور تلقائياً عبر JavaScript من مجلد assets -->
+        <!-- يتم التحميل أوتوماتيكياً عبر JavaScript -->
       </div>
     </div>
 
-    <!-- Responsive Grid View -->
+    <!-- Responsive Grid View (شبكة العرض) -->
     <div class="max-w-6xl mx-auto px-5 mt-10">
       <div id="brandsGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-3">
-        <!-- يتم توليد الشبكة تلقائياً عبر JavaScript من مجلد assets -->
+        <!-- يتم التحميل أوتوماتيكياً عبر JavaScript -->
       </div>
     </div>
   </section>
@@ -465,7 +465,7 @@
   <footer class="py-12 border-t border-white/10 bg-[#040308] text-xs text-slate-400">
     <div class="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <img src="logo.png" alt="إسلام سعيد" class="w-6 h-6 object-contain" />
+        <img src="logo.png" alt="إسلام سعيد" class="w-6 h-6 object-contain" onError="this.style.display='none'" />
         <span class="text-white font-bold">إسلام سعيد</span>
         <span>&bull; جميع الحقوق محفوظة &copy; <span id="currentYear"></span></span>
       </div>

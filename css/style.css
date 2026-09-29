@@ -41,16 +41,21 @@ html:not(.dark) .glass-header {
   border-color: rgba(0,0,0,0.06);
 }
 
-/* Infinite Marquee Animation for Brands Carousel */
+/* Infinite Marquee Animation for Continuous Seamless Loop */
 @keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 35s linear infinite;
+  animation: marquee 40s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee:hover {

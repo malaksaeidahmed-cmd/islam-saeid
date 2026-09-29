@@ -41,7 +41,35 @@ html:not(.dark) .glass-header {
   border-color: rgba(0,0,0,0.06);
 }
 
-/* Infinite Marquee Animation for Continuous Seamless Loop */
+/* Dynamic Light & Dark Mode Styles for Brands Marquee Slider */
+html.dark .marquee-wrapper {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+html:not(.dark) .marquee-wrapper {
+  background-color: rgba(241, 245, 249, 0.9);
+}
+
+html.dark .fade-overlay-left {
+  background: linear-gradient(to right, #07060E, transparent);
+}
+html:not(.dark) .fade-overlay-left {
+  background: linear-gradient(to right, #F8FAFC, transparent);
+}
+
+html.dark .fade-overlay-right {
+  background: linear-gradient(to left, #07060E, transparent);
+}
+html:not(.dark) .fade-overlay-right {
+  background: linear-gradient(to left, #F8FAFC, transparent);
+}
+
+html:not(.dark) .brand-card {
+  background-color: #FFFFFF !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Infinite Marquee Animation for Continuous Loop */
 @keyframes marquee {
   0% {
     transform: translateX(0%);
@@ -54,7 +82,7 @@ html:not(.dark) .glass-header {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 35s linear infinite;
   will-change: transform;
 }
 

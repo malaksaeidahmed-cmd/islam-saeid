@@ -1,0 +1,66 @@
+/* Color Gradients */
+.brand-gradient {
+  background: linear-gradient(135deg, #7C3AED 0%, #D946EF 50%, #F97316 100%);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(135deg, #A855F7 0%, #EC4899 45%, #F97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Base Body Backgrounds */
+html.dark body {
+  background-color: #07060E;
+  color: #E2E8F0;
+}
+
+html:not(.dark) body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+/* Dynamic Light Mode Support */
+html:not(.dark) .text-white { color: #0F172A !important; }
+html:not(.dark) .text-slate-300 { color: #334155 !important; }
+html:not(.dark) .text-slate-400 { color: #64748B !important; }
+html:not(.dark) .bg-[#07060E], html:not(.dark) .bg-[#040308] { background-color: #F8FAFC !important; }
+html:not(.dark) .bg-[#0E0B1A], html:not(.dark) .bg-[#0F0A1F] { background-color: #FFFFFF !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+html:not(.dark) .border-white\/10, html:not(.dark) .border-white\/5 { border-color: rgba(0,0,0,0.08) !important; }
+html:not(.dark) .bg-white\/\[0\.02\], html:not(.dark) .bg-white\/5 { background-color: #F1F5F9 !important; }
+html:not(.dark) input, html:not(.dark) select { background-color: #FFFFFF !important; color: #0F172A !important; border-color: #CBD5E1 !important; }
+
+/* Header Blur */
+.glass-header {
+  background: rgba(7, 6, 14, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+html:not(.dark) .glass-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Infinite Marquee Animation for Brands Carousel */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Typography Line Heights */
+body {
+  line-height: 1.75;
+}
+h1, h2, h3, h4 {
+  line-height: 1.35;
+}

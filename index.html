@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>إسلام سعيد | Senior Media Buyer & Growth Strategist</title>
-  <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني. إدارة ميزانيات كبرى وتحقيق عوائد استثمارية قياسية (حتى 30x ROAS)." />
+  <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني. إدارة ميزانيات كبرى وتحقيق عوائد استثمارية قياسية." />
   
-  <!-- إيقونة التبويب Favicon -->
-  <link rel="icon" type="image/png" href="assets/logo.png" id="appFavicon" />
-  <link rel="shortcut icon" href="assets/logo.png" />
+  <!-- اللوجو في تبويب المتصفح (Favicon) -->
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="shortcut icon" type="image/png" href="assets/logo.png" />
+  <link rel="apple-touch-icon" href="assets/logo.png" />
 
-  <!-- خط IBM Plex Sans Arabic -->
+  <!-- الخطوط والأيقونات -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -59,23 +60,30 @@
 
       <!-- الروابط -->
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <a href="#about" class="hover:text-white transition-colors">المنهجية</a>
-        <a href="#brands" class="hover:text-white transition-colors">شركاء النجاح</a>
-        <a href="#portfolio" class="hover:text-white transition-colors">سابقة الأعمال</a>
-        <a href="#calculator" class="hover:text-white transition-colors">حاسبة القرار المالي</a>
-        <a href="#course" class="hover:text-white transition-colors">برنامج القاهرة (20 مقعداً)</a>
-        <a href="#faq" class="hover:text-white transition-colors">الأسئلة الشائعة</a>
+        <a href="#about" class="hover:text-white transition-colors" data-i18n="nav-about">المنهجية</a>
+        <a href="#brands" class="hover:text-white transition-colors" data-i18n="nav-brands">شركاء النجاح</a>
+        <a href="#portfolio" class="hover:text-white transition-colors" data-i18n="nav-portfolio">سابقة الأعمال</a>
+        <a href="#calculator" class="hover:text-white transition-colors" data-i18n="nav-calc">حاسبة القرار المالي</a>
+        <a href="#course" class="hover:text-white transition-colors" data-i18n="nav-course">برنامج القاهرة (20 مقعداً)</a>
+        <a href="#faq" class="hover:text-white transition-colors" data-i18n="nav-faq">الأسئلة الشائعة</a>
       </nav>
 
-      <!-- أزرار التواصل والثيم -->
-      <div class="flex items-center gap-3">
+      <!-- أزرار التواصل، الثيم، والترجمة -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- زر الترجمة -->
+        <button id="langToggleBtn" class="px-2.5 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition-colors">
+          <span id="langText">EN</span>
+        </button>
+
+        <!-- زر الثيم -->
         <button id="themeToggleBtn" aria-label="Toggle Theme" class="w-9 h-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
           <i id="themeIcon" class="fa-solid fa-sun text-sm"></i>
         </button>
 
         <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أود%20الاستفسار%20عن%20إدارة%20حملة%20إعلانية%20لمشروعي" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg brand-gradient text-white text-xs font-semibold shadow-md hover:opacity-95 transition-opacity">
           <i class="fa-brands fa-whatsapp text-sm"></i>
-          تواصل معي
+          <span data-i18n="contact-btn">تواصل معي</span>
         </a>
 
         <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white p-2" aria-label="Menu">
@@ -86,12 +94,12 @@
 
     <!-- قائمة الموبايل -->
     <div id="mobileMenu" class="hidden md:hidden bg-[#0C0A18] border-b border-white/10 px-6 py-4 flex flex-col gap-3 text-sm">
-      <a href="#about" class="py-2 border-b border-white/5">المنهجية</a>
-      <a href="#brands" class="py-2 border-b border-white/5">شركاء النجاح</a>
-      <a href="#portfolio" class="py-2 border-b border-white/5">سابقة الأعمال</a>
-      <a href="#calculator" class="py-2 border-b border-white/5">حاسبة القرار المالي</a>
-      <a href="#course" class="py-2 border-b border-white/5 text-brand-orange">برنامج القاهرة (20 مقعداً)</a>
-      <a href="#faq" class="py-2">الأسئلة الشائعة</a>
+      <a href="#about" class="py-2 border-b border-white/5" data-i18n="nav-about">المنهجية</a>
+      <a href="#brands" class="py-2 border-b border-white/5" data-i18n="nav-brands">شركاء النجاح</a>
+      <a href="#portfolio" class="py-2 border-b border-white/5" data-i18n="nav-portfolio">سابقة الأعمال</a>
+      <a href="#calculator" class="py-2 border-b border-white/5" data-i18n="nav-calc">حاسبة القرار المالي</a>
+      <a href="#course" class="py-2 border-b border-white/5 text-brand-orange" data-i18n="nav-course">برنامج القاهرة (20 مقعداً)</a>
+      <a href="#faq" class="py-2" data-i18n="nav-faq">الأسئلة الشائعة</a>
     </div>
   </header>
 
@@ -101,23 +109,23 @@
       
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-slate-300 mb-6">
         <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
-        Senior Social Media Specialist & Performance Marketer
+        <span data-i18n="hero-tag">Senior Social Media Specialist & Performance Marketer</span>
       </div>
 
       <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight sm:leading-snug mb-6">
-        إدارة الميزانيات الإعلانية الضخمة <br />
-        <span class="brand-gradient-text">بتحقيق عوائد استثمارية تصل إلى 30x ROAS</span>
+        <span data-i18n="hero-title1">إدارة الميزانيات الإعلانية الضخمة</span> <br />
+        <span class="brand-gradient-text" data-i18n="hero-title2">بتحقيق عوائد استثمارية تصل إلى 30x ROAS</span>
       </h1>
 
-      <p class="text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-8 font-normal">
-        أنا <strong class="text-white font-semibold">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة، من خلال دمج التحليل المالي لاقتصاديات الوحدة (Unit Economics) مع صناعة المحتوى الإعلاني الموجه وسيكولوجية المستهلك.
+      <p class="text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-8 font-normal" data-i18n="hero-desc">
+        أنا <strong class="text-white font-semibold">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة، من خلال دمج التحليل المالي لاقتصاديات الوحدة (Unit Economics) مع صناعة المحتوى الإعلاني الموجه.
       </p>
 
       <div class="flex flex-wrap items-center justify-center gap-4 mb-14">
-        <a href="#course" class="px-6 py-3 rounded-xl brand-gradient text-white text-sm font-semibold shadow-lg hover:opacity-95 transition-all">
+        <a href="#course" class="px-6 py-3 rounded-xl brand-gradient text-white text-sm font-semibold shadow-lg hover:opacity-95 transition-all" data-i18n="btn-course">
           البرنامج الأوفلاين المكثف (القاهرة)
         </a>
-        <a href="#calculator" class="px-6 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white text-sm font-semibold transition-all">
+        <a href="#calculator" class="px-6 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white text-sm font-semibold transition-all" data-i18n="btn-calc">
           حاسبة القرار المالي للمشروع
         </a>
       </div>
@@ -126,36 +134,39 @@
       <div class="grid grid-cols-3 gap-4 max-w-xl mx-auto pt-8 border-t border-white/10 text-center">
         <div>
           <div class="text-2xl sm:text-3xl font-bold text-white font-sans">30x</div>
-          <div class="text-xs text-slate-400 mt-1">أعلى عائد ROAS محقق</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stat1">أعلى عائد ROAS محقق</div>
         </div>
         <div>
           <div class="text-2xl sm:text-3xl font-bold text-white font-sans">3,000,000+</div>
-          <div class="text-xs text-slate-400 mt-1">مبيعات حملة فردية (100k)</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stat2">مبيعات حملة فردية (100k)</div>
         </div>
         <div>
           <div class="text-2xl sm:text-3xl font-bold text-brand-orange font-sans">150k+ EGP</div>
-          <div class="text-xs text-slate-400 mt-1">ميزانية شهرية مدارة للبراند</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stat3">ميزانية شهرية مدارة للبراند</div>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- Brands & Partners Section -->
+  <!-- Brands & Partners Section (شريط متحرك متصل إلى ما لا نهاية) -->
   <section id="brands" class="py-16 border-y border-white/5 bg-white/[0.01] overflow-hidden">
     <div class="max-w-6xl mx-auto px-5 text-center mb-10">
-      <span class="text-xs font-bold text-brand-orange uppercase tracking-widest">شركاء النجاح</span>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا</h2>
-      <p class="text-xs text-slate-400 mt-2">نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات</p>
+      <span class="text-xs font-bold text-brand-orange uppercase tracking-widest" data-i18n="brands-tag">شركاء النجاح</span>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="brands-title">أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا</h2>
+      <p class="text-xs text-slate-400 mt-2" data-i18n="brands-desc">نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات</p>
     </div>
 
-    <!-- Infinite Auto-Scroll Carousel -->
-    <div class="relative w-full overflow-hidden py-6 border-y border-white/5 marquee-wrapper">
+    <!-- Infinite Continuous Loop Marquee Container -->
+    <div class="marquee-wrapper relative w-full overflow-hidden py-6 border-y border-white/5">
       <div class="absolute left-0 top-0 bottom-0 w-24 fade-overlay-left z-10 pointer-events-none"></div>
       <div class="absolute right-0 top-0 bottom-0 w-24 fade-overlay-right z-10 pointer-events-none"></div>
 
-      <div id="brandsMarquee" class="flex items-center gap-6 w-max animate-marquee">
-        <!-- يتم التحميل أوتوماتيكياً عبر JS -->
+      <div class="marquee-track">
+        <!-- المجموعة الأولى -->
+        <div id="brandsMarqueeGroup1" class="marquee-group"></div>
+        <!-- المجموعة الثانية المماثلة لضمان حركة متصلة دون انقطاع -->
+        <div id="brandsMarqueeGroup2" class="marquee-group" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -166,11 +177,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         
         <div class="space-y-5">
-          <span class="text-xs font-bold text-brand-orange uppercase tracking-wider">المنهج الإداري</span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug">
+          <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="about-tag">المنهج الإداري</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug" data-i18n="about-title">
             لماذا تنجح الحملات المدروسة محاسبياً وتفشل الإعلانات العشوائية؟
           </h2>
-          <p class="text-slate-300 text-sm leading-relaxed">
+          <p class="text-slate-300 text-sm leading-relaxed" data-i18n="about-desc">
             الإعلانات الممولة ليست مجرد تجارب لاستهداف عشوائي؛ بل تبدأ من داخل دفاتر حسابات البيزنس. أحسب معك تكلفة كل طلب، والحد الأقصى المسموح به للشراء (Max CAC)، لنضمن أن زيادة الميزانية تؤدي إلى صافي ربح حقيقي في جيب صاحب المشروع وليس مجرد تفاعل وهمي على المنشورات.
           </p>
           <div class="pt-2 flex items-center gap-4 text-xs text-slate-400">
@@ -182,11 +193,11 @@
         <div class="space-y-4">
           <div class="p-5 rounded-2xl border border-white/5 bg-white/[0.02]">
             <h3 class="font-bold text-white text-base mb-1.5"><i class="fa-solid fa-chart-line text-brand-magenta ml-2"></i>Full-Funnel Growth Strategy</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">ربط مراحل التوعية وجذب الجمهور الجديد مع حملات التحويل وإعادة الاستهداف المتقدم لزوار السلات المتروكة.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" data-i18n="about-card1">ربط مراحل التوعية وجذب الجمهور الجديد مع حملات التحويل وإعادة الاستهداف المتقدم لزوار السلات المتروكة.</p>
           </div>
           <div class="p-5 rounded-2xl border border-white/5 bg-white/[0.02]">
             <h3 class="font-bold text-white text-base mb-1.5"><i class="fa-solid fa-video text-brand-orange ml-2"></i>Creative Direction & Hooks</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">توجيه كتابة وتصوير الفيديوهات القصيرة (Reels & TikToks) لجذب انتباه العميل في أول ثانيتين وحثه المباشر على اتخاذ قرار الشراء.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" data-i18n="about-card2">توجيه كتابة وتصوير الفيديوهات القصيرة (Reels & TikToks) لجذب انتباه العميل في أول ثانيتين وحثه المباشر على اتخاذ قرار الشراء.</p>
           </div>
         </div>
 
@@ -199,8 +210,8 @@
     <div class="max-w-5xl mx-auto px-5">
       
       <div class="text-center max-w-xl mx-auto mb-12">
-        <span class="text-xs font-bold text-brand-orange uppercase tracking-wider">سجلات أداء حقيقية</span>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">نتائج حملات موثقة من مدير الإعلانات</h2>
+        <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="portfolio-tag">سجلات أداء حقيقية</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="portfolio-title">نتائج حملات موثقة من مدير الإعلانات</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -209,15 +220,15 @@
         <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-brand-magenta font-bold">تجارة إلكترونية</span>
+              <span class="text-brand-magenta font-bold" data-i18n="p1-cat">تجارة إلكترونية</span>
               <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">30x ROAS</span>
             </div>
             <h3 class="font-bold text-white text-lg">براندات لوكسير و B-Smart</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">إدارة حملات التحويل السريع وتطبيق إعادة الاستهداف لزوار الموقع وتحقيق نمو مبيعات قياسي.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" data-i18n="p1-desc">إدارة حملات التحويل السريع وتطبيق إعادة الاستهداف لزوار الموقع وتحقيق نمو مبيعات قياسي.</p>
           </div>
           <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">الميزانية:</span><span class="font-bold text-white font-sans">100,000 EGP</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">المبيعات:</span><span class="font-bold text-green-400 font-sans">3,000,000+ EGP</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="budget-lbl">الميزانية:</span><span class="font-bold text-white font-sans">100,000 EGP</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="sales-lbl">المبيعات:</span><span class="font-bold text-green-400 font-sans">3,000,000+ EGP</span></div>
           </div>
         </div>
 
@@ -225,15 +236,15 @@
         <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-purple-400 font-bold">مطابخ وتشطيبات فاخرة</span>
+              <span class="text-purple-400 font-bold" data-i18n="p2-cat">مطابخ وتشطيبات فاخرة</span>
               <span class="font-sans font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">2.54 EGP / 1k</span>
             </div>
             <h3 class="font-bold text-white text-lg">Woody للمطابخ والدريسينج</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">استهداف دقيق لمالكي الوحدات السكنية والفيلات، وتحقيق أوسع وصول للمعاينات بأقل تكلفة.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" data-i18n="p2-desc">استهداف دقيق لمالكي الوحدات السكنية والفيلات، وتحقيق أوسع وصول للمعاينات بأقل تكلفة.</p>
           </div>
           <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">الوصول الفعلي:</span><span class="font-bold text-white font-sans">393,098 عميل</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">مرات الظهور:</span><span class="font-bold text-white font-sans">406,460+</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="reach-lbl">الوصول الفعلي:</span><span class="font-bold text-white font-sans">393,098 عميل</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="imp-lbl">مرات الظهور:</span><span class="font-bold text-white font-sans">406,460+</span></div>
           </div>
         </div>
 
@@ -241,15 +252,15 @@
         <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-brand-orange font-bold">سلاسل أغذية ومطاعم</span>
+              <span class="text-brand-orange font-bold" data-i18n="p3-cat">سلاسل أغذية ومطاعم</span>
               <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">0.01 EGP / تفاعل</span>
             </div>
             <h3 class="font-bold text-white text-lg">سلسلة مطاعم ملك الشاورما</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">حملات ريلز فيروسية وعروض مجمعة حققت تفاعلاً هائلاً ورفعت اتصالات الدليفري وزيارات الفروع.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" data-i18n="p3-desc">حملات ريلز فيروسية وعروض مجمعة حققت تفاعلاً هائلاً ورفعت اتصالات الدليفري وزيارات الفروع.</p>
           </div>
           <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">تفاعل ريلز فردي:</span><span class="font-bold text-white font-sans">43,302</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">عروض الملوك:</span><span class="font-bold text-white font-sans">17,475+</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="reels-lbl">تفاعل ريلز فردي:</span><span class="font-bold text-white font-sans">43,302</span></div>
+            <div class="flex justify-between"><span class="text-slate-400" data-i18n="offers-lbl">عروض الملوك:</span><span class="font-bold text-white font-sans">17,475+</span></div>
           </div>
         </div>
 
@@ -257,84 +268,88 @@
     </div>
   </section>
 
-  <!-- حاسبة القرار المالي -->
+  <!-- حاسبة القرار المالي الذكية المحدثة بالكامل -->
   <section id="calculator" class="py-20">
     <div class="max-w-4xl mx-auto px-5">
       
-      <div class="text-center max-w-xl mx-auto mb-12">
-        <span class="text-xs font-bold text-brand-gold uppercase tracking-wider">محاكي القرار الاستراتيجي</span>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">حاسبة اقتصاديات الوحدة للمشروع</h2>
-        <p class="text-xs sm:text-sm text-slate-400 mt-2">أدخل أرقام منتجك لتعرف الحد الأقصى المسموح به للاستحواذ، نقطة التعادل، وهل البيزنس جاهز لزيادة الإعلانات أم لا.</p>
+      <div class="text-center max-w-xl mx-auto mb-10">
+        <span class="text-xs font-bold text-brand-gold uppercase tracking-wider" data-i18n="calc-tag">الذكاء المالي والتنفيذي</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="calc-title">حاسبة القرار التسويقي الاستراتيجي</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-2" data-i18n="calc-sub">اختر قطاع نشاطك وأدخل الميزانية وسعر المنتج؛ لتستخرج الآلة تلقائياً مؤشرات الجدوى وأقصى كلفة شراء مسموحة ونقطة التعادل.</p>
       </div>
 
       <div class="p-6 sm:p-10 rounded-3xl border border-white/10 bg-[#0E0B1A]">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           
           <div class="space-y-4 text-xs">
+            
+            <!-- اختيار القطاع -->
             <div>
-              <label class="block font-semibold text-slate-300 mb-1">متوسط سعر بيع الوحدة / الطلب (ج.م):</label>
-              <input type="number" id="unitPriceInput" value="950" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
+              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-industry-lbl">قطاع البيزنس / النشاط التجاري:</label>
+              <select id="industrySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-semibold text-xs focus:outline-none focus:border-brand-magenta">
+                <option value="ecommerce">تجارة إلكترونية ومنتجات (E-Commerce & Retail)</option>
+                <option value="restaurants">مطاعم وأغذية ودليفري (Food & Restaurants)</option>
+                <option value="services">خدمات واستشارات و B2B (Services & Lead Gen)</option>
+                <option value="realestate">عقارات وتشطيبات وديكور (Real Estate & Interior)</option>
+              </select>
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-300 mb-1">التكلفة المباشرة للوحدة بدون الإعلانات (ج.م):</label>
-              <input type="number" id="unitCostInput" value="420" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
+              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-price-lbl">متوسط سعر المنتج / الطلب / الخدمة (ج.م):</label>
+              <input type="number" id="unitPriceInput" value="850" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-300 mb-1">الميزانية الإعلانية المقترحة شهرياً (ج.م):</label>
-              <input type="number" id="totalBudgetInput" value="40000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
+              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-budget-lbl">الميزانية الإعلانية المقترحة شهرياً (ج.م):</label>
+              <input type="number" id="totalBudgetInput" value="30000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
 
-            <div>
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-semibold text-slate-300">معدل تحويل المتجر التقديري (CR%):</span>
-                <span id="targetCrVal" class="font-bold text-brand-orange font-sans">2.5%</span>
+            <!-- مؤشرات الأداء الضمنية للقطاع -->
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 text-[11px] text-slate-400">
+              <div class="flex justify-between items-center">
+                <span data-i18n="calc-cogs-ratio">تكلفة البضاعة المباشرة المتوقعة للقطاع:</span>
+                <span id="cogsRatioVal" class="text-white font-bold font-sans">45%</span>
               </div>
-              <input type="range" id="targetCrSlider" min="0.5" max="8" value="2.5" step="0.5" class="w-full accent-brand-magenta cursor-pointer" />
+              <div class="flex justify-between items-center">
+                <span data-i18n="calc-cr-benchmark">معدل التحويل المعياري (Conversion Rate):</span>
+                <span id="benchmarkCrVal" class="text-brand-orange font-bold font-sans">2.2%</span>
+              </div>
             </div>
 
-            <div>
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-semibold text-slate-300">معدل العائد الإعلاني المستهدف (Target ROAS):</span>
-                <span id="targetRoasVal" class="font-bold text-brand-orange font-sans">4.5x</span>
-              </div>
-              <input type="range" id="targetRoasSlider" min="1.5" max="12" value="4.5" step="0.5" class="w-full accent-brand-magenta cursor-pointer" />
-            </div>
           </div>
 
           <div class="p-6 rounded-2xl bg-black/50 border border-white/5 space-y-4 text-center">
             
-            <div id="decisionBadge" class="p-3 rounded-xl bg-brand-violet/20 border border-brand-violet/40 text-right text-xs">
-              <div class="font-bold text-white mb-0.5" id="decisionTitle">مؤشر جاهزية التوسع الإعلاني</div>
-              <p class="text-[11px] text-slate-300 leading-relaxed" id="decisionDesc">جاري تحليل الأرقام...</p>
+            <div id="decisionBadge" class="p-3.5 rounded-xl bg-brand-violet/20 border border-brand-violet/40 text-right text-xs">
+              <div class="font-bold text-white mb-0.5" id="decisionTitle">مؤشر الجدوى والجاهزية التسويقية</div>
+              <p class="text-[11px] text-slate-300 leading-relaxed" id="decisionDesc">جاري حساب معايير القطاع...</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2.5 text-right text-xs">
               <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <span class="text-[11px] text-slate-400 block mb-0.5">نقطة التعادل (Break-Even)</span>
-                <span id="beRoasOutput" class="text-base font-bold text-brand-gold font-sans">1.79x</span>
+                <span class="text-[11px] text-slate-400 block mb-0.5" data-i18n="calc-be-lbl">نقطة التعادل (Break-Even ROAS)</span>
+                <span id="beRoasOutput" class="text-base font-bold text-brand-gold font-sans">1.82x</span>
               </div>
               <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <span class="text-[11px] text-slate-400 block mb-0.5">أقصى تكلفة استحواذ (Max CAC)</span>
-                <span id="maxCacOutput" class="text-base font-bold text-white font-sans">530 ج.م</span>
+                <span class="text-[11px] text-slate-400 block mb-0.5" data-i18n="calc-maxcac-lbl">أقصى كلفة استحواذ (Max CAC)</span>
+                <span id="maxCacOutput" class="text-base font-bold text-white font-sans">467 ج.م</span>
               </div>
             </div>
 
             <div class="p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-right flex items-center justify-between text-xs">
               <div>
-                <span class="text-white font-bold block">صافي الربح الحقيقي المقدر:</span>
-                <span class="text-[10px] text-slate-400">بعد سداد تكلفة البضاعة والميزانية بالكامل</span>
+                <span class="text-white font-bold block" data-i18n="calc-netprofit-lbl">صافي الأرباح المتوقعة:</span>
+                <span class="text-[10px] text-slate-400" data-i18n="calc-netprofit-sub">بعد خصم التكلفة والميزانية</span>
               </div>
-              <span id="netProfitReal" class="text-lg font-bold text-green-400 font-sans">60,421 ج.م</span>
+              <span id="netProfitReal" class="text-lg font-bold text-green-400 font-sans">42,500 ج.م</span>
             </div>
 
             <div class="space-y-2 pt-2">
               <a id="consultCalcBtn" href="https://wa.me/201021252183" target="_blank" class="block w-full py-3 rounded-xl brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity">
-                <i class="fa-brands fa-whatsapp ml-1"></i> اعتماد هذه الخطة لمشروعي على واتساب
+                <i class="fa-brands fa-whatsapp ml-1"></i> <span data-i18n="btn-plan-wa">طلب تنفيذ هذه الخطة عبر واتساب</span>
               </a>
               <button id="downloadPdfBtn" type="button" class="block w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs border border-white/10 transition-colors">
-                <i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> تنزيل تقرير الجدوى (PDF)
+                <i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> <span data-i18n="btn-download-pdf">تنزيل تقرير الجدوى المالي (PDF)</span>
               </button>
             </div>
 
@@ -353,37 +368,37 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           
           <div class="md:col-span-7 space-y-4">
-            <span class="px-3 py-1 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-bold border border-brand-orange/40 inline-block">
+            <span class="px-3 py-1 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-bold border border-brand-orange/40 inline-block" data-i18n="course-tag">
               أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط
             </span>
             <h2 class="text-2xl sm:text-4xl font-bold text-white leading-snug">
               معسكر الميديا باينج وتطبيق الـ <span class="brand-gradient-text">30x ROAS</span>
             </h2>
             <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-xs text-slate-300 leading-relaxed">
-              <strong class="text-white block mb-1 font-semibold"><i class="fa-solid fa-circle-exclamation text-brand-orange ml-1"></i> شرط القبول:</strong>
-              نظراً لأن البرنامج تطبيقي ومحدود بـ 20 مقعداً فقط، لا يعتبر الحجز نهائياً إلا بعد اجتياز <strong>المقابلة الشخصية (Personal Interview)</strong> للتأكد من ملاءمة أهدافك للبرنامج وتحقيق أعلى فائدة استثمارية.
+              <strong class="text-white block mb-1 font-semibold"><i class="fa-solid fa-circle-exclamation text-brand-orange ml-1"></i> <span data-i18n="course-req-title">شرط القبول:</span></strong>
+              <span data-i18n="course-req-desc">نظراً لأن البرنامج تطبيقي ومحدود بـ 20 مقعداً فقط، لا يعتبر الحجز نهائياً إلا بعد اجتياز المقابلة الشخصية (Personal Interview) للتأكد من ملاءمة أهدافك للبرنامج.</span>
             </div>
             <div class="flex items-center justify-between text-xs p-3.5 rounded-xl bg-white/5 border border-white/5">
-              <span class="text-brand-gold font-semibold"><i class="fa-solid fa-stopwatch ml-1"></i> خصم الحجز المبكر (50%) ينتهي خلال:</span>
+              <span class="text-brand-gold font-semibold"><i class="fa-solid fa-stopwatch ml-1"></i> <span data-i18n="course-timer-lbl">خصم الحجز المبكر (50%) ينتهي خلال:</span></span>
               <span class="font-sans font-bold text-brand-orange text-sm" id="earlyBirdTimer">47:59:59</span>
             </div>
           </div>
 
           <div class="md:col-span-5 p-6 rounded-2xl bg-black/60 border border-white/10">
-            <h3 class="font-bold text-white text-sm mb-1">طلب الترشح للمقابلة الشخصية</h3>
-            <p class="text-xs text-slate-400 mb-4">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
+            <h3 class="font-bold text-white text-sm mb-1" data-i18n="form-title">طلب الترشح للمقابلة الشخصية</h3>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
             
             <form id="waitlistForm" class="space-y-3 text-xs">
               <div>
-                <label class="block font-medium text-slate-300 mb-1">الاسم الكامل:</label>
+                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-name">الاسم الكامل:</label>
                 <input type="text" id="subName" required placeholder="اسمك الثلاثي" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta" />
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1">رقم الواتساب:</label>
+                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-phone">رقم الواتساب:</label>
                 <input type="tel" id="subPhone" required placeholder="01xxxxxxxxx" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta text-left" dir="ltr" />
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1">حجم إنفاقك الإعلاني الحالي:</label>
+                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-budget">حجم إنفاقك الإعلاني الحالي:</label>
                 <select id="subBudget" class="w-full bg-[#181228] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta">
                   <option value="أقل من 20 ألف جنيه شهرياً">أقل من 20,000 ج.م شهرياً</option>
                   <option value="من 20 إلى 100 ألف جنيه شهرياً">من 20,000 إلى 100,000 ج.م شهرياً</option>
@@ -392,10 +407,10 @@
                 </select>
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1">التحدي الأكبر المطلوب حله في المعسكر:</label>
+                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-challenge">التحدي الأكبر المطلوب حله في المعسكر:</label>
                 <input type="text" id="subChallenge" required placeholder="مثال: ارتفاع تكلفة الشراء، مشاكل الـ Scaling" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta" />
               </div>
-              <button type="submit" class="w-full py-2.5 rounded-lg brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity mt-2">
+              <button type="submit" class="w-full py-2.5 rounded-lg brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity mt-2" data-i18n="form-btn">
                 إرسال طلب الترشح للمقابلة
               </button>
             </form>
@@ -416,38 +431,38 @@
     <div class="max-w-3xl mx-auto px-5">
       
       <div class="text-center mb-10">
-        <span class="text-xs font-bold text-brand-magenta uppercase tracking-wider">وضوح وشفافية</span>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">الأسئلة الشائعة</h2>
+        <span class="text-xs font-bold text-brand-magenta uppercase tracking-wider" data-i18n="faq-tag">وضوح وشفافية</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="faq-title">الأسئلة الشائعة</h2>
       </div>
 
       <div class="space-y-3 text-xs sm:text-sm">
         
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
           <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
-            <span>لماذا تشترط مقابلة شخصية (Interview) قبل القبول في المعسكر التدريبي؟</span>
+            <span data-i18n="q1">لماذا تشترط مقابلة شخصية (Interview) قبل القبول في المعسكر التدريبي؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3">
+          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a1">
             لأن المعسكر عملي ومغلق على 20 مقعداً فقط؛ المقابلة تضمن أن خلفيتك وأهدافك ملائمة تماماً للمستوى المتقدم وتطبيق مهارات الـ Scaling، لضمان أعلى عائد استثماري لكل متدرب.
           </div>
         </div>
 
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
           <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
-            <span>هل المنهجية وحاسبة اقتصاديات الوحدة تناسب كافة أنواع الأنشطة؟</span>
+            <span data-i18n="q2">هل المنهجية وحاسبة اقتصاديات الوحدة تناسب كافة أنواع الأنشطة؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3">
+          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a2">
             نعم، القواعد المالية لاقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة سواء في التجارة الإلكترونية، خدمات B2B، العقارات، أو قطاع الأغذية والمطاعم.
           </div>
         </div>
 
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
           <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
-            <span>ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟</span>
+            <span data-i18n="q3">ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3">
+          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a3">
             نفضل ميزانية لا تقل عن 20,000 إلى 30,000 ج.م شهرياً لضمان تدريب خوارزميات Meta و TikTok واختبار العروض والوصول إلى أداء مربح مستدام.
           </div>
         </div>

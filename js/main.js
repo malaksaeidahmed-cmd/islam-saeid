@@ -1,4 +1,4 @@
-// 1. التبديل بين الدارك مود واللايت مود
+// 1. الدارك واللايت مود
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeIcon = document.getElementById('themeIcon');
 const htmlEl = document.documentElement;
@@ -20,11 +20,83 @@ if (themeToggleBtn) {
   });
 }
 
-// 2. تحديث السنة الحالية
+// 2. نظام الترجمة المزدوجة (AR / EN)
+const langToggleBtn = document.getElementById('langToggleBtn');
+const langText = document.getElementById('langText');
+
+const translations = {
+  ar: {
+    "nav-about": "المنهجية",
+    "nav-brands": "شركاء النجاح",
+    "nav-portfolio": "سابقة الأعمال",
+    "nav-calc": "حاسبة القرار المالي",
+    "nav-course": "برنامج القاهرة (20 مقعداً)",
+    "nav-faq": "الأسئلة الشائعة",
+    "contact-btn": "تواصل معي",
+    "hero-tag": "Senior Social Media Specialist & Performance Marketer",
+    "hero-title1": "إدارة الميزانيات الإعلانية الضخمة",
+    "hero-title2": "بتحقيق عوائد استثمارية تصل إلى 30x ROAS",
+    "hero-desc": "أنا إسلام سعيد. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة.",
+    "btn-course": "البرنامج الأوفلاين المكثف (القاهرة)",
+    "btn-calc": "حاسبة القرار المالي للمشروع",
+    "stat1": "أعلى عائد ROAS محقق",
+    "stat2": "مبيعات حملة فردية (100k)",
+    "stat3": "ميزانية شهرية مدارة للبراند",
+    "brands-tag": "شركاء النجاح",
+    "brands-title": "أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا",
+    "brands-desc": "نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات"
+  },
+  en: {
+    "nav-about": "Methodology",
+    "nav-brands": "Partners",
+    "nav-portfolio": "Portfolio",
+    "nav-calc": "Financial Calculator",
+    "nav-course": "Cairo Program (20 Seats)",
+    "nav-faq": "FAQ",
+    "contact-btn": "Contact Me",
+    "hero-tag": "Senior Social Media Specialist & Performance Marketer",
+    "hero-title1": "Managing Scale Ad Budgets",
+    "hero-title2": "Achieving Record Returns Up to 30x ROAS",
+    "hero-desc": "I am Islam Saeid. Specialist in turning Meta & TikTok ad budgets into scalable, profitable revenue.",
+    "btn-course": "Offline Intensive Program (Cairo)",
+    "btn-calc": "Financial Decision Calculator",
+    "stat1": "Highest ROAS Achieved",
+    "stat2": "Single Campaign Sales (100k)",
+    "stat3": "Monthly Managed Budget",
+    "brands-tag": "Success Partners",
+    "brands-title": "Over 50+ Brands Trusted Our Growth Engine",
+    "brands-desc": "Featuring top partner logos across E-Commerce, Restaurants, Interior & Foods."
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'ar';
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  htmlEl.setAttribute('lang', lang);
+  htmlEl.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  if (langText) langText.textContent = lang === 'ar' ? 'EN' : 'عربي';
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+}
+
+if (langToggleBtn) {
+  langToggleBtn.addEventListener('click', () => {
+    applyLanguage(currentLang === 'ar' ? 'en' : 'ar');
+  });
+}
+
+// 3. تحديث السنة الحالية
 const currentYearEl = document.getElementById('currentYear');
 if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
-// 3. عداد انتهاء الحجز المبكر (48 ساعة)
+// 4. عداد الحجز المبكر (48 ساعة)
 let secondsLeft = 48 * 3600;
 const timerEl = document.getElementById('earlyBirdTimer');
 if (timerEl) {
@@ -37,51 +109,27 @@ if (timerEl) {
   }, 1000);
 }
 
-// 4. الأسماء المعدلة والدقيقة للبراندات الـ 27
+// 5. الأسماء المستخرجة للبراندات الـ 27
 const realBrandNames = [
-  "King Burger",
-  "ملك الشاورما",
-  "على الشرقاوي",
-  "الشيبي",
-  "كبابجي فرحات الشرقاوي",
-  "المتوكل",
-  "زين الدين",
-  "فليفر - Flavor",
-  "يحيى العطار",
-  "لؤلؤة الدقي",
-  "محمصات الجمهورية",
-  "Energy Sport",
-  "B.S.T Best Soccer Teams",
-  "Woody",
-  "Store Leen",
-  "AS International",
-  "Nile Eagle",
-  "360 Ballons",
-  "Gift & Toys",
-  "Crazy Toys",
-  "B-Smart",
-  "Luxer",
-  "Anhagar Egypt",
-  "Bubbleino",
-  "Brand 25",
-  "Brand 26",
-  "Brand 27"
+  "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
+  "المتوكل", "زين الدين", "فليفر - Flavor", "يحيى العطار", "لؤلؤة الدقي",
+  "محمصات الجمهورية", "Energy Sport", "B.S.T Best Soccer Teams", "Woody", "Store Leen",
+  "AS International", "Nile Eagle", "360 Ballons", "Gift & Toys", "Crazy Toys",
+  "B-Smart", "Luxer", "Anhagar Egypt", "Bubbleino", "Brand 25", "Brand 26", "Brand 27"
 ];
 
-// مصفوفة البراندات
 const brandsList = realBrandNames.map((name, index) => ({
   id: index + 1,
   name: name
 }));
 
 function renderBrandsMarquee() {
-  const marqueeContainer = document.getElementById('brandsMarquee');
-  if (!marqueeContainer) return;
+  const group1 = document.getElementById('brandsMarqueeGroup1');
+  const group2 = document.getElementById('brandsMarqueeGroup2');
 
-  // مضاعفة المصفوفة مرتين لخلق لفة دائرية متصلة 100% (True Loop)
-  const seamlessBrands = [...brandsList, ...brandsList];
+  if (!group1 || !group2) return;
 
-  marqueeContainer.innerHTML = seamlessBrands.map(brand => `
+  const htmlContent = brandsList.map(brand => `
     <div class="brand-card w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 transition-all group relative">
       <img 
         src="assets/${brand.id}.webp" 
@@ -95,9 +143,12 @@ function renderBrandsMarquee() {
       </span>
     </div>
   `).join('');
+
+  group1.innerHTML = htmlContent;
+  group2.innerHTML = htmlContent;
 }
 
-// 5. نموذج التقديم لكورس القاهرة
+// 6. نموذج المعسكر التدريبي
 const form = document.getElementById('waitlistForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -117,7 +168,7 @@ if (form) {
   });
 }
 
-// 6. الأكورديون للأسئلة الشائعة
+// 7. الأسئلة الشائعة
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
@@ -134,7 +185,7 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
   });
 });
 
-// 7. قائمة الموبايل
+// 8. قائمة الموبايل
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {
@@ -142,4 +193,7 @@ if (mBtn && mMenu) {
   mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mMenu.classList.add('hidden')));
 }
 
-document.addEventListener('DOMContentLoaded', renderBrandsMarquee);
+document.addEventListener('DOMContentLoaded', () => {
+  applyLanguage(currentLang);
+  renderBrandsMarquee();
+});

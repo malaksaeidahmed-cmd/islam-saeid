@@ -87,16 +87,8 @@ html:not(.dark) .fade-overlay-right {
   animation-play-state: paused;
 }
 
+/* الحركة الأفقية بدون انقطاع */
 @keyframes scroll-seamless {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-html[dir="ltr"] @keyframes scroll-seamless {
   0% {
     transform: translateX(0);
   }
@@ -109,22 +101,6 @@ html:not(.dark) .brand-card {
   background-color: #FFFFFF !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
-
-/* Print CSS Fix for PDF Report */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  #pdfPrintContainer, #pdfPrintContainer * {
-    visibility: visible;
-  }
-  #pdfPrintContainer {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
 }
 
 /* Typography Line Heights */

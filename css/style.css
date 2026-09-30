@@ -41,7 +41,13 @@ html:not(.dark) .glass-header {
   border-color: rgba(0,0,0,0.06);
 }
 
-/* Dynamic Light & Dark Mode Styles for Brands Marquee Slider */
+/* Perfect Seamless Loop Marquee Container */
+.marquee-wrapper {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+}
+
 html.dark .marquee-wrapper {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -63,31 +69,62 @@ html:not(.dark) .fade-overlay-right {
   background: linear-gradient(to left, #F8FAFC, transparent);
 }
 
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-left: 1.5rem;
+  animation: scroll-seamless 35s linear infinite;
+  will-change: transform;
+}
+
+.marquee-wrapper:hover .marquee-group {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-seamless {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+html[dir="ltr"] @keyframes scroll-seamless {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 html:not(.dark) .brand-card {
   background-color: #FFFFFF !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-/* Infinite Marquee Animation for Continuous Loop */
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
+/* Print CSS Fix for PDF Report */
+@media print {
+  body * {
+    visibility: hidden;
   }
-  100% {
-    transform: translateX(-50%);
+  #pdfPrintContainer, #pdfPrintContainer * {
+    visibility: visible;
   }
-}
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 35s linear infinite;
-  will-change: transform;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
+  #pdfPrintContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }
 
 /* Typography Line Heights */

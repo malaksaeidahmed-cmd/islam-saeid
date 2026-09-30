@@ -1,4 +1,4 @@
-// 1. الدارك واللايت مود
+// 1. Dark Mode Toggle
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeIcon = document.getElementById('themeIcon');
 const htmlEl = document.documentElement;
@@ -20,7 +20,7 @@ if (themeToggleBtn) {
   });
 }
 
-// 2. نظام الترجمة المزدوجة (AR / EN)
+// 2. Language Switcher Engine (AR / EN)
 const langToggleBtn = document.getElementById('langToggleBtn');
 const langText = document.getElementById('langText');
 
@@ -92,11 +92,11 @@ if (langToggleBtn) {
   });
 }
 
-// 3. تحديث السنة الحالية
+// 3. Current Year Footer
 const currentYearEl = document.getElementById('currentYear');
 if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
-// 4. عداد الحجز المبكر (48 ساعة)
+// 4. Timer Countdown
 let secondsLeft = 48 * 3600;
 const timerEl = document.getElementById('earlyBirdTimer');
 if (timerEl) {
@@ -109,7 +109,7 @@ if (timerEl) {
   }, 1000);
 }
 
-// 5. الأسماء المستخرجة للبراندات الـ 27
+// 5. Brands 27 Data Array
 const realBrandNames = [
   "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
   "المتوكل", "زين الدين", "فليفر - Flavor", "يحيى العطار", "لؤلؤة الدقي",
@@ -148,7 +148,7 @@ function renderBrandsMarquee() {
   group2.innerHTML = htmlContent;
 }
 
-// 6. نموذج المعسكر التدريبي
+// 6. Form Submission
 const form = document.getElementById('waitlistForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -168,7 +168,7 @@ if (form) {
   });
 }
 
-// 7. الأسئلة الشائعة
+// 7. FAQ Accordion
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
@@ -185,7 +185,7 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
   });
 });
 
-// 8. قائمة الموبايل
+// 8. Mobile Menu
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {

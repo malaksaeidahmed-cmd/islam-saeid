@@ -43,6 +43,9 @@
         <a href="../index.html" target="_blank" class="block w-full py-2 text-center rounded-lg bg-white/5 text-slate-300 text-xs hover:bg-white/10">
           <i class="fa-solid fa-globe ml-1"></i> معاينة الموقع الرئيسي
         </a>
+        <button id="logoutBtn" class="w-full py-2 text-center rounded-lg bg-red-500/20 text-red-300 text-xs hover:bg-red-500/30">
+          تسجيل الخروج
+        </button>
       </div>
     </aside>
 
@@ -156,6 +159,16 @@
   <script type="module">
     import { CloudCMS } from '../js/firebase-cms.js';
 
+    // Protect Dashboard
+    if (!sessionStorage.getItem('cms_auth')) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      sessionStorage.removeItem('cms_auth');
+      window.location.href = 'login.html';
+    });
+
     window.switchTab = (tabId) => {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
@@ -166,7 +179,6 @@
       document.querySelectorAll('#portfolioModal, #blogModal').forEach(m => m.classList.add('hidden'));
     };
 
-    // Subscriptions
     CloudCMS.subscribeAnalytics(data => {
       document.getElementById('statVisits').textContent = (data.visits || 0).toLocaleString('ar-EG');
       document.getElementById('statLeads').textContent = (data.leads || 0).toLocaleString('ar-EG');

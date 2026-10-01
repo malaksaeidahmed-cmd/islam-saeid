@@ -8,18 +8,16 @@
   <meta name="keywords" content="إسلام سعيد, ميديا باينج, خبير إعلانات, Meta Ads, TikTok Ads, ROAS, Media Buyer Egypt" />
   <meta name="author" content="إسلام سعيد" />
 
-  <!-- Open Graph / Social Preview -->
+  <!-- Open Graph -->
   <meta property="og:title" content="إسلام سعيد | Senior Media Buyer & Growth Strategist" />
   <meta property="og:description" content="إدارة الميزانيات الإعلانية الضخمة بتحقيق عوائد استثمارية تصل إلى 30x ROAS." />
   <meta property="og:image" content="assets/logo.png" />
   <meta property="og:type" content="website" />
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="shortcut icon" type="image/png" href="assets/logo.png" />
   <link rel="apple-touch-icon" href="assets/logo.png" />
 
-  <!-- Schema.org Data for SEO -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -27,16 +25,10 @@
     "name": "إسلام سعيد - Senior Media Buyer",
     "image": "https://islamsaeid.me/assets/logo.png",
     "url": "https://islamsaeid.me",
-    "telephone": "+201021252183",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Cairo",
-      "addressCountry": "EG"
-    }
+    "telephone": "+201021252183"
   }
   </script>
 
-  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -70,62 +62,61 @@
 </head>
 <body class="bg-[#07060E] text-slate-200 font-arabic antialiased selection:bg-brand-magenta selection:text-white">
 
-  <!-- Navigation Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-white/5">
-    <div class="max-w-6xl mx-auto px-5 h-20 flex items-center justify-between">
+  <!-- Header العصري المحسن بالكامل -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-white/10 shadow-2xl">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
       
       <!-- Logo -->
-      <a href="#home" class="flex items-center gap-3">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-10 h-10 object-contain rounded-lg" onError="this.onerror=null; this.src='logo.png';" />
+      <a href="#home" class="flex items-center gap-3 group">
+        <img src="assets/logo.png" alt="إسلام سعيد" class="w-10 h-10 object-contain rounded-xl border border-white/10 group-hover:border-brand-magenta transition-all" onError="this.onerror=null; this.src='logo.png';" />
         <div class="flex flex-col">
-          <span class="font-bold text-base text-white tracking-wide" data-i18n="my-name">إسلام سعيد</span>
+          <span class="font-bold text-base text-white tracking-wide group-hover:text-brand-magenta transition-colors" data-i18n="my-name">إسلام سعيد</span>
           <span class="text-[10px] font-sans text-brand-orange uppercase tracking-wider font-semibold">Media Buyer</span>
         </div>
       </a>
 
       <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+      <nav class="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-300">
         <a href="#about" class="hover:text-white transition-colors" data-i18n="nav-about">المنهجية</a>
         <a href="#brands" class="hover:text-white transition-colors" data-i18n="nav-brands">شركاء النجاح</a>
         <a href="#portfolio" class="hover:text-white transition-colors" data-i18n="nav-portfolio">سابقة الأعمال</a>
         <a href="#calculator" class="hover:text-white transition-colors" data-i18n="nav-calc">حاسبة القرار المالي</a>
-        <a href="blog.html" class="hover:text-white transition-colors text-brand-magenta" data-i18n="nav-blog">المدونة والنشرات</a>
-        <a href="#course" class="hover:text-white transition-colors" data-i18n="nav-course">برنامج القاهرة (20 مقعداً)</a>
+        <a href="blog.html" class="hover:text-brand-magenta transition-colors text-slate-200 font-bold flex items-center gap-1">
+          <span data-i18n="nav-blog">المدونة والنشرات</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-magenta animate-pulse"></span>
+        </a>
+        <a href="#course" class="hover:text-white transition-colors text-brand-orange" data-i18n="nav-course">برنامج القاهرة (20 مقعداً)</a>
         <a href="#faq" class="hover:text-white transition-colors" data-i18n="nav-faq">الأسئلة الشائعة</a>
       </nav>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-2.5">
-        <button id="langToggleBtn" class="px-2.5 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition-colors">
+      <!-- Language & CTA Button -->
+      <div class="flex items-center gap-3">
+        <button id="langToggleBtn" class="px-3 py-1.5 rounded-xl border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition-all">
           <span id="langText">EN</span>
         </button>
 
-        <button id="themeToggleBtn" aria-label="Toggle Theme" class="w-9 h-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
-          <i id="themeIcon" class="fa-solid fa-sun text-sm"></i>
+        <button id="themeToggleBtn" aria-label="Toggle Theme" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all">
+          <i id="themeIcon" class="fa-solid fa-sun text-xs"></i>
         </button>
 
-        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أود%20الاستفسار%20عن%20إدارة%20حملة%20إعلانية%20لمشروعي" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg brand-gradient text-white text-xs font-semibold shadow-md hover:opacity-95 transition-opacity">
+        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أود%20الاستفسار%20عن%20إدارة%20حملة%20إعلانية%20لمشروعي" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl brand-gradient text-white text-xs font-bold shadow-lg hover:opacity-95 transition-all">
           <i class="fa-brands fa-whatsapp text-sm"></i>
           <span data-i18n="contact-btn">تواصل معي</span>
         </a>
 
-        <a href="admin/login.html" class="w-9 h-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="لوحة التحكم">
-          <i class="fa-solid fa-user-gear text-sm"></i>
-        </a>
-
-        <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white p-2" aria-label="Menu">
+        <button id="mobileMenuBtn" class="lg:hidden text-slate-300 hover:text-white p-2" aria-label="Menu">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-[#0C0A18] border-b border-white/10 px-6 py-4 flex flex-col gap-3 text-sm">
+    <!-- Mobile Navigation -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-[#0C0A18] border-b border-white/10 px-6 py-4 flex flex-col gap-3 text-xs font-medium">
       <a href="#about" class="py-2 border-b border-white/5" data-i18n="nav-about">المنهجية</a>
       <a href="#brands" class="py-2 border-b border-white/5" data-i18n="nav-brands">شركاء النجاح</a>
       <a href="#portfolio" class="py-2 border-b border-white/5" data-i18n="nav-portfolio">سابقة الأعمال</a>
       <a href="#calculator" class="py-2 border-b border-white/5" data-i18n="nav-calc">حاسبة القرار المالي</a>
-      <a href="blog.html" class="py-2 border-b border-white/5 text-brand-magenta" data-i18n="nav-blog">المدونة والنشرات</a>
+      <a href="blog.html" class="py-2 border-b border-white/5 text-brand-magenta font-bold" data-i18n="nav-blog">المدونة والنشرات</a>
       <a href="#course" class="py-2 border-b border-white/5 text-brand-orange" data-i18n="nav-course">برنامج القاهرة (20 مقعداً)</a>
       <a href="#faq" class="py-2" data-i18n="nav-faq">الأسئلة الشائعة</a>
     </div>
@@ -176,7 +167,7 @@
     </div>
   </section>
 
-  <!-- Brands Carousel Section (Seamless Infinite Loop Fix) -->
+  <!-- Brands Section -->
   <section id="brands" class="py-16 border-y border-white/5 bg-white/[0.01] overflow-hidden">
     <div class="max-w-6xl mx-auto px-5 text-center mb-10">
       <span class="text-xs font-bold text-brand-orange uppercase tracking-widest" data-i18n="brands-tag">شركاء النجاح</span>
@@ -229,7 +220,7 @@
     </div>
   </section>
 
-  <!-- Portfolio Section (تفاعلية مرتبطة بالداشبورد) -->
+  <!-- Dynamic Portfolio Section -->
   <section id="portfolio" class="py-20 bg-white/[0.01] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-5">
       
@@ -238,7 +229,6 @@
         <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="portfolio-title">نتائج حملات موثقة من مدير الإعلانات</h2>
       </div>
 
-      <!-- سيتم تحميل الكروت ديناميكياً من الـ Dashboard -->
       <div id="dynamicPortfolioGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 
     </div>
@@ -375,7 +365,7 @@
 
           <div class="md:col-span-5 p-6 rounded-2xl bg-black/60 border border-white/10">
             <h3 class="font-bold text-white text-sm mb-1" data-i18n="form-title">طلب الترشح للمقابلة الشخصية</h3>
-            <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</span></p>
             
             <form id="waitlistForm" class="space-y-3 text-xs">
               <div>

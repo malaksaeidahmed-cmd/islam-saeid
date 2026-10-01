@@ -28,7 +28,7 @@
 
         <nav class="space-y-1.5 text-xs">
           <button onclick="switchTab('analyticsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 bg-white/10 text-white font-bold">
-            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات ورحلة الزائر
+            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات ورصد الزوار
           </button>
           <button onclick="switchTab('portfolioTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-briefcase text-orange-400"></i> إدارة سابقة الأعمال
@@ -52,19 +52,19 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-8">
       
       <!-- TAB 1: ANALYTICS -->
       <section id="analyticsTab" class="tab-content space-y-6">
         <div>
-          <h2 class="text-xl font-bold text-white">إحصائيات ورحلة المتصفح بالكامل</h2>
-          <p class="text-xs text-slate-400">تتبع مباشر لأعداد الزوار والأحداث والنماذج المستلمة.</p>
+          <h2 class="text-xl font-bold text-white">إحصائيات ورحلة المتصفح الحقيقية</h2>
+          <p class="text-xs text-slate-400">رصد مباشر وفوري للزيارات الفعلية وأحداث الموقع.</p>
         </div>
 
         <div class="grid grid-cols-4 gap-4 text-xs">
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
-            <span class="text-slate-400 block mb-1">إجمالي زيارات الموقع</span>
+            <span class="text-slate-400 block mb-1">زيارات الموقع الفعلية</span>
             <span id="statVisits" class="text-2xl font-bold text-white font-sans">0</span>
           </div>
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
@@ -72,29 +72,29 @@
             <span id="statLeads" class="text-2xl font-bold text-green-400 font-sans">0</span>
           </div>
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
-            <span class="text-slate-400 block mb-1">مرات تنزيل PDF الجدوى</span>
+            <span class="text-slate-400 block mb-1">تحميلات تقارير PDF</span>
             <span id="statPdfs" class="text-2xl font-bold text-amber-400 font-sans">0</span>
           </div>
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
-            <span class="text-slate-400 block mb-1">معدل التحويل التقديري</span>
-            <span id="statCr" class="text-2xl font-bold text-purple-400 font-sans">3.2%</span>
+            <span class="text-slate-400 block mb-1">معدل التحويل الفعلي</span>
+            <span id="statCr" class="text-2xl font-bold text-purple-400 font-sans">0%</span>
           </div>
         </div>
 
         <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
-          <h3 class="font-bold text-white text-sm">سجل الأحداث الأخيرة للزوار (Event Logs)</h3>
+          <h3 class="font-bold text-white text-sm">سجل تفاعل الزوار الفعلي (Event Logs)</h3>
           <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5"></div>
         </div>
       </section>
 
-      <!-- TAB 2: PORTFOLIO MANAGEMENT -->
+      <!-- TAB 2: PORTFOLIO -->
       <section id="portfolioTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-bold text-white">إدارة سابقة الأعمال</h2>
-            <p class="text-xs text-slate-400">إضافة وتعديل نتائج الحملات المعروضة في الصفحة الرئيسية.</p>
+            <p class="text-xs text-slate-400">إضافة وتعديل وحذف المشاريع المعروضة بالموقع.</p>
           </div>
-          <button onclick="togglePortfolioModal()" class="px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs">
+          <button onclick="openPortfolioModal()" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg">
             <i class="fa-solid fa-plus ml-1"></i> إضافة مشروع جديد
           </button>
         </div>
@@ -102,14 +102,14 @@
         <div id="portfolioTable" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </section>
 
-      <!-- TAB 3: BLOG MANAGEMENT -->
+      <!-- TAB 3: BLOG -->
       <section id="blogTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-bold text-white">إدارة منشورات المدونة والنشرة الإخبارية</h2>
-            <p class="text-xs text-slate-400">نشر مقالات ونصائح تسويقية تظهر في صفحة المدونة المستقلة.</p>
+            <h2 class="text-xl font-bold text-white">إدارة المدونة والنشرات</h2>
+            <p class="text-xs text-slate-400">كتابة ونشر مقالات الميديا باينج بصفحة المدونة.</p>
           </div>
-          <button onclick="toggleBlogModal()" class="px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs">
+          <button onclick="openBlogModal()" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow-lg">
             <i class="fa-solid fa-plus ml-1"></i> إضافة مقال جديد
           </button>
         </div>
@@ -117,15 +117,15 @@
         <div id="blogTable" class="space-y-3"></div>
       </section>
 
-      <!-- TAB 4: USERS & ROLES -->
+      <!-- TAB 4: USERS -->
       <section id="usersTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-bold text-white">إدارة المشرفين والصلاحيات</h2>
-            <p class="text-xs text-slate-400">إضافة أدمن، محرر، أو مراقب لوحة التحكم.</p>
+            <h2 class="text-xl font-bold text-white">إدارة المشرفين</h2>
+            <p class="text-xs text-slate-400">إضافة مديري ومحرري لوحة التحكم.</p>
           </div>
-          <button onclick="toggleUserModal()" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs">
-            <i class="fa-solid fa-user-plus ml-1"></i> إضافة مشرف
+          <button onclick="openUserModal()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg">
+            <i class="fa-solid fa-user-plus ml-1"></i> إضافة مشرف جديد
           </button>
         </div>
 
@@ -135,9 +135,105 @@
     </main>
   </div>
 
+  <!-- MODAL: ADD PORTFOLIO -->
+  <div id="portfolioModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">إضافة مشروع جديد لسابقة الأعمال</h3>
+      <form id="portfolioForm" class="space-y-3">
+        <div>
+          <label class="block text-slate-300 mb-1">اسم البراند / المشروع:</label>
+          <input type="text" id="pTitle" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">القطاع / المجال:</label>
+          <input type="text" id="pCategory" placeholder="تجارة إلكترونية، مطاعم..." required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">العائد ROAS / تكلفة التفاعل:</label>
+          <input type="text" id="pRoas" placeholder="30x ROAS" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">الوصف والحلول المطبقة:</label>
+          <textarea id="pDesc" rows="3" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-300 mb-1">الميزانية / الوصول:</label>
+            <input type="text" id="pBudget" placeholder="100,000 EGP" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">المبيعات / النتائج:</label>
+            <input type="text" id="pResults" placeholder="3,000,000+ EGP" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-orange-600 text-white font-bold">حفظ ونشر بالموقع</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD BLOG -->
+  <div id="blogModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">إضافة مقال جديد للمدونة</h3>
+      <form id="blogForm" class="space-y-3">
+        <div>
+          <label class="block text-slate-300 mb-1">عنوان المقال:</label>
+          <input type="text" id="bTitle" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">التصنيف:</label>
+          <input type="text" id="bCategory" placeholder="استراتيجيات مالية، إعلانات Meta..." required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">المحتوى الكامل للمقال:</label>
+          <textarea id="bContent" rows="5" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">نشر المقال فوراً</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD USER -->
+  <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-sm space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">إضافة مشرف جديد</h3>
+      <form id="userForm" class="space-y-3">
+        <div>
+          <label class="block text-slate-300 mb-1">الاسم الكامل:</label>
+          <input type="text" id="uName" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">اسم المستخدم (Username):</label>
+          <input type="text" id="uUsername" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">كلمة المرور:</label>
+          <input type="password" id="uPass" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">الصلاحية:</label>
+          <select id="uRole" class="w-full bg-[#181228] border border-white/10 rounded-lg p-2.5 text-white">
+            <option value="Admin">Admin (مدير كامل)</option>
+            <option value="Editor">Editor (محرر مقالات)</option>
+            <option value="Moderator">Moderator (مراقب زيارات)</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-amber-600 text-white font-bold">إضافة المشرف</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="../js/cms-data.js"></script>
   <script>
-    // Verify Session Security
     const session = JSON.parse(localStorage.getItem('cms_session'));
     if (!session) {
       window.location.href = 'login.html';
@@ -166,10 +262,13 @@
       document.getElementById('statVisits').textContent = stats.visits.toLocaleString('ar-EG');
       document.getElementById('statLeads').textContent = stats.leads.toLocaleString('ar-EG');
       document.getElementById('statPdfs').textContent = stats.pdfDownloads.toLocaleString('ar-EG');
+      
+      const cr = stats.visits > 0 ? ((stats.leads / stats.visits) * 100).toFixed(1) : 0;
+      document.getElementById('statCr').textContent = `${cr}%`;
 
       const logContainer = document.getElementById('eventsLogList');
       if (stats.events.length === 0) {
-        logContainer.innerHTML = '<p class="text-slate-500 py-2">لا توجد أحداث مسجلة مؤخراً.</p>';
+        logContainer.innerHTML = '<p class="text-slate-500 py-3 text-center">لا توجد أحداث مسجلة بعد. سيتم التسجيل تلقائياً مع تفاعل الزوار بالموقع.</p>';
       } else {
         logContainer.innerHTML = stats.events.map(e => `
           <div class="pt-2 flex justify-between items-center">
@@ -185,27 +284,30 @@
 
     function loadPortfolioAdmin() {
       const list = window.cmsEngine.getPortfolio();
-      document.getElementById('portfolioTable').innerHTML = list.map(item => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs">
+      document.getElementById('portfolioTable').innerHTML = list.map((item, index) => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs relative group">
           <div class="flex justify-between items-center">
-            <span class="font-bold text-white">${item.title}</span>
-            <span class="text-brand-magenta">${item.category}</span>
+            <span class="font-bold text-white text-sm">${item.title}</span>
+            <span class="text-brand-magenta font-semibold">${item.category}</span>
           </div>
           <p class="text-slate-400">${item.desc}</p>
-          <div class="text-[11px] text-slate-300"><strong>العائد:</strong> ${item.roas}</div>
+          <div class="flex justify-between items-center pt-2 text-[11px]">
+            <span class="text-amber-400 font-bold">${item.roas}</span>
+            <button onclick="deletePortfolio(${index})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
+          </div>
         </div>
       `).join('');
     }
 
     function loadBlogAdmin() {
       const list = window.cmsEngine.getBlog();
-      document.getElementById('blogTable').innerHTML = list.map(item => `
+      document.getElementById('blogTable').innerHTML = list.map((item, index) => `
         <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
           <div>
-            <h4 class="font-bold text-white text-sm">${item.title}</h4>
+            <h4 class="font-bold text-white text-sm mb-1">${item.title}</h4>
             <span class="text-slate-400 text-[11px]">${item.category} &bull; ${item.date}</span>
           </div>
-          <span class="px-2.5 py-1 rounded bg-green-500/20 text-green-300 text-[10px]">منشور</span>
+          <button onclick="deleteBlog(${index})" class="text-red-400 hover:text-red-300 px-3 py-1 rounded bg-red-500/10"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
         </div>
       `).join('');
     }
@@ -215,12 +317,84 @@
       document.getElementById('usersTable').innerHTML = list.map(u => `
         <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
           <div>
-            <div class="font-bold text-white">${u.name} (@${u.username})</div>
+            <div class="font-bold text-white text-sm">${u.name} (@${u.username})</div>
             <span class="text-slate-400">${u.role}</span>
           </div>
-          <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px]">نشط</span>
+          <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">نشط</span>
         </div>
       `).join('');
+    }
+
+    // Modal Control & Event Handlers
+    function openPortfolioModal() { document.getElementById('portfolioModal').classList.remove('hidden'); }
+    function openBlogModal() { document.getElementById('blogModal').classList.remove('hidden'); }
+    function openUserModal() { document.getElementById('userModal').classList.remove('hidden'); }
+    function closeModals() {
+      document.getElementById('portfolioModal').classList.add('hidden');
+      document.getElementById('blogModal').classList.add('hidden');
+      document.getElementById('userModal').classList.add('hidden');
+    }
+
+    document.getElementById('portfolioForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const list = window.cmsEngine.getPortfolio();
+      list.unshift({
+        id: Date.now().toString(),
+        title: document.getElementById('pTitle').value,
+        category: document.getElementById('pCategory').value,
+        roas: document.getElementById('pRoas').value,
+        desc: document.getElementById('pDesc').value,
+        budget: document.getElementById('pBudget').value,
+        results: document.getElementById('pResults').value
+      });
+      window.cmsEngine.savePortfolio(list);
+      closeModals();
+      loadPortfolioAdmin();
+    });
+
+    document.getElementById('blogForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const list = window.cmsEngine.getBlog();
+      list.unshift({
+        id: Date.now().toString(),
+        title: document.getElementById('bTitle').value,
+        category: document.getElementById('bCategory').value,
+        content: document.getElementById('bContent').value,
+        excerpt: document.getElementById('bContent').value.substring(0, 100) + '...',
+        date: new Date().toLocaleDateString('ar-EG'),
+        author: session.name
+      });
+      window.cmsEngine.saveBlog(list);
+      closeModals();
+      loadBlogAdmin();
+    });
+
+    document.getElementById('userForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const list = window.cmsEngine.getUsers();
+      list.push({
+        username: document.getElementById('uUsername').value,
+        pass: document.getElementById('uPass').value,
+        name: document.getElementById('uName').value,
+        role: document.getElementById('uRole').value
+      });
+      window.cmsEngine.saveUsers(list);
+      closeModals();
+      loadUsersAdmin();
+    });
+
+    function deletePortfolio(index) {
+      const list = window.cmsEngine.getPortfolio();
+      list.splice(index, 1);
+      window.cmsEngine.savePortfolio(list);
+      loadPortfolioAdmin();
+    }
+
+    function deleteBlog(index) {
+      const list = window.cmsEngine.getBlog();
+      list.splice(index, 1);
+      window.cmsEngine.saveBlog(list);
+      loadBlogAdmin();
     }
 
     loadAnalytics();

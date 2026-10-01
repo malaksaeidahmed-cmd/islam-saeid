@@ -1,4 +1,4 @@
-// 1. Dark Mode Toggle
+// 1. Theme Management
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeIcon = document.getElementById('themeIcon');
 const htmlEl = document.documentElement;
@@ -20,23 +20,25 @@ if (themeToggleBtn) {
   });
 }
 
-// 2. Language Switcher Engine (AR / EN)
+// 2. Full Site Language Engine (AR / EN)
 const langToggleBtn = document.getElementById('langToggleBtn');
 const langText = document.getElementById('langText');
 
 const translations = {
   ar: {
+    "my-name": "إسلام سعيد",
     "nav-about": "المنهجية",
     "nav-brands": "شركاء النجاح",
     "nav-portfolio": "سابقة الأعمال",
     "nav-calc": "حاسبة القرار المالي",
+    "nav-blog": "المدونة والنشرات",
     "nav-course": "برنامج القاهرة (20 مقعداً)",
     "nav-faq": "الأسئلة الشائعة",
     "contact-btn": "تواصل معي",
     "hero-tag": "Senior Social Media Specialist & Performance Marketer",
     "hero-title1": "إدارة الميزانيات الإعلانية الضخمة",
     "hero-title2": "بتحقيق عوائد استثمارية تصل إلى 30x ROAS",
-    "hero-desc": "أنا إسلام سعيد. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة.",
+    "hero-desc": "أنا إسلام سعيد. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة، من خلال دمج التحليل المالي لاقتصاديات الوحدة (Unit Economics) مع صناعة المحتوى الإعلاني الموجه.",
     "btn-course": "البرنامج الأوفلاين المكثف (القاهرة)",
     "btn-calc": "حاسبة القرار المالي للمشروع",
     "stat1": "أعلى عائد ROAS محقق",
@@ -44,13 +46,64 @@ const translations = {
     "stat3": "ميزانية شهرية مدارة للبراند",
     "brands-tag": "شركاء النجاح",
     "brands-title": "أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا",
-    "brands-desc": "نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات"
+    "brands-desc": "نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات",
+    "about-tag": "المنهج الإداري",
+    "about-title": "لماذا تنجح الحملات المدروسة محاسبياً وتفشل الإعلانات العشوائية؟",
+    "about-desc": "الإعلانات الممولة ليست مجرد تجارب لاستهداف عشوائي؛ بل تبدأ من داخل دفاتر حسابات البيزنس. أحسب معك تكلفة كل طلب، والحد الأقصى المسموح به للشراء (Max CAC)، لنضمن أن زيادة الميزانية تؤدي إلى صافي ربح حقيقي في جيب صاحب المشروع وليس مجرد تفاعل وهمي على المنشورات.",
+    "mis-deg": "نظم معلومات إدارية MIS",
+    "cairo-loc": "القاهرة، مصر",
+    "about-card1": "ربط مراحل التوعية وجذب الجمهور الجديد مع حملات التحويل وإعادة الاستهداف المتقدم لزوار السلات المتروكة.",
+    "about-card2": "توجيه كتابة وتصوير الفيديوهات القصيرة (Reels & TikToks) لجذب انتباه العميل في أول ثانيتين وحثه المباشر على اتخاذ قرار الشراء.",
+    "portfolio-tag": "سجلات أداء حقيقية",
+    "portfolio-title": "نتائج حملات موثقة من مدير الإعلانات",
+    "calc-tag": "الذكاء المالي واستشراف نتائج الحملات",
+    "calc-title": "حاسبة القرار التسويقي واقتصاديات السوق",
+    "calc-sub": "حاسبة تعتمد على معدلات الأداء الحقيقية في السوق المصري والعربي لمساعدتك في اتخاذ قرارات تسويقية واثقة.",
+    "calc-industry-lbl": "اختر المجال / النشاط التجاري:",
+    "calc-price-lbl": "متوسط سعر الخدمة / الطلب (ج.م):",
+    "calc-budget-lbl": "الميزانية الإعلانية الشهرية (ج.م):",
+    "calc-cogs-lbl": "نسبة تكلفة البضاعة/الخدمة المباشرة (%):",
+    "reach-lbl-calc": "متوسط الوصول التقديري (Reach):",
+    "cr-lbl-calc": "معدل التحويل المتوقع (CR%):",
+    "ctr-lbl-calc": "معدل النقر للإعلان (CTR%):",
+    "cpa-lbl-calc": "تكلفة الشراء/العميل المتوقعة (CPA):",
+    "calc-be-lbl": "نقطة التعادل (Break-Even ROAS)",
+    "calc-maxcac-lbl": "أقصى كلفة استحواذ (Max CAC)",
+    "calc-netprofit-lbl": "صافي الأرباح المتوقعة:",
+    "calc-netprofit-sub": "بعد خصم التكلفة والميزانية",
+    "btn-plan-wa": "طلب تنفيذ هذه الخطة عبر واتساب",
+    "btn-download-pdf": "تنزيل تقرير الجدوى المالي (PDF)",
+    "course-tag": "أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط",
+    "course-title-1": "معسكر الميديا باينج وتطبيق الـ",
+    "course-req-title": "شرط القبول:",
+    "course-req-desc": "نظراً لأن البرنامج تطبيقي ومحدود بـ 20 مقعداً فقط، لا يعتبر الحجز نهائياً إلا بعد اجتياز المقابلة الشخصية للتأكد من ملاءمة أهدافك للبرنامج.",
+    "course-timer-lbl": "خصم الحجز المبكر (50%) ينتهي خلال:",
+    "form-title": "طلب الترشح للمقابلة الشخصية",
+    "form-desc": "سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.",
+    "form-name": "الاسم الكامل:",
+    "form-phone": "رقم الواتساب:",
+    "form-budget": "حجم إنفاقك الإعلاني الحالي:",
+    "form-challenge": "التحدي الأكبر المطلوب حله في المعسكر:",
+    "form-btn": "إرسال طلب الترشح للمقابلة",
+    "form-success-title": "تم استلام طلبك بنجاح",
+    "form-success-sub": "يتم توجيهك إلى واتساب لترتيب موعد المقابلة...",
+    "faq-tag": "وضوح وشفافية",
+    "faq-title": "الأسئلة الشائعة",
+    "q1": "لماذا تشترط مقابلة شخصية (Interview) قبل القبول في المعسكر التدريبي؟",
+    "a1": "لأن المعسكر عملي ومغلق على 20 مقعداً فقط؛ المقابلة تضمن أن خلفيتك وأهدافك ملائمة تماماً للمستوى المتقدم وتطبيق مهارات الـ Scaling.",
+    "q2": "هل المنهجية وحاسبة اقتصاديات الوحدة تناسب كافة أنواع الأنشطة؟",
+    "a2": "نعم، القواعد المالية لاقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة سواء في التجارة الإلكترونية، خدمات B2B، العقارات، أو قطاع الأغذية والمطاعم.",
+    "q3": "ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟",
+    "a3": "نفضل ميزانية لا تقل عن 20,000 إلى 30,000 ج.م شهرياً لضمان تدريب خوارزميات Meta و TikTok واختبار العروض والوصول إلى أداء مربح مستدام.",
+    "rights": "جميع الحقوق محفوظة"
   },
   en: {
+    "my-name": "Islam Saeid",
     "nav-about": "Methodology",
     "nav-brands": "Partners",
     "nav-portfolio": "Portfolio",
     "nav-calc": "Financial Calculator",
+    "nav-blog": "Blog & Newsletter",
     "nav-course": "Cairo Program (20 Seats)",
     "nav-faq": "FAQ",
     "contact-btn": "Contact Me",
@@ -65,7 +118,56 @@ const translations = {
     "stat3": "Monthly Managed Budget",
     "brands-tag": "Success Partners",
     "brands-title": "Over 50+ Brands Trusted Our Growth Engine",
-    "brands-desc": "Featuring top partner logos across E-Commerce, Restaurants, Interior & Foods."
+    "brands-desc": "Featuring top partner logos across E-Commerce, Restaurants, Interior & Foods.",
+    "about-tag": "Management Methodology",
+    "about-title": "Why Financial-Driven Campaigns Succeed While Random Ads Fail?",
+    "about-desc": "Paid ads are not random trials; they start inside the accounting books. I calculate your Max Allowable CAC to ensure ad scale turns into real net profit.",
+    "mis-deg": "MIS Degree Graduate",
+    "cairo-loc": "Cairo, Egypt",
+    "about-card1": "Full-funnel integration connecting acquisition with retargeting.",
+    "about-card2": "Creative direction for Reels & TikToks hooking attention in 2s.",
+    "portfolio-tag": "Verified Case Studies",
+    "portfolio-title": "Campaign Results Verified From Ad Manager",
+    "calc-tag": "Financial Intelligence",
+    "calc-title": "Strategic Marketing Decision Calculator",
+    "calc-sub": "Driven by real MENA & Egypt market benchmark metrics.",
+    "calc-industry-lbl": "Select Business Sector:",
+    "calc-price-lbl": "Average Product / Service Price (EGP):",
+    "calc-budget-lbl": "Monthly Proposed Ad Budget (EGP):",
+    "calc-cogs-lbl": "Direct COGS / Service Cost (%):",
+    "reach-lbl-calc": "Estimated Total Reach:",
+    "cr-lbl-calc": "Benchmark Conversion Rate (CR%):",
+    "ctr-lbl-calc": "Click Through Rate (CTR%):",
+    "cpa-lbl-calc": "Estimated Acquisition Cost (CPA):",
+    "calc-be-lbl": "Break-Even ROAS",
+    "calc-maxcac-lbl": "Max Allowable CAC",
+    "calc-netprofit-lbl": "Estimated Net Profit:",
+    "calc-netprofit-sub": "After COGS and Ad Budget",
+    "btn-plan-wa": "Execute This Plan via WhatsApp",
+    "btn-download-pdf": "Download Feasibility Report (PDF)",
+    "course-tag": "Offline in Cairo | Limited to 20 Seats",
+    "course-title-1": "Media Buying Bootcamp &",
+    "course-req-title": "Admission Criteria:",
+    "course-req-desc": "Selection requires passing a personal interview to verify qualification.",
+    "course-timer-lbl": "50% Early Bird Offer Ends In:",
+    "form-title": "Apply For Candidate Interview",
+    "form-desc": "Submit your info to reserve interview priority.",
+    "form-name": "Full Name:",
+    "form-phone": "WhatsApp Number:",
+    "form-budget": "Current Monthly Ad Budget:",
+    "form-challenge": "Biggest Challenge To Solve:",
+    "form-btn": "Submit Application",
+    "form-success-title": "Application Received Successfully",
+    "form-success-sub": "Redirecting to WhatsApp for interview schedule...",
+    "faq-tag": "Transparency & Clarity",
+    "faq-title": "Frequently Asked Questions",
+    "q1": "Why is an interview required before bootcamp admission?",
+    "a1": "Because it is intensive and limited to 20 seats to guarantee maximum ROI for every accepted candidate.",
+    "q2": "Does unit economics apply to all business types?",
+    "a2": "Yes, Break-Even ROAS and Max CAC rules are universal across E-Commerce, B2B, Services, and Real Estate.",
+    "q3": "What is the recommended minimum monthly budget?",
+    "a3": "We recommend a minimum of 20,000 - 30,000 EGP monthly to properly feed Meta & TikTok algorithms.",
+    "rights": "All Rights Reserved"
   }
 };
 
@@ -92,11 +194,10 @@ if (langToggleBtn) {
   });
 }
 
-// 3. Current Year Footer
+// 3. Current Year & Timer
 const currentYearEl = document.getElementById('currentYear');
 if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
-// 4. Timer Countdown
 let secondsLeft = 48 * 3600;
 const timerEl = document.getElementById('earlyBirdTimer');
 if (timerEl) {
@@ -109,7 +210,7 @@ if (timerEl) {
   }, 1000);
 }
 
-// 5. Brands 27 Data Array
+// 4. Brands Marquee Render
 const realBrandNames = [
   "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
   "المتوكل", "زين الدين", "فليفر - Flavor", "يحيى العطار", "لؤلؤة الدقي",
@@ -118,10 +219,7 @@ const realBrandNames = [
   "B-Smart", "Luxer", "Anhagar Egypt", "Bubbleino", "Brand 25", "Brand 26", "Brand 27"
 ];
 
-const brandsList = realBrandNames.map((name, index) => ({
-  id: index + 1,
-  name: name
-}));
+const brandsList = realBrandNames.map((name, index) => ({ id: index + 1, name: name }));
 
 function renderBrandsMarquee() {
   const group1 = document.getElementById('brandsMarqueeGroup1');
@@ -148,7 +246,18 @@ function renderBrandsMarquee() {
   group2.innerHTML = htmlContent;
 }
 
-// 6. Form Submission
+// 5. Render Dynamic Portfolio & Track Analytics Visit Event
+document.addEventListener('DOMContentLoaded', () => {
+  applyLanguage(currentLang);
+  renderBrandsMarquee();
+
+  if (window.cmsEngine) {
+    window.cmsEngine.trackVisit();
+    window.cmsEngine.renderPortfolio('dynamicPortfolioGrid');
+  }
+});
+
+// 6. Form Submission & Mobile Menu
 const form = document.getElementById('waitlistForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -158,6 +267,10 @@ if (form) {
     const budget = document.getElementById('subBudget').value;
     const challenge = document.getElementById('subChallenge').value;
     
+    if (window.cmsEngine) {
+      window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${phone})`);
+    }
+
     form.classList.add('hidden');
     document.getElementById('waitlistSuccess').classList.remove('hidden');
     
@@ -168,7 +281,6 @@ if (form) {
   });
 }
 
-// 7. FAQ Accordion
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
@@ -185,15 +297,9 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
   });
 });
 
-// 8. Mobile Menu
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {
   mBtn.addEventListener('click', () => mMenu.classList.toggle('hidden'));
   mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mMenu.classList.add('hidden')));
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  applyLanguage(currentLang);
-  renderBrandsMarquee();
-});

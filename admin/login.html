@@ -3,68 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تسجيل الدخول | لوحة تحكم إسلام سعيد</title>
+  <title>تسجيل الدخول | لوحة التحكم</title>
   <link rel="icon" type="image/png" href="../assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen flex items-center justify-center p-5">
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen flex items-center justify-center p-4">
 
-  <div class="w-full max-w-md p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] shadow-2xl space-y-6">
+  <div class="w-full max-w-md p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-6 shadow-2xl">
     <div class="text-center space-y-2">
-      <img src="../assets/logo.png" alt="Logo" class="w-14 h-14 mx-auto object-contain rounded-xl mb-3" />
-      <h1 class="text-2xl font-bold text-white">لوحة الإدارة والتحكم</h1>
-      <p class="text-xs text-slate-400">تسجيل الدخول الآمن لإدارة سابقة الأعمال والمدونة والتحليلات</p>
+      <img src="../assets/logo.png" alt="Logo" class="w-12 h-12 object-contain mx-auto rounded-xl border border-white/10" onError="this.style.display='none'" />
+      <h1 class="text-xl font-bold text-white">تسجيل الدخول للوحة الإدارة</h1>
+      <p class="text-xs text-slate-400">أدخل اسم المستخدم وكلمة المرور للمتابعة</p>
     </div>
 
     <form id="loginForm" class="space-y-4 text-xs">
       <div>
-        <label class="block font-medium text-slate-300 mb-1.5">اسم المستخدم:</label>
-        <div class="relative">
-          <input type="text" id="usernameInput" required placeholder="islam" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 font-sans" />
-          <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-500"></i>
-        </div>
+        <label class="block font-semibold text-slate-300 mb-1">اسم المستخدم (Username):</label>
+        <input type="text" id="userInput" required placeholder="islam" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
       </div>
-
       <div>
-        <label class="block font-medium text-slate-300 mb-1.5">كلمة المرور:</label>
-        <div class="relative">
-          <input type="password" id="passwordInput" required placeholder="••••••••" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 font-sans" />
-          <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500"></i>
-        </div>
+        <label class="block font-semibold text-slate-300 mb-1">كلمة المرور:</label>
+        <input type="password" id="passInput" required placeholder="••••••••" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
       </div>
 
-      <div id="loginError" class="hidden p-3 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 text-center text-xs">
-        اسم المستخدم أو كلمة المرور غير صحيحة.
+      <div id="loginError" class="hidden p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 text-center font-semibold">
+        اسم المستخدم أو كلمة المرور غير صحيحة
       </div>
 
-      <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-sm shadow-lg hover:opacity-95 transition-opacity">
-        تسجيل الدخول إلى Dashboard
+      <button type="submit" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg text-xs">
+        دخول لوحة التحكم
       </button>
     </form>
-
-    <div class="text-center pt-2">
-      <a href="../index.html" class="text-xs text-slate-400 hover:text-white transition-colors">
-        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للموقع الرئيسي
-      </a>
-    </div>
   </div>
 
-  <script src="../js/cms-data.js"></script>
   <script>
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const user = document.getElementById('usernameInput').value.trim();
-      const pass = document.getElementById('passwordInput').value.trim();
-      const users = window.cmsEngine.getUsers();
+      const user = document.getElementById('userInput').value.trim();
+      const pass = document.getElementById('passInput').value;
 
-      const found = users.find(u => u.username === user && u.pass === pass);
-
-      if (found) {
-        localStorage.setItem('cms_session', JSON.stringify({ user: found.username, name: found.name, role: found.role }));
+      if (user === 'islam' && pass === 'Nour123@@##') {
+        sessionStorage.setItem('cms_auth', JSON.stringify({ name: "إسلام سعيد", role: "Admin" }));
         window.location.href = 'dashboard.html';
       } else {
         document.getElementById('loginError').classList.remove('hidden');

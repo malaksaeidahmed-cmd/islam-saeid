@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم والتحليلات | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
+
+  <div class="flex h-screen overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5">
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <img src="../assets/logo.png" alt="Logo" class="w-9 h-9 object-contain rounded-lg" />
+          <div>
+            <div class="font-bold text-white text-sm">لوحة الإدارة</div>
+            <div class="text-[10px] text-slate-400" id="adminUserRole">مرحباً بك</div>
+          </div>
+        </div>
+
+        <nav class="space-y-1.5 text-xs">
+          <button onclick="switchTab('analyticsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 bg-white/10 text-white font-bold">
+            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات ورحلة الزائر
+          </button>
+          <button onclick="switchTab('portfolioTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-briefcase text-orange-400"></i> إدارة سابقة الأعمال
+          </button>
+          <button onclick="switchTab('blogTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-newspaper text-pink-400"></i> المدونة والنشرات
+          </button>
+          <button onclick="switchTab('usersTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-users-gear text-amber-400"></i> المشرفون والصلاحيات
+          </button>
+        </nav>
+      </div>
+
+      <div class="pt-4 border-t border-white/10 space-y-2">
+        <a href="../index.html" target="_blank" class="block w-full py-2 text-center rounded-lg bg-white/5 text-slate-300 text-xs hover:bg-white/10">
+          <i class="fa-solid fa-globe ml-1"></i> معاينة الموقع
+        </a>
+        <button id="logoutBtn" class="w-full py-2 text-center rounded-lg bg-red-500/20 text-red-300 text-xs hover:bg-red-500/30">
+          <i class="fa-solid fa-right-from-bracket ml-1"></i> تسجيل الخروج
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-8">
+      
+      <!-- TAB 1: ANALYTICS -->
+      <section id="analyticsTab" class="tab-content space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">إحصائيات ورحلة المتصفح بالكامل</h2>
+          <p class="text-xs text-slate-400">تتبع مباشر لأعداد الزوار والأحداث والنماذج المستلمة.</p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 text-xs">
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">إجمالي زيارات الموقع</span>
+            <span id="statVisits" class="text-2xl font-bold text-white font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">طلبات ترشح المعسكر</span>
+            <span id="statLeads" class="text-2xl font-bold text-green-400 font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">مرات تنزيل PDF الجدوى</span>
+            <span id="statPdfs" class="text-2xl font-bold text-amber-400 font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">معدل التحويل التقديري</span>
+            <span id="statCr" class="text-2xl font-bold text-purple-400 font-sans">3.2%</span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
+          <h3 class="font-bold text-white text-sm">سجل الأحداث الأخيرة للزوار (Event Logs)</h3>
+          <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PORTFOLIO MANAGEMENT -->
+      <section id="portfolioTab" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">إدارة سابقة الأعمال</h2>
+            <p class="text-xs text-slate-400">إضافة وتعديل نتائج الحملات المعروضة في الصفحة الرئيسية.</p>
+          </div>
+          <button onclick="togglePortfolioModal()" class="px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs">
+            <i class="fa-solid fa-plus ml-1"></i> إضافة مشروع جديد
+          </button>
+        </div>
+
+        <div id="portfolioTable" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </section>
+
+      <!-- TAB 3: BLOG MANAGEMENT -->
+      <section id="blogTab" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">إدارة منشورات المدونة والنشرة الإخبارية</h2>
+            <p class="text-xs text-slate-400">نشر مقالات ونصائح تسويقية تظهر في صفحة المدونة المستقلة.</p>
+          </div>
+          <button onclick="toggleBlogModal()" class="px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs">
+            <i class="fa-solid fa-plus ml-1"></i> إضافة مقال جديد
+          </button>
+        </div>
+
+        <div id="blogTable" class="space-y-3"></div>
+      </section>
+
+      <!-- TAB 4: USERS & ROLES -->
+      <section id="usersTab" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">إدارة المشرفين والصلاحيات</h2>
+            <p class="text-xs text-slate-400">إضافة أدمن، محرر، أو مراقب لوحة التحكم.</p>
+          </div>
+          <button onclick="toggleUserModal()" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs">
+            <i class="fa-solid fa-user-plus ml-1"></i> إضافة مشرف
+          </button>
+        </div>
+
+        <div id="usersTable" class="space-y-3"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../js/cms-data.js"></script>
+  <script>
+    // Verify Session Security
+    const session = JSON.parse(localStorage.getItem('cms_session'));
+    if (!session) {
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('adminUserRole').textContent = `${session.name} (${session.role})`;
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('cms_session');
+      window.location.href = 'login.html';
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-white/10', 'text-white', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      event.currentTarget.classList.add('bg-white/10', 'text-white', 'font-bold');
+    }
+
+    function loadAnalytics() {
+      const stats = window.cmsEngine.getAnalytics();
+      document.getElementById('statVisits').textContent = stats.visits.toLocaleString('ar-EG');
+      document.getElementById('statLeads').textContent = stats.leads.toLocaleString('ar-EG');
+      document.getElementById('statPdfs').textContent = stats.pdfDownloads.toLocaleString('ar-EG');
+
+      const logContainer = document.getElementById('eventsLogList');
+      if (stats.events.length === 0) {
+        logContainer.innerHTML = '<p class="text-slate-500 py-2">لا توجد أحداث مسجلة مؤخراً.</p>';
+      } else {
+        logContainer.innerHTML = stats.events.map(e => `
+          <div class="pt-2 flex justify-between items-center">
+            <div>
+              <span class="font-bold text-purple-400 ml-2">[${e.type}]</span>
+              <span class="text-slate-300">${e.details}</span>
+            </div>
+            <span class="text-[10px] text-slate-500">${e.date}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function loadPortfolioAdmin() {
+      const list = window.cmsEngine.getPortfolio();
+      document.getElementById('portfolioTable').innerHTML = list.map(item => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-white">${item.title}</span>
+            <span class="text-brand-magenta">${item.category}</span>
+          </div>
+          <p class="text-slate-400">${item.desc}</p>
+          <div class="text-[11px] text-slate-300"><strong>العائد:</strong> ${item.roas}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadBlogAdmin() {
+      const list = window.cmsEngine.getBlog();
+      document.getElementById('blogTable').innerHTML = list.map(item => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
+          <div>
+            <h4 class="font-bold text-white text-sm">${item.title}</h4>
+            <span class="text-slate-400 text-[11px]">${item.category} &bull; ${item.date}</span>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-green-500/20 text-green-300 text-[10px]">منشور</span>
+        </div>
+      `).join('');
+    }
+
+    function loadUsersAdmin() {
+      const list = window.cmsEngine.getUsers();
+      document.getElementById('usersTable').innerHTML = list.map(u => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
+          <div>
+            <div class="font-bold text-white">${u.name} (@${u.username})</div>
+            <span class="text-slate-400">${u.role}</span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px]">نشط</span>
+        </div>
+      `).join('');
+    }
+
+    loadAnalytics();
+    loadPortfolioAdmin();
+    loadBlogAdmin();
+    loadUsersAdmin();
+  </script>
+</body>
+</html>

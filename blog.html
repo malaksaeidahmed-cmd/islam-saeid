@@ -14,11 +14,10 @@
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
-  <!-- Header -->
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
     <div class="max-w-5xl mx-auto px-5 flex justify-between items-center">
       <a href="index.html" class="flex items-center gap-3">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" />
+        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
         <span class="font-bold text-white">إسلام سعيد &bull; المدونة</span>
       </a>
       <a href="index.html" class="text-xs text-slate-300 hover:text-white">
@@ -27,36 +26,55 @@
     </div>
   </header>
 
-  <!-- Content -->
   <main class="max-w-4xl mx-auto px-5 py-16 space-y-10">
     <div class="text-center space-y-3">
       <span class="text-xs font-bold text-pink-500 uppercase tracking-widest">معرفة وخبرات إعلانية</span>
       <h1 class="text-3xl font-bold text-white">نشرات الميديا باينج والنمو الإعلاني</h1>
-      <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">مقالات واستراتيجيات متقدمة حول إعلانات Meta و TikTok واقتصاديات الوحدة لتنمية أعمالك.</p>
+      <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">استراتيجيات متقدمة حول إعلانات Meta و TikTok واقتصاديات الوحدة لتنمية أعمالك.</p>
     </div>
 
-    <div id="blogContainer" class="space-y-6"></div>
+    <div id="blogContainer" class="space-y-6">
+      <div class="text-center py-10 text-slate-500 text-xs">جاري جلب المقالات السحابية...</div>
+    </div>
   </main>
 
-  <script src="js/cms-data.js"></script>
-  <script>
-    const posts = window.cmsEngine.getBlog();
-    const container = document.getElementById('blogContainer');
+  <script type="module">
+    import { CloudCMS } from './js/firebase-cms.js';
 
-    container.innerHTML = posts.map(p => `
-      <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all">
-        <div class="flex items-center justify-between text-xs">
-          <span class="text-pink-400 font-bold">${p.category}</span>
-          <span class="text-slate-500">${p.date}</span>
-        </div>
-        <h2 class="text-xl font-bold text-white">${p.title}</h2>
-        <p class="text-xs text-slate-300 leading-relaxed">${p.content}</p>
-        <div class="pt-2 border-t border-white/5 flex items-center gap-2 text-xs text-slate-400">
-          <i class="fa-solid fa-pen-nib text-brand-orange"></i>
-          <span>بقلم: ${p.author}</span>
-        </div>
-      </article>
-    `).join('');
+    CloudCMS.subscribeBlog(posts => {
+      const container = document.getElementById('blogContainer');
+      if (!posts.length) {
+        container.innerHTML = '<p class="text-center text-slate-500 py-10 text-xs">لا توجد مقالات منشورة حالياً.</p>';
+        return;
+      }
+
+      container.innerHTML = posts.map(p => {
+        const plainText = (p.content || '').replace(/<[^>]*>?/gm, '');
+        const excerpt = plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
+
+        return `
+          <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-pink-400 font-bold">${p.category || 'عام'}</span>
+                <span class="text-slate-500">${new Date(p.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
+              </div>
+              <h2 class="text-xl font-bold text-white hover:text-pink-400 transition-colors">
+                <a href="post.html?id=${p.id}">${p.title}</a>
+              </h2>
+              <p class="text-xs text-slate-300 leading-relaxed">${excerpt}</p>
+            </div>
+            <div class="pt-3 border-t border-white/5 flex justify-between items-center text-xs">
+              <span class="text-slate-400"><i class="fa-solid fa-pen-nib text-orange-400 ml-1"></i>${p.author || 'إسلام سعيد'}</span>
+              <a href="post.html?id=${p.id}" class="text-pink-400 hover:text-white font-bold flex items-center gap-1">
+                <span>اقرأ المقال بالكامل</span>
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    });
   </script>
 </body>
 </html>

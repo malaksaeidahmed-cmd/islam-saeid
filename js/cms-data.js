@@ -1,4 +1,3 @@
-// Local Central CMS Data Store & Analytics Tracker
 (function() {
   const DEFAULT_PORTFOLIO = [
     {
@@ -34,12 +33,40 @@
     {
       id: "1",
       title: "كيف تحسب Break-Even ROAS قبل ضخ أول 10 آلاف جنيه إعلانات؟",
-      excerpt: "دليل عملي لكيفية مراجعة دفاتر البيزنس قبل إطلاق حملات Meta و TikTok المتقدمة.",
-      content: "عندما تطلق حملتك الإعلانية الأولى، الخطأ الأكثر شيوعاً هو التركيز على سعر الكليك بدلاً من الـ Max Allowable CAC...",
+      excerpt: "دليل عملي لكيفية مراجعة دفاتر البيزنس وتحديد نقطة التعادل قبل إطلاق حملات الميديا باينج.",
+      content: `عندما تبدأ في إطلاق حملتك الإعلانية الأولى، الخطأ القاتل الذي يقع فيه أغلب أصحاب الأنشطة التجارية هو تقييم نجاح الحملة بناءً على سعر النقرة (CPC) أو عدد الإعجابات.
+      
+الحقيقة التسويقية الصارمة تقول: "الإعلان ليس مجرد تفاعل، بل هو معادلة محاسبية في المقام الأول".
+
+لحساب نقطة التعادل (Break-Even ROAS):
+1. حدد سعر البيع النهائي للمنتج (مثلاً 1,000 ج.م).
+2. الخصم المباشر لتكلفة البضاعة والتصنيع والشحن (مثلاً 600 ج.م).
+3. هامش الربح الصافي المتبقي قبل الإعلانات = 400 ج.م (نسبة 40%).
+4. نقطة التعادل المالي = (سعر البيع ÷ هامش الربح) = (1000 ÷ 400) = 2.5x ROAS.
+
+معنى هذا الرقم: لو حقق لك مدير الإعلانات عائد 2.49x فأنت تخسر مالياً حقيقة حتى وإن بلغت مبيعاتك ملايين الجنيهات. تأكد دائماً أن الـ ROAS الفعلي يتجاوز هذه النقطة لضمان أرباح صافية بالخزينة.`,
       category: "استراتيجيات مالية",
       date: new Date().toLocaleDateString('ar-EG'),
       author: "إسلام سعيد",
       image: "assets/1.webp"
+    },
+    {
+      id: "2",
+      title: "سيكولوجية الإعلان الفيروسى: كيف حققنا 0.01 EGP للتفاعل في حملات المطاعم؟",
+      excerpt: "أسرار صناعة الهوك (Hook) في أول ثانيتين وكيفية توجيه المشاهد لاتخاذ قرار الشراء المباشر.",
+      content: `تعتبر صناعة الإعلانات الفيروسية (Viral Ads) لقطاع المطاعم والأغذية من أكبر التحديات بسبب المنافسة الشديدة وضخامة الخيارات أمام العميل.
+
+كيف حققنا تكلفة تفاعل 0.01 جنيه لـ 43 ألف عميل في سلسلة "ملك الشاورما"؟
+
+أولاً: قانون الـ 2 Seconds Hook:
+العميل لا يفتح فيسبوك أو إنستجرام ليشتري؛ بل يفتح للترفيه. أول ثانيتين يجب أن تتضمن صدمة بصرية أو سؤالاً يمس جوعه (صوت تقطيع الشاورما الساخنة أو عرض الساندوتش الضخم كلوذ أب).
+
+ثانياً: العرض المجمع (The Irresistible Bundle):
+بدلاً من الإعلان عن ساندوتش واحد، تم تحفيز الجمهور بعروض العائلات أو الأصدقاء (Buy 2 Get 1 Free). هذا العرض ينقل العميل من مرحلة "التفرج" إلى مرحلة "طلب الدليفري المباشر".`,
+      category: "صناعة المحتوى الإعلاني",
+      date: new Date().toLocaleDateString('ar-EG'),
+      author: "إسلام سعيد",
+      image: "assets/2.webp"
     }
   ];
 
@@ -47,7 +74,7 @@
     { username: "islam", pass: "Nour123@@##", role: "Admin", name: "إسلام سعيد" }
   ];
 
-  // Initialize Storage
+  // Initialize Storage (Fresh Reset for Analytics)
   if (!localStorage.getItem('cms_portfolio')) {
     localStorage.setItem('cms_portfolio', JSON.stringify(DEFAULT_PORTFOLIO));
   }
@@ -57,8 +84,10 @@
   if (!localStorage.getItem('cms_users')) {
     localStorage.setItem('cms_users', JSON.stringify(DEFAULT_USERS));
   }
+  
+  // Real Analytics Starting at Clean 0
   if (!localStorage.getItem('cms_analytics')) {
-    localStorage.setItem('cms_analytics', JSON.stringify({ visits: 1240, leads: 18, pdfDownloads: 45, events: [] }));
+    localStorage.setItem('cms_analytics', JSON.stringify({ visits: 0, leads: 0, pdfDownloads: 0, events: [] }));
   }
 
   window.cmsEngine = {

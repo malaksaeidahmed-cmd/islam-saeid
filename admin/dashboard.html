@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة التحكم والتحليلات | إسلام سعيد</title>
+  <title>لوحة التحكم السحابية | إسلام سعيد</title>
   <link rel="icon" type="image/png" href="../assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,10 +19,10 @@
     <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
-          <img src="../assets/logo.png" alt="Logo" class="w-9 h-9 object-contain rounded-lg" />
+          <img src="../assets/logo.png" alt="Logo" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
           <div>
-            <div class="font-bold text-white text-sm">لوحة الإدارة</div>
-            <div class="text-[10px] text-slate-400" id="adminUserRole">مرحباً بك</div>
+            <div class="font-bold text-white text-sm">لوحة التحكم السحابية</div>
+            <div class="text-[10px] text-green-400 font-bold">&bull; متصل بالربط اللحظي</div>
           </div>
         </div>
 
@@ -31,44 +31,38 @@
             <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات ورصد الزوار
           </button>
           <button onclick="switchTab('portfolioTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
-            <i class="fa-solid fa-briefcase text-orange-400"></i> إدارة سابقة الأعمال
+            <i class="fa-solid fa-briefcase text-orange-400"></i> سابقة الأعمال
           </button>
           <button onclick="switchTab('blogTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
-            <i class="fa-solid fa-newspaper text-pink-400"></i> المدونة والنشرات
-          </button>
-          <button onclick="switchTab('usersTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
-            <i class="fa-solid fa-users-gear text-amber-400"></i> المشرفون والصلاحيات
+            <i class="fa-solid fa-newspaper text-pink-400"></i> المقالات والنشرات
           </button>
         </nav>
       </div>
 
       <div class="pt-4 border-t border-white/10 space-y-2">
         <a href="../index.html" target="_blank" class="block w-full py-2 text-center rounded-lg bg-white/5 text-slate-300 text-xs hover:bg-white/10">
-          <i class="fa-solid fa-globe ml-1"></i> معاينة الموقع
+          <i class="fa-solid fa-globe ml-1"></i> معاينة الموقع الرئيسي
         </a>
-        <button id="logoutBtn" class="w-full py-2 text-center rounded-lg bg-red-500/20 text-red-300 text-xs hover:bg-red-500/30">
-          <i class="fa-solid fa-right-from-bracket ml-1"></i> تسجيل الخروج
-        </button>
       </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main View -->
     <main class="flex-1 overflow-y-auto p-8">
       
-      <!-- TAB 1: ANALYTICS -->
+      <!-- ANALYTICS -->
       <section id="analyticsTab" class="tab-content space-y-6">
         <div>
-          <h2 class="text-xl font-bold text-white">إحصائيات ورحلة المتصفح الحقيقية</h2>
-          <p class="text-xs text-slate-400">رصد مباشر وفوري للزيارات الفعلية وأحداث الموقع.</p>
+          <h2 class="text-xl font-bold text-white">التحليلات ورصد الزوار اللحظي</h2>
+          <p class="text-xs text-slate-400">بيانات حقيقية مستخرجة مباشرة من السيرفر السحابي.</p>
         </div>
 
         <div class="grid grid-cols-4 gap-4 text-xs">
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
-            <span class="text-slate-400 block mb-1">زيارات الموقع الفعلية</span>
+            <span class="text-slate-400 block mb-1">زيارات الموقع الحقيقية</span>
             <span id="statVisits" class="text-2xl font-bold text-white font-sans">0</span>
           </div>
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
-            <span class="text-slate-400 block mb-1">طلبات ترشح المعسكر</span>
+            <span class="text-slate-400 block mb-1">طلبات المعسكر المستلمة</span>
             <span id="statLeads" class="text-2xl font-bold text-green-400 font-sans">0</span>
           </div>
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
@@ -82,89 +76,55 @@
         </div>
 
         <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
-          <h3 class="font-bold text-white text-sm">سجل تفاعل الزوار الفعلي (Event Logs)</h3>
+          <h3 class="font-bold text-white text-sm">سجل تفاعل الزوار اللحظي (Event Logs)</h3>
           <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5"></div>
         </div>
       </section>
 
-      <!-- TAB 2: PORTFOLIO -->
+      <!-- PORTFOLIO -->
       <section id="portfolioTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-bold text-white">إدارة سابقة الأعمال</h2>
-            <p class="text-xs text-slate-400">إضافة وتعديل وحذف المشاريع المعروضة بالموقع.</p>
+            <p class="text-xs text-slate-400">إضافة وتعديل نتائج الحملات المعروضة بالموقع.</p>
           </div>
-          <button onclick="openPortfolioModal()" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg">
+          <button onclick="openModal('portfolioModal')" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs">
             <i class="fa-solid fa-plus ml-1"></i> إضافة مشروع جديد
           </button>
         </div>
-
         <div id="portfolioTable" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </section>
 
-      <!-- TAB 3: BLOG -->
+      <!-- BLOG -->
       <section id="blogTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-bold text-white">إدارة المدونة والنشرات</h2>
-            <p class="text-xs text-slate-400">كتابة ونشر مقالات الميديا باينج بصفحة المدونة.</p>
+            <h2 class="text-xl font-bold text-white">إدارة المقالات والنشرات</h2>
+            <p class="text-xs text-slate-400">نشر مقالات وتجارب إعلانية بصفحة المدونة.</p>
           </div>
-          <button onclick="openBlogModal()" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow-lg">
-            <i class="fa-solid fa-plus ml-1"></i> إضافة مقال جديد
+          <button onclick="openModal('blogModal')" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs">
+            <i class="fa-solid fa-plus ml-1"></i> كتابة مقال جديد
           </button>
         </div>
-
         <div id="blogTable" class="space-y-3"></div>
-      </section>
-
-      <!-- TAB 4: USERS -->
-      <section id="usersTab" class="tab-content hidden space-y-6">
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-bold text-white">إدارة المشرفين</h2>
-            <p class="text-xs text-slate-400">إضافة مديري ومحرري لوحة التحكم.</p>
-          </div>
-          <button onclick="openUserModal()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg">
-            <i class="fa-solid fa-user-plus ml-1"></i> إضافة مشرف جديد
-          </button>
-        </div>
-
-        <div id="usersTable" class="space-y-3"></div>
       </section>
 
     </main>
   </div>
 
-  <!-- MODAL: ADD PORTFOLIO -->
+  <!-- MODAL: PORTFOLIO -->
   <div id="portfolioModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">إضافة مشروع جديد لسابقة الأعمال</h3>
       <form id="portfolioForm" class="space-y-3">
-        <div>
-          <label class="block text-slate-300 mb-1">اسم البراند / المشروع:</label>
-          <input type="text" id="pTitle" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">القطاع / المجال:</label>
-          <input type="text" id="pCategory" placeholder="تجارة إلكترونية، مطاعم..." required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">العائد ROAS / تكلفة التفاعل:</label>
-          <input type="text" id="pRoas" placeholder="30x ROAS" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">الوصف والحلول المطبقة:</label>
-          <textarea id="pDesc" rows="3" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
-        </div>
+        <input type="text" id="pTitle" placeholder="اسم البراند" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="pCategory" placeholder="القطاع (تجارة إلكترونية، مطاعم...)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="pRoas" placeholder="العائد (30x ROAS)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <textarea id="pDesc" placeholder="وصف قصير للشريحة الخارجية" rows="2" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        <textarea id="pDetails" placeholder="تفاصيل دراسة الحالة الكاملة (التكتيكات والميديا)" rows="4" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
         <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-slate-300 mb-1">الميزانية / الوصول:</label>
-            <input type="text" id="pBudget" placeholder="100,000 EGP" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-          </div>
-          <div>
-            <label class="block text-slate-300 mb-1">المبيعات / النتائج:</label>
-            <input type="text" id="pResults" placeholder="3,000,000+ EGP" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-          </div>
+          <input type="text" id="pBudget" placeholder="الميزانية/الوصول" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <input type="text" id="pResults" placeholder="المبيعات/النتائج" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
@@ -174,22 +134,16 @@
     </div>
   </div>
 
-  <!-- MODAL: ADD BLOG -->
+  <!-- MODAL: BLOG -->
   <div id="blogModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs">
-      <h3 class="text-base font-bold text-white">إضافة مقال جديد للمدونة</h3>
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto">
+      <h3 class="text-base font-bold text-white">إضافة مقال جديد (دعم الميديا والفيديوهات)</h3>
       <form id="blogForm" class="space-y-3">
+        <input type="text" id="bTitle" placeholder="عنوان المقال" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="bCategory" placeholder="التصنيف" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <div>
-          <label class="block text-slate-300 mb-1">عنوان المقال:</label>
-          <input type="text" id="bTitle" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">التصنيف:</label>
-          <input type="text" id="bCategory" placeholder="استراتيجيات مالية، إعلانات Meta..." required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">المحتوى الكامل للمقال:</label>
-          <textarea id="bContent" rows="5" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+          <label class="block text-slate-400 mb-1">محتوى المقال (أدخل النصوص وروابط الصور أو فيديوهات يوتيوب/درايف):</label>
+          <textarea id="bContent" rows="8" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" placeholder="اكتب المقال هنا... يمكنك وضع روابط صور ومقاطع فيديو مباشرة..."></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
@@ -199,208 +153,91 @@
     </div>
   </div>
 
-  <!-- MODAL: ADD USER -->
-  <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-sm space-y-4 text-xs">
-      <h3 class="text-base font-bold text-white">إضافة مشرف جديد</h3>
-      <form id="userForm" class="space-y-3">
-        <div>
-          <label class="block text-slate-300 mb-1">الاسم الكامل:</label>
-          <input type="text" id="uName" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">اسم المستخدم (Username):</label>
-          <input type="text" id="uUsername" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">كلمة المرور:</label>
-          <input type="password" id="uPass" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        </div>
-        <div>
-          <label class="block text-slate-300 mb-1">الصلاحية:</label>
-          <select id="uRole" class="w-full bg-[#181228] border border-white/10 rounded-lg p-2.5 text-white">
-            <option value="Admin">Admin (مدير كامل)</option>
-            <option value="Editor">Editor (محرر مقالات)</option>
-            <option value="Moderator">Moderator (مراقب زيارات)</option>
-          </select>
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
-          <button type="submit" class="px-4 py-2 rounded-lg bg-amber-600 text-white font-bold">إضافة المشرف</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <script type="module">
+    import { CloudCMS } from '../js/firebase-cms.js';
 
-  <script src="../js/cms-data.js"></script>
-  <script>
-    const session = JSON.parse(localStorage.getItem('cms_session'));
-    if (!session) {
-      window.location.href = 'login.html';
-    } else {
-      document.getElementById('adminUserRole').textContent = `${session.name} (${session.role})`;
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('cms_session');
-      window.location.href = 'login.html';
-    });
-
-    function switchTab(tabId) {
+    window.switchTab = (tabId) => {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
-      
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-white/10', 'text-white', 'font-bold');
-        btn.classList.add('text-slate-400');
-      });
-      event.currentTarget.classList.add('bg-white/10', 'text-white', 'font-bold');
-    }
+    };
 
-    function loadAnalytics() {
-      const stats = window.cmsEngine.getAnalytics();
-      document.getElementById('statVisits').textContent = stats.visits.toLocaleString('ar-EG');
-      document.getElementById('statLeads').textContent = stats.leads.toLocaleString('ar-EG');
-      document.getElementById('statPdfs').textContent = stats.pdfDownloads.toLocaleString('ar-EG');
-      
-      const cr = stats.visits > 0 ? ((stats.leads / stats.visits) * 100).toFixed(1) : 0;
+    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+    window.closeModals = () => {
+      document.querySelectorAll('#portfolioModal, #blogModal').forEach(m => m.classList.add('hidden'));
+    };
+
+    // Subscriptions
+    CloudCMS.subscribeAnalytics(data => {
+      document.getElementById('statVisits').textContent = (data.visits || 0).toLocaleString('ar-EG');
+      document.getElementById('statLeads').textContent = (data.leads || 0).toLocaleString('ar-EG');
+      document.getElementById('statPdfs').textContent = (data.pdfDownloads || 0).toLocaleString('ar-EG');
+      const cr = data.visits > 0 ? ((data.leads / data.visits) * 100).toFixed(1) : 0;
       document.getElementById('statCr').textContent = `${cr}%`;
+    });
 
-      const logContainer = document.getElementById('eventsLogList');
-      if (stats.events.length === 0) {
-        logContainer.innerHTML = '<p class="text-slate-500 py-3 text-center">لا توجد أحداث مسجلة بعد. سيتم التسجيل تلقائياً مع تفاعل الزوار بالموقع.</p>';
+    CloudCMS.subscribeEventLogs(logs => {
+      const container = document.getElementById('eventsLogList');
+      if (!logs.length) {
+        container.innerHTML = '<p class="text-slate-500 py-3 text-center">لا توجد أحداث مسجلة بعد.</p>';
       } else {
-        logContainer.innerHTML = stats.events.map(e => `
-          <div class="pt-2 flex justify-between items-center">
-            <div>
-              <span class="font-bold text-purple-400 ml-2">[${e.type}]</span>
-              <span class="text-slate-300">${e.details}</span>
-            </div>
-            <span class="text-[10px] text-slate-500">${e.date}</span>
+        container.innerHTML = logs.map(l => `
+          <div class="pt-2 flex justify-between items-center text-xs">
+            <div><span class="font-bold text-purple-400 ml-2">[${l.type}]</span> <span class="text-slate-300">${l.details}</span></div>
+            <span class="text-[10px] text-slate-500">${l.dateString}</span>
           </div>
         `).join('');
       }
-    }
+    });
 
-    function loadPortfolioAdmin() {
-      const list = window.cmsEngine.getPortfolio();
-      document.getElementById('portfolioTable').innerHTML = list.map((item, index) => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs relative group">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-white text-sm">${item.title}</span>
-            <span class="text-brand-magenta font-semibold">${item.category}</span>
-          </div>
+    CloudCMS.subscribePortfolio(items => {
+      document.getElementById('portfolioTable').innerHTML = items.map(item => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs">
+          <div class="flex justify-between items-center"><span class="font-bold text-white">${item.title}</span><span class="text-brand-magenta">${item.category}</span></div>
           <p class="text-slate-400">${item.desc}</p>
-          <div class="flex justify-between items-center pt-2 text-[11px]">
+          <div class="flex justify-between items-center pt-2">
             <span class="text-amber-400 font-bold">${item.roas}</span>
-            <button onclick="deletePortfolio(${index})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
+            <button onclick="deletePortfolio('${item.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
           </div>
         </div>
       `).join('');
-    }
+    });
 
-    function loadBlogAdmin() {
-      const list = window.cmsEngine.getBlog();
-      document.getElementById('blogTable').innerHTML = list.map((item, index) => `
+    CloudCMS.subscribeBlog(items => {
+      document.getElementById('blogTable').innerHTML = items.map(item => `
         <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
-          <div>
-            <h4 class="font-bold text-white text-sm mb-1">${item.title}</h4>
-            <span class="text-slate-400 text-[11px]">${item.category} &bull; ${item.date}</span>
-          </div>
-          <button onclick="deleteBlog(${index})" class="text-red-400 hover:text-red-300 px-3 py-1 rounded bg-red-500/10"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
+          <div><h4 class="font-bold text-white text-sm mb-1">${item.title}</h4><span class="text-slate-400">${item.category}</span></div>
+          <button onclick="deleteBlog('${item.id}')" class="text-red-400 hover:text-red-300 px-3 py-1 rounded bg-red-500/10"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
         </div>
       `).join('');
-    }
+    });
 
-    function loadUsersAdmin() {
-      const list = window.cmsEngine.getUsers();
-      document.getElementById('usersTable').innerHTML = list.map(u => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
-          <div>
-            <div class="font-bold text-white text-sm">${u.name} (@${u.username})</div>
-            <span class="text-slate-400">${u.role}</span>
-          </div>
-          <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">نشط</span>
-        </div>
-      `).join('');
-    }
+    window.deletePortfolio = (id) => CloudCMS.deletePortfolioItem(id);
+    window.deleteBlog = (id) => CloudCMS.deleteBlogPost(id);
 
-    // Modal Control & Event Handlers
-    function openPortfolioModal() { document.getElementById('portfolioModal').classList.remove('hidden'); }
-    function openBlogModal() { document.getElementById('blogModal').classList.remove('hidden'); }
-    function openUserModal() { document.getElementById('userModal').classList.remove('hidden'); }
-    function closeModals() {
-      document.getElementById('portfolioModal').classList.add('hidden');
-      document.getElementById('blogModal').classList.add('hidden');
-      document.getElementById('userModal').classList.add('hidden');
-    }
-
-    document.getElementById('portfolioForm').addEventListener('submit', (e) => {
+    document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const list = window.cmsEngine.getPortfolio();
-      list.unshift({
-        id: Date.now().toString(),
+      await CloudCMS.addPortfolioItem({
         title: document.getElementById('pTitle').value,
         category: document.getElementById('pCategory').value,
         roas: document.getElementById('pRoas').value,
         desc: document.getElementById('pDesc').value,
+        details: document.getElementById('pDetails').value,
         budget: document.getElementById('pBudget').value,
         results: document.getElementById('pResults').value
       });
-      window.cmsEngine.savePortfolio(list);
       closeModals();
-      loadPortfolioAdmin();
     });
 
-    document.getElementById('blogForm').addEventListener('submit', (e) => {
+    document.getElementById('blogForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const list = window.cmsEngine.getBlog();
-      list.unshift({
-        id: Date.now().toString(),
+      await CloudCMS.addBlogPost({
         title: document.getElementById('bTitle').value,
         category: document.getElementById('bCategory').value,
         content: document.getElementById('bContent').value,
-        excerpt: document.getElementById('bContent').value.substring(0, 100) + '...',
-        date: new Date().toLocaleDateString('ar-EG'),
-        author: session.name
+        author: "إسلام سعيد"
       });
-      window.cmsEngine.saveBlog(list);
       closeModals();
-      loadBlogAdmin();
     });
-
-    document.getElementById('userForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const list = window.cmsEngine.getUsers();
-      list.push({
-        username: document.getElementById('uUsername').value,
-        pass: document.getElementById('uPass').value,
-        name: document.getElementById('uName').value,
-        role: document.getElementById('uRole').value
-      });
-      window.cmsEngine.saveUsers(list);
-      closeModals();
-      loadUsersAdmin();
-    });
-
-    function deletePortfolio(index) {
-      const list = window.cmsEngine.getPortfolio();
-      list.splice(index, 1);
-      window.cmsEngine.savePortfolio(list);
-      loadPortfolioAdmin();
-    }
-
-    function deleteBlog(index) {
-      const list = window.cmsEngine.getBlog();
-      list.splice(index, 1);
-      window.cmsEngine.saveBlog(list);
-      loadBlogAdmin();
-    }
-
-    loadAnalytics();
-    loadPortfolioAdmin();
-    loadBlogAdmin();
-    loadUsersAdmin();
   </script>
 </body>
 </html>

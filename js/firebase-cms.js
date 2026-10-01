@@ -13,7 +13,6 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Firebase Configuration from Console
 const firebaseConfig = {
   apiKey: "AIzaSyA3qwLMIdzgVgFHNs-qlcrezUNTqKKKWI0",
   authDomain: "my-website-e5b7e.firebaseapp.com",
@@ -26,7 +25,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Seed Initial Analytics Document
 async function initAnalyticsDoc() {
   try {
     const analyticsRef = doc(db, "analytics", "main");
@@ -41,7 +39,6 @@ async function initAnalyticsDoc() {
 initAnalyticsDoc();
 
 export const CloudCMS = {
-  // Realtime Subscriptions for Portfolio
   subscribePortfolio(callback) {
     return onSnapshot(collection(db, "portfolio"), (snapshot) => {
       const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -62,7 +59,6 @@ export const CloudCMS = {
     return snap.exists() ? { id: snap.id, ...snap.data() } : null;
   },
 
-  // Realtime Subscriptions for Blog
   subscribeBlog(callback) {
     return onSnapshot(collection(db, "blog"), (snapshot) => {
       const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -83,7 +79,6 @@ export const CloudCMS = {
     return snap.exists() ? { id: snap.id, ...snap.data() } : null;
   },
 
-  // Real Analytics Tracking
   subscribeAnalytics(callback) {
     return onSnapshot(doc(db, "analytics", "main"), (snap) => {
       callback(snap.data() || { visits: 0, leads: 0, pdfDownloads: 0 });

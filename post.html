@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المقال | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
+
+  <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-5 flex justify-between items-center">
+      <a href="blog.html" class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <span class="font-bold text-white">المدونة والنشرات</span>
+      </a>
+      <a href="blog.html" class="text-xs text-slate-300 hover:text-white">
+        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للمدونة
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-5 py-12 space-y-8">
+    <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل المقال...</div>
+    
+    <article id="postContent" class="hidden space-y-6">
+      <div class="space-y-3 border-b border-white/10 pb-6">
+        <div class="flex items-center gap-3 text-xs">
+          <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
+          <span id="postDate" class="text-slate-400"></span>
+        </div>
+        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug"></h1>
+        <div class="text-xs text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-user text-orange-400"></i>
+          <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
+        </div>
+      </div>
+
+      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal"></div>
+    </article>
+  </main>
+
+  <script type="module">
+    import { CloudCMS } from './js/firebase-cms.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+
+    if (!postId) {
+      window.location.href = 'blog.html';
+    } else {
+      CloudCMS.getBlogPostById(postId).then(post => {
+        if (!post) {
+          document.getElementById('postLoading').textContent = 'المقال غير موجود أو تم حذفه.';
+          return;
+        }
+
+        document.getElementById('postLoading').classList.add('hidden');
+        document.getElementById('postContent').classList.remove('hidden');
+
+        document.getElementById('postCategory').textContent = post.category || 'عام';
+        document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
+        document.getElementById('postTitle').textContent = post.title;
+        document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
+        document.getElementById('postBody').innerHTML = post.content || '';
+      });
+    }
+  </script>
+</body>
+</html>

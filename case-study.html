@@ -30,29 +30,32 @@
     <div id="caseLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل تفاصيل الحملة...</div>
 
     <div id="caseContent" class="hidden space-y-8">
-      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4">
+      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-hidden">
         <div class="flex items-center justify-between text-xs">
           <span id="csCategory" class="text-pink-400 font-bold"></span>
           <span id="csRoas" class="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-bold font-sans"></span>
         </div>
-        <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white"></h1>
-        <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+        <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white break-words"></h1>
+        
+        <div id="csMediaContainer" class="hidden my-4 rounded-2xl overflow-hidden border border-white/10"></div>
+
+        <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed break-words"></p>
 
         <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/10 text-xs">
           <div class="p-4 rounded-xl bg-white/[0.02]">
             <span class="text-slate-400 block mb-1">الميزانية / الوصول:</span>
-            <span id="csBudget" class="text-base font-bold text-white font-sans"></span>
+            <span id="csBudget" class="text-base font-bold text-white font-sans break-all"></span>
           </div>
           <div class="p-4 rounded-xl bg-white/[0.02]">
             <span class="text-slate-400 block mb-1">المبيعات / النتائج المحققة:</span>
-            <span id="csResults" class="text-base font-bold text-green-400 font-sans"></span>
+            <span id="csResults" class="text-base font-bold text-green-400 font-sans break-all"></span>
           </div>
         </div>
       </div>
 
-      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4">
+      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-hidden">
         <h3 class="text-lg font-bold text-white border-b border-white/10 pb-3">تفاصيل الاستراتيجية والميديا</h3>
-        <div id="csDetails" class="text-sm leading-relaxed text-slate-300 space-y-4"></div>
+        <div id="csDetails" class="text-sm leading-relaxed text-slate-300 space-y-4 break-words"></div>
       </div>
     </div>
   </main>
@@ -82,6 +85,12 @@
         document.getElementById('csBudget').textContent = item.budget;
         document.getElementById('csResults').textContent = item.results;
         document.getElementById('csDetails').innerHTML = item.details || item.desc;
+
+        if (item.mediaUrl) {
+          const mediaBox = document.getElementById('csMediaContainer');
+          mediaBox.classList.remove('hidden');
+          mediaBox.innerHTML = `<img src="${item.mediaUrl}" class="w-full max-h-96 object-cover" />`;
+        }
       });
     }
   </script>

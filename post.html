@@ -36,15 +36,37 @@
           <span id="postDate" class="text-slate-400"></span>
         </div>
         <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words"></h1>
-        <div class="text-xs text-slate-400 flex items-center gap-2">
-          <i class="fa-solid fa-user text-orange-400"></i>
-          <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
+        <div class="text-xs text-slate-400 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-user text-orange-400"></i>
+            <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
+          </div>
+          <button id="likeBtn" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all">
+            <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
+          </button>
         </div>
       </div>
 
       <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
 
       <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words"></div>
+
+      <!-- Comments Section -->
+      <div class="pt-8 border-t border-white/10 space-y-6">
+        <h3 class="text-lg font-bold text-white">التعليقات والمناقشات</h3>
+
+        <div id="commentsList" class="space-y-3 text-xs">
+          <p class="text-slate-500">لا توجد تعليقات حتى الآن.</p>
+        </div>
+
+        <!-- Add Comment Form -->
+        <form id="commentForm" class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
+          <h4 class="font-bold text-white">أضف تعليقاً:</h4>
+          <input type="text" id="cName" required placeholder="اسمك" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <textarea id="cContent" rows="3" required placeholder="اكتب تعليقك هنا..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">إرسال التعليق للمراجعة</button>
+        </form>
+      </div>
     </article>
   </main>
 
@@ -71,12 +93,48 @@
         document.getElementById('postTitle').textContent = post.title;
         document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
         document.getElementById('postBody').innerHTML = post.content || '';
+        document.getElementById('likeCount').textContent = post.likes || 0;
 
         if (post.image) {
           const imgBox = document.getElementById('postImageContainer');
           imgBox.classList.remove('hidden');
           imgBox.innerHTML = `<img src="${post.image}" class="w-full max-h-96 object-cover" />`;
         }
+
+        // Like Button
+        document.getElementById('likeBtn').addEventListener('click', async () => {
+          await CloudCMS.likeBlogPost(postId);
+          const current = parseInt(document.getElementById('likeCount').textContent);
+          document.getElementById('likeCount').textContent = current + 1;
+        });
+
+        // Subscribe to Approved Comments
+        CloudCMS.subscribeComments(postId, comments => {
+          const list = document.getElementById('commentsList');
+          if (!comments.length) {
+            list.innerHTML = '<p class="text-slate-500">لا توجد تعليقات معتمدة بعد.</p>';
+          } else {
+            list.innerHTML = comments.map(c => `
+              <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1">
+                <div class="font-bold text-white flex justify-between">
+                  <span>${c.name}</span>
+                  <span class="text-[10px] text-slate-500">${new Date(c.createdAt).toLocaleDateString('ar-EG')}</span>
+                </div>
+                <p class="text-slate-300">${c.content}</p>
+              </div>
+            `).join('');
+          }
+        });
+
+        // Comment Submit Handler
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const name = document.getElementById('cName').value;
+          const content = document.getElementById('cContent').value;
+          await CloudCMS.addComment(postId, name, content);
+          alert('تم إرسال التعليق بنجاح وظهر فور إجازته من لوحة التحكم.');
+          e.target.reset();
+        });
       });
     }
   </script>

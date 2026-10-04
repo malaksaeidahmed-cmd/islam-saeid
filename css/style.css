@@ -1,112 +1,142 @@
-/* Color Gradients */
-.brand-gradient {
-  background: linear-gradient(135deg, #7C3AED 0%, #D946EF 50%, #F97316 100%);
-}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المقال | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
-.brand-gradient-text {
-  background: linear-gradient(135deg, #A855F7 0%, #EC4899 45%, #F97316 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+  <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-5 flex justify-between items-center">
+      <a href="blog.html" class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <span class="font-bold text-white">المدونة والنشرات</span>
+      </a>
+      <a href="blog.html" class="text-xs text-slate-300 hover:text-white">
+        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للمدونة
+      </a>
+    </div>
+  </header>
 
-/* Base Body Backgrounds */
-html.dark body {
-  background-color: #07060E;
-  color: #E2E8F0;
-}
+  <main class="max-w-3xl mx-auto px-5 py-12 space-y-8">
+    <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل المقال...</div>
+    
+    <article id="postContent" class="hidden space-y-6">
+      <div class="space-y-3 border-b border-white/10 pb-6">
+        <div class="flex items-center gap-3 text-xs">
+          <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
+          <span id="postDate" class="text-slate-400"></span>
+        </div>
+        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words"></h1>
+        <div class="text-xs text-slate-400 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-user text-orange-400"></i>
+            <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
+          </div>
+          <button id="likeBtn" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all">
+            <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
+          </button>
+        </div>
+      </div>
 
-html:not(.dark) body {
-  background-color: #F8FAFC;
-  color: #0F172A;
-}
+      <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
 
-/* Dynamic Light Mode Support */
-html:not(.dark) .text-white { color: #0F172A !important; }
-html:not(.dark) .text-slate-300 { color: #334155 !important; }
-html:not(.dark) .text-slate-400 { color: #64748B !important; }
-html:not(.dark) .bg-[#07060E], html:not(.dark) .bg-[#040308] { background-color: #F8FAFC !important; }
-html:not(.dark) .bg-[#0E0B1A], html:not(.dark) .bg-[#0F0A1F] { background-color: #FFFFFF !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-html:not(.dark) .border-white\/10, html:not(.dark) .border-white\/5 { border-color: rgba(0,0,0,0.08) !important; }
-html:not(.dark) .bg-white\/\[0\.02\], html:not(.dark) .bg-white\/5 { background-color: #F1F5F9 !important; }
-html:not(.dark) input, html:not(.dark) select { background-color: #FFFFFF !important; color: #0F172A !important; border-color: #CBD5E1 !important; }
+      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words"></div>
 
-/* Header Blur */
-.glass-header {
-  background: rgba(7, 6, 14, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-html:not(.dark) .glass-header {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0,0,0,0.06);
-}
+      <!-- Comments Section -->
+      <div class="pt-8 border-t border-white/10 space-y-6">
+        <h3 class="text-lg font-bold text-white">التعليقات والمناقشات</h3>
 
-/* Perfect Seamless Loop Marquee Container */
-.marquee-wrapper {
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-}
+        <div id="commentsList" class="space-y-3 text-xs">
+          <p class="text-slate-500">لا توجد تعليقات حتى الآن.</p>
+        </div>
 
-html.dark .marquee-wrapper {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-html:not(.dark) .marquee-wrapper {
-  background-color: rgba(241, 245, 249, 0.9);
-}
+        <!-- Add Comment Form -->
+        <form id="commentForm" class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
+          <h4 class="font-bold text-white">أضف تعليقاً:</h4>
+          <input type="text" id="cName" required placeholder="اسمك" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <textarea id="cContent" rows="3" required placeholder="اكتب تعليقك هنا..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">إرسال التعليق للمراجعة</button>
+        </form>
+      </div>
+    </article>
+  </main>
 
-html.dark .fade-overlay-left {
-  background: linear-gradient(to right, #07060E, transparent);
-}
-html:not(.dark) .fade-overlay-left {
-  background: linear-gradient(to right, #F8FAFC, transparent);
-}
+  <script type="module">
+    import { CloudCMS } from './js/firebase-cms.js';
 
-html.dark .fade-overlay-right {
-  background: linear-gradient(to left, #07060E, transparent);
-}
-html:not(.dark) .fade-overlay-right {
-  background: linear-gradient(to left, #F8FAFC, transparent);
-}
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
 
-.marquee-track {
-  display: flex;
-  width: max-content;
-}
+    if (!postId) {
+      window.location.href = 'blog.html';
+    } else {
+      CloudCMS.getBlogPostById(postId).then(post => {
+        if (!post) {
+          document.getElementById('postLoading').textContent = 'المقال غير موجود أو تم حذفه.';
+          return;
+        }
 
-.marquee-group {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding-left: 1.5rem;
-  animation: scroll-seamless 35s linear infinite;
-  will-change: transform;
-}
+        document.getElementById('postLoading').classList.add('hidden');
+        document.getElementById('postContent').classList.remove('hidden');
 
-.marquee-wrapper:hover .marquee-group {
-  animation-play-state: paused;
-}
+        document.getElementById('postCategory').textContent = post.category || 'عام';
+        document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
+        document.getElementById('postTitle').textContent = post.title;
+        document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
+        document.getElementById('postBody').innerHTML = post.content || '';
+        document.getElementById('likeCount').textContent = post.likes || 0;
 
-/* الحركة الأفقية بدون انقطاع */
-@keyframes scroll-seamless {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
+        if (post.image) {
+          const imgBox = document.getElementById('postImageContainer');
+          imgBox.classList.remove('hidden');
+          imgBox.innerHTML = `<img src="${post.image}" class="w-full max-h-96 object-cover" />`;
+        }
 
-html:not(.dark) .brand-card {
-  background-color: #FFFFFF !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
+        // Like Button
+        document.getElementById('likeBtn').addEventListener('click', async () => {
+          await CloudCMS.likeBlogPost(postId);
+          const current = parseInt(document.getElementById('likeCount').textContent);
+          document.getElementById('likeCount').textContent = current + 1;
+        });
 
-/* Typography Line Heights */
-body {
-  line-height: 1.75;
-}
-h1, h2, h3, h4 {
-  line-height: 1.35;
-}
+        // Subscribe to Approved Comments
+        CloudCMS.subscribeComments(postId, comments => {
+          const list = document.getElementById('commentsList');
+          if (!comments.length) {
+            list.innerHTML = '<p class="text-slate-500">لا توجد تعليقات معتمدة بعد.</p>';
+          } else {
+            list.innerHTML = comments.map(c => `
+              <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1">
+                <div class="font-bold text-white flex justify-between">
+                  <span>${c.name}</span>
+                  <span class="text-[10px] text-slate-500">${new Date(c.createdAt).toLocaleDateString('ar-EG')}</span>
+                </div>
+                <p class="text-slate-300">${c.content}</p>
+              </div>
+            `).join('');
+          }
+        });
+
+        // Comment Submit Handler
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const name = document.getElementById('cName').value;
+          const content = document.getElementById('cContent').value;
+          await CloudCMS.addComment(postId, name, content);
+          alert('تم إرسال التعليق بنجاح وظهر فور إجازته من لوحة التحكم.');
+          e.target.reset();
+        });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -26,11 +26,16 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-5 py-16 space-y-10">
+  <main class="max-w-4xl mx-auto px-5 py-16 space-y-8">
     <div class="text-center space-y-3">
       <span class="text-xs font-bold text-pink-500 uppercase tracking-widest">معرفة وخبرات إعلانية</span>
       <h1 class="text-3xl font-bold text-white">نشرات الميديا باينج والنمو الإعلاني</h1>
       <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">استراتيجيات متقدمة حول إعلانات Meta و TikTok واقتصاديات الوحدة لتنمية أعمالك.</p>
+    </div>
+
+    <!-- Search Input -->
+    <div class="max-w-md mx-auto">
+      <input type="text" id="blogSearchInput" placeholder="بحث في المقالات..." class="w-full bg-[#0E0B1A] border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-pink-500" />
     </div>
 
     <div id="blogContainer" class="space-y-6">
@@ -41,28 +46,31 @@
   <script type="module">
     import { CloudCMS } from './js/firebase-cms.js';
 
-    CloudCMS.subscribeBlog(posts => {
+    let allPosts = [];
+
+    function renderBlog(posts) {
       const container = document.getElementById('blogContainer');
       if (!posts.length) {
-        container.innerHTML = '<p class="text-center text-slate-500 py-10 text-xs">لا توجد مقالات منشورة حالياً.</p>';
+        container.innerHTML = '<p class="text-center text-slate-500 py-10 text-xs">لا توجد مقالات مطابقة للبحث.</p>';
         return;
       }
 
       container.innerHTML = posts.map(p => {
         const plainText = (p.content || '').replace(/<[^>]*>?/gm, '');
-        const excerpt = plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
+        const excerpt = plainText.length > 140 ? plainText.substring(0, 140) + '...' : plainText;
 
         return `
-          <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all flex flex-col justify-between">
+          <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all flex flex-col justify-between overflow-hidden">
+            ${p.image ? `<img src="${p.image}" class="w-full h-48 object-cover rounded-2xl" onError="this.style.display='none'" />` : ''}
             <div class="space-y-3">
               <div class="flex items-center justify-between text-xs">
                 <span class="text-pink-400 font-bold">${p.category || 'عام'}</span>
                 <span class="text-slate-500">${new Date(p.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
               </div>
-              <h2 class="text-xl font-bold text-white hover:text-pink-400 transition-colors">
+              <h2 class="text-xl font-bold text-white hover:text-pink-400 transition-colors break-words">
                 <a href="post.html?id=${p.id}">${p.title}</a>
               </h2>
-              <p class="text-xs text-slate-300 leading-relaxed">${excerpt}</p>
+              <p class="text-xs text-slate-300 leading-relaxed break-words">${excerpt}</p>
             </div>
             <div class="pt-3 border-t border-white/5 flex justify-between items-center text-xs">
               <span class="text-slate-400"><i class="fa-solid fa-pen-nib text-orange-400 ml-1"></i>${p.author || 'إسلام سعيد'}</span>
@@ -74,6 +82,17 @@
           </article>
         `;
       }).join('');
+    }
+
+    CloudCMS.subscribeBlog(posts => {
+      allPosts = posts;
+      renderBlog(allPosts);
+    });
+
+    document.getElementById('blogSearchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allPosts.filter(p => p.title.toLowerCase().includes(q) || (p.content && p.content.toLowerCase().includes(q)));
+      renderBlog(filtered);
     });
   </script>
 </body>

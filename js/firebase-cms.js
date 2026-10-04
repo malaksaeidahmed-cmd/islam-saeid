@@ -1,16 +1,6 @@
-// Firebase Firestore Cloud Engine for Real-Time Sync
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
-  getFirestore, 
-  collection, 
-  onSnapshot, 
-  addDoc, 
-  deleteDoc, 
-  doc, 
-  updateDoc, 
-  increment, 
-  getDoc,
-  setDoc
+  getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, increment, getDoc, setDoc, query, where, getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -25,20 +15,59 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function initAnalyticsDoc() {
+async function initDefaults() {
   try {
     const analyticsRef = doc(db, "analytics", "main");
     const snap = await getDoc(analyticsRef);
     if (!snap.exists()) {
-      await setDoc(analyticsRef, { visits: 0, leads: 0, pdfDownloads: 0 });
+      await setDoc(analyticsRef, { visits: 0, leads: 0, pdfDownloads: 0, bootcampOpen: true });
+    }
+    
+    // Seed default admin if no users exist
+    const usersSnap = await getDocs(collection(db, "users"));
+    if (usersSnap.empty) {
+      await addDoc(collection(db, "users"), { username: "islam", password: "Nour123@@##", role: "مدير عام", createdAt: Date.now() });
     }
   } catch (e) {
-    console.error("Analytics Init Error:", e);
+    console.error("Init Error:", e);
   }
 }
-initAnalyticsDoc();
+initDefaults();
 
 export const CloudCMS = {
+  // Users Authentication System
+  async loginUser(username, password) {
+    const q = query(collection(db, "users"), where("username", "==", username), where("password", "==", password));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      const user = snap.docs[0].data();
+      return { id: snap.docs[0].id, ...user };
+    }
+    return null;
+  },
+
+  subscribeUsers(callback) {
+    return onSnapshot(collection(db, "users"), (snapshot) => {
+      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(items);
+    });
+  },
+
+  async addUser(userData) {
+    return await addDoc(collection(db, "users"), { ...userData, createdAt: Date.now() });
+  },
+
+  async deleteUser(id) {
+    return await deleteDoc(doc(db, "users", id));
+  },
+
+  // Toggle Site Mode (Bootcamp Status)
+  async toggleBootcampStatus(status) {
+    const analyticsRef = doc(db, "analytics", "main");
+    await updateDoc(analyticsRef, { bootcampOpen: status });
+  },
+
+  // Portfolio with Media Embed
   subscribePortfolio(callback) {
     return onSnapshot(collection(db, "portfolio"), (snapshot) => {
       const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -59,6 +88,7 @@ export const CloudCMS = {
     return snap.exists() ? { id: snap.id, ...snap.data() } : null;
   },
 
+  // Blog with Media Embed
   subscribeBlog(callback) {
     return onSnapshot(collection(db, "blog"), (snapshot) => {
       const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -79,16 +109,16 @@ export const CloudCMS = {
     return snap.exists() ? { id: snap.id, ...snap.data() } : null;
   },
 
+  // Real Analytics & Events
   subscribeAnalytics(callback) {
     return onSnapshot(doc(db, "analytics", "main"), (snap) => {
-      callback(snap.data() || { visits: 0, leads: 0, pdfDownloads: 0 });
+      callback(snap.data() || { visits: 0, leads: 0, pdfDownloads: 0, bootcampOpen: true });
     });
   },
 
   subscribeEventLogs(callback) {
     return onSnapshot(collection(db, "event_logs"), (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                     .sort((a, b) => b.timestamp - a.timestamp);
+      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp);
       callback(logs);
     });
   },

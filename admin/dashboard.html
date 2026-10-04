@@ -21,14 +21,14 @@
         <div class="flex items-center gap-3">
           <img src="../assets/logo.png" alt="Logo" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
           <div>
-            <div class="font-bold text-white text-sm">لوحة التحكم السحابية</div>
+            <div class="font-bold text-white text-sm break-words">لوحة التحكم السحابية</div>
             <div class="text-[10px] text-green-400 font-bold">&bull; متصل بالربط اللحظي</div>
           </div>
         </div>
 
         <nav class="space-y-1.5 text-xs">
           <button onclick="switchTab('analyticsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 bg-white/10 text-white font-bold">
-            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات ورصد الزوار
+            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات والزوار
           </button>
           <button onclick="switchTab('portfolioTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-briefcase text-orange-400"></i> سابقة الأعمال
@@ -36,10 +36,17 @@
           <button onclick="switchTab('blogTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-newspaper text-pink-400"></i> المقالات والنشرات
           </button>
+          <button onclick="switchTab('usersTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-users-gear text-blue-400"></i> إدارة المستخدمين
+          </button>
         </nav>
       </div>
 
       <div class="pt-4 border-t border-white/10 space-y-2">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 text-xs">
+          <span class="text-slate-300">حالة المعسكر:</span>
+          <button id="toggleBootcampBtn" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-green-600">مفتوح للترشح</button>
+        </div>
         <a href="../index.html" target="_blank" class="block w-full py-2 text-center rounded-lg bg-white/5 text-slate-300 text-xs hover:bg-white/10">
           <i class="fa-solid fa-globe ml-1"></i> معاينة الموقع الرئيسي
         </a>
@@ -59,7 +66,7 @@
           <p class="text-xs text-slate-400">بيانات حقيقية مستخرجة مباشرة من السيرفر السحابي.</p>
         </div>
 
-        <div class="grid grid-cols-4 gap-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
             <span class="text-slate-400 block mb-1">زيارات الموقع الحقيقية</span>
             <span id="statVisits" class="text-2xl font-bold text-white font-sans">0</span>
@@ -80,7 +87,7 @@
 
         <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
           <h3 class="font-bold text-white text-sm">سجل تفاعل الزوار اللحظي (Event Logs)</h3>
-          <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5"></div>
+          <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5 max-h-80 overflow-y-auto"></div>
         </div>
       </section>
 
@@ -89,7 +96,7 @@
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-bold text-white">إدارة سابقة الأعمال</h2>
-            <p class="text-xs text-slate-400">إضافة وتعديل نتائج الحملات المعروضة بالموقع.</p>
+            <p class="text-xs text-slate-400">إضافة وتعديل نتائج الحملات والصور والفيديوهات.</p>
           </div>
           <button onclick="openModal('portfolioModal')" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs">
             <i class="fa-solid fa-plus ml-1"></i> إضافة مشروع جديد
@@ -103,7 +110,7 @@
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-bold text-white">إدارة المقالات والنشرات</h2>
-            <p class="text-xs text-slate-400">نشر مقالات وتجارب إعلانية بصفحة المدونة.</p>
+            <p class="text-xs text-slate-400">نشر مقالات مع صورة الغلاف وفيديوهات التوضيح.</p>
           </div>
           <button onclick="openModal('blogModal')" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs">
             <i class="fa-solid fa-plus ml-1"></i> كتابة مقال جديد
@@ -112,19 +119,35 @@
         <div id="blogTable" class="space-y-3"></div>
       </section>
 
+      <!-- USERS MANAGEMENT -->
+      <section id="usersTab" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">إدارة مستخدمي الداشبورد</h2>
+            <p class="text-xs text-slate-400">إضافة مدراء وإعطاء صلاحيات الدخول للوحة الإدارة.</p>
+          </div>
+          <button onclick="openModal('userModal')" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs">
+            <i class="fa-solid fa-user-plus ml-1"></i> إضافة مستخدم جديد
+          </button>
+        </div>
+        <div id="usersTable" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </section>
+
     </main>
   </div>
 
   <!-- MODAL: PORTFOLIO -->
   <div id="portfolioModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs">
-      <h3 class="text-base font-bold text-white">إضافة مشروع جديد لسابقة الأعمال</h3>
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs max-h-[90vh] overflow-y-auto">
+      <h3 class="text-base font-bold text-white">إضافة مشروع جديد مع الميديا</h3>
       <form id="portfolioForm" class="space-y-3">
         <input type="text" id="pTitle" placeholder="اسم البراند" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        <input type="text" id="pCategory" placeholder="القطاع (تجارة إلكترونية، مطاعم...)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="pCategory" placeholder="القطاع (تجارة إلكترونية، عقارات...)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <input type="text" id="pRoas" placeholder="العائد (30x ROAS)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="pMediaUrl" placeholder="رابط صورة المشروع الرئيسية (URL)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="pVideoUrl" placeholder="رابط فيديو إعلاني أو توضيحي (YouTube/Drive)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <textarea id="pDesc" placeholder="وصف قصير للشريحة الخارجية" rows="2" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
-        <textarea id="pDetails" placeholder="تفاصيل دراسة الحالة الكاملة (التكتيكات والميديا)" rows="4" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        <textarea id="pDetails" placeholder="تفاصيل دراسة الحالة والاستراتيجية بالكامل" rows="4" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
         <div class="grid grid-cols-2 gap-2">
           <input type="text" id="pBudget" placeholder="الميزانية/الوصول" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
           <input type="text" id="pResults" placeholder="المبيعات/النتائج" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
@@ -140,13 +163,15 @@
   <!-- MODAL: BLOG -->
   <div id="blogModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto">
-      <h3 class="text-base font-bold text-white">إضافة مقال جديد (دعم الميديا والفيديوهات)</h3>
+      <h3 class="text-base font-bold text-white">إضافة مقال جديد (دعم الميديا الغنية)</h3>
       <form id="blogForm" class="space-y-3">
         <input type="text" id="bTitle" placeholder="عنوان المقال" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <input type="text" id="bCategory" placeholder="التصنيف" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="bImage" placeholder="رابط صورة غلاف المقال (Featured Image URL)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="bVideo" placeholder="رابط فيديو توضيحي داخل المقال (YouTube URL)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <div>
-          <label class="block text-slate-400 mb-1">محتوى المقال (أدخل النصوص وروابط الصور أو فيديوهات يوتيوب/درايف):</label>
-          <textarea id="bContent" rows="8" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" placeholder="اكتب المقال هنا... يمكنك وضع روابط صور ومقاطع فيديو مباشرة..."></textarea>
+          <label class="block text-slate-400 mb-1">محتوى المقال الكامل:</label>
+          <textarea id="bContent" rows="8" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white break-words" placeholder="اكتب المقال هنا..."></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
@@ -156,10 +181,26 @@
     </div>
   </div>
 
+  <!-- MODAL: USER -->
+  <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">إضافة أدمن جديد للوحة الإدارة</h3>
+      <form id="userForm" class="space-y-3">
+        <input type="text" id="uName" placeholder="اسم المستخدم (Username)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="password" id="uPass" placeholder="كلمة المرور" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="uRole" placeholder="الدور (مدير عام، محرر...)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold">إنشاء الحساب</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
     import { CloudCMS } from '../js/firebase-cms.js';
+    import { showToast } from '../js/app-features.js';
 
-    // Protect Dashboard
     if (!sessionStorage.getItem('cms_auth')) {
       window.location.href = 'login.html';
     }
@@ -176,26 +217,48 @@
 
     window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
     window.closeModals = () => {
-      document.querySelectorAll('#portfolioModal, #blogModal').forEach(m => m.classList.add('hidden'));
+      document.querySelectorAll('#portfolioModal, #blogModal, #userModal').forEach(m => m.classList.add('hidden'));
     };
 
+    let currentBootcampStatus = true;
     CloudCMS.subscribeAnalytics(data => {
       document.getElementById('statVisits').textContent = (data.visits || 0).toLocaleString('ar-EG');
       document.getElementById('statLeads').textContent = (data.leads || 0).toLocaleString('ar-EG');
       document.getElementById('statPdfs').textContent = (data.pdfDownloads || 0).toLocaleString('ar-EG');
       const cr = data.visits > 0 ? ((data.leads / data.visits) * 100).toFixed(1) : 0;
       document.getElementById('statCr').textContent = `${cr}%`;
+
+      currentBootcampStatus = data.bootcampOpen !== false;
+      const btn = document.getElementById('toggleBootcampBtn');
+      if (currentBootcampStatus) {
+        btn.textContent = 'مفتوح للترشح';
+        btn.className = 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-green-600';
+      } else {
+        btn.textContent = 'مغلق حالياً';
+        btn.className = 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-red-600';
+      }
     });
 
+    document.getElementById('toggleBootcampBtn').addEventListener('click', async () => {
+      await CloudCMS.toggleBootcampStatus(!currentBootcampStatus);
+      showToast('تم تغيير حالة المعسكر بالموقع الرئيسي', 'warning');
+    });
+
+    let prevLogsCount = 0;
     CloudCMS.subscribeEventLogs(logs => {
+      if (prevLogsCount > 0 && logs.length > prevLogsCount) {
+        showToast('وصل تفاعل/طلب جديد في الموقع!', 'success');
+      }
+      prevLogsCount = logs.length;
+
       const container = document.getElementById('eventsLogList');
       if (!logs.length) {
         container.innerHTML = '<p class="text-slate-500 py-3 text-center">لا توجد أحداث مسجلة بعد.</p>';
       } else {
         container.innerHTML = logs.map(l => `
-          <div class="pt-2 flex justify-between items-center text-xs">
-            <div><span class="font-bold text-purple-400 ml-2">[${l.type}]</span> <span class="text-slate-300">${l.details}</span></div>
-            <span class="text-[10px] text-slate-500">${l.dateString}</span>
+          <div class="pt-2 flex justify-between items-center text-xs overflow-hidden">
+            <div class="truncate pl-2"><span class="font-bold text-purple-400 ml-2">[${l.type}]</span> <span class="text-slate-300 break-all">${l.details}</span></div>
+            <span class="text-[10px] text-slate-500 whitespace-nowrap">${l.dateString}</span>
           </div>
         `).join('');
       }
@@ -203,11 +266,12 @@
 
     CloudCMS.subscribePortfolio(items => {
       document.getElementById('portfolioTable').innerHTML = items.map(item => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs">
-          <div class="flex justify-between items-center"><span class="font-bold text-white">${item.title}</span><span class="text-brand-magenta">${item.category}</span></div>
-          <p class="text-slate-400">${item.desc}</p>
-          <div class="flex justify-between items-center pt-2">
-            <span class="text-amber-400 font-bold">${item.roas}</span>
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs overflow-hidden">
+          ${item.mediaUrl ? `<img src="${item.mediaUrl}" class="w-full h-32 object-cover rounded-lg mb-2" onError="this.style.display='none'" />` : ''}
+          <div class="flex justify-between items-center"><span class="font-bold text-white truncate">${item.title}</span><span class="text-pink-400 font-bold">${item.category}</span></div>
+          <p class="text-slate-400 line-clamp-2 break-words">${item.desc}</p>
+          <div class="flex justify-between items-center pt-2 border-t border-white/5">
+            <span class="text-amber-400 font-bold font-sans">${item.roas}</span>
             <button onclick="deletePortfolio('${item.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
           </div>
         </div>
@@ -216,15 +280,36 @@
 
     CloudCMS.subscribeBlog(items => {
       document.getElementById('blogTable').innerHTML = items.map(item => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs">
-          <div><h4 class="font-bold text-white text-sm mb-1">${item.title}</h4><span class="text-slate-400">${item.category}</span></div>
-          <button onclick="deleteBlog('${item.id}')" class="text-red-400 hover:text-red-300 px-3 py-1 rounded bg-red-500/10"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center text-xs overflow-hidden">
+          <div class="space-y-1 max-w-[80%]">
+            <h4 class="font-bold text-white text-sm truncate">${item.title}</h4>
+            <span class="text-slate-400 block">${item.category}</span>
+          </div>
+          <button onclick="deleteBlog('${item.id}')" class="text-red-400 hover:text-red-300 px-3 py-1.5 rounded bg-red-500/10"><i class="fa-solid fa-trash ml-1"></i>حذف</button>
+        </div>
+      `).join('');
+    });
+
+    CloudCMS.subscribeUsers(users => {
+      document.getElementById('usersTable').innerHTML = users.map(u => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-user-shield text-blue-400 text-base"></i>
+            <div>
+              <div class="font-bold text-white">${u.username}</div>
+              <div class="text-[10px] text-slate-400">${u.role || 'أدمن'}</div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-white/5 flex justify-end">
+            <button onclick="deleteUser('${u.id}')" class="text-red-400 hover:text-red-300 text-[11px]"><i class="fa-solid fa-trash ml-1"></i>حذف الحساب</button>
+          </div>
         </div>
       `).join('');
     });
 
     window.deletePortfolio = (id) => CloudCMS.deletePortfolioItem(id);
     window.deleteBlog = (id) => CloudCMS.deleteBlogPost(id);
+    window.deleteUser = (id) => CloudCMS.deleteUser(id);
 
     document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -232,12 +317,15 @@
         title: document.getElementById('pTitle').value,
         category: document.getElementById('pCategory').value,
         roas: document.getElementById('pRoas').value,
+        mediaUrl: document.getElementById('pMediaUrl').value,
+        videoUrl: document.getElementById('pVideoUrl').value,
         desc: document.getElementById('pDesc').value,
         details: document.getElementById('pDetails').value,
         budget: document.getElementById('pBudget').value,
         results: document.getElementById('pResults').value
       });
       closeModals();
+      showToast('تمت إضافة المشروع بنجاح', 'success');
     });
 
     document.getElementById('blogForm').addEventListener('submit', async (e) => {
@@ -245,10 +333,24 @@
       await CloudCMS.addBlogPost({
         title: document.getElementById('bTitle').value,
         category: document.getElementById('bCategory').value,
+        image: document.getElementById('bImage').value,
+        video: document.getElementById('bVideo').value,
         content: document.getElementById('bContent').value,
         author: "إسلام سعيد"
       });
       closeModals();
+      showToast('تم نشر المقال بنجاح', 'success');
+    });
+
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await CloudCMS.addUser({
+        username: document.getElementById('uName').value.trim(),
+        password: document.getElementById('uPass').value,
+        role: document.getElementById('uRole').value
+      });
+      closeModals();
+      showToast('تم إنشاء حساب المستخدم بنجاح', 'success');
     });
   </script>
 </body>

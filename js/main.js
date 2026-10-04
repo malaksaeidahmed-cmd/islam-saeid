@@ -1,4 +1,6 @@
-// 1. Theme Management
+// ==========================================
+// 1. Theme Management (Dark / Light Mode)
+// ==========================================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeIcon = document.getElementById('themeIcon');
 const htmlEl = document.documentElement;
@@ -20,7 +22,9 @@ if (themeToggleBtn) {
   });
 }
 
+// ==========================================
 // 2. Full Site Language Engine (AR / EN)
+// ==========================================
 const langToggleBtn = document.getElementById('langToggleBtn');
 const langText = document.getElementById('langText');
 
@@ -194,7 +198,9 @@ if (langToggleBtn) {
   });
 }
 
-// 3. Current Year & Timer
+// ==========================================
+// 3. Current Year & Countdown Timer
+// ==========================================
 const currentYearEl = document.getElementById('currentYear');
 if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
@@ -210,7 +216,9 @@ if (timerEl) {
   }, 1000);
 }
 
-// 4. Brands Marquee Render
+// ==========================================
+// 4. Brands Marquee Render Engine
+// ==========================================
 const realBrandNames = [
   "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
   "المتوكل", "زين الدين", "فليفر - Flavor", "يحيى العطار", "لؤلؤة الدقي",
@@ -246,7 +254,9 @@ function renderBrandsMarquee() {
   group2.innerHTML = htmlContent;
 }
 
-// 5. Render Dynamic Portfolio & Track Analytics Visit Event
+// ==========================================
+// 5. Initializations & Cloud Sync
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   applyLanguage(currentLang);
   renderBrandsMarquee();
@@ -257,7 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 6. Form Submission & Mobile Menu
+// ==========================================
+// 6. Form Submission, Accordions & Navigation
+// ==========================================
 const form = document.getElementById('waitlistForm');
 if (form) {
   form.addEventListener('submit', (e) => {
@@ -281,6 +293,7 @@ if (form) {
   });
 }
 
+// FAQ Accordion
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
@@ -292,11 +305,12 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
 
     if (isHidden) {
       content.classList.remove('hidden');
-      icon.style.transform = 'rotate(180deg)';
+      if (icon) icon.style.transform = 'rotate(180deg)';
     }
   });
 });
 
+// Mobile Navigation Toggle
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {

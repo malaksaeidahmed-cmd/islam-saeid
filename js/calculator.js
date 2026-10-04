@@ -93,17 +93,19 @@ function initStrategicDecisionEngine() {
   // تحديث النسبة المباشرة تلقائياً عند تغيير المجال
   industrySelect.addEventListener('change', () => {
     const indKey = industrySelect.value || 'fashion';
-    cogsRatioInput.value = marketData[indKey].defaultCogsRatio;
+    if (marketData[indKey] && cogsRatioInput) {
+      cogsRatioInput.value = marketData[indKey].defaultCogsRatio;
+    }
     recalculate();
   });
 
   function recalculate() {
     const indKey = industrySelect.value || 'fashion';
-    const m = marketData[indKey];
+    const m = marketData[indKey] || marketData.fashion;
 
     const price = parseFloat(unitPriceInput.value) || 1;
     const budget = parseFloat(totalBudgetInput.value) || 0;
-    const cogsPercent = parseFloat(cogsRatioInput.value) || m.defaultCogsRatio;
+    const cogsPercent = parseFloat(cogsRatioInput ? cogsRatioInput.value : m.defaultCogsRatio) || m.defaultCogsRatio;
 
     // 1. حسابات التكلفة المالية
     const cogsValue = price * (cogsPercent / 100);
@@ -125,35 +127,38 @@ function initStrategicDecisionEngine() {
     const netProfit = estRevenue - totalCosts;
 
     // تحديث الواجهة
-    marketReachVal.textContent = `${minReach.toLocaleString('ar-EG')} - ${maxReach.toLocaleString('ar-EG')} عميل`;
-    marketCrVal.textContent = `${m.cr}%`;
-    marketCtrVal.textContent = `${m.ctr}%`;
-    marketCpaVal.textContent = `${estCpa.toLocaleString('ar-EG')} ج.م`;
+    if (marketReachVal) marketReachVal.textContent = `${minReach.toLocaleString('ar-EG')} - ${maxReach.toLocaleString('ar-EG')} عميل`;
+    if (marketCrVal) marketCrVal.textContent = `${m.cr}%`;
+    if (marketCtrVal) marketCtrVal.textContent = `${m.ctr}%`;
+    if (marketCpaVal) marketCpaVal.textContent = `${estCpa.toLocaleString('ar-EG')} ج.م`;
 
-    beRoasOutput.textContent = breakEvenRoas > 0 ? breakEvenRoas.toFixed(2) + 'x' : 'غير متاح';
-    maxCacOutput.textContent = maxCac.toLocaleString('ar-EG') + ' ج.م';
-    netProfitReal.textContent = Math.round(netProfit).toLocaleString('ar-EG') + ' ج.م';
+    if (beRoasOutput) beRoasOutput.textContent = breakEvenRoas > 0 ? breakEvenRoas.toFixed(2) + 'x' : 'غير متاح';
+    if (maxCacOutput) maxCacOutput.textContent = maxCac.toLocaleString('ar-EG') + ' ج.م';
+    if (netProfitReal) {
+      netProfitReal.textContent = Math.round(netProfit).toLocaleString('ar-EG') + ' ج.م';
+      netProfitReal.className = `text-lg font-bold font-sans ${netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
+    }
 
     // 3. التوجيه الاستراتيجي
     let statusTitle = '';
     let statusDesc = '';
 
     if (grossMarginRatio >= 0.45 && budget >= 20000) {
-      decisionBadge.className = 'p-3.5 rounded-xl bg-green-500/20 border border-green-500/40 text-right text-xs';
+      if (decisionBadge) decisionBadge.className = 'p-3.5 rounded-xl bg-green-500/20 border border-green-500/40 text-right text-xs';
       statusTitle = `جاهزية عالية: مجال (${m.name}) مؤهل للسكيلينج الضخم`;
       statusDesc = `هامش الربح (${Math.round(grossMarginRatio * 100)}%) وميزانية الإعلان المتاحة تضمن المزايدة القوية في السوق واقتناص أفضل شريحة عملاء.`;
     } else if (grossMarginRatio >= 0.30) {
-      decisionBadge.className = 'p-3.5 rounded-xl bg-brand-gold/20 border border-brand-gold/40 text-right text-xs';
+      if (decisionBadge) decisionBadge.className = 'p-3.5 rounded-xl bg-brand-gold/20 border border-brand-gold/40 text-right text-xs';
       statusTitle = 'نمو متوازن: ركز على رفع متوسط القيمة للطلب (AOV)';
       statusDesc = `المؤشرات إيجابية؛ ويُنصح بإنشاء عروض مجمعة لتخطي نقطة التعادل (${breakEvenRoas.toFixed(2)}x) سريعاً.`;
     } else {
-      decisionBadge.className = 'p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-right text-xs';
+      if (decisionBadge) decisionBadge.className = 'p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-right text-xs';
       statusTitle = 'تنبيه: هامش الربح الحالي يتطلب رفع سعر المنتج أو تخفيض تكلفة التوريد';
-      statusDesc = `تكلفة البضاعة المرتفعة تشكل ضغطاً على الحملة؛ تحتاج لتسليم تحويلات بعائد أعلا من (${breakEvenRoas.toFixed(2)}x) لضمان صافي ربح.`;
+      statusDesc = `تكلفة البضاعة المرتفعة تشكل ضغطاً على الحملة؛ تحتاج لتسليم تحويلات بعائد أعلى من (${breakEvenRoas.toFixed(2)}x) لضمان صافي ربح.`;
     }
 
-    decisionTitle.textContent = statusTitle;
-    decisionDesc.textContent = statusDesc;
+    if (decisionTitle) decisionTitle.textContent = statusTitle;
+    if (decisionDesc) decisionDesc.textContent = statusDesc;
 
     currentAnalysis = {
       industryName: m.name,
@@ -169,12 +174,14 @@ function initStrategicDecisionEngine() {
       statusTitle
     };
 
-    consultCalcBtn.href = `https://wa.me/201021252183?text=${encodeURIComponent(`مرحباً إسلام، قمت بتحليل مشروعي في مجال (${m.name}): سعر المنتجات ${price} ج.م، الميزانية ${budget} ج.م. النتيجة: (${statusTitle}). أود تنفيذ الخطة معكم.`)}`;
+    if (consultCalcBtn) {
+      consultCalcBtn.href = `https://wa.me/201021252183?text=${encodeURIComponent(`مرحباً إسلام، قمت بتحليل مشروعي في مجال (${m.name}): سعر المنتجات ${price} ج.م، الميزانية ${budget} ج.م. النتيجة: (${statusTitle}). أود تنفيذ الخطة معكم.`)}`;
+    }
   }
 
   unitPriceInput.addEventListener('input', recalculate);
   totalBudgetInput.addEventListener('input', recalculate);
-  cogsRatioInput.addEventListener('input', recalculate);
+  if (cogsRatioInput) cogsRatioInput.addEventListener('input', recalculate);
   recalculate();
 
   // 4. التصدير المباشر لتقرير الـ PDF بدون صفحة بيضاء
@@ -234,7 +241,7 @@ function initStrategicDecisionEngine() {
             <tr>
               <td style="padding: 10px; border: 1px solid #cbd5e1;"><strong>أقصى كلفة استحواذ (Max CAC)</strong></td>
               <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: bold;">${currentAnalysis.maxCac} ج.م</td>
-              <td style="padding: 10px; border: 1px solid #cbd5e1;">أقصى ميزانية لشراء العميل الواحدة</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">أقصى ميزانية لشراء العميل الواحد</td>
             </tr>
             <tr style="background: #ecfdf5;">
               <td style="padding: 10px; border: 1px solid #cbd5e1;"><strong>صافي الربح الحقيقي المتوقع</strong></td>
@@ -249,7 +256,7 @@ function initStrategicDecisionEngine() {
         </div>
 
         <div style="text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-          لإدارة وتطوير الحملات الإعلانية لمشروعك: تواصل مع إسلام سعيد مباشرة عبر واتساب: <strong>01021252183</strong> أو زيارة الموقع <strong>islamsaeid.me</strong>
+          إدارة وتطوير الحملات الإعلانية لمشروعك: تواصل مع إسلام سعيد مباشرة عبر واتساب: <strong>01021252183</strong> أو زيارة الموقع <strong>islamsaeid.me</strong>
         </div>
       `;
 
@@ -263,14 +270,22 @@ function initStrategicDecisionEngine() {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdf().set(opt).from(pdfContainer).save().then(() => {
-        document.body.removeChild(pdfContainer);
-        downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> <span data-i18n="btn-download-pdf">تنزيل تقرير الجدوى المالي (PDF)</span>';
-      }).catch(err => {
-        console.error(err);
+      // @ts-ignore
+      if (typeof html2pdf !== 'undefined') {
+        // @ts-ignore
+        html2pdf().set(opt).from(pdfContainer).save().then(() => {
+          document.body.removeChild(pdfContainer);
+          downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> <span data-i18n="btn-download-pdf">تنزيل تقرير الجدوى المالي (PDF)</span>';
+        }).catch(err => {
+          console.error(err);
+          if (document.body.contains(pdfContainer)) document.body.removeChild(pdfContainer);
+          downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> تنزيل تقرير الجدوى المالي (PDF)';
+        });
+      } else {
+        alert('جاري تحميل مكتبة PDF، يرجى المحاولة مرة أخرى.');
         document.body.removeChild(pdfContainer);
         downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> تنزيل تقرير الجدوى المالي (PDF)';
-      });
+      }
     });
   }
 }

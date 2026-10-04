@@ -35,14 +35,16 @@
           <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
           <span id="postDate" class="text-slate-400"></span>
         </div>
-        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug"></h1>
+        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words"></h1>
         <div class="text-xs text-slate-400 flex items-center gap-2">
           <i class="fa-solid fa-user text-orange-400"></i>
           <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
         </div>
       </div>
 
-      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal"></div>
+      <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
+
+      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words"></div>
     </article>
   </main>
 
@@ -69,6 +71,12 @@
         document.getElementById('postTitle').textContent = post.title;
         document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
         document.getElementById('postBody').innerHTML = post.content || '';
+
+        if (post.image) {
+          const imgBox = document.getElementById('postImageContainer');
+          imgBox.classList.remove('hidden');
+          imgBox.innerHTML = `<img src="${post.image}" class="w-full max-h-96 object-cover" />`;
+        }
       });
     }
   </script>

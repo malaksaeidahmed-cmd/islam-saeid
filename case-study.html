@@ -6,15 +6,17 @@
   <title>دراسة حالة | إسلام سعيد</title>
   <meta name="description" content="تفاصيل دراسات حالة الحملات الإعلانية ونتائج التنفيذ مع إسلام سعيد." />
   <link rel="canonical" href="https://islamsaeid.me/case-study.html" />
-  <meta property="og:title" content="دراسة حالة | إسلام سعيد" />
-  <meta property="og:description" content="نتائج حملات موثقة وأرقام تشغيلية فعلية من سابقة الأعمال." />
+  <meta property="og:title" content="دراسة حالة | إسلام سعيد" id="ogTitle" />
+  <meta property="og:description" content="نتائج حملات موثقة وأرقام تشغيلية فعلية من سابقة الأعمال." id="ogDesc" />
   <meta property="og:type" content="article" />
-  <meta property="og:image" content="https://islamsaeid.me/logo.png" />
+  <meta property="og:image" content="https://islamsaeid.me/logo.png" id="ogImage" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -36,37 +38,46 @@
     <div id="caseLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل تفاصيل الحملة...</div>
 
     <div id="caseContent" class="hidden space-y-8">
-      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-hidden">
-        <div class="flex items-center justify-between text-xs">
-          <span id="csCategory" class="text-pink-400 font-bold"></span>
-          <span id="csRoas" class="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-bold font-sans"></span>
+      <div class="p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
+        <div class="flex items-center justify-between text-xs flex-wrap gap-2">
+          <span id="csCategory" class="text-pink-400 font-bold break-words-safe"></span>
+          <span id="csRoas" class="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-bold font-sans break-words-safe"></span>
         </div>
-        <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white break-words"></h1>
+        <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white break-words-safe"></h1>
 
         <div id="csMediaContainer" class="hidden my-4 rounded-2xl overflow-hidden border border-white/10"></div>
+        <div id="csVideoContainer" class="hidden my-4"></div>
 
-        <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed break-words"></p>
+        <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed break-words-safe"></p>
 
-        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/10 text-xs">
-          <div class="p-4 rounded-xl bg-white/[0.02]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10 text-xs">
+          <div class="p-4 rounded-xl bg-white/[0.02] overflow-safe-card">
             <span class="text-slate-400 block mb-1">الميزانية / الوصول:</span>
-            <span id="csBudget" class="text-base font-bold text-white font-sans break-all"></span>
+            <span id="csBudget" class="text-base font-bold text-white font-sans break-words-safe"></span>
           </div>
-          <div class="p-4 rounded-xl bg-white/[0.02]">
+          <div class="p-4 rounded-xl bg-white/[0.02] overflow-safe-card">
             <span class="text-slate-400 block mb-1">المبيعات / النتائج المحققة:</span>
-            <span id="csResults" class="text-base font-bold text-green-400 font-sans break-all"></span>
+            <span id="csResults" class="text-base font-bold text-green-400 font-sans break-words-safe"></span>
           </div>
         </div>
       </div>
 
-      <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-hidden">
+      <div id="csGallerySection" class="hidden p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
+        <h2 class="text-lg font-bold text-white border-b border-white/10 pb-3">
+          <i class="fa-solid fa-images text-pink-400 ml-2"></i> معرض الصور والفيديوهات
+        </h2>
+        <div id="csGalleryGrid" class="media-gallery-grid"></div>
+      </div>
+
+      <div class="p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
         <h2 class="text-lg font-bold text-white border-b border-white/10 pb-3">تفاصيل الاستراتيجية والميديا</h2>
-        <div id="csDetails" class="text-sm leading-relaxed text-slate-300 space-y-4 break-words"></div>
+        <div id="csDetails" class="text-sm leading-relaxed text-slate-300 space-y-4 break-words-safe"></div>
       </div>
     </div>
   </main>
 
   <script src="js/cms-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
     const urlParams = new URLSearchParams(window.location.search);
     const csId = urlParams.get('id');
@@ -74,11 +85,8 @@
 
     function escapeHtml(value) {
       return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function safeMultilineText(value) {
@@ -90,13 +98,86 @@
       try {
         const parsed = new URL(url, window.location.href);
         return ['http:', 'https:'].includes(parsed.protocol);
-      } catch (_) {
-        return false;
+      } catch (_) { return false; }
+    }
+
+    function parseVideoEmbed(url) {
+      if (!url) return null;
+      try {
+        const u = new URL(url);
+        const host = u.hostname.replace('www.', '');
+        if (host === 'youtu.be') {
+          const id = u.pathname.slice(1).split('/')[0];
+          if (id) return `https://www.youtube.com/embed/${id}`;
+        }
+        if (host.endsWith('youtube.com')) {
+          if (u.searchParams.get('v')) return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
+          if (u.pathname.startsWith('/embed/')) {
+            const id = u.pathname.split('/')[2];
+            if (id) return `https://www.youtube.com/embed/${id}`;
+          }
+        }
+        if (host.endsWith('vimeo.com')) {
+          const id = u.pathname.split('/').filter(Boolean).pop();
+          if (id) return `https://player.vimeo.com/video/${id}`;
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    function updateMetaTags(item) {
+      const title = `${item.title || 'دراسة حالة'} | إسلام سعيد`;
+      const desc = (item.desc || item.details || '').slice(0, 160).replace(/\s+/g, ' ').trim();
+      const img = isSafeMediaUrl(item.mediaUrl) ? item.mediaUrl : 'https://islamsaeid.me/logo.png';
+
+      document.title = title;
+      document.getElementById('ogTitle')?.setAttribute('content', title);
+      document.getElementById('ogDesc')?.setAttribute('content', desc);
+      document.getElementById('ogImage')?.setAttribute('content', img);
+      document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+    }
+
+    function renderGallery(gallery) {
+      const section = document.getElementById('csGallerySection');
+      const grid = document.getElementById('csGalleryGrid');
+      if (!Array.isArray(gallery) || !gallery.length) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      const validItems = gallery.filter((g) => g && isSafeMediaUrl(g.url));
+      if (!validItems.length) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      grid.innerHTML = validItems.map((g, idx) => {
+        const isVideo = g.type === 'video';
+        const embed = isVideo ? parseVideoEmbed(g.url) : null;
+
+        if (isVideo && embed) {
+          return `
+            <a href="${escapeHtml(embed)}" data-fancybox="cs-gallery" data-type="iframe" data-caption="${escapeHtml(g.caption || '')}"
+               class="media-gallery-item block">
+              <img src="${escapeHtml(g.thumbnail || 'logo.png')}" alt="${escapeHtml(g.caption || 'فيديو')}" loading="lazy" onerror="this.style.visibility='hidden'" />
+              <span class="media-play-badge"><i class="fa-solid fa-play"></i></span>
+            </a>`;
+        }
+        return `
+          <a href="${escapeHtml(g.url)}" data-fancybox="cs-gallery" data-caption="${escapeHtml(g.caption || '')}"
+             class="media-gallery-item block">
+            <img src="${escapeHtml(g.url)}" alt="${escapeHtml(g.caption || `صورة ${idx + 1}`)}" loading="lazy" />
+          </a>`;
+      }).join('');
+
+      if (window.Fancybox) {
+        Fancybox.bind('[data-fancybox="cs-gallery"]', {});
       }
     }
 
     function renderCase(item) {
-      document.getElementById('caseLoading').classList.add('hidden');
+      loadingEl.classList.add('hidden');
       document.getElementById('caseContent').classList.remove('hidden');
 
       document.getElementById('csCategory').textContent = item.category || 'غير مصنف';
@@ -110,7 +191,24 @@
       if (isSafeMediaUrl(item.mediaUrl)) {
         const mediaBox = document.getElementById('csMediaContainer');
         mediaBox.classList.remove('hidden');
-        mediaBox.innerHTML = `<img src="${escapeHtml(item.mediaUrl)}" alt="نتائج حملة: ${escapeHtml(item.title || 'مشروع') }" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.classList.add('hidden')" />`;
+        mediaBox.innerHTML = `
+          <a href="${escapeHtml(item.mediaUrl)}" data-fancybox="cs-main" data-caption="${escapeHtml(item.title || '')}">
+            <img src="${escapeHtml(item.mediaUrl)}" alt="نتائج حملة: ${escapeHtml(item.title || 'مشروع')}" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.parentElement.classList.add('hidden')" />
+          </a>`;
+      }
+
+      const embed = parseVideoEmbed(item.videoUrl);
+      if (embed) {
+        const vBox = document.getElementById('csVideoContainer');
+        vBox.classList.remove('hidden');
+        vBox.innerHTML = `<div class="video-embed-wrapper"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy" title="فيديو دراسة الحالة"></iframe></div>`;
+      }
+
+      renderGallery(item.mediaGallery || []);
+      updateMetaTags(item);
+
+      if (window.Fancybox) {
+        Fancybox.bind('[data-fancybox]', {});
       }
     }
 
@@ -118,7 +216,6 @@
       window.location.href = 'index.html#portfolio';
     } else {
       let item = null;
-
       try {
         const { CloudCMS } = await import('./js/firebase-cms.js');
         item = await CloudCMS.getPortfolioItemById(csId);

@@ -34,6 +34,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -64,11 +65,10 @@
 </head>
 <body class="bg-[#07060E] text-slate-200 font-arabic antialiased selection:bg-brand-magenta selection:text-white">
 
-  <!-- Header العصري المحسن بالكامل -->
+  <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-white/10 shadow-2xl">
     <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-      
-      <!-- Logo -->
+
       <a href="#home" class="flex items-center gap-3 group">
         <img src="logo.png" alt="شعار إسلام سعيد" class="w-10 h-10 object-contain rounded-xl border border-white/10 group-hover:border-brand-magenta transition-all" onError="this.onerror=null; this.src='logo.png';" />
         <div class="flex flex-col">
@@ -77,7 +77,6 @@
         </div>
       </a>
 
-      <!-- Navigation Links -->
       <nav class="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-300">
         <a href="#about" class="hover:text-white transition-colors" data-i18n="nav-about">المنهجية</a>
         <a href="#brands" class="hover:text-white transition-colors" data-i18n="nav-brands">شركاء النجاح</a>
@@ -91,7 +90,6 @@
         <a href="faq.html" class="hover:text-white transition-colors" data-i18n="nav-faq">الأسئلة الشائعة</a>
       </nav>
 
-      <!-- Language & CTA Button -->
       <div class="flex items-center gap-3">
         <button id="langToggleBtn" class="px-3 py-1.5 rounded-xl border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition-all">
           <span id="langText">EN</span>
@@ -112,7 +110,6 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation -->
     <div id="mobileMenu" class="hidden lg:hidden bg-[#0C0A18] border-b border-white/10 px-6 py-4 flex flex-col gap-3 text-xs font-medium">
       <a href="#about" class="py-2 border-b border-white/5" data-i18n="nav-about">المنهجية</a>
       <a href="#brands" class="py-2 border-b border-white/5" data-i18n="nav-brands">شركاء النجاح</a>
@@ -127,7 +124,7 @@
   <!-- Hero Section -->
   <section id="home" class="pt-36 pb-20 md:pt-44 md:pb-28">
     <div class="max-w-5xl mx-auto px-5 text-center">
-      
+
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-slate-300 mb-6">
         <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
         <span data-i18n="hero-tag">Senior Social Media Specialist & Performance Marketer</span>
@@ -192,7 +189,7 @@
   <section id="about" class="py-20">
     <div class="max-w-5xl mx-auto px-5">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        
+
         <div class="space-y-5">
           <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="about-tag">المنهج الإداري</span>
           <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug" data-i18n="about-title">
@@ -225,12 +222,13 @@
   <!-- Dynamic Portfolio Section -->
   <section id="portfolio" class="py-20 bg-white/[0.01] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-5">
-      
-      <div class="text-center max-w-xl mx-auto mb-12">
+
+      <div class="text-center max-w-xl mx-auto mb-8">
         <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="portfolio-tag">سجلات أداء حقيقية</span>
         <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="portfolio-title">نتائج حملات موثقة من مدير الإعلانات</h2>
       </div>
 
+      <div id="portfolioFilters" class="flex flex-wrap items-center justify-center gap-2 mb-8"></div>
       <div id="dynamicPortfolioGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 
     </div>
@@ -239,7 +237,7 @@
   <!-- Calculator Section -->
   <section id="calculator" class="py-20">
     <div class="max-w-4xl mx-auto px-5">
-      
+
       <div class="text-center max-w-2xl mx-auto mb-10">
         <span class="text-xs font-bold text-brand-gold uppercase tracking-wider" data-i18n="calc-tag">الذكاء المالي واستشراف نتائج الحملات</span>
         <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="calc-title">حاسبة القرار التسويقي واقتصاديات السوق</h2>
@@ -248,7 +246,7 @@
 
       <div class="p-6 sm:p-10 rounded-3xl border border-white/10 bg-[#0E0B1A]">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          
+
           <div class="space-y-4 text-xs">
             <div>
               <label for="industrySelect" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-industry-lbl">اختر المجال / النشاط التجاري:</label>
@@ -300,7 +298,7 @@
           </div>
 
           <div class="p-6 rounded-2xl bg-black/50 border border-white/5 space-y-4 text-center">
-            
+
             <div id="decisionBadge" class="p-3.5 rounded-xl bg-brand-violet/20 border border-brand-violet/40 text-right text-xs">
               <div class="font-bold text-white mb-0.5" id="decisionTitle">مؤشر الجدوى التسويقية والجاهزية</div>
               <p class="text-[11px] text-slate-300 leading-relaxed" id="decisionDesc">جاري حساب معطيات المجال...</p>
@@ -325,7 +323,6 @@
               <span id="netProfitReal" class="text-lg font-bold text-green-400 font-sans">65,000 ج.م</span>
             </div>
 
-            <!-- Visual Growth Chart Container -->
             <div class="pt-2">
               <canvas id="roasChartCanvas" class="w-full max-h-48"></canvas>
             </div>
@@ -352,7 +349,7 @@
     <div class="max-w-5xl mx-auto px-5">
       <div class="p-8 sm:p-12 rounded-3xl border border-brand-orange/30 bg-[#0F0A1F]">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          
+
           <div class="md:col-span-7 space-y-4">
             <span class="px-3 py-1 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-bold border border-brand-orange/40 inline-block" data-i18n="course-tag">
               أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط
@@ -373,7 +370,7 @@
           <div class="md:col-span-5 p-6 rounded-2xl bg-black/60 border border-white/10">
             <h3 class="font-bold text-white text-sm mb-1" data-i18n="form-title">طلب الترشح للمقابلة الشخصية</h3>
             <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
-            
+
             <form id="waitlistForm" class="space-y-3 text-xs">
               <div>
                 <label for="subName" class="block font-medium text-slate-300 mb-1" data-i18n="form-name">الاسم الكامل:</label>
@@ -460,7 +457,6 @@
         </div>
       </div>
 
-      <!-- FAQ Extra Page Link -->
       <div class="mt-8 text-center">
         <a href="faq.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-brand-magenta text-xs font-bold transition-all">
           <i class="fa-solid fa-circle-question"></i> عرض كافة الأسئلة والتفاصيل المتقدمة
@@ -490,96 +486,20 @@
   <script src="js/calculator.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- Cloud Synchronization & Dynamic Features Module -->
+  <!-- Fancybox for dynamic content -->
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function isSafeMediaUrl(url) {
-      if (!url) return false;
-      try {
-        const parsed = new URL(url, window.location.href);
-        return ['http:', 'https:'].includes(parsed.protocol);
-      } catch (_) {
-        return false;
+    // Initialize Fancybox for dynamically loaded media (portfolio cards, etc.)
+    if (window.Fancybox) {
+      Fancybox.bind('[data-fancybox]', {});
+      // Re-bind when portfolio grid updates
+      const grid = document.getElementById('dynamicPortfolioGrid');
+      if (grid) {
+        const observer = new MutationObserver(() => {
+          Fancybox.bind('[data-fancybox]', {});
+        });
+        observer.observe(grid, { childList: true, subtree: true });
       }
-    }
-
-    let CloudCMS = null;
-    try {
-      ({ CloudCMS } = await import('./js/firebase-cms.js'));
-    } catch (error) {
-      console.warn('Firebase features unavailable; continuing with static/local experience.', error);
-    }
-
-    if (!CloudCMS) {
-      const submitBtn = document.getElementById('bootcampSubmitBtn');
-      if (submitBtn && submitBtn.disabled) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
-    } else {
-      if (!sessionStorage.getItem('visited')) {
-        CloudCMS.trackVisit().catch(() => {});
-        sessionStorage.setItem('visited', 'true');
-      }
-
-      CloudCMS.subscribeAnalytics(data => {
-        const btn = document.getElementById('bootcampSubmitBtn');
-        if (btn && data.bootcampOpen === false) {
-          btn.disabled = true;
-          btn.innerText = 'اكتملت المقاعد حالياً';
-          btn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
-      });
-
-      CloudCMS.subscribePortfolio(items => {
-        const container = document.getElementById('dynamicPortfolioGrid');
-        if (!container) return;
-
-        if (!Array.isArray(items) || !items.length) {
-          container.innerHTML = '<p class="text-center text-slate-500 col-span-3 py-10 text-xs">لا توجد مشاريع مضافة حالياً في لوحة التحكم.</p>';
-          return;
-        }
-
-        container.innerHTML = items.map(item => {
-          const safeId = encodeURIComponent(String(item.id ?? ''));
-          const safeCategory = escapeHtml(item.category || 'غير مصنف');
-          const safeRoas = escapeHtml(item.roas || '-');
-          const safeTitle = escapeHtml(item.title || 'بدون عنوان');
-          const safeDesc = escapeHtml(item.desc || 'لا يوجد وصف');
-          const safeBudget = escapeHtml(item.budget || '-');
-          const safeResults = escapeHtml(item.results || '-');
-          const imagePart = isSafeMediaUrl(item.mediaUrl)
-            ? `<img src="${escapeHtml(item.mediaUrl)}" alt="نتيجة حملة: ${safeTitle}" class="w-full h-40 object-cover rounded-xl mb-4" onError="this.style.display='none'" loading="lazy" />`
-            : '';
-
-          return `
-            <a href="case-study.html?id=${safeId}" class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between hover:border-brand-magenta/50 transition-all cursor-pointer group overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-magenta">
-              ${imagePart}
-              <div class="space-y-3">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="text-brand-magenta font-bold">${safeCategory}</span>
-                  <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${safeRoas}</span>
-                </div>
-                <h3 class="font-bold text-white text-lg group-hover:text-brand-magenta transition-colors break-words">${safeTitle}</h3>
-                <p class="text-xs text-slate-400 leading-relaxed line-clamp-3 break-words">${safeDesc}</p>
-              </div>
-              <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-                <div class="flex justify-between"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans break-all">${safeBudget}</span></div>
-                <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans break-all">${safeResults}</span></div>
-                <div class="pt-2 text-left text-brand-magenta font-bold text-[11px] group-hover:underline">عرض دراسة الحالة بالكامل &larr;</div>
-              </div>
-            </a>
-          `;
-        }).join('');
-      });
     }
   </script>
 

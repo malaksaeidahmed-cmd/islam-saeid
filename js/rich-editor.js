@@ -1,433 +1,1002 @@
-// ============================================================
-// Rich Editor Module — Quill 2.0 + SEO + AI Search
-// ============================================================
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم السحابية | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-  getStorage, ref as storageRef, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+  <div class="flex h-screen overflow-hidden">
 
-// Firebase config — same as firebase-cms.js
-const firebaseConfig = {
-  apiKey: "AIzaSyA3qwLMIdzgVgFHNs-qlcrezUNTqKKKWI0",
-  authDomain: "my-website-e5b7e.firebaseapp.com",
-  projectId: "my-website-e5b7e",
-  storageBucket: "my-website-e5b7e.firebasestorage.app",
-  messagingSenderId: "352964735696",
-  appId: "1:352964735696:web:44e3c3930997c9826724d5"
-};
-
-let app, storage;
-
-function getStorageInstance() {
-  if (!app) {
-    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  }
-  if (!storage) storage = getStorage(app);
-  return storage;
-}
-
-// ============================================================
-// 1. Editor Instance
-// ============================================================
-let quillInstance = null;
-
-export function initRichEditor(containerId = 'editorContainer') {
-  const container = document.getElementById(containerId);
-  if (!container) return null;
-
-  // Quill toolbar configuration
-  const toolbarOptions = [
-    [{ header: [2, 3, 4, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ indent: '-1' }, { indent: '+1' }],
-    [{ align: [] }],
-    ['blockquote', 'code-block'],
-    ['link', 'image', 'video'],
-    [{ color: [] }, { background: [] }],
-    ['clean']
-  ];
-
-  quillInstance = new Quill(`#${containerId}`, {
-    theme: 'snow',
-    modules: {
-      toolbar: {
-        container: toolbarOptions,
-        handlers: {
-          image: () => handleImageUpload(),
-          video: () => handleVideoInsert()
-        }
-      }
-    },
-    placeholder: 'اكتب مقالك الاحترافي هنا... يمكنك إضافة صور وفيديوهات وتنسيقات غنية.',
-    dir: 'rtl'
-  });
-
-  return quillInstance;
-}
-
-export function getEditorInstance() {
-  return quillInstance;
-}
-
-export function getEditorHTML() {
-  if (!quillInstance) return '';
-  const html = quillInstance.root.innerHTML;
-  return html === '<p><br></p>' ? '' : html;
-}
-
-export function setEditorHTML(html) {
-  if (!quillInstance) return;
-  quillInstance.root.innerHTML = html || '';
-}
-
-// ============================================================
-// 2. Image Upload → Firebase Storage
-// ============================================================
-function handleImageUpload() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = async () => {
-    const file = input.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
-      return;
-    }
-
-    const choice = await showUploadChoice();
-    if (choice === 'url') {
-      const url = prompt('الصق رابط الصورة:');
-      if (url) insertImage(url);
-      return;
-    }
-
-    if (choice !== 'upload') return;
-
-    const range = quillInstance.getSelection(true);
-    quillInstance.insertText(range.index, '⏳ جاري رفع الصورة...');
-
-    try {
-      const url = await uploadImageToStorage(file);
-      // Remove loading text
-      quillInstance.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
-      insertImage(url);
-    } catch (err) {
-      console.error(err);
-      quillInstance.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
-      alert('فشل رفع الصورة. تأكد من تفعيل Firebase Storage.');
-    }
-  };
-  input.click();
-}
-
-function showUploadChoice() {
-  return new Promise((resolve) => {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-4';
-    modal.innerHTML = `
-      <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 max-w-sm w-full space-y-4 text-center">
-        <h3 class="text-white font-bold">إدراج صورة</h3>
-        <div class="flex flex-col gap-2">
-          <button data-choice="upload" class="py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-sm">
-            <i class="fa-solid fa-cloud-arrow-up ml-2"></i> رفع من الجهاز
-          </button>
-          <button data-choice="url" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-sm">
-            <i class="fa-solid fa-link ml-2"></i> رابط URL
-          </button>
-          <button data-choice="cancel" class="py-2 rounded-xl text-slate-400 text-xs">إلغاء</button>
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5 overflow-y-auto flex-shrink-0">
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <img src="../logo.png" alt="شعار إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+          <div>
+            <div class="font-bold text-white text-sm break-words-safe">لوحة التحكم السحابية</div>
+            <div id="userRoleBadge" class="text-[10px] text-purple-400 font-bold"></div>
+          </div>
         </div>
+
+        <nav id="sidebarNav" class="space-y-1.5 text-xs">
+          <button id="navAnalytics" onclick="switchTab('analyticsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 bg-white/10 text-white font-bold">
+            <i class="fa-solid fa-chart-line text-purple-400"></i> التحليلات والزوار
+          </button>
+          <button id="navPortfolio" onclick="switchTab('portfolioTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-briefcase text-orange-400"></i> سابقة الأعمال
+          </button>
+          <button id="navBlog" onclick="switchTab('blogTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-newspaper text-pink-400"></i> المدونة والمقالات
+          </button>
+          <button id="navComments" onclick="switchTab('commentsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-comments text-amber-400"></i> إدارة التعليقات
+          </button>
+          <button id="navUsers" onclick="switchTab('usersTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-users-gear text-blue-400"></i> إدارة الأدمنز
+          </button>
+        </nav>
       </div>
-    `;
-    document.body.appendChild(modal);
-    modal.querySelectorAll('[data-choice]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const c = btn.dataset.choice;
-        modal.remove();
-        resolve(c);
-      });
-    });
-  });
-}
 
-async function uploadImageToStorage(file) {
-  const s = getStorageInstance();
-  const timestamp = Date.now();
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const path = `blog-images/${timestamp}_${safeName}`;
-  const fileRef = storageRef(s, path);
-  await uploadBytes(fileRef, file);
-  return await getDownloadURL(fileRef);
-}
-
-function insertImage(url) {
-  const range = quillInstance.getSelection(true);
-  quillInstance.insertEmbed(range.index, 'image', url);
-  quillInstance.setSelection(range.index + 1);
-}
-
-// ============================================================
-// 3. Video Insert (YouTube/Vimeo)
-// ============================================================
-function handleVideoInsert() {
-  const url = prompt('الصق رابط الفيديو (YouTube/Vimeo):');
-  if (!url) return;
-
-  const embed = parseVideoEmbed(url);
-  if (!embed) {
-    alert('الرابط غير صالح. استخدم رابط YouTube أو Vimeo مباشر.');
-    return;
-  }
-
-  const range = quillInstance.getSelection(true);
-  quillInstance.insertEmbed(range.index, 'video', embed);
-  quillInstance.setSelection(range.index + 1);
-}
-
-function parseVideoEmbed(url) {
-  try {
-    const u = new URL(url);
-    const host = u.hostname.replace('www.', '');
-    if (host === 'youtu.be') {
-      const id = u.pathname.slice(1).split('/')[0];
-      if (id) return `https://www.youtube.com/embed/${id}`;
-    }
-    if (host.endsWith('youtube.com')) {
-      if (u.searchParams.get('v')) return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
-      if (u.pathname.startsWith('/embed/')) {
-        const id = u.pathname.split('/')[2];
-        if (id) return `https://www.youtube.com/embed/${id}`;
-      }
-    }
-    if (host.endsWith('vimeo.com')) {
-      const id = u.pathname.split('/').filter(Boolean).pop();
-      if (id) return `https://player.vimeo.com/video/${id}`;
-    }
-  } catch (_) {}
-  return null;
-}
-
-// ============================================================
-// 4. SEO Helpers
-// ============================================================
-export function generateSlug(title) {
-  if (!title) return '';
-  return String(title)
-    .trim()
-    .toLowerCase()
-    .replace(/[\s]+/g, '-')
-    .replace(/[^\u0600-\u06FFa-z0-9\-]/g, '')
-    .replace(/\-+/g, '-')
-    .replace(/^\-|\-$/g, '')
-    .slice(0, 80);
-}
-
-export function calculateReadingTime(html) {
-  if (!html) return 1;
-  const text = String(html).replace(/<[^>]+>/g, ' ');
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
-}
-
-export function analyzeKeywordDensity(html, keyword) {
-  if (!html || !keyword) return { count: 0, density: 0, status: 'na' };
-  const text = String(html).replace(/<[^>]+>/g, ' ').toLowerCase();
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  const kw = keyword.toLowerCase().trim();
-  if (!kw || !words.length) return { count: 0, density: 0, status: 'na' };
-
-  const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(escaped, 'g');
-  const matches = text.match(regex);
-  const count = matches ? matches.length : 0;
-  const density = (count / words.length) * 100;
-
-  let status = 'good';
-  if (density < 0.5) status = 'low';
-  else if (density > 2.5) status = 'high';
-
-  return { count, density: parseFloat(density.toFixed(2)), status };
-}
-
-// ============================================================
-// 5. Tag Input Helper
-// ============================================================
-export function initTagInput(containerId, hiddenInputId) {
-  const container = document.getElementById(containerId);
-  const hidden = document.getElementById(hiddenInputId);
-  if (!container || !hidden) return;
-
-  let tags = [];
-
-  function render() {
-    container.innerHTML = `
-      <div class="flex flex-wrap gap-1.5 mb-2">
-        ${tags.map((t, i) => `
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-300 text-[11px] font-bold">
-            ${escapeHtml(t)}
-            <button type="button" data-remove="${i}" class="hover:text-white">✕</button>
-          </span>
-        `).join('')}
+      <div class="pt-4 border-t border-white/10 space-y-2">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 text-xs">
+          <span class="text-slate-300">حالة المعسكر:</span>
+          <button id="toggleBootcampBtn" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-green-600">مفتوح</button>
+        </div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 text-xs">
+          <span class="text-slate-300">وضع الصيانة:</span>
+          <button id="toggleMaintenanceBtn" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-green-600">متوقف</button>
+        </div>
+        <button id="logoutBtn" class="w-full py-2 text-center rounded-lg bg-red-500/20 text-red-300 text-xs hover:bg-red-500/30">
+          تسجيل الخروج
+        </button>
       </div>
-      <input type="text" id="${containerId}_input" placeholder="أضف كلمة مفتاحية واضغط Enter..."
-        class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-xs" />
-    `;
+    </aside>
 
-    const input = document.getElementById(`${containerId}_input`);
-    input?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault();
-        const val = input.value.trim().toLowerCase();
-        if (val && !tags.includes(val)) {
-          tags.push(val);
-          hidden.value = JSON.stringify(tags);
-          render();
-          document.getElementById(`${containerId}_input`)?.focus();
-        }
-      }
-    });
+    <!-- Main -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-8">
 
-    container.querySelectorAll('[data-remove]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const i = parseInt(btn.dataset.remove, 10);
-        tags.splice(i, 1);
-        hidden.value = JSON.stringify(tags);
-        render();
-      });
-    });
+      <!-- ============ ANALYTICS ============ -->
+      <section id="analyticsTab" class="tab-content space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">التحليلات اللحظية</h2>
+          <p class="text-xs text-slate-400">إحصائيات دقيقة لجميع الأنشطة والزيارات بالموقع.</p>
+        </div>
 
-    input?.focus();
-  }
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">زيارات الموقع الحقيقية</span>
+            <span id="statVisits" class="text-2xl font-bold text-white font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">طلبات المعسكر المتقدمة</span>
+            <span id="statLeads" class="text-2xl font-bold text-green-400 font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">تحميلات تقارير PDF</span>
+            <span id="statPdfs" class="text-2xl font-bold text-amber-400 font-sans">0</span>
+          </div>
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10">
+            <span class="text-slate-400 block mb-1">معدل التحويل الفعلي</span>
+            <span id="statCr" class="text-2xl font-bold text-purple-400 font-sans">0%</span>
+          </div>
+        </div>
 
-  function setValue(newTags) {
-    tags = Array.isArray(newTags) ? newTags.slice() : [];
-    hidden.value = JSON.stringify(tags);
-    render();
-  }
+        <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
+          <h3 class="font-bold text-white text-sm">سجل الأحداث والطلبات اللحظي</h3>
+          <div id="eventsLogList" class="space-y-2 text-xs divide-y divide-white/5 max-h-80 overflow-y-auto"></div>
+        </div>
+      </section>
 
-  function getValue() {
-    return tags.slice();
-  }
-
-  render();
-  return { setValue, getValue };
-}
-
-function escapeHtml(v) {
-  return String(v ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-// ============================================================
-// 6. FAQ Builder
-// ============================================================
-export function initFaqBuilder(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  let items = [];
-
-  function render() {
-    container.innerHTML = items.map((item, i) => `
-      <div class="faq-row p-3 rounded-xl bg-black/30 border border-white/10 space-y-2">
+      <!-- ============ PORTFOLIO ============ -->
+      <section id="portfolioTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
-          <span class="text-[10px] text-slate-400">سؤال ${i + 1}</span>
-          <button type="button" data-remove="${i}" class="text-red-400 text-[11px]">حذف</button>
+          <h2 class="text-xl font-bold text-white">إدارة سابقة الأعمال</h2>
+          <button onclick="openModal('portfolioModal')" class="px-4 py-2 rounded-xl bg-orange-600 text-white font-bold text-xs"><i class="fa-solid fa-plus ml-1"></i> إضافة مشروع</button>
         </div>
-        <input type="text" data-q="${i}" placeholder="السؤال..." value="${escapeHtml(item.question)}"
-          class="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs" />
-        <textarea data-a="${i}" rows="2" placeholder="الإجابة..."
-          class="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs">${escapeHtml(item.answer)}</textarea>
-      </div>
-    `).join('') + `
-      <button type="button" id="${containerId}_add" class="w-full py-2 rounded-lg border border-dashed border-white/20 text-slate-300 text-xs hover:border-pink-500/50 hover:text-pink-400">
-        <i class="fa-solid fa-plus ml-1"></i> إضافة سؤال
-      </button>
-    `;
+        <div id="portfolioTable" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </section>
 
-    container.querySelectorAll('[data-remove]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        items.splice(parseInt(btn.dataset.remove, 10), 1);
-        render();
-      });
-    });
+      <!-- ============ BLOG ============ -->
+      <section id="blogTab" class="tab-content hidden space-y-6">
+        <!-- Blog Sub-tabs -->
+        <div class="flex items-center gap-2 border-b border-white/10 pb-3">
+          <button id="subTabEditor" onclick="switchBlogSubTab('editor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white">
+            <i class="fa-solid fa-pen-fancy ml-1"></i> مقال جديد
+          </button>
+          <button id="subTabPublished" onclick="switchBlogSubTab('published')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-list ml-1"></i> المقالات المنشورة
+          </button>
+        </div>
 
-    container.querySelectorAll('[data-q]').forEach((input) => {
-      input.addEventListener('input', () => {
-        const i = parseInt(input.dataset.q, 10);
-        items[i].question = input.value;
-      });
-    });
+        <!-- ===== Editor View ===== -->
+        <div id="blogEditorView" class="space-y-5">
+          <!-- Basic Info -->
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
+            <div class="flex items-center justify-between">
+              <h3 class="text-white font-bold text-sm">المعلومات الأساسية</h3>
+              <button id="resetEditorBtn" type="button" class="text-slate-400 hover:text-white text-[10px]">
+                <i class="fa-solid fa-rotate-left ml-1"></i> مسح الكل
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 mb-1">عنوان المقال <span class="text-pink-400">*</span></label>
+                <input type="text" id="postTitleInput" placeholder="اكتب عنواناً جذاباً..."
+                  class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white break-words-safe" />
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">التصنيف <span class="text-pink-400">*</span></label>
+                <input type="text" id="postCategoryInput" list="categorySuggestions" placeholder="مثال: استراتيجيات مالية" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+                <datalist id="categorySuggestions">
+                  <option value="استراتيجيات مالية" />
+                  <option value="صناعة المحتوى الإعلاني" />
+                  <option value="تحليلات" />
+                  <option value="دراسات حالة" />
+                  <option value="أدوات وتقنيات" />
+                  <option value="أخبار التسويق" />
+                </datalist>
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">وقت القراءة (يُحسب تلقائياً)</label>
+                <div class="flex items-center gap-2 bg-black/50 border border-white/10 rounded-lg p-2.5">
+                  <i class="fa-solid fa-clock text-amber-400"></i>
+                  <span id="readingTimeDisplay" class="text-white">1 دقيقة</span>
+                </div>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 mb-1">صورة الغلاف (Featured Image)</label>
+                <div class="flex gap-2">
+                  <input type="url" id="postCoverUrl" placeholder="https://..." class="flex-1 bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                  <button type="button" onclick="uploadCoverImage()" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[11px] whitespace-nowrap">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> رفع
+                  </button>
+                </div>
+                <div id="coverPreview" class="mt-2 hidden">
+                  <img id="coverPreviewImg" class="w-full max-h-40 object-cover rounded-lg border border-white/10" />
+                </div>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 mb-1">فيديو رئيسي (اختياري - YouTube/Vimeo)</label>
+                <input type="url" id="postVideoUrl" placeholder="https://youtube.com/watch?v=..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-slate-400 mb-1">المقتطف (Excerpt — يظهر في المدونة ونتائج البحث وAI)</label>
+                <textarea id="postExcerpt" rows="2" maxlength="250" placeholder="ملخص جذاب في 150-200 حرف..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
+                <span id="excerptCounter" class="text-[10px] text-green-400 font-bold">0 / 250</span>
+              </div>
+            </div>
+          </div>
 
-    container.querySelectorAll('[data-a]').forEach((input) => {
-      input.addEventListener('input', () => {
-        const i = parseInt(input.dataset.a, 10);
-        items[i].answer = input.value;
-      });
-    });
+          <!-- Rich Editor -->
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-white font-bold text-sm">محتوى المقال</h3>
+              <span class="text-[10px] text-slate-500">يدعم الصور والفيديوهات والتنسيقات الكاملة</span>
+            </div>
+            <div id="editorContainer"></div>
+          </div>
 
-    document.getElementById(`${containerId}_add`)?.addEventListener('click', () => {
-      items.push({ question: '', answer: '' });
-      render();
-    });
-  }
+          <!-- SEO + AI Panels -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- SEO Panel -->
+            <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4 text-xs">
+              <div class="flex items-center gap-2 border-b border-white/10 pb-3">
+                <i class="fa-solid fa-magnifying-glass-chart text-green-400"></i>
+                <h3 class="text-white font-bold text-sm">تحسين محركات البحث (SEO)</h3>
+              </div>
 
-  function setValue(newItems) {
-    items = Array.isArray(newItems) ? newItems.map(x => ({ question: x.question || '', answer: x.answer || '' })) : [];
-    render();
-  }
+              <div>
+                <label class="block text-slate-400 mb-1">الرابط الدائم (Slug)</label>
+                <div class="flex items-center gap-2 bg-black/50 border border-white/10 rounded-lg p-2.5">
+                  <span class="text-slate-500 text-[10px] whitespace-nowrap">islamsaeid.me/blog/</span>
+                  <input type="text" id="postSlug" placeholder="auto-generated-from-title" dir="ltr" class="flex-1 bg-transparent border-none outline-none text-white text-[11px]" />
+                </div>
+                <button type="button" id="regenerateSlugBtn" class="mt-1 text-[10px] text-pink-400 hover:underline">
+                  <i class="fa-solid fa-wand-magic-sparkles ml-1"></i> توليد تلقائي من العنوان
+                </button>
+              </div>
 
-  function getValue() {
-    return items.filter(x => x.question.trim() && x.answer.trim());
-  }
+              <div>
+                <label class="block text-slate-400 mb-1">عنوان الـ SEO (Meta Title)</label>
+                <input type="text" id="postMetaTitle" maxlength="60" placeholder="عنوان يظهر في Google..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                <span id="metaTitleCounter" class="text-[10px] text-green-400 font-bold">0 / 60</span>
+              </div>
 
-  render();
-  return { setValue, getValue };
-}
+              <div>
+                <label class="block text-slate-400 mb-1">وصف الـ SEO (Meta Description)</label>
+                <textarea id="postMetaDesc" rows="3" maxlength="160" placeholder="وصف يظهر في Google (120-160 حرف)..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
+                <span id="metaDescCounter" class="text-[10px] text-green-400 font-bold">0 / 160</span>
+              </div>
 
-// ============================================================
-// 7. Google SERP Preview
-// ============================================================
-export function updateSerpPreview(previewId, { title, slug, description }) {
-  const el = document.getElementById(previewId);
-  if (!el) return;
-  const displayTitle = title ? `${title} | إسلام سعيد` : 'عنوان المقال | إسلام سعيد';
-  const url = slug ? `islamsaeid.me/blog/${slug}` : 'islamsaeid.me/blog/...';
-  el.innerHTML = `
-    <div class="p-4 rounded-xl bg-white border border-slate-200 text-right" dir="rtl">
-      <div class="text-[11px] text-slate-600 mb-0.5">${escapeHtml(url)}</div>
-      <div class="text-[#1a0dab] text-base font-medium leading-snug mb-1 cursor-pointer hover:underline" style="font-family: arial, sans-serif;">
-        ${escapeHtml(displayTitle)}
-      </div>
-      <div class="text-[13px] text-slate-600 leading-snug" style="font-family: arial, sans-serif;">
-        ${escapeHtml(description || 'الوصف الذي يظهر للزوار في نتائج البحث. اكتب وصفاً جذاباً ومفيداً بين 120-160 حرف.')}
-      </div>
+              <div>
+                <label class="block text-slate-400 mb-1">الكلمة المفتاحية الرئيسية (Focus Keyword)</label>
+                <input type="text" id="postFocusKeyword" placeholder="مثال: roas calculator" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                <div id="keywordAnalysis" class="mt-2 p-2 rounded-lg bg-black/30 border border-white/5 text-[10px] text-slate-400 space-y-0.5">
+                  <div class="flex justify-between"><span>عدد الظهور:</span><span id="kwCount" class="text-white font-bold">0</span></div>
+                  <div class="flex justify-between"><span>كثافة الكلمة:</span><span id="kwDensity" class="text-white font-bold">0%</span></div>
+                  <div class="flex justify-between"><span>التقييم:</span><span id="kwStatus" class="text-slate-400">—</span></div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1">الكلمات المفتاحية / Tags</label>
+                <div id="tagInputContainer"></div>
+                <input type="hidden" id="postTags" />
+              </div>
+
+              <div class="pt-3 border-t border-white/10">
+                <label class="block text-slate-400 mb-2 text-[11px]">معاينة Google (SERP Preview)</label>
+                <div id="serpPreview"></div>
+              </div>
+            </div>
+
+            <!-- AI Search Panel -->
+            <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4 text-xs">
+              <div class="flex items-center gap-2 border-b border-white/10 pb-3">
+                <i class="fa-solid fa-brain text-purple-400"></i>
+                <h3 class="text-white font-bold text-sm">تحسين الظهور في AI Search</h3>
+              </div>
+              <p class="text-[10px] text-slate-400 leading-relaxed">
+                هذه البيانات تساعد ChatGPT و Perplexity و Google AI Overview على فهم محتواك واستشهاد به في إجاباتهم.
+              </p>
+
+              <div>
+                <label class="block text-slate-400 mb-1">النقاط الرئيسية (Key Takeaways)</label>
+                <textarea id="postKeyTakeaways" rows="5" placeholder="نقطة واحدة في كل سطر:&#10;أهم استنتاج أول&#10;أهم استنتاج ثاني&#10;أهم استنتاج ثالث" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px] leading-relaxed"></textarea>
+                <span class="text-[10px] text-slate-500">اكتب كل نقطة في سطر منفصل</span>
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1">الأسئلة الشائعة (FAQ — تُدرج في Schema)</label>
+                <div id="faqBuilderContainer" class="space-y-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-[11px] text-slate-400">
+              <i class="fa-solid fa-circle-info"></i>
+              <span id="saveStatusText">جاهز للنشر</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="previewBlogPost()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
+                <i class="fa-solid fa-eye ml-1"></i> معاينة
+              </button>
+              <button type="button" id="publishBtn" onclick="publishBlogPost()" class="px-5 py-2 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs shadow-lg">
+                <i class="fa-solid fa-rocket ml-1"></i> نشر المقال
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Published View ===== -->
+        <div id="blogPublishedView" class="hidden space-y-3"></div>
+      </section>
+
+      <!-- ============ COMMENTS ============ -->
+      <section id="commentsTab" class="tab-content hidden space-y-6">
+        <h2 class="text-xl font-bold text-white">إدارة تعليقات الزوار</h2>
+        <div id="commentsTable" class="space-y-3 text-xs"></div>
+      </section>
+
+      <!-- ============ USERS ============ -->
+      <section id="usersTab" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">إدارة صلاحيات الأدمنز</h2>
+            <p class="text-xs text-slate-400">الأدمن الرئيسي محمي تلقائياً ولا يظهر في هذه القائمة.</p>
+          </div>
+          <button onclick="openModal('userModal')" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs"><i class="fa-solid fa-user-plus ml-1"></i> إضافة أدمن فرعي</button>
+        </div>
+        <div id="usersTable" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ MODAL: PORTFOLIO ============ -->
+  <div id="portfolioModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-4 text-xs max-h-[90vh] overflow-y-auto">
+      <h3 class="text-base font-bold text-white">إضافة مشروع جديد</h3>
+      <form id="portfolioForm" class="space-y-3">
+        <input type="text" id="pTitle" placeholder="اسم البراند" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="pCategory" placeholder="القطاع" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="pRoas" placeholder="العائد (30x ROAS)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="pMediaUrl" placeholder="رابط صورة المشروع" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="url" id="pVideoUrl" placeholder="رابط فيديو (YouTube/Vimeo)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <textarea id="pDesc" placeholder="وصف قصير" rows="2" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        <textarea id="pDetails" placeholder="تفاصيل الاستراتيجية" rows="4" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="pBudget" placeholder="الميزانية/الوصول" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <input type="text" id="pResults" placeholder="النتائج" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        </div>
+        <div class="pt-2">
+          <label class="block text-slate-400 mb-1">معرض الصور/الفيديوهات (اختياري):</label>
+          <div id="galleryInputs" class="space-y-2"></div>
+          <button type="button" onclick="addGalleryRow()" class="mt-2 text-xs text-pink-400 hover:underline">
+            <i class="fa-solid fa-plus ml-1"></i> إضافة عنصر
+          </button>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-orange-600 text-white font-bold">حفظ ونشر</button>
+        </div>
+      </form>
     </div>
-  `;
-}
+  </div>
 
-// ============================================================
-// 8. Character Counter Helper
-// ============================================================
-export function bindCounter(inputId, counterId, max) {
-  const input = document.getElementById(inputId);
-  const counter = document.getElementById(counterId);
-  if (!input || !counter) return;
+  <!-- ============ MODAL: ADD USER ============ -->
+  <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">إضافة أدمن فرعي</h3>
+      <form id="userForm" class="space-y-3">
+        <input type="text" id="uName" placeholder="اسم المستخدم" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="password" id="uPass" placeholder="كلمة المرور" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <div>
+          <label class="block text-slate-400 mb-1">الصلاحيات:</label>
+          <div class="space-y-1">
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="perms" value="analytics" checked /> التحليلات</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="perms" value="portfolio" /> سابقة الأعمال</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="perms" value="blog" /> المدونة</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="perms" value="comments" /> التعليقات</label>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold">إنشاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  function update() {
-    const len = input.value.length;
-    counter.textContent = `${len} / ${max}`;
-    counter.className = len > max
-      ? 'text-red-400 text-[10px] font-bold'
-      : len > max * 0.9
-        ? 'text-amber-400 text-[10px] font-bold'
-        : 'text-green-400 text-[10px] font-bold';
-  }
+  <!-- ============ MODAL: EDIT USER ============ -->
+  <div id="userEditModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
+      <h3 class="text-base font-bold text-white">تعديل بيانات الأدمن</h3>
+      <form id="userEditForm" class="space-y-3">
+        <input type="hidden" id="euId" />
+        <input type="text" id="euName" placeholder="اسم المستخدم" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="password" id="euPass" placeholder="كلمة مرور جديدة (اتركها فارغة لعدم التغيير)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <div>
+          <label class="block text-slate-400 mb-1">الصلاحيات:</label>
+          <div class="space-y-1">
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="euPerms" value="analytics" /> التحليلات</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="euPerms" value="portfolio" /> سابقة الأعمال</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="euPerms" value="blog" /> المدونة</label>
+            <label class="flex items-center gap-2 text-white"><input type="checkbox" name="euPerms" value="comments" /> التعليقات</label>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-lg bg-white/5 text-slate-300">إلغاء</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  input.addEventListener('input', update);
-  update();
-}
+  <!-- ============ MODAL: PREVIEW ============ -->
+  <div id="previewModal" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
+    <div class="bg-[#07060E] border border-white/10 rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+      <div class="sticky top-0 bg-[#0E0B1A] border-b border-white/10 p-4 flex justify-between items-center z-10">
+        <h3 class="text-white font-bold text-sm"><i class="fa-solid fa-eye ml-2 text-pink-400"></i> معاينة المقال</h3>
+        <button onclick="closePreview()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-times text-lg"></i>
+        </button>
+      </div>
+      <div id="previewContent" class="p-6 sm:p-8"></div>
+    </div>
+  </div>
+
+  <!-- ============ Quill & Modules ============ -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script type="module">
+    import { CloudCMS } from '../js/firebase-cms.js';
+    import { showToast } from '../js/app-features.js';
+    import {
+      initRichEditor, getEditorHTML, setEditorHTML,
+      generateSlug, calculateReadingTime, analyzeKeywordDensity,
+      initTagInput, initFaqBuilder, updateSerpPreview, bindCounter
+    } from '../js/rich-editor.js';
+
+    // ---------- Auth ----------
+    const auth = JSON.parse(sessionStorage.getItem('cms_auth') || '{}');
+    if (!auth.username) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('userRoleBadge').textContent =
+      auth.role === 'super_admin' ? '• الأدمن الرئيسي' : '• أدمن فرعي';
+
+    if (auth.role !== 'super_admin') {
+      const perms = auth.permissions || [];
+      if (!perms.includes('analytics')) document.getElementById('navAnalytics')?.remove();
+      if (!perms.includes('portfolio')) document.getElementById('navPortfolio')?.remove();
+      if (!perms.includes('blog')) document.getElementById('navBlog')?.remove();
+      if (!perms.includes('comments')) document.getElementById('navComments')?.remove();
+      document.getElementById('navUsers')?.remove();
+    }
+
+    // ---------- Helpers ----------
+    function escapeHtml(v) {
+      return String(v ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // ---------- Tab Switching ----------
+    window.switchTab = (tabId) => {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('bg-white/10', 'text-white', 'font-bold');
+        b.classList.add('text-slate-400');
+      });
+      const activeBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
+      activeBtn?.classList.add('bg-white/10', 'text-white', 'font-bold');
+      activeBtn?.classList.remove('text-slate-400');
+    };
+
+    window.switchBlogSubTab = (which) => {
+      const editorBtn = document.getElementById('subTabEditor');
+      const publishedBtn = document.getElementById('subTabPublished');
+      const editorView = document.getElementById('blogEditorView');
+      const publishedView = document.getElementById('blogPublishedView');
+
+      if (which === 'editor') {
+        editorBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white';
+        publishedBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5';
+        editorView.classList.remove('hidden');
+        publishedView.classList.add('hidden');
+      } else {
+        publishedBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white';
+        editorBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5';
+        editorView.classList.add('hidden');
+        publishedView.classList.remove('hidden');
+      }
+    };
+
+    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+    window.closeModals = () => document.querySelectorAll('#portfolioModal, #userModal, #userEditModal').forEach(m => m.classList.add('hidden'));
+    window.closePreview = () => document.getElementById('previewModal').classList.add('hidden');
+
+    // ---------- Audio Notifications ----------
+    let audioEnabled = false;
+    document.addEventListener('click', () => { audioEnabled = true; }, { once: true });
+
+    function playNotificationSound() {
+      if (!audioEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(); osc.stop(ctx.currentTime + 0.4);
+      } catch (_) {}
+    }
+
+    // ---------- Analytics ----------
+    let currentBootcampStatus = true;
+    let maintenanceStatus = false;
+    let lastLeadCount = null;
+    let lastPdfCount = null;
+
+    CloudCMS.subscribeAnalytics(data => {
+      document.getElementById('statVisits').textContent = (data.visits || 0).toLocaleString('ar-EG');
+      document.getElementById('statLeads').textContent = (data.leads || 0).toLocaleString('ar-EG');
+      document.getElementById('statPdfs').textContent = (data.pdfDownloads || 0).toLocaleString('ar-EG');
+      const cr = data.visits > 0 ? ((data.leads / data.visits) * 100).toFixed(1) : 0;
+      document.getElementById('statCr').textContent = `${cr}%`;
+
+      currentBootcampStatus = data.bootcampOpen !== false;
+      const btn = document.getElementById('toggleBootcampBtn');
+      if (currentBootcampStatus) {
+        btn.textContent = 'مفتوح';
+        btn.className = 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-green-600';
+      } else {
+        btn.textContent = 'مغلق';
+        btn.className = 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-red-600';
+      }
+
+      maintenanceStatus = data.maintenanceMode === true;
+      const mBtn = document.getElementById('toggleMaintenanceBtn');
+      mBtn.textContent = maintenanceStatus ? 'مفعّل' : 'متوقف';
+      mBtn.className = `px-2.5 py-1 rounded-lg text-[10px] font-bold text-white ${maintenanceStatus ? 'bg-red-600' : 'bg-green-600'}`;
+
+      if (lastLeadCount !== null && (data.leads || 0) > lastLeadCount) {
+        showToast(`🎉 طلب ترشح جديد! الإجمالي: ${data.leads}`, 'success');
+        playNotificationSound();
+      }
+      if (lastPdfCount !== null && (data.pdfDownloads || 0) > lastPdfCount) {
+        showToast(`📄 تحميل PDF جديد! الإجمالي: ${data.pdfDownloads}`, 'info');
+        playNotificationSound();
+      }
+      lastLeadCount = data.leads || 0;
+      lastPdfCount = data.pdfDownloads || 0;
+    });
+
+    document.getElementById('toggleBootcampBtn')?.addEventListener('click', async () => {
+      try { await CloudCMS.toggleBootcampStatus(!currentBootcampStatus); showToast('تم تغيير حالة المعسكر', 'warning'); }
+      catch (e) { alert('تعذر التحديث'); }
+    });
+
+    document.getElementById('toggleMaintenanceBtn')?.addEventListener('click', async () => {
+      try { await CloudCMS.toggleMaintenanceMode(!maintenanceStatus); showToast(maintenanceStatus ? 'تم إيقاف وضع الصيانة' : 'تم تفعيل وضع الصيانة', 'warning'); }
+      catch (e) { alert('تعذر التحديث'); }
+    });
+
+    // ---------- Event Logs ----------
+    CloudCMS.subscribeEventLogs(logs => {
+      const el = document.getElementById('eventsLogList');
+      if (!logs.length) { el.innerHTML = '<p class="text-slate-500 py-3">لا توجد أحداث بعد.</p>'; return; }
+      el.innerHTML = logs.map(l => `
+        <div class="pt-2 flex justify-between items-center text-xs gap-2 flex-wrap">
+          <div class="break-words-safe"><span class="font-bold text-purple-400 ml-2">[${escapeHtml(l.type)}]</span> <span class="text-slate-300">${escapeHtml(l.details || '')}</span></div>
+          <span class="text-[10px] text-slate-500">${escapeHtml(l.dateString || '')}</span>
+        </div>
+      `).join('');
+    });
+
+    // ---------- Portfolio ----------
+    CloudCMS.subscribePortfolio(items => {
+      const container = document.getElementById('portfolioTable');
+      if (!items.length) { container.innerHTML = '<p class="text-slate-500 py-3 col-span-2 text-xs">لا توجد مشاريع.</p>'; return; }
+      container.innerHTML = items.map(item => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs overflow-safe-card">
+          <div class="flex justify-between items-center gap-2 flex-wrap">
+            <span class="font-bold text-white break-words-safe">${escapeHtml(item.title)}</span>
+            <span class="text-pink-400 break-words-safe">${escapeHtml(item.category)}</span>
+          </div>
+          <div class="text-[10px] text-slate-400">
+            المشاهدات: <strong class="text-white">${item.views || 0}</strong> |
+            الإعجابات: <strong class="text-pink-400">${item.likes || 0}</strong>
+          </div>
+          <button onclick="deletePortfolio('${item.id}')" class="text-red-400 hover:underline text-[10px]">حذف</button>
+        </div>
+      `).join('');
+    });
+
+    // ---------- Comments ----------
+    CloudCMS.subscribeAllComments(comments => {
+      const container = document.getElementById('commentsTable');
+      if (!comments.length) { container.innerHTML = '<p class="text-slate-500 py-3">لا توجد تعليقات.</p>'; return; }
+      container.innerHTML = comments.map(c => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-center gap-3 flex-wrap overflow-safe-card">
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-white break-words-safe">${escapeHtml(c.name || 'زائر')}
+              <span class="text-[10px] text-slate-500">(${new Date(c.createdAt || Date.now()).toLocaleDateString('ar-EG')})</span>
+            </div>
+            <p class="text-slate-300 mt-1 break-words-safe">${escapeHtml(c.content || '')}</p>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            ${!c.approved ? `<button onclick="approveComment('${c.id}')" class="px-3 py-1 rounded bg-green-600 text-white">موافقة</button>` : `<span class="text-green-400 font-bold">منشور</span>`}
+            <button onclick="deleteComment('${c.id}')" class="px-3 py-1 rounded bg-red-600/20 text-red-300">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    // ---------- Users ----------
+    let currentUsers = [];
+    CloudCMS.subscribeUsers(users => {
+      currentUsers = users;
+      const subAdmins = users.filter(u => u.role !== 'super_admin');
+      const container = document.getElementById('usersTable');
+      if (!subAdmins.length) { container.innerHTML = '<p class="text-slate-500 py-3 text-xs col-span-3">لا يوجد أدمنز فرعيون.</p>'; return; }
+      container.innerHTML = subAdmins.map(u => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs overflow-safe-card">
+          <div class="font-bold text-white break-words-safe">${escapeHtml(u.username)}</div>
+          <div class="text-[10px] text-slate-400 break-words-safe">الصلاحيات: ${(u.permissions || []).map(escapeHtml).join(', ') || 'لا يوجد'}</div>
+          <div class="flex gap-2 pt-1">
+            <button onclick="editUser('${u.id}')" class="text-blue-400 hover:underline text-[10px]">تعديل</button>
+            <button onclick="deleteUser('${u.id}')" class="text-red-400 hover:underline text-[10px]">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    // ---------- Global Actions ----------
+    window.deletePortfolio = async (id) => {
+      if (!confirm('حذف هذا المشروع؟')) return;
+      try { await CloudCMS.deletePortfolioItem(id); showToast('تم الحذف', 'warning'); } catch { alert('تعذر الحذف'); }
+    };
+    window.approveComment = async (id) => { try { await CloudCMS.approveComment(id); showToast('تم النشر', 'success'); } catch { alert('تعذر'); } };
+    window.deleteComment = async (id) => { if (!confirm('حذف؟')) return; try { await CloudCMS.deleteComment(id); showToast('تم الحذف', 'warning'); } catch { alert('تعذر'); } };
+    window.deleteUser = async (id) => {
+      if (!confirm('حذف هذا الأدمن؟')) return;
+      try { await CloudCMS.deleteUser(id); showToast('تم الحذف', 'warning'); } catch(e) { alert(e.message); }
+    };
+    window.editUser = (id) => {
+      const user = currentUsers.find(u => u.id === id);
+      if (!user) return;
+      document.getElementById('euId').value = id;
+      document.getElementById('euName').value = user.username || '';
+      document.getElementById('euPass').value = '';
+      document.querySelectorAll('input[name="euPerms"]').forEach(cb => {
+        cb.checked = (user.permissions || []).includes(cb.value);
+      });
+      openModal('userEditModal');
+    };
+    window.addGalleryRow = () => {
+      const container = document.getElementById('galleryInputs');
+      const row = document.createElement('div');
+      row.className = 'gallery-row flex gap-2 items-start';
+      row.innerHTML = `
+        <select class="gal-type bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs">
+          <option value="image">صورة</option>
+          <option value="video">فيديو</option>
+        </select>
+        <input type="url" class="gal-url flex-1 bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-xs" placeholder="https://..." />
+        <input type="text" class="gal-caption flex-1 bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-xs" placeholder="وصف" />
+        <button type="button" onclick="this.parentElement.remove()" class="px-2 text-red-400">✕</button>
+      `;
+      container.appendChild(row);
+    };
+
+    // ---------- Portfolio Form ----------
+    document.getElementById('portfolioForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const mediaGallery = Array.from(document.querySelectorAll('#galleryInputs .gallery-row')).map(row => ({
+        type: row.querySelector('.gal-type')?.value || 'image',
+        url: row.querySelector('.gal-url')?.value.trim() || '',
+        caption: row.querySelector('.gal-caption')?.value.trim() || ''
+      })).filter(g => g.url);
+
+      try {
+        await CloudCMS.addPortfolioItem({
+          title: document.getElementById('pTitle').value,
+          category: document.getElementById('pCategory').value,
+          roas: document.getElementById('pRoas').value,
+          mediaUrl: document.getElementById('pMediaUrl').value,
+          videoUrl: document.getElementById('pVideoUrl').value,
+          desc: document.getElementById('pDesc').value,
+          details: document.getElementById('pDetails').value,
+          budget: document.getElementById('pBudget').value,
+          results: document.getElementById('pResults').value,
+          mediaGallery
+        });
+        closeModals();
+        e.target.reset();
+        document.getElementById('galleryInputs').innerHTML = '';
+        showToast('تمت إضافة المشروع', 'success');
+      } catch (err) { console.error(err); alert('تعذر الحفظ'); }
+    });
+
+    // ---------- User Form ----------
+    document.getElementById('userForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const perms = Array.from(document.querySelectorAll('input[name="perms"]:checked')).map(el => el.value);
+      try {
+        await CloudCMS.addUser({
+          username: document.getElementById('uName').value.trim(),
+          password: document.getElementById('uPass').value,
+          role: 'sub_admin',
+          permissions: perms
+        });
+        closeModals(); e.target.reset();
+        showToast('تم الإنشاء', 'success');
+      } catch { alert('تعذر الإنشاء'); }
+    });
+
+    document.getElementById('userEditForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('euId').value;
+      const perms = Array.from(document.querySelectorAll('input[name="euPerms"]:checked')).map(el => el.value);
+      const updates = { permissions: perms };
+      const newPass = document.getElementById('euPass').value.trim();
+      if (newPass) updates.password = newPass;
+      const newName = document.getElementById('euName').value.trim();
+      if (newName) updates.username = newName;
+      try { await CloudCMS.updateUser(id, updates); closeModals(); showToast('تم التحديث', 'success'); }
+      catch (err) { alert(err.message || 'تعذر'); }
+    });
+
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+      sessionStorage.removeItem('cms_auth');
+      window.location.href = 'login.html';
+    });
+
+    // ==========================================
+    // RICH EDITOR SETUP
+    // ==========================================
+    initRichEditor('editorContainer');
+
+    const tagInput = initTagInput('tagInputContainer', 'postTags');
+    const faqBuilder = initFaqBuilder('faqBuilderContainer');
+
+    bindCounter('postExcerpt', 'excerptCounter', 250);
+    bindCounter('postMetaTitle', 'metaTitleCounter', 60);
+    bindCounter('postMetaDesc', 'metaDescCounter', 160);
+
+    // Slug generation
+    document.getElementById('regenerateSlugBtn')?.addEventListener('click', () => {
+      const title = document.getElementById('postTitleInput').value;
+      document.getElementById('postSlug').value = generateSlug(title);
+      updateSerp();
+    });
+
+    // Live SERP update
+    function updateSerp() {
+      updateSerpPreview('serpPreview', {
+        title: document.getElementById('postMetaTitle').value || document.getElementById('postTitleInput').value,
+        slug: document.getElementById('postSlug').value,
+        description: document.getElementById('postMetaDesc').value || document.getElementById('postExcerpt').value
+      });
+    }
+
+    ['postTitleInput', 'postMetaTitle', 'postMetaDesc', 'postSlug', 'postExcerpt'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateSerp);
+    });
+
+    // Cover preview
+    document.getElementById('postCoverUrl')?.addEventListener('input', (e) => {
+      const url = e.target.value.trim();
+      const preview = document.getElementById('coverPreview');
+      const img = document.getElementById('coverPreviewImg');
+      if (url && /^https?:/i.test(url)) {
+        img.src = url;
+        preview.classList.remove('hidden');
+      } else {
+        preview.classList.add('hidden');
+      }
+    });
+
+    // Cover upload via ImgBB
+    window.uploadCoverImage = async () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) { alert('حجم الصورة يجب أن يكون أقل من 5MB'); return; }
+
+        const IMGBB_API_KEY = 'c393b2efe08ba757e8483951adbfb11c';
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('postCoverUrl').value = data.data.url;
+            document.getElementById('postCoverUrl').dispatchEvent(new Event('input'));
+            showToast('تم رفع الصورة', 'success');
+          } else {
+            throw new Error(data.error?.message || 'upload failed');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('فشل رفع الصورة');
+        }
+      };
+      input.click();
+    };
+
+    // Reading time + keyword analysis
+    function updateAnalysis() {
+      const html = getEditorHTML();
+      const readingTime = calculateReadingTime(html);
+      document.getElementById('readingTimeDisplay').textContent = `${readingTime} دقيقة`;
+
+      const kw = document.getElementById('postFocusKeyword').value.trim();
+      const analysis = analyzeKeywordDensity(html, kw);
+      document.getElementById('kwCount').textContent = analysis.count;
+      document.getElementById('kwDensity').textContent = `${analysis.density}%`;
+
+      const statusEl = document.getElementById('kwStatus');
+      if (analysis.status === 'good') { statusEl.textContent = '✅ ممتاز'; statusEl.className = 'text-green-400 font-bold'; }
+      else if (analysis.status === 'low') { statusEl.textContent = '⚠️ قليلة'; statusEl.className = 'text-amber-400 font-bold'; }
+      else if (analysis.status === 'high') { statusEl.textContent = '⚠️ مفرطة'; statusEl.className = 'text-red-400 font-bold'; }
+      else { statusEl.textContent = '—'; statusEl.className = 'text-slate-400'; }
+    }
+
+    document.getElementById('postFocusKeyword')?.addEventListener('input', updateAnalysis);
+
+    // Poll editor changes
+    setInterval(updateAnalysis, 2000);
+
+    // Reset editor
+    document.getElementById('resetEditorBtn')?.addEventListener('click', () => {
+      if (!confirm('سيتم مسح كل البيانات. متأكد؟')) return;
+      ['postTitleInput', 'postCategoryInput', 'postCoverUrl', 'postVideoUrl', 'postExcerpt',
+       'postSlug', 'postMetaTitle', 'postMetaDesc', 'postFocusKeyword', 'postKeyTakeaways'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      setEditorHTML('');
+      tagInput.setValue([]);
+      faqBuilder.setValue([]);
+      document.getElementById('coverPreview').classList.add('hidden');
+      updateSerp();
+      updateAnalysis();
+    });
+
+    // ---------- Preview ----------
+    window.previewBlogPost = () => {
+      const title = document.getElementById('postTitleInput').value || 'بدون عنوان';
+      const category = document.getElementById('postCategoryInput').value || 'عام';
+      const cover = document.getElementById('postCoverUrl').value;
+      const html = getEditorHTML();
+      const excerpt = document.getElementById('postExcerpt').value;
+      const readingTime = calculateReadingTime(html);
+
+      document.getElementById('previewContent').innerHTML = `
+        <article class="space-y-5">
+          <div class="flex items-center gap-3 text-xs flex-wrap">
+            <span class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold">${escapeHtml(category)}</span>
+            <span class="text-slate-400"><i class="fa-solid fa-clock ml-1"></i> ${readingTime} دقيقة قراءة</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-white leading-snug">${escapeHtml(title)}</h1>
+          ${cover ? `<img src="${escapeHtml(cover)}" class="w-full max-h-96 object-cover rounded-2xl border border-white/10" onerror="this.style.display='none'" />` : ''}
+          ${excerpt ? `<p class="text-sm text-slate-300 leading-relaxed italic border-r-4 border-pink-500 pr-4">${escapeHtml(excerpt)}</p>` : ''}
+          <div class="prose-preview ql-editor" style="padding:0;color:#cbd5e1;min-height:auto">${html || '<p class="text-slate-500">لا يوجد محتوى بعد</p>'}</div>
+        </article>
+      `;
+      document.getElementById('previewModal').classList.remove('hidden');
+    };
+
+    // ---------- Publish ----------
+    document.getElementById('publishBtn')?.addEventListener('click', async () => {
+      const title = document.getElementById('postTitleInput').value.trim();
+      const category = document.getElementById('postCategoryInput').value.trim();
+      const cover = document.getElementById('postCoverUrl').value.trim();
+      const videoUrl = document.getElementById('postVideoUrl').value.trim();
+      const excerpt = document.getElementById('postExcerpt').value.trim();
+      const content = getEditorHTML();
+      const slug = document.getElementById('postSlug').value.trim() || generateSlug(title);
+      const metaTitle = document.getElementById('postMetaTitle').value.trim();
+      const metaDesc = document.getElementById('postMetaDesc').value.trim();
+      const focusKeyword = document.getElementById('postFocusKeyword').value.trim();
+      const tags = tagInput.getValue();
+      const keyTakeawaysRaw = document.getElementById('postKeyTakeaways').value.trim();
+      const keyTakeaways = keyTakeawaysRaw ? keyTakeawaysRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const faqItems = faqBuilder.getValue();
+      const readingTime = calculateReadingTime(content);
+
+      if (!title) { alert('الرجاء إدخال عنوان المقال'); return; }
+      if (!category) { alert('الرجاء إدخال التصنيف'); return; }
+      if (!content || content === '<p><br></p>') { alert('الرجاء كتابة محتوى المقال'); return; }
+
+      const btn = document.getElementById('publishBtn');
+      btn.disabled = true;
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري النشر...';
+
+      try {
+        await CloudCMS.addBlogPost({
+          title, category,
+          image: cover,
+          video: videoUrl,
+          excerpt,
+          content,
+          contentFormat: 'html',
+          slug,
+          metaTitle,
+          metaDescription: metaDesc,
+          focusKeyword,
+          tags,
+          keyTakeaways,
+          faqItems,
+          readingTime,
+          author: 'إسلام سعيد',
+          authorBio: 'Senior Media Buyer & Growth Strategist'
+        });
+        showToast('✅ تم نشر المقال بنجاح', 'success');
+        // Reset
+        document.getElementById('resetEditorBtn').click();
+        // Switch to published view
+        switchBlogSubTab('published');
+      } catch (err) {
+        console.error(err);
+        alert('تعذر نشر المقال. حاول مرة أخرى.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    });
+
+    // ---------- Published Posts ----------
+    let allPosts = [];
+
+    CloudCMS.subscribeBlog(items => {
+      allPosts = items;
+      const container = document.getElementById('blogPublishedView');
+      if (!items.length) {
+        container.innerHTML = '<p class="text-center text-slate-500 py-10 text-xs">لا توجد مقالات منشورة بعد.</p>';
+        return;
+      }
+      container.innerHTML = items.map(item => `
+        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-start gap-3 flex-wrap overflow-safe-card">
+          <div class="space-y-1 min-w-0 flex-1">
+            <h4 class="font-bold text-white text-sm break-words-safe">${escapeHtml(item.title)}</h4>
+            <div class="flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
+              <span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(item.category || 'عام')}</span>
+              <span><i class="fa-solid fa-eye ml-1"></i> ${item.views || 0}</span>
+              <span><i class="fa-solid fa-heart ml-1 text-pink-400"></i> ${item.likes || 0}</span>
+              <span><i class="fa-solid fa-clock ml-1"></i> ${item.readingTime || 1} د</span>
+              <span>${new Date(item.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
+            </div>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            <button onclick="loadPostForEdit('${item.id}')" class="px-3 py-1.5 rounded bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 text-[11px]">
+              <i class="fa-solid fa-pen"></i> تعديل
+            </button>
+            <button onclick="deleteBlogPost('${item.id}')" class="px-3 py-1.5 rounded bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    window.deleteBlogPost = async (id) => {
+      if (!confirm('حذف هذا المقال نهائياً؟')) return;
+      try { await CloudCMS.deleteBlogPost(id); showToast('تم حذف المقال', 'warning'); }
+      catch { alert('تعذر الحذف'); }
+    };
+
+    window.loadPostForEdit = async (id) => {
+      const item = allPosts.find(p => p.id === id);
+      if (!item) return;
+
+      // Fill fields
+      document.getElementById('postTitleInput').value = item.title || '';
+      document.getElementById('postCategoryInput').value = item.category || '';
+      document.getElementById('postCoverUrl').value = item.image || '';
+      document.getElementById('postVideoUrl').value = item.video || '';
+      document.getElementById('postExcerpt').value = item.excerpt || '';
+      document.getElementById('postSlug').value = item.slug || '';
+      document.getElementById('postMetaTitle').value = item.metaTitle || '';
+      document.getElementById('postMetaDesc').value = item.metaDescription || '';
+      document.getElementById('postFocusKeyword').value = item.focusKeyword || '';
+      document.getElementById('postKeyTakeaways').value = Array.isArray(item.keyTakeaways) ? item.keyTakeaways.join('\n') : '';
+
+      // Content
+      if (item.contentFormat === 'html' || /<[a-z][\s\S]*>/i.test(item.content || '')) {
+        setEditorHTML(item.content || '');
+      } else {
+        setEditorHTML(String(item.content || '').replace(/\n/g, '<br>'));
+      }
+
+      tagInput.setValue(item.tags || []);
+      faqBuilder.setValue(item.faqItems || []);
+
+      if (item.image) {
+        document.getElementById('coverPreview').classList.remove('hidden');
+        document.getElementById('coverPreviewImg').src = item.image;
+      }
+
+      updateSerp();
+      updateAnalysis();
+
+      // Switch to editor
+      switchBlogSubTab('editor');
+      switchTab('blogTab');
+      showToast('تم تحميل المقال للتعديل', 'info');
+
+      // Change publish button to update
+      const btn = document.getElementById('publishBtn');
+      btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
+      btn.dataset.editId = id;
+    };
+
+    // ---------- Init SERP ----------
+    updateSerp();
+    updateAnalysis();
+  </script>
+</body>
+</html>

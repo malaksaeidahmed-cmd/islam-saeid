@@ -60,12 +60,8 @@ body {
 }
 
 @keyframes marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
 }
 
 .line-clamp-3 {
@@ -85,21 +81,13 @@ textarea:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  .marquee-track {
-    animation: none;
-  }
+  .marquee-track { animation: none; }
 }
 
 html:not(.dark) body {
@@ -118,4 +106,168 @@ html:not(.dark) .fade-overlay-left {
 
 html:not(.dark) .fade-overlay-right {
   background: linear-gradient(to right, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.98));
+}
+
+/* ============================================
+   Text Overflow Utilities (Phase 1)
+   ============================================ */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.break-words-safe {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.overflow-safe-card {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.overflow-safe-card h1,
+.overflow-safe-card h2,
+.overflow-safe-card h3,
+.overflow-safe-card h4,
+.overflow-safe-card p,
+.overflow-safe-card span,
+.overflow-safe-card a,
+.overflow-safe-card div {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================
+   Media Gallery & Lightbox
+   ============================================ */
+.media-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.media-gallery-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: zoom-in;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.media-gallery-item:hover {
+  transform: scale(1.02);
+  border-color: rgba(217, 70, 239, 0.5);
+}
+
+.media-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-gallery-item .media-play-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+.video-embed-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+}
+
+.video-embed-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ============================================
+   Toast Enhancements
+   ============================================ */
+.toast-slide-in {
+  animation: toastSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================
+   Filter Buttons
+   ============================================ */
+.filter-chip {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-chip:hover {
+  color: white;
+  border-color: rgba(217, 70, 239, 0.5);
+}
+
+.filter-chip.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #d946ef 48%, #f97316 100%);
+  color: white;
+  border-color: transparent;
+}
+
+/* ============================================
+   Mobile Responsive Fixes
+   ============================================ */
+@media (max-width: 640px) {
+  .overflow-safe-card {
+    padding: 1rem !important;
+  }
+  .media-gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+}
+
+/* ============================================
+   Fancybox RTL tweaks
+   ============================================ */
+.fancybox__caption {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  direction: rtl;
 }

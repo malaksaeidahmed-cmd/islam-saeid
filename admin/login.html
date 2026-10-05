@@ -19,45 +19,65 @@
       <p class="text-xs text-slate-400">أدخل اسم المستخدم وكلمة المرور للمتابعة</p>
     </div>
 
-    <form id="loginForm" class="space-y-4 text-xs">
+    <form id="loginForm" class="space-y-4 text-xs" autocomplete="on">
       <div>
         <label class="block font-semibold text-slate-300 mb-1">اسم المستخدم (Username):</label>
-        <input type="text" id="userInput" required placeholder="islam" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
+        <input type="text" id="userInput" required placeholder="islam" autocomplete="username"
+          class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
       </div>
       <div>
         <label class="block font-semibold text-slate-300 mb-1">كلمة المرور:</label>
-        <input type="password" id="passInput" required placeholder="••••••••" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
+        <input type="password" id="passInput" required placeholder="••••••••" autocomplete="current-password"
+          class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
       </div>
 
       <div id="loginError" class="hidden p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 text-center font-semibold">
         اسم المستخدم أو كلمة المرور غير صحيحة
       </div>
 
-      <button type="submit" id="submitBtn" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg text-xs">
+      <button type="submit" id="submitBtn"
+        class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg text-xs disabled:opacity-60 disabled:cursor-not-allowed">
         دخول لوحة التحكم
       </button>
+
+      <p class="text-center text-[10px] text-slate-500 pt-2">
+        🔒 يتم تشفير كلمة المرور بـ SHA-256 قبل الإرسال
+      </p>
     </form>
   </div>
 
   <script type="module">
     import { CloudCMS } from '../js/firebase-cms.js';
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    const form = document.getElementById('loginForm');
+    const btn = document.getElementById('submitBtn');
+    const errorBox = document.getElementById('loginError');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = document.getElementById('submitBtn');
+      errorBox.classList.add('hidden');
+      btn.disabled = true;
+      const originalText = btn.textContent;
       btn.textContent = 'جاري التحقق...';
-      
+
       const user = document.getElementById('userInput').value.trim();
       const pass = document.getElementById('passInput').value;
 
-      const authData = await CloudCMS.loginUser(user, pass);
-
-      if (authData) {
-        sessionStorage.setItem('cms_auth', JSON.stringify(authData));
-        window.location.href = 'dashboard.html';
-      } else {
-        btn.textContent = 'دخول لوحة التحكم';
-        document.getElementById('loginError').classList.remove('hidden');
+      try {
+        const authData = await CloudCMS.loginUser(user, pass);
+        if (authData) {
+          sessionStorage.setItem('cms_auth', JSON.stringify(authData));
+          window.location.href = 'dashboard.html';
+          return;
+        }
+        errorBox.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        errorBox.textContent = 'حدث خطأ في الاتصال. حاول مرة أخرى.';
+        errorBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
       }
     });
   </script>

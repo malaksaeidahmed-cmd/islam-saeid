@@ -65,8 +65,7 @@
     }
 
     function cleanText(value) {
-      const plain = String(value ?? '').replace(/<[^>]*>?/gm, '').trim();
-      return plain;
+      return String(value ?? '').trim();
     }
 
     function isSafeMediaUrl(url) {

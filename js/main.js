@@ -62,6 +62,7 @@ const translations = {
     "about-card2": "توجيه كتابة وتصوير الفيديوهات القصيرة (Reels & TikToks) لجذب انتباه العميل في أول ثانيتين وحثه المباشر على اتخاذ قرار الشراء.",
     "portfolio-tag": "سجلات أداء حقيقية",
     "portfolio-title": "نتائج حملات موثقة من مدير الإعلانات",
+    "portfolio-filter-all": "الكل",
     "calc-tag": "الذكاء المالي واستشراف نتائج الحملات",
     "calc-title": "حاسبة القرار التسويقي واقتصاديات السوق",
     "calc-sub": "حاسبة تعتمد على معدلات الأداء الحقيقية في السوق المصري والعربي لمساعدتك في اتخاذ قرارات تسويقية واثقة.",
@@ -101,7 +102,10 @@ const translations = {
     "a2": "نعم، القواعد المالية لاقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة سواء في التجارة الإلكترونية، خدمات B2B، العقارات، أو قطاع الأغذية والمطاعم.",
     "q3": "ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟",
     "a3": "نفضل ميزانية لا تقل عن 20,000 إلى 30,000 ج.م شهرياً لضمان تدريب خوارزميات Meta و TikTok واختبار العروض والوصول إلى أداء مربح مستدام.",
-    "rights": "جميع الحقوق محفوظة"
+    "rights": "جميع الحقوق محفوظة",
+    "maintenance-title": "الموقع تحت الصيانة",
+    "maintenance-desc": "نعمل حالياً على تحديثات مهمة. عد قريباً.",
+    "maintenance-contact": "تواصل عبر واتساب"
   },
   en: {
     "my-name": "Islam Saeid",
@@ -134,6 +138,7 @@ const translations = {
     "about-card2": "Creative direction for Reels & TikToks hooking attention in 2s.",
     "portfolio-tag": "Verified Case Studies",
     "portfolio-title": "Campaign Results Verified From Ad Manager",
+    "portfolio-filter-all": "All",
     "calc-tag": "Financial Intelligence",
     "calc-title": "Strategic Marketing Decision Calculator",
     "calc-sub": "Driven by real MENA & Egypt market benchmark metrics.",
@@ -173,7 +178,10 @@ const translations = {
     "a2": "Yes, Break-Even ROAS and Max CAC rules are universal across E-Commerce, B2B, Services, and Real Estate.",
     "q3": "What is the recommended minimum monthly budget?",
     "a3": "We recommend a minimum of 20,000 - 30,000 EGP monthly to properly feed Meta & TikTok algorithms.",
-    "rights": "All Rights Reserved"
+    "rights": "All Rights Reserved",
+    "maintenance-title": "Site Under Maintenance",
+    "maintenance-desc": "We are currently applying important updates. Come back soon.",
+    "maintenance-contact": "Contact via WhatsApp"
   }
 };
 
@@ -240,12 +248,12 @@ function renderBrandsMarquee() {
 
   const htmlContent = brandsList.map(brand => `
     <div class="brand-card w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 transition-all group relative">
-      <img 
-        src="assets/${brand.id}.webp" 
-        alt="${brand.name}" 
-        class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-300" 
-        loading="lazy" 
-        onError="this.onerror=null; this.src='assets/${brand.id}.png';" 
+      <img
+        src="assets/${brand.id}.webp"
+        alt="${brand.name}"
+        class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-300"
+        loading="lazy"
+        onError="this.onerror=null; this.src='assets/${brand.id}.png';"
       />
       <span class="absolute -bottom-2 bg-black/90 text-[9px] text-slate-300 px-2 py-0.5 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
         ${brand.name}
@@ -258,20 +266,160 @@ function renderBrandsMarquee() {
 }
 
 // ==========================================
-// 5. Initializations & Cloud Sync
+// 5. Maintenance Mode Banner
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
+async function checkMaintenanceMode() {
+  try {
+    if (sessionStorage.getItem('cms_auth')) return; // Admins bypass
+
+    const { CloudCMS } = await import('./firebase-cms.js');
+    CloudCMS.subscribeAnalytics((data) => {
+      if (data.maintenanceMode === true) {
+        if (document.getElementById('maintenanceOverlay')) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'maintenanceOverlay';
+        overlay.className = 'fixed inset-0 z-[9999] bg-[#07060E] flex items-center justify-center p-6 text-center';
+        overlay.innerHTML = `
+          <div class="max-w-md space-y-4">
+            <i class="fa-solid fa-screwdriver-wrench text-5xl text-brand-orange"></i>
+            <h1 class="text-2xl font-bold text-white" data-i18n="maintenance-title">${translations[currentLang]['maintenance-title']}</h1>
+            <p class="text-sm text-slate-400" data-i18n="maintenance-desc">${translations[currentLang]['maintenance-desc']}</p>
+            <a href="https://wa.me/201021252183" class="inline-block mt-4 px-5 py-2.5 rounded-xl brand-gradient text-white text-xs font-bold" data-i18n="maintenance-contact">${translations[currentLang]['maintenance-contact']}</a>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      } else {
+        document.getElementById('maintenanceOverlay')?.remove();
+      }
+    });
+  } catch (_) {
+    // Silent fail — don't break the page
+  }
+}
+
+// ==========================================
+// 6. Portfolio Category Filters (Index Page)
+// ==========================================
+let allPortfolioItems = [];
+let activePortfolioCategory = 'all';
+
+function renderPortfolioFilters() {
+  const container = document.getElementById('portfolioFilters');
+  if (!container) return;
+
+  const cats = new Set();
+  allPortfolioItems.forEach(p => {
+    const c = String(p.category || '').trim();
+    if (c) cats.add(c);
+  });
+
+  const chips = [`<button class="filter-chip ${activePortfolioCategory === 'all' ? 'active' : ''}" data-cat="all">الكل</button>`];
+  cats.forEach(c => {
+    chips.push(`<button class="filter-chip ${activePortfolioCategory === c ? 'active' : ''}" data-cat="${c}">${c}</button>`);
+  });
+  container.innerHTML = chips.join('');
+
+  container.querySelectorAll('.filter-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activePortfolioCategory = btn.dataset.cat;
+      renderPortfolioFilters();
+      renderFilteredPortfolio();
+    });
+  });
+}
+
+function renderFilteredPortfolio() {
+  const container = document.getElementById('dynamicPortfolioGrid');
+  if (!container) return;
+
+  let items = allPortfolioItems;
+  if (activePortfolioCategory !== 'all') {
+    items = items.filter(p => String(p.category || '').trim() === activePortfolioCategory);
+  }
+
+  if (!items.length) {
+    container.innerHTML = '<p class="text-center text-slate-500 col-span-3 py-10 text-xs">لا توجد مشاريع في هذا القسم حالياً.</p>';
+    return;
+  }
+
+  container.innerHTML = items.map(item => {
+    const safeId = encodeURIComponent(String(item.id ?? ''));
+    const safeCategory = String(item.category || 'غير مصنف').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeRoas = String(item.roas || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeTitle = String(item.title || 'بدون عنوان').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeDesc = String(item.desc || 'لا يوجد وصف').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeBudget = String(item.budget || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeResults = String(item.results || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+
+    const imagePart = item.mediaUrl && /^https?:/i.test(item.mediaUrl)
+      ? `<img src="${item.mediaUrl.replace(/"/g, '&quot;')}" alt="نتيجة حملة: ${safeTitle}" class="w-full h-40 object-cover rounded-xl mb-4" onError="this.style.display='none'" loading="lazy" />`
+      : '';
+
+    return `
+      <a href="case-study.html?id=${safeId}" class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between hover:border-brand-magenta/50 transition-all cursor-pointer group overflow-safe-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-magenta">
+        ${imagePart}
+        <div class="space-y-3">
+          <div class="flex items-center justify-between text-xs gap-2 flex-wrap">
+            <span class="text-brand-magenta font-bold break-words-safe">${safeCategory}</span>
+            <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${safeRoas}</span>
+          </div>
+          <h3 class="font-bold text-white text-lg group-hover:text-brand-magenta transition-colors break-words-safe">${safeTitle}</h3>
+          <p class="text-xs text-slate-400 leading-relaxed line-clamp-3 break-words-safe">${safeDesc}</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
+          <div class="flex justify-between gap-2"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans break-words-safe">${safeBudget}</span></div>
+          <div class="flex justify-between gap-2"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans break-words-safe">${safeResults}</span></div>
+          <div class="pt-2 text-left text-brand-magenta font-bold text-[11px] group-hover:underline">عرض دراسة الحالة بالكامل &larr;</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
+// ==========================================
+// 7. Initializations & Cloud Sync
+// ==========================================
+document.addEventListener('DOMContentLoaded', async () => {
   applyLanguage(currentLang);
   renderBrandsMarquee();
+  checkMaintenanceMode();
 
-  if (window.cmsEngine) {
-    window.cmsEngine.trackVisit();
-    window.cmsEngine.renderPortfolio('dynamicPortfolioGrid');
+  // Cloud portfolio for index page
+  try {
+    const { CloudCMS } = await import('./firebase-cms.js');
+
+    // Track visit once per session
+    if (!sessionStorage.getItem('visited')) {
+      CloudCMS.trackVisit().catch(() => {});
+      sessionStorage.setItem('visited', 'true');
+    }
+
+    CloudCMS.subscribeAnalytics(data => {
+      const btn = document.getElementById('bootcampSubmitBtn');
+      if (btn && data.bootcampOpen === false) {
+        btn.disabled = true;
+        btn.innerText = 'اكتملت المقاعد حالياً';
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    });
+
+    CloudCMS.subscribePortfolio(items => {
+      allPortfolioItems = Array.isArray(items) ? items : [];
+      renderPortfolioFilters();
+      renderFilteredPortfolio();
+    });
+  } catch (error) {
+    console.warn('Firebase features unavailable; using local fallback.', error);
+
+    if (window.cmsEngine) {
+      window.cmsEngine.trackVisit();
+      window.cmsEngine.renderPortfolio('dynamicPortfolioGrid');
+    }
   }
 });
 
 // ==========================================
-// 6. Form Submission, Accordions & Navigation
+// 8. Form Submission
 // ==========================================
 const form = document.getElementById('waitlistForm');
 if (form) {
@@ -311,7 +459,7 @@ if (form) {
     event.returnValue = '';
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -334,13 +482,19 @@ if (form) {
     submitBtn?.setAttribute('disabled', 'true');
     submitBtn?.classList.add('opacity-70', 'cursor-not-allowed');
 
-    if (window.cmsEngine) {
-      window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
+    // Log to cloud (with fallback)
+    try {
+      const { CloudCMS } = await import('./firebase-cms.js');
+      await CloudCMS.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
+    } catch (_) {
+      if (window.cmsEngine) {
+        window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
+      }
     }
 
     form.classList.add('hidden');
     document.getElementById('waitlistSuccess').classList.remove('hidden');
-    
+
     setTimeout(() => {
       const msg = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج الأوفلاين في القاهرة (الدفعة المغلقة - 20 مقعداً).\n- الهاتف: ${normalizedPhone}\n- مستوى الخبرة: ${experience}\n- الإنفاق الشهري الحالي: ${budget}\n- التحدي المطلوب حله: ${challenge}\nبانتظار تحديد موعد المقابلة.`);
       window.open(`https://wa.me/201021252183?text=${msg}`, '_blank');

@@ -6,15 +6,17 @@
   <title>المقال | إسلام سعيد</title>
   <meta name="description" content="تفاصيل مقالات إسلام سعيد حول الأداء الإعلاني، النمو، واقتصاديات الوحدة." />
   <link rel="canonical" href="https://islamsaeid.me/post.html" />
-  <meta property="og:title" content="المقال | إسلام سعيد" />
-  <meta property="og:description" content="محتوى معرفي عربي حول التحليل المالي للحملات والإعلانات." />
+  <meta property="og:title" content="المقال | إسلام سعيد" id="ogTitle" />
+  <meta property="og:description" content="محتوى معرفي عربي حول التحليل المالي للحملات والإعلانات." id="ogDesc" />
   <meta property="og:type" content="article" />
-  <meta property="og:image" content="https://islamsaeid.me/logo.png" />
+  <meta property="og:image" content="https://islamsaeid.me/logo.png" id="ogImage" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -36,29 +38,29 @@
     <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل المقال...</div>
 
     <article id="postContent" class="hidden space-y-6">
-      <div class="space-y-3 border-b border-white/10 pb-6">
-        <div class="flex items-center gap-3 text-xs">
+      <div class="space-y-3 border-b border-white/10 pb-6 overflow-safe-card">
+        <div class="flex items-center gap-3 text-xs flex-wrap">
           <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
           <span id="postDate" class="text-slate-400"></span>
         </div>
-        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words"></h1>
-        <div class="text-xs text-slate-400 flex items-center justify-between">
+        <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words-safe"></h1>
+        <div class="text-xs text-slate-400 flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-user text-orange-400"></i>
             <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
           </div>
-          <button id="likeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all">
+          <button id="likeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all disabled:opacity-60">
             <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
           </button>
         </div>
       </div>
 
       <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
-      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words"></div>
+      <div id="postVideoContainer" class="hidden"></div>
+      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words-safe overflow-safe-card"></div>
 
       <div class="pt-8 border-t border-white/10 space-y-6">
         <h2 class="text-lg font-bold text-white">التعليقات والمناقشات</h2>
-
         <div id="commentsList" class="space-y-3 text-xs">
           <p class="text-slate-500">لا توجد تعليقات حتى الآن.</p>
         </div>
@@ -66,16 +68,21 @@
         <form id="commentForm" class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
           <h3 class="font-bold text-white">أضف تعليقاً:</h3>
           <label for="cName" class="sr-only">الاسم</label>
-          <input type="text" id="cName" required placeholder="اسمك" maxlength="70" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <input type="text" id="cName" required placeholder="اسمك" maxlength="70"
+            class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white break-words-safe" />
           <label for="cContent" class="sr-only">محتوى التعليق</label>
-          <textarea id="cContent" rows="3" required maxlength="500" placeholder="اكتب تعليقك هنا..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
-          <button id="commentSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">إرسال التعليق للمراجعة</button>
+          <textarea id="cContent" rows="3" required maxlength="500" placeholder="اكتب تعليقك هنا..."
+            class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white break-words-safe"></textarea>
+          <button id="commentSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold disabled:opacity-60">
+            إرسال التعليق للمراجعة
+          </button>
         </form>
       </div>
     </article>
   </main>
 
   <script src="js/cms-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
@@ -87,15 +94,8 @@
 
     function escapeHtml(value) {
       return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function safeMultilineText(value) {
-      return escapeHtml(value || '').replace(/\n/g, '<br>');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function isSafeMediaUrl(url) {
@@ -103,9 +103,62 @@
       try {
         const parsed = new URL(url, window.location.href);
         return ['http:', 'https:'].includes(parsed.protocol);
-      } catch (_) {
-        return false;
-      }
+      } catch (_) { return false; }
+    }
+
+    function parseVideoEmbed(url) {
+      if (!url) return null;
+      try {
+        const u = new URL(url);
+        const host = u.hostname.replace('www.', '');
+        if (host === 'youtu.be') {
+          const id = u.pathname.slice(1).split('/')[0];
+          if (id) return `https://www.youtube.com/embed/${id}`;
+        }
+        if (host.endsWith('youtube.com')) {
+          if (u.searchParams.get('v')) return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
+          if (u.pathname.startsWith('/embed/')) {
+            const id = u.pathname.split('/')[2];
+            if (id) return `https://www.youtube.com/embed/${id}`;
+          }
+        }
+        if (host.endsWith('vimeo.com')) {
+          const id = u.pathname.split('/').filter(Boolean).pop();
+          if (id) return `https://player.vimeo.com/video/${id}`;
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    function renderContent(raw) {
+      const text = String(raw || '');
+      let html = escapeHtml(text);
+
+      html = html.replace(/\[img\](https?:\/\/[^\[]+?)\[\/img\]/gi, (m, url) => {
+        if (!isSafeMediaUrl(url)) return '';
+        return `<figure class="my-4"><a href="${escapeHtml(url)}" data-fancybox="post-inline"><img src="${escapeHtml(url)}" alt="صورة داخل المقال" loading="lazy" class="w-full rounded-xl border border-white/10" onerror="this.parentElement.parentElement.style.display='none'" /></a></figure>`;
+      });
+
+      html = html.replace(/\[video\](https?:\/\/[^\[]+?)\[\/video\]/gi, (m, url) => {
+        const embed = parseVideoEmbed(url);
+        if (!embed) return '';
+        return `<div class="video-embed-wrapper my-4"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy"></iframe></div>`;
+      });
+
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
+    function updateMetaTags(post) {
+      const title = `${post.title || 'المقال'} | إسلام سعيد`;
+      const desc = (post.excerpt || post.content || '').slice(0, 160).replace(/\s+/g, ' ').trim();
+      const img = isSafeMediaUrl(post.image) ? post.image : 'https://islamsaeid.me/logo.png';
+
+      document.title = title;
+      document.getElementById('ogTitle')?.setAttribute('content', title);
+      document.getElementById('ogDesc')?.setAttribute('content', desc);
+      document.getElementById('ogImage')?.setAttribute('content', img);
+      document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
     }
 
     function renderComments(comments) {
@@ -114,14 +167,13 @@
         list.innerHTML = '<p class="text-slate-500">لا توجد تعليقات معتمدة بعد.</p>';
         return;
       }
-
       list.innerHTML = comments.map((c) => `
-        <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1">
-          <div class="font-bold text-white flex justify-between">
-            <span>${escapeHtml(c.name || 'زائر')}</span>
+        <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1 overflow-safe-card">
+          <div class="font-bold text-white flex justify-between gap-2 flex-wrap">
+            <span class="break-words-safe">${escapeHtml(c.name || 'زائر')}</span>
             <span class="text-[10px] text-slate-500">${new Date(c.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
           </div>
-          <p class="text-slate-300">${escapeHtml(c.content || '')}</p>
+          <p class="text-slate-300 break-words-safe">${escapeHtml(c.content || '')}</p>
         </div>
       `).join('');
     }
@@ -134,13 +186,29 @@
       document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
       document.getElementById('postTitle').textContent = post.title || 'بدون عنوان';
       document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
-      document.getElementById('postBody').innerHTML = safeMultilineText(post.content || '');
       document.getElementById('likeCount').textContent = String(post.likes || 0);
+      document.getElementById('postBody').innerHTML = renderContent(post.content || '');
 
       if (isSafeMediaUrl(post.image)) {
         const imgBox = document.getElementById('postImageContainer');
         imgBox.classList.remove('hidden');
-        imgBox.innerHTML = `<img src="${escapeHtml(post.image)}" alt="غلاف المقال: ${escapeHtml(post.title || 'مقال') }" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.classList.add('hidden')" />`;
+        imgBox.innerHTML = `
+          <a href="${escapeHtml(post.image)}" data-fancybox="post-featured" data-caption="${escapeHtml(post.title || '')}">
+            <img src="${escapeHtml(post.image)}" alt="غلاف المقال: ${escapeHtml(post.title || '')}" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.parentElement.classList.add('hidden')" />
+          </a>`;
+      }
+
+      const embed = parseVideoEmbed(post.video);
+      if (embed) {
+        const vBox = document.getElementById('postVideoContainer');
+        vBox.classList.remove('hidden');
+        vBox.innerHTML = `<div class="video-embed-wrapper"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy" title="فيديو المقال"></iframe></div>`;
+      }
+
+      updateMetaTags(post);
+
+      if (window.Fancybox) {
+        Fancybox.bind('[data-fancybox]', {});
       }
     }
 
@@ -192,13 +260,11 @@
             alert('التعليقات غير متاحة الآن لعدم توفر الاتصال السحابي.');
             return;
           }
-
           const name = document.getElementById('cName').value.trim();
           const content = document.getElementById('cContent').value.trim();
           if (!name || !content) return;
 
           commentSubmitBtn.setAttribute('disabled', 'true');
-          commentSubmitBtn.classList.add('opacity-70', 'cursor-not-allowed');
           try {
             await cms.addComment(postId, name, content);
             alert('تم إرسال التعليق بنجاح وسيظهر بعد المراجعة.');
@@ -208,7 +274,6 @@
             alert('تعذر إرسال التعليق حالياً، حاول مرة أخرى لاحقاً.');
           } finally {
             commentSubmitBtn.removeAttribute('disabled');
-            commentSubmitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
           }
         });
       }

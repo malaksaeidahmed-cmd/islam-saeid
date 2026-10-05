@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -41,7 +42,12 @@
 
     <div class="max-w-md mx-auto">
       <label for="blogSearchInput" class="sr-only">بحث في المقالات</label>
-      <input type="text" id="blogSearchInput" placeholder="بحث في المقالات..." class="w-full bg-[#0E0B1A] border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-pink-500" />
+      <input type="text" id="blogSearchInput" placeholder="بحث في المقالات..."
+        class="w-full bg-[#0E0B1A] border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-pink-500" />
+    </div>
+
+    <div id="categoryFilters" class="flex flex-wrap items-center justify-center gap-2">
+      <button class="filter-chip active" data-cat="all">الكل</button>
     </div>
 
     <div id="blogStatus" class="text-center py-3 text-slate-500 text-xs">جاري جلب المقالات...</div>
@@ -49,19 +55,20 @@
   </main>
 
   <script src="js/cms-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
     const statusEl = document.getElementById('blogStatus');
     const container = document.getElementById('blogContainer');
     const searchInput = document.getElementById('blogSearchInput');
+    const filtersContainer = document.getElementById('categoryFilters');
     let allPosts = [];
+    let activeCategory = 'all';
+    let currentQuery = '';
 
     function escapeHtml(value) {
       return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function cleanText(value) {
@@ -73,9 +80,27 @@
       try {
         const parsed = new URL(url, window.location.href);
         return ['http:', 'https:'].includes(parsed.protocol);
-      } catch (_) {
-        return false;
-      }
+      } catch (_) { return false; }
+    }
+
+    function renderFilters() {
+      const cats = new Set();
+      allPosts.forEach(p => {
+        const c = cleanText(p.category);
+        if (c) cats.add(c);
+      });
+      const chips = ['<button class="filter-chip ' + (activeCategory === 'all' ? 'active' : '') + '" data-cat="all">الكل</button>'];
+      cats.forEach(c => {
+        chips.push(`<button class="filter-chip ${activeCategory === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`);
+      });
+      filtersContainer.innerHTML = chips.join('');
+      filtersContainer.querySelectorAll('.filter-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.dataset.cat;
+          renderFilters();
+          applyFilters();
+        });
+      });
     }
 
     function renderBlog(posts) {
@@ -94,20 +119,20 @@
         const hasImage = isSafeMediaUrl(p.image);
 
         return `
-          <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all flex flex-col justify-between overflow-hidden">
+          <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 hover:border-pink-500/40 transition-all flex flex-col justify-between overflow-safe-card">
             ${hasImage ? `<img src="${escapeHtml(p.image)}" alt="غلاف المقال: ${safeTitle}" class="w-full h-48 object-cover rounded-2xl" onerror="this.style.display='none'" loading="lazy" />` : ''}
             <div class="space-y-3">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-pink-400 font-bold">${safeCategory}</span>
+              <div class="flex items-center justify-between text-xs flex-wrap gap-2">
+                <span class="text-pink-400 font-bold break-words-safe">${safeCategory}</span>
                 <span class="text-slate-500">${new Date(p.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
               </div>
-              <h2 class="text-xl font-bold text-white hover:text-pink-400 transition-colors break-words">
+              <h2 class="text-xl font-bold text-white hover:text-pink-400 transition-colors break-words-safe">
                 <a href="post.html?id=${postId}">${safeTitle}</a>
               </h2>
-              <p class="text-xs text-slate-300 leading-relaxed break-words">${escapeHtml(excerpt)}</p>
+              <p class="text-xs text-slate-300 leading-relaxed break-words-safe">${escapeHtml(excerpt)}</p>
             </div>
-            <div class="pt-3 border-t border-white/5 flex justify-between items-center text-xs">
-              <span class="text-slate-400"><i class="fa-solid fa-pen-nib text-orange-400 ml-1"></i>${safeAuthor}</span>
+            <div class="pt-3 border-t border-white/5 flex justify-between items-center text-xs gap-2 flex-wrap">
+              <span class="text-slate-400 break-words-safe"><i class="fa-solid fa-pen-nib text-orange-400 ml-1"></i>${safeAuthor}</span>
               <a href="post.html?id=${postId}" class="text-pink-400 hover:text-white font-bold flex items-center gap-1">
                 <span>اقرأ المقال بالكامل</span>
                 <i class="fa-solid fa-chevron-left text-[10px]"></i>
@@ -127,13 +152,25 @@
       statusEl.classList.add('hidden');
     }
 
+    function applyFilters() {
+      let filtered = allPosts;
+      if (activeCategory !== 'all') {
+        filtered = filtered.filter(p => cleanText(p.category) === activeCategory);
+      }
+      if (currentQuery) {
+        const q = currentQuery.toLowerCase();
+        filtered = filtered.filter(p =>
+          cleanText(p.title).toLowerCase().includes(q) ||
+          cleanText(p.content).toLowerCase().includes(q)
+        );
+      }
+      renderBlog(filtered);
+    }
+
     function bindSearch() {
       searchInput?.addEventListener('input', (e) => {
-        const q = String(e.target.value || '').toLowerCase().trim();
-        const filtered = !q
-          ? allPosts
-          : allPosts.filter(p => cleanText(p.title).toLowerCase().includes(q) || cleanText(p.content).toLowerCase().includes(q));
-        renderBlog(filtered);
+        currentQuery = String(e.target.value || '').trim();
+        applyFilters();
       });
     }
 
@@ -145,7 +182,8 @@
         CloudCMS.subscribeBlog(posts => {
           allPosts = Array.isArray(posts) ? posts : [];
           hideStatus();
-          renderBlog(allPosts);
+          renderFilters();
+          applyFilters();
         });
         return;
       } catch (error) {
@@ -155,7 +193,8 @@
       if (window.cmsEngine?.getBlog) {
         allPosts = window.cmsEngine.getBlog() || [];
         setStatus('يتم عرض نسخة محلية من المقالات بسبب تعذر الاتصال بالمصدر السحابي.');
-        renderBlog(allPosts);
+        renderFilters();
+        applyFilters();
       } else {
         setStatus('تعذر تحميل المقالات حالياً.');
       }

@@ -1,16 +1,9 @@
-// ============================================================
-// SHA-256 Password Hashing via Web Crypto API
-// ============================================================
-
 const HASH_PREFIX = '$sha256$';
 const SALT = 'islamsaeid_secure_salt_v1_2025';
 
 export async function hashPassword(password) {
   if (!password) return '';
-  if (typeof password === 'string' && password.startsWith(HASH_PREFIX)) {
-    return password;
-  }
-
+  if (typeof password === 'string' && password.startsWith(HASH_PREFIX)) return password;
   const encoder = new TextEncoder();
   const data = encoder.encode(SALT + '::' + password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -21,12 +14,9 @@ export async function hashPassword(password) {
 
 export async function verifyPassword(plainPassword, storedValue) {
   if (!storedValue) return { ok: false, needsUpgrade: false };
-
   if (!storedValue.startsWith(HASH_PREFIX)) {
-    const ok = plainPassword === storedValue;
-    return { ok, needsUpgrade: ok };
+    return { ok: plainPassword === storedValue, needsUpgrade: true };
   }
-
   const hashed = await hashPassword(plainPassword);
   return { ok: hashed === storedValue, needsUpgrade: false };
 }

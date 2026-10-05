@@ -1,10 +1,9 @@
 // ============================================================
-// Rich Editor Module — Quill 2.0 + SEO + AI Search
+// Rich Editor Module — Multi-instance support (Blog + Portfolio)
 // ============================================================
 
 const IMGBB_API_KEY = "c393b2efe08ba757e8483951adbfb11c";
-
-let quillInstance = null;
+const quillInstances = {};
 
 export function initRichEditor(containerId = 'editorContainer') {
   const container = document.getElementById(containerId);
@@ -22,43 +21,45 @@ export function initRichEditor(containerId = 'editorContainer') {
     ['clean']
   ];
 
-  quillInstance = new Quill(`#${containerId}`, {
+  const quill = new Quill(`#${containerId}`, {
     theme: 'snow',
     modules: {
       toolbar: {
         container: toolbarOptions,
         handlers: {
-          image: () => handleImageUpload(),
-          video: () => handleVideoInsert()
+          image: () => handleImageUpload(containerId),
+          video: () => handleVideoInsert(containerId)
         }
       }
     },
-    placeholder: 'اكتب مقالك الاحترافي هنا... يمكنك إضافة صور وفيديوهات وتنسيقات غنية.',
+    placeholder: 'اكتب المحتوى الاحترافي هنا... يمكنك إضافة صور وفيديوهات وتنسيقات غنية.',
     dir: 'rtl'
   });
 
-  return quillInstance;
+  quillInstances[containerId] = quill;
+  return quill;
 }
 
-export function getEditorInstance() {
-  return quillInstance;
-}
-
-export function getEditorHTML() {
-  if (!quillInstance) return '';
-  const html = quillInstance.root.innerHTML;
+export function getEditorHTML(containerId = 'editorContainer') {
+  const quill = quillInstances[containerId];
+  if (!quill) return '';
+  const html = quill.root.innerHTML;
   return html === '<p><br></p>' ? '' : html;
 }
 
-export function setEditorHTML(html) {
-  if (!quillInstance) return;
-  quillInstance.root.innerHTML = html || '';
+export function setEditorHTML(html, containerId = 'editorContainer') {
+  const quill = quillInstances[containerId];
+  if (!quill) return;
+  quill.root.innerHTML = html || '';
 }
 
 // ============================================================
 // Image Upload → ImgBB
 // ============================================================
-function handleImageUpload() {
+function handleImageUpload(containerId) {
+  const quill = quillInstances[containerId];
+  if (!quill) return;
+
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -73,20 +74,20 @@ function handleImageUpload() {
     const choice = await showUploadChoice();
     if (choice === 'url') {
       const url = prompt('الصق رابط الصورة:');
-      if (url) insertImage(url);
+      if (url) insertImage(quill, url);
       return;
     }
     if (choice !== 'upload') return;
 
-    const range = quillInstance.getSelection(true);
-    quillInstance.insertText(range.index, '⏳ جاري رفع الصورة...');
+    const range = quill.getSelection(true);
+    quill.insertText(range.index, '⏳ جاري رفع الصورة...');
     try {
       const url = await uploadImageToImgBB(file);
-      quillInstance.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
-      insertImage(url);
+      quill.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
+      insertImage(quill, url);
     } catch (err) {
       console.error(err);
-      quillInstance.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
+      quill.deleteText(range.index, '⏳ جاري رفع الصورة...'.length);
       alert('فشل رفع الصورة. تأكد من صحة مفتاح ImgBB API.');
     }
   };
@@ -138,26 +139,29 @@ async function uploadImageToImgBB(file) {
   return data.data.url;
 }
 
-function insertImage(url) {
-  const range = quillInstance.getSelection(true);
-  quillInstance.insertEmbed(range.index, 'image', url);
-  quillInstance.setSelection(range.index + 1);
+function insertImage(quill, url) {
+  const range = quill.getSelection(true);
+  quill.insertEmbed(range.index, 'image', url);
+  quill.setSelection(range.index + 1);
 }
 
 // ============================================================
 // Video Insert
 // ============================================================
-function handleVideoInsert() {
+function handleVideoInsert(containerId) {
+  const quill = quillInstances[containerId];
+  if (!quill) return;
+
   const url = prompt('الصق رابط الفيديو (YouTube/Vimeo):');
   if (!url) return;
   const embed = parseVideoEmbed(url);
   if (!embed) { alert('الرابط غير صالح.'); return; }
-  const range = quillInstance.getSelection(true);
-  quillInstance.insertEmbed(range.index, 'video', embed);
-  quillInstance.setSelection(range.index + 1);
+  const range = quill.getSelection(true);
+  quill.insertEmbed(range.index, 'video', embed);
+  quill.setSelection(range.index + 1);
 }
 
-function parseVideoEmbed(url) {
+export function parseVideoEmbed(url) {
   try {
     const u = new URL(url);
     const host = u.hostname.replace('www.', '');
@@ -340,13 +344,90 @@ export function initFaqBuilder(containerId) {
 }
 
 // ============================================================
+// Media Gallery Builder
+// ============================================================
+export function initGalleryBuilder(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let items = [];
+
+  function render() {
+    container.innerHTML = items.map((item, i) => `
+      <div class="gallery-row p-3 rounded-xl bg-black/30 border border-white/10 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] text-slate-400">عنصر ${i + 1}</span>
+          <button type="button" data-remove="${i}" class="text-red-400 text-[11px]">حذف</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <select data-type="${i}" class="bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs">
+            <option value="image" ${item.type === 'image' ? 'selected' : ''}>صورة</option>
+            <option value="video" ${item.type === 'video' ? 'selected' : ''}>فيديو</option>
+          </select>
+          <input type="url" data-url="${i}" placeholder="https://..." value="${escapeHtml(item.url || '')}"
+            class="sm:col-span-2 bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs" dir="ltr" />
+        </div>
+        <input type="text" data-caption="${i}" placeholder="وصف مختصر (اختياري)" value="${escapeHtml(item.caption || '')}"
+          class="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs" />
+        ${item.type === 'video' ? `<input type="url" data-thumbnail="${i}" placeholder="رابط صورة الغلاف للفيديو (اختياري)" value="${escapeHtml(item.thumbnail || '')}" class="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-white text-xs" dir="ltr" />` : ''}
+      </div>
+    `).join('') + `
+      <button type="button" id="${containerId}_add" class="w-full py-2 rounded-lg border border-dashed border-white/20 text-slate-300 text-xs hover:border-pink-500/50 hover:text-pink-400">
+        <i class="fa-solid fa-plus ml-1"></i> إضافة صورة/فيديو للمعرض
+      </button>
+    `;
+    container.querySelectorAll('[data-remove]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        items.splice(parseInt(btn.dataset.remove, 10), 1);
+        render();
+      });
+    });
+    container.querySelectorAll('[data-type]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        items[parseInt(sel.dataset.type, 10)].type = sel.value;
+        render();
+      });
+    });
+    container.querySelectorAll('[data-url]').forEach((inp) => {
+      inp.addEventListener('input', () => { items[parseInt(inp.dataset.url, 10)].url = inp.value; });
+    });
+    container.querySelectorAll('[data-caption]').forEach((inp) => {
+      inp.addEventListener('input', () => { items[parseInt(inp.dataset.caption, 10)].caption = inp.value; });
+    });
+    container.querySelectorAll('[data-thumbnail]').forEach((inp) => {
+      inp.addEventListener('input', () => { items[parseInt(inp.dataset.thumbnail, 10)].thumbnail = inp.value; });
+    });
+    document.getElementById(`${containerId}_add`)?.addEventListener('click', () => {
+      items.push({ type: 'image', url: '', caption: '', thumbnail: '' });
+      render();
+    });
+  }
+
+  function setValue(newItems) {
+    items = Array.isArray(newItems)
+      ? newItems.map(x => ({ type: x.type || 'image', url: x.url || '', caption: x.caption || '', thumbnail: x.thumbnail || '' }))
+      : [];
+    render();
+  }
+  function getValue() {
+    return items.filter(x => x.url.trim()).map(x => ({
+      type: x.type,
+      url: x.url.trim(),
+      caption: x.caption.trim(),
+      thumbnail: x.type === 'video' ? (x.thumbnail || '').trim() : ''
+    }));
+  }
+  render();
+  return { setValue, getValue };
+}
+
+// ============================================================
 // SERP Preview
 // ============================================================
 export function updateSerpPreview(previewId, { title, slug, description }) {
   const el = document.getElementById(previewId);
   if (!el) return;
-  const displayTitle = title ? `${title} | إسلام سعيد` : 'عنوان المقال | إسلام سعيد';
-  const url = slug ? `islamsaeid.me/blog/${slug}` : 'islamsaeid.me/blog/...';
+  const displayTitle = title ? `${title} | إسلام سعيد` : 'العنوان | إسلام سعيد';
+  const url = slug ? `islamsaeid.me/case/${slug}` : 'islamsaeid.me/case/...';
   el.innerHTML = `
     <div class="p-4 rounded-xl bg-white border border-slate-200 text-right" dir="rtl">
       <div class="text-[11px] text-slate-600 mb-0.5">${escapeHtml(url)}</div>

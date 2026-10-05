@@ -1,5 +1,5 @@
 // ============================================================
-// Rich Editor Module — Multi-instance support (Blog + Portfolio)
+// Rich Editor Module — Multi-instance (Blog + Portfolio)
 // ============================================================
 
 const IMGBB_API_KEY = "c393b2efe08ba757e8483951adbfb11c";

@@ -5,22 +5,219 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>المقال | إسلام سعيد</title>
   <meta name="description" content="تفاصيل مقالات إسلام سعيد حول الأداء الإعلاني، النمو، واقتصاديات الوحدة." />
-  <link rel="canonical" href="https://islamsaeid.me/post.html" />
+  <link rel="canonical" href="https://islamsaeid.me/post.html" id="canonicalLink" />
   <meta property="og:title" content="المقال | إسلام سعيد" id="ogTitle" />
   <meta property="og:description" content="محتوى معرفي عربي حول التحليل المالي للحملات والإعلانات." id="ogDesc" />
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="article" id="ogType" />
   <meta property="og:image" content="https://islamsaeid.me/logo.png" id="ogImage" />
+  <meta property="og:url" content="https://islamsaeid.me/post.html" id="ogUrl" />
+  <meta property="article:published_time" content="" id="ogPublished" />
+  <meta property="article:author" content="إسلام سعيد" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="المقال | إسلام سعيد" id="twTitle" />
+  <meta name="twitter:description" content="محتوى معرفي عربي حول التحليل المالي للحملات." id="twDesc" />
+  <meta name="twitter:image" content="https://islamsaeid.me/logo.png" id="twImage" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Rich HTML Article Content Styles */
+    .article-content {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.95;
+      color: #cbd5e1;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .article-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(217, 70, 239, 0.3);
+    }
+    .article-content h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 1.5rem 0 0.5rem;
+    }
+    .article-content h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 1.25rem 0 0.5rem;
+    }
+    .article-content p {
+      margin-bottom: 1rem;
+    }
+    .article-content a {
+      color: #ec4899;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .article-content a:hover {
+      color: #f472b6;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 1.5rem 0;
+      display: block;
+    }
+    .article-content iframe.ql-video,
+    .article-content iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      border-radius: 14px;
+      margin: 1.5rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .article-content blockquote {
+      border-right: 4px solid #d946ef;
+      padding: 0.75rem 1rem;
+      margin: 1.5rem 0;
+      background: rgba(217, 70, 239, 0.05);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-style: italic;
+    }
+    .article-content ul,
+    .article-content ol {
+      padding-right: 1.5rem;
+      padding-left: 0;
+      margin-bottom: 1rem;
+    }
+    .article-content li {
+      margin-bottom: 0.5rem;
+    }
+    .article-content ul li {
+      list-style-type: disc;
+    }
+    .article-content ol li {
+      list-style-type: decimal;
+    }
+    .article-content pre {
+      background: #0a0a14;
+      color: #f472b6;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      direction: ltr;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .article-content code {
+      background: rgba(217, 70, 239, 0.1);
+      color: #f472b6;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      direction: ltr;
+      display: inline-block;
+    }
+    .article-content strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .article-content em {
+      color: #e2e8f0;
+    }
+    .article-content hr {
+      border-color: rgba(255, 255, 255, 0.1);
+      margin: 2rem 0;
+    }
+
+    /* Reading Progress Bar */
+    #readingProgress {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #7c3aed, #d946ef, #f97316);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.15s ease;
+    }
+
+    /* Tag chips */
+    .article-tag {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(217, 70, 239, 0.12);
+      color: #f472b6;
+      border: 1px solid rgba(217, 70, 239, 0.25);
+      transition: all 0.2s ease;
+    }
+    .article-tag:hover {
+      background: rgba(217, 70, 239, 0.22);
+      color: #fbcfe8;
+    }
+
+    /* Key Takeaways Box */
+    .key-takeaways-box {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(217, 70, 239, 0.08));
+      border: 1px solid rgba(217, 70, 239, 0.25);
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    /* FAQ Accordion */
+    .post-faq-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .post-faq-item:hover {
+      border-color: rgba(217, 70, 239, 0.3);
+    }
+    .post-faq-btn {
+      width: 100%;
+      text-align: right;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .post-faq-content {
+      padding: 0 1.25rem 1rem;
+      color: #cbd5e1;
+      line-height: 1.8;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 0.85rem;
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
+
+  <!-- Reading Progress -->
+  <div id="readingProgress"></div>
 
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
     <div class="max-w-4xl mx-auto px-5 flex justify-between items-center">
@@ -35,30 +232,86 @@
   </header>
 
   <main class="max-w-3xl mx-auto px-5 py-12 space-y-8">
-    <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل المقال...</div>
+    <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">
+      <i class="fa-solid fa-spinner fa-spin text-2xl block mb-3 text-pink-400"></i>
+      جاري تحميل المقال...
+    </div>
 
     <article id="postContent" class="hidden space-y-6">
-      <div class="space-y-3 border-b border-white/10 pb-6 overflow-safe-card">
+      <!-- Header -->
+      <div class="space-y-4 border-b border-white/10 pb-6 overflow-safe-card">
         <div class="flex items-center gap-3 text-xs flex-wrap">
           <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
           <span id="postDate" class="text-slate-400"></span>
+          <span id="postReadingTime" class="text-slate-400"><i class="fa-solid fa-clock ml-1"></i> <span>1 دقيقة</span></span>
         </div>
         <h1 id="postTitle" class="text-2xl sm:text-4xl font-bold text-white leading-snug break-words-safe"></h1>
-        <div class="text-xs text-slate-400 flex items-center justify-between flex-wrap gap-2">
+        <div class="text-xs text-slate-400 flex items-center justify-between flex-wrap gap-3">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-user text-orange-400"></i>
             <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
           </div>
-          <button id="likeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all disabled:opacity-60">
-            <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="likeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all disabled:opacity-60">
+              <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
+            </button>
+            <button id="shareBtn" type="button" class="px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:bg-white/10 font-bold flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-share-nodes"></i> مشاركة
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Cover -->
       <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
-      <div id="postVideoContainer" class="hidden"></div>
-      <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words-safe overflow-safe-card"></div>
 
+      <!-- Featured Video -->
+      <div id="postVideoContainer" class="hidden"></div>
+
+      <!-- Excerpt highlight -->
+      <p id="postExcerptHighlight" class="hidden text-sm text-slate-300 leading-relaxed italic border-r-4 border-pink-500 pr-4 py-1"></p>
+
+      <!-- Article Content -->
+      <div id="postBody" class="article-content"></div>
+
+      <!-- Key Takeaways -->
+      <div id="keyTakeawaysSection" class="hidden key-takeaways-box">
+        <h3 class="text-white font-bold text-base mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-key text-amber-400"></i> النقاط الرئيسية
+        </h3>
+        <ul id="keyTakeawaysList" class="space-y-2 text-sm text-slate-300"></ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <section id="postFaqSection" class="hidden space-y-3 pt-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+          <i class="fa-solid fa-circle-question text-purple-400"></i> الأسئلة الشائعة
+        </h2>
+        <div id="postFaqList" class="space-y-2"></div>
+      </section>
+
+      <!-- Tags -->
+      <div id="postTagsSection" class="hidden pt-4 border-t border-white/10">
+        <h3 class="text-xs text-slate-400 mb-2 font-bold">الكلمات المفتاحية:</h3>
+        <div id="postTagsList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Author Box -->
+      <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 flex items-start gap-4 overflow-safe-card">
+        <img src="logo.png" alt="إسلام سعيد" class="w-14 h-14 object-contain rounded-xl border border-white/10 flex-shrink-0" onerror="this.style.display='none'" />
+        <div class="min-w-0">
+          <div class="text-white font-bold text-sm mb-1">إسلام سعيد</div>
+          <p class="text-xs text-slate-400 leading-relaxed break-words-safe">
+            Senior Media Buyer & Growth Strategist — متخصص في إدارة الميزانيات الإعلانية الضخمة وتحقيق عوائد استثمارية قياسية عبر Meta و TikTok Ads.
+          </p>
+          <div class="flex items-center gap-3 mt-2">
+            <a href="https://wa.me/201021252183" target="_blank" class="text-[11px] text-green-400 hover:underline"><i class="fa-brands fa-whatsapp"></i> تواصل</a>
+            <a href="https://linkedin.com/in/islamsaeid" target="_blank" class="text-[11px] text-blue-400 hover:underline"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
       <div class="pt-8 border-t border-white/10 space-y-6">
         <h2 class="text-lg font-bold text-white">التعليقات والمناقشات</h2>
         <div id="commentsList" class="space-y-3 text-xs">
@@ -88,9 +341,6 @@
     const postId = urlParams.get('id');
     const postLoading = document.getElementById('postLoading');
     const postContent = document.getElementById('postContent');
-    const commentForm = document.getElementById('commentForm');
-    const commentSubmitBtn = document.getElementById('commentSubmitBtn');
-    const likeBtn = document.getElementById('likeBtn');
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -130,35 +380,237 @@
       return null;
     }
 
-    function renderContent(raw) {
-      const text = String(raw || '');
-      let html = escapeHtml(text);
+    // Sanitize rich HTML: allow only safe tags, remove scripts/events
+    function sanitizeHtml(html) {
+      if (!html) return '';
+      const allowedTags = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
+        'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
+        'a', 'img', 'iframe', 'hr', 'span', 'div', 'figure', 'figcaption',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td'];
+      const div = document.createElement('div');
+      div.innerHTML = html;
 
-      html = html.replace(/\[img\](https?:\/\/[^\[]+?)\[\/img\]/gi, (m, url) => {
-        if (!isSafeMediaUrl(url)) return '';
-        return `<figure class="my-4"><a href="${escapeHtml(url)}" data-fancybox="post-inline"><img src="${escapeHtml(url)}" alt="صورة داخل المقال" loading="lazy" class="w-full rounded-xl border border-white/10" onerror="this.parentElement.parentElement.style.display='none'" /></a></figure>`;
+      // Remove dangerous elements
+      div.querySelectorAll('script, style, link, meta, object, embed, form, input, button').forEach(n => n.remove());
+
+      // Clean attributes
+      div.querySelectorAll('*').forEach(el => {
+        const tag = el.tagName.toLowerCase();
+        if (!allowedTags.includes(tag)) {
+          // Unwrap unknown tags but keep children
+          const text = document.createTextNode(el.textContent || '');
+          el.parentNode?.replaceChild(text, el);
+          return;
+        }
+        Array.from(el.attributes).forEach(attr => {
+          const name = attr.name.toLowerCase();
+          const value = attr.value;
+          // Remove event handlers and dangerous attributes
+          if (name.startsWith('on') || name === 'srcdoc' || name === 'formaction') {
+            el.removeAttribute(attr.name);
+            return;
+          }
+          // For links, ensure safe href
+          if (name === 'href') {
+            if (!/^(https?:|mailto:|tel:|#|\/)/i.test(value)) {
+              el.removeAttribute(attr.name);
+            }
+          }
+          // For img src, ensure safe
+          if (name === 'src' && tag === 'img') {
+            if (!/^https?:/i.test(value)) {
+              el.removeAttribute(attr.name);
+            }
+          }
+          // For iframe src, only allow youtube/vimeo
+          if (name === 'src' && tag === 'iframe') {
+            if (!/(youtube\.com|youtu\.be|player\.vimeo\.com)/i.test(value)) {
+              el.removeAttribute(attr.name);
+            }
+          }
+          // Force safe target and rel on external links
+          if (tag === 'a' && name === 'href') {
+            el.setAttribute('target', '_blank');
+            el.setAttribute('rel', 'noopener noreferrer');
+          }
+        });
+        // Add lazy loading to images and iframes
+        if (tag === 'img' || tag === 'iframe') {
+          el.setAttribute('loading', 'lazy');
+          if (tag === 'iframe') el.setAttribute('allowfullscreen', 'true');
+        }
       });
 
+      return div.innerHTML;
+    }
+
+    function renderContent(raw) {
+      if (!raw) return '';
+      // If content looks like HTML (from Quill), sanitize and return
+      if (/<[a-z][\s\S]*>/i.test(raw)) {
+        return sanitizeHtml(raw);
+      }
+      // Legacy: plain text with markers
+      let html = escapeHtml(raw);
+      html = html.replace(/\[img\](https?:\/\/[^\[]+?)\[\/img\]/gi, (m, url) => {
+        if (!isSafeMediaUrl(url)) return '';
+        return `<figure><a href="${escapeHtml(url)}" data-fancybox="post-inline"><img src="${escapeHtml(url)}" alt="صورة داخل المقال" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'" /></a></figure>`;
+      });
       html = html.replace(/\[video\](https?:\/\/[^\[]+?)\[\/video\]/gi, (m, url) => {
         const embed = parseVideoEmbed(url);
         if (!embed) return '';
         return `<div class="video-embed-wrapper my-4"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy"></iframe></div>`;
       });
-
       html = html.replace(/\n/g, '<br>');
       return html;
     }
 
+    // ---------- Update Meta Tags ----------
     function updateMetaTags(post) {
-      const title = `${post.title || 'المقال'} | إسلام سعيد`;
-      const desc = (post.excerpt || post.content || '').slice(0, 160).replace(/\s+/g, ' ').trim();
+      const title = post.metaTitle || `${post.title || 'المقال'} | إسلام سعيد`;
+      const desc = post.metaDescription || post.excerpt || String(post.content || '').replace(/<[^>]+>/g, ' ').slice(0, 160).replace(/\s+/g, ' ').trim();
       const img = isSafeMediaUrl(post.image) ? post.image : 'https://islamsaeid.me/logo.png';
+      const slug = post.slug || post.id;
+      const url = `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
 
       document.title = title;
-      document.getElementById('ogTitle')?.setAttribute('content', title);
+      document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+      document.getElementById('ogTitle')?.setAttribute('content', post.title || 'المقال');
       document.getElementById('ogDesc')?.setAttribute('content', desc);
       document.getElementById('ogImage')?.setAttribute('content', img);
-      document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+      document.getElementById('ogUrl')?.setAttribute('content', url);
+      document.getElementById('ogPublished')?.setAttribute('content', new Date(post.createdAt || Date.now()).toISOString());
+      document.getElementById('twTitle')?.setAttribute('content', post.title || 'المقال');
+      document.getElementById('twDesc')?.setAttribute('content', desc);
+      document.getElementById('twImage')?.setAttribute('content', img);
+      document.getElementById('canonicalLink')?.setAttribute('href', url);
+    }
+
+    // ---------- JSON-LD Schema (Article + FAQ + Breadcrumb) ----------
+    function injectJsonLd(post) {
+      const url = `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
+      const image = isSafeMediaUrl(post.image) ? post.image : 'https://islamsaeid.me/logo.png';
+      const desc = post.metaDescription || post.excerpt || 'مقال من إسلام سعيد';
+
+      const graph = [
+        {
+          "@type": "Article",
+          "@id": `${url}#article`,
+          "headline": post.title || 'مقال',
+          "description": desc,
+          "image": image,
+          "datePublished": new Date(post.createdAt || Date.now()).toISOString(),
+          "dateModified": new Date(post.updatedAt || post.createdAt || Date.now()).toISOString(),
+          "author": {
+            "@type": "Person",
+            "name": post.author || "إسلام سعيد",
+            "url": "https://islamsaeid.me"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "إسلام سعيد",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://islamsaeid.me/logo.png"
+            }
+          },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": url },
+          "keywords": Array.isArray(post.tags) ? post.tags.join(', ') : (post.focusKeyword || ''),
+          "articleSection": post.category || '',
+          "inLanguage": "ar",
+          "wordCount": String(post.content || '').replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://islamsaeid.me/" },
+            { "@type": "ListItem", "position": 2, "name": "المدونة", "item": "https://islamsaeid.me/blog.html" },
+            { "@type": "ListItem", "position": 3, "name": post.title || 'مقال' }
+          ]
+        }
+      ];
+
+      if (Array.isArray(post.faqItems) && post.faqItems.length) {
+        graph.push({
+          "@type": "FAQPage",
+          "mainEntity": post.faqItems.map(item => ({
+            "@type": "Question",
+            "name": item.question,
+            "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+          }))
+        });
+      }
+
+      const ld = {
+        "@context": "https://schema.org",
+        "@graph": graph
+      };
+
+      // Remove any existing dynamic schema
+      document.getElementById('dynamicJsonLd')?.remove();
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'dynamicJsonLd';
+      script.textContent = JSON.stringify(ld);
+      document.head.appendChild(script);
+    }
+
+    // ---------- Render Sections ----------
+    function renderKeyTakeaways(items) {
+      const section = document.getElementById('keyTakeawaysSection');
+      const list = document.getElementById('keyTakeawaysList');
+      if (!Array.isArray(items) || !items.length) {
+        section.classList.add('hidden');
+        return;
+      }
+      section.classList.remove('hidden');
+      list.innerHTML = items.map(t => `
+        <li class="flex items-start gap-2">
+          <i class="fa-solid fa-check-circle text-green-400 mt-1 flex-shrink-0"></i>
+          <span class="break-words-safe">${escapeHtml(t)}</span>
+        </li>
+      `).join('');
+    }
+
+    function renderPostFaq(items) {
+      const section = document.getElementById('postFaqSection');
+      const list = document.getElementById('postFaqList');
+      if (!Array.isArray(items) || !items.length) {
+        section.classList.add('hidden');
+        return;
+      }
+      section.classList.remove('hidden');
+      list.innerHTML = items.map((item, i) => `
+        <div class="post-faq-item">
+          <button class="post-faq-btn" aria-expanded="false" data-faq-idx="${i}">
+            <span>${escapeHtml(item.question || '')}</span>
+            <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform"></i>
+          </button>
+          <div class="post-faq-content hidden">${escapeHtml(item.answer || '')}</div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.post-faq-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const content = btn.nextElementSibling;
+          const icon = btn.querySelector('i');
+          const isHidden = content.classList.contains('hidden');
+          content.classList.toggle('hidden');
+          btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+          if (icon) icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        });
+      });
+    }
+
+    function renderTags(tags) {
+      const section = document.getElementById('postTagsSection');
+      const list = document.getElementById('postTagsList');
+      if (!Array.isArray(tags) || !tags.length) {
+        section.classList.add('hidden');
+        return;
+      }
+      section.classList.remove('hidden');
+      list.innerHTML = tags.map(t => `<span class="article-tag">#${escapeHtml(t)}</span>`).join('');
     }
 
     function renderComments(comments) {
@@ -178,26 +630,42 @@
       `).join('');
     }
 
+    // ---------- Render Post ----------
     function renderPost(post) {
       postLoading.classList.add('hidden');
       postContent.classList.remove('hidden');
 
       document.getElementById('postCategory').textContent = post.category || 'عام';
-      document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
+      document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
       document.getElementById('postTitle').textContent = post.title || 'بدون عنوان';
       document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
       document.getElementById('likeCount').textContent = String(post.likes || 0);
+
+      // Reading time
+      const rt = post.readingTime || Math.max(1, Math.ceil(String(post.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200));
+      document.getElementById('postReadingTime').innerHTML = `<i class="fa-solid fa-clock ml-1"></i> <span>${rt} دقيقة قراءة</span>`;
+
+      // Content
       document.getElementById('postBody').innerHTML = renderContent(post.content || '');
 
+      // Excerpt highlight
+      if (post.excerpt) {
+        const exEl = document.getElementById('postExcerptHighlight');
+        exEl.textContent = post.excerpt;
+        exEl.classList.remove('hidden');
+      }
+
+      // Cover
       if (isSafeMediaUrl(post.image)) {
         const imgBox = document.getElementById('postImageContainer');
         imgBox.classList.remove('hidden');
         imgBox.innerHTML = `
           <a href="${escapeHtml(post.image)}" data-fancybox="post-featured" data-caption="${escapeHtml(post.title || '')}">
-            <img src="${escapeHtml(post.image)}" alt="غلاف المقال: ${escapeHtml(post.title || '')}" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.parentElement.classList.add('hidden')" />
+            <img src="${escapeHtml(post.image)}" alt="غلاف المقال: ${escapeHtml(post.title || '')}" class="w-full max-h-96 object-cover" loading="eager" onerror="this.parentElement.parentElement.classList.add('hidden')" />
           </a>`;
       }
 
+      // Featured video
       const embed = parseVideoEmbed(post.video);
       if (embed) {
         const vBox = document.getElementById('postVideoContainer');
@@ -205,16 +673,49 @@
         vBox.innerHTML = `<div class="video-embed-wrapper"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy" title="فيديو المقال"></iframe></div>`;
       }
 
-      updateMetaTags(post);
+      // Key takeaways + FAQ + Tags
+      renderKeyTakeaways(post.keyTakeaways);
+      renderPostFaq(post.faqItems);
+      renderTags(post.tags);
 
-      if (window.Fancybox) {
-        Fancybox.bind('[data-fancybox]', {});
-      }
+      // Meta + Schema
+      updateMetaTags(post);
+      injectJsonLd(post);
+
+      // Fancybox
+      if (window.Fancybox) Fancybox.bind('[data-fancybox]', {});
     }
 
+    // ---------- Reading Progress ----------
+    function initReadingProgress() {
+      const bar = document.getElementById('readingProgress');
+      window.addEventListener('scroll', () => {
+        const h = document.documentElement;
+        const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+        bar.style.width = `${Math.min(100, Math.max(0, scrolled))}%`;
+      }, { passive: true });
+    }
+
+    // ---------- Share Button ----------
+    function initShare(post) {
+      document.getElementById('shareBtn')?.addEventListener('click', async () => {
+        const url = window.location.href;
+        const title = post.title || 'مقال من إسلام سعيد';
+        if (navigator.share) {
+          try { await navigator.share({ title, url }); } catch (_) {}
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert('✅ تم نسخ رابط المقال');
+        }
+      });
+    }
+
+    // ---------- Main ----------
     if (!postId) {
       window.location.href = 'blog.html';
     } else {
+      initReadingProgress();
+
       let cms = null;
       let post = null;
 
@@ -232,32 +733,44 @@
       }
 
       if (!post) {
-        postLoading.textContent = 'المقال غير موجود أو تم حذفه.';
+        postLoading.innerHTML = `
+          <i class="fa-solid fa-file-circle-question text-3xl block mb-3 text-slate-500"></i>
+          <span>المقال غير موجود أو تم حذفه.</span>
+          <div class="mt-4"><a href="blog.html" class="text-pink-400 hover:underline text-xs">← العودة للمدونة</a></div>
+        `;
       } else {
         renderPost(post);
+        initShare(post);
 
+        // Comments
         if (cms?.subscribeComments) {
           cms.subscribeComments(postId, renderComments);
         } else {
           renderComments([]);
         }
 
-        likeBtn.addEventListener('click', async () => {
+        // Like
+        document.getElementById('likeBtn')?.addEventListener('click', async () => {
           if (!cms?.likeBlogPost) return;
-          likeBtn.setAttribute('disabled', 'true');
+          const btn = document.getElementById('likeBtn');
+          btn.setAttribute('disabled', 'true');
           try {
             await cms.likeBlogPost(postId);
             const current = parseInt(document.getElementById('likeCount').textContent || '0', 10);
             document.getElementById('likeCount').textContent = String(current + 1);
+            btn.classList.add('bg-pink-500/30');
           } finally {
-            likeBtn.removeAttribute('disabled');
+            btn.removeAttribute('disabled');
           }
         });
 
+        // Comment form
+        const commentForm = document.getElementById('commentForm');
+        const commentSubmitBtn = document.getElementById('commentSubmitBtn');
         commentForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           if (!cms?.addComment) {
-            alert('التعليقات غير متاحة الآن لعدم توفر الاتصال السحابي.');
+            alert('التعليقات غير متاحة الآن.');
             return;
           }
           const name = document.getElementById('cName').value.trim();
@@ -267,11 +780,11 @@
           commentSubmitBtn.setAttribute('disabled', 'true');
           try {
             await cms.addComment(postId, name, content);
-            alert('تم إرسال التعليق بنجاح وسيظهر بعد المراجعة.');
+            alert('✅ تم إرسال التعليق وسيظهر بعد المراجعة.');
             e.target.reset();
           } catch (error) {
             console.error(error);
-            alert('تعذر إرسال التعليق حالياً، حاول مرة أخرى لاحقاً.');
+            alert('تعذر إرسال التعليق.');
           } finally {
             commentSubmitBtn.removeAttribute('disabled');
           }

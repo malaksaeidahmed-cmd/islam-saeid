@@ -1,4 +1,13 @@
 (function() {
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   const DEFAULT_PORTFOLIO = [
     {
       id: "1",
@@ -125,15 +134,15 @@
         <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between hover:border-brand-magenta/40 transition-all">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-brand-magenta font-bold">${item.category}</span>
-              <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${item.roas}</span>
+              <span class="text-brand-magenta font-bold">${escapeHtml(item.category)}</span>
+              <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${escapeHtml(item.roas)}</span>
             </div>
-            <h3 class="font-bold text-white text-lg">${item.title}</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">${item.desc}</p>
+            <h3 class="font-bold text-white text-lg">${escapeHtml(item.title)}</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">${escapeHtml(item.desc)}</p>
           </div>
           <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans">${item.budget}</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans">${item.results}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans">${escapeHtml(item.budget)}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans">${escapeHtml(item.results)}</span></div>
           </div>
         </div>
       `).join('');

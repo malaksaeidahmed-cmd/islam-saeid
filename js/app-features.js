@@ -78,8 +78,10 @@ export async function generateCalculatorPDF(budget, roas, avgOrderValue) {
   if (window.html2pdf) {
     // @ts-ignore
     await window.html2pdf().set(opt).from(element).save();
-    element.remove();
+  } else {
+    alert('ميزة PDF غير متاحة حالياً. تأكد من اتصال الإنترنت ثم أعد المحاولة.');
   }
+  element.remove();
 }
 
 // 2. Chart.js Financial Decision Chart
@@ -87,7 +89,8 @@ let roasChartInstance = null;
 
 export function renderROASChart(canvasId, budget, roasTarget, avgOrderValue) {
   const ctx = document.getElementById(canvasId);
-  if (!ctx) return;
+  // @ts-ignore
+  if (!ctx || typeof Chart === 'undefined') return;
 
   const months = ['الشهر 1', 'الشهر 2', 'الشهر 3', 'الشهر 4', 'الشهر 5', 'الشهر 6'];
   const spendData = Array.from({ length: 6 }, (_, i) => budget * (1 + i * 0.15));

@@ -11,19 +11,20 @@
   <!-- Open Graph -->
   <meta property="og:title" content="إسلام سعيد | Senior Media Buyer & Growth Strategist" />
   <meta property="og:description" content="إدارة الميزانيات الإعلانية الضخمة بتحقيق عوائد استثمارية تصل إلى 30x ROAS." />
-  <meta property="og:image" content="assets/logo.png" />
+  <meta property="og:image" content="https://islamsaeid.me/logo.png" />
   <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://islamsaeid.me/" />
 
-  <link rel="icon" type="image/png" href="assets/logo.png" />
-  <link rel="shortcut icon" type="image/png" href="assets/logo.png" />
-  <link rel="apple-touch-icon" href="assets/logo.png" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="shortcut icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "إسلام سعيد - Senior Media Buyer",
-    "image": "https://islamsaeid.me/assets/logo.png",
+    "image": "https://islamsaeid.me/logo.png",
     "url": "https://islamsaeid.me",
     "telephone": "+201021252183"
   }
@@ -69,7 +70,7 @@
       
       <!-- Logo -->
       <a href="#home" class="flex items-center gap-3 group">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-10 h-10 object-contain rounded-xl border border-white/10 group-hover:border-brand-magenta transition-all" onError="this.onerror=null; this.src='logo.png';" />
+        <img src="logo.png" alt="شعار إسلام سعيد" class="w-10 h-10 object-contain rounded-xl border border-white/10 group-hover:border-brand-magenta transition-all" onError="this.onerror=null; this.src='logo.png';" />
         <div class="flex flex-col">
           <span class="font-bold text-base text-white tracking-wide group-hover:text-brand-magenta transition-colors" data-i18n="my-name">إسلام سعيد</span>
           <span class="text-[10px] font-sans text-brand-orange uppercase tracking-wider font-semibold">Media Buyer</span>
@@ -96,7 +97,7 @@
           <span id="langText">EN</span>
         </button>
 
-        <button id="themeToggleBtn" aria-label="Toggle Theme" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all">
+        <button id="themeToggleBtn" aria-label="تبديل الوضع الليلي/النهاري" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all">
           <i id="themeIcon" class="fa-solid fa-sun text-xs"></i>
         </button>
 
@@ -105,7 +106,7 @@
           <span data-i18n="contact-btn">تواصل معي</span>
         </a>
 
-        <button id="mobileMenuBtn" class="lg:hidden text-slate-300 hover:text-white p-2" aria-label="Menu">
+        <button id="mobileMenuBtn" class="lg:hidden text-slate-300 hover:text-white p-2" aria-label="القائمة">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
       </div>
@@ -250,7 +251,7 @@
           
           <div class="space-y-4 text-xs">
             <div>
-              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-industry-lbl">اختر المجال / النشاط التجاري:</label>
+              <label for="industrySelect" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-industry-lbl">اختر المجال / النشاط التجاري:</label>
               <select id="industrySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-semibold text-xs focus:outline-none focus:border-brand-magenta">
                 <option value="fashion">الملابس والأزياء والتجزئة (Fashion & Retail)</option>
                 <option value="restaurants">المطاعم والأغذية والوجبات (Restaurants & Food)</option>
@@ -264,17 +265,17 @@
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-price-lbl">متوسط سعر الخدمة / الطلب (ج.م):</label>
+              <label for="unitPriceInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-price-lbl">متوسط سعر الخدمة / الطلب (ج.م):</label>
               <input type="number" id="unitPriceInput" value="950" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-budget-lbl">الميزانية الإعلانية الشهرية (ج.م):</label>
+              <label for="totalBudgetInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-budget-lbl">الميزانية الإعلانية الشهرية (ج.م):</label>
               <input type="number" id="totalBudgetInput" value="40000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-300 mb-1" data-i18n="calc-cogs-lbl">نسبة تكلفة البضاعة/الخدمة المباشرة (%):</label>
+              <label for="cogsRatioInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-cogs-lbl">نسبة تكلفة البضاعة/الخدمة المباشرة (%):</label>
               <input type="number" id="cogsRatioInput" value="45" min="5" max="90" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
 
@@ -371,19 +372,19 @@
 
           <div class="md:col-span-5 p-6 rounded-2xl bg-black/60 border border-white/10">
             <h3 class="font-bold text-white text-sm mb-1" data-i18n="form-title">طلب الترشح للمقابلة الشخصية</h3>
-            <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</span></p>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
             
             <form id="waitlistForm" class="space-y-3 text-xs">
               <div>
-                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-name">الاسم الكامل:</label>
+                <label for="subName" class="block font-medium text-slate-300 mb-1" data-i18n="form-name">الاسم الكامل:</label>
                 <input type="text" id="subName" required placeholder="اسمك الثلاثي" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta" />
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-phone">رقم الواتساب:</label>
+                <label for="subPhone" class="block font-medium text-slate-300 mb-1" data-i18n="form-phone">رقم الواتساب:</label>
                 <input type="tel" id="subPhone" required placeholder="01xxxxxxxxx" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta text-left" dir="ltr" />
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1">مستوى الخبرة في الإعلانات:</label>
+                <label for="subExperience" class="block font-medium text-slate-300 mb-1">مستوى الخبرة في الإعلانات:</label>
                 <select id="subExperience" class="w-full bg-[#181228] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta">
                   <option value="مبتدئ">مبتدئ (أقل من سنة)</option>
                   <option value="متوسط">متوسط (1 - 3 سنوات)</option>
@@ -391,7 +392,7 @@
                 </select>
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-budget">حجم إنفاقك الإعلاني الحالي:</label>
+                <label for="subBudget" class="block font-medium text-slate-300 mb-1" data-i18n="form-budget">حجم إنفاقك الإعلاني الحالي:</label>
                 <select id="subBudget" class="w-full bg-[#181228] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta">
                   <option value="أقل من 20 ألف جنيه شهرياً">أقل من 20,000 ج.م شهرياً</option>
                   <option value="من 20 إلى 100 ألف جنيه شهرياً">من 20,000 إلى 100,000 ج.م شهرياً</option>
@@ -400,7 +401,7 @@
                 </select>
               </div>
               <div>
-                <label class="block font-medium text-slate-300 mb-1" data-i18n="form-challenge">التحدي الأكبر المطلوب حله في المعسكر:</label>
+                <label for="subChallenge" class="block font-medium text-slate-300 mb-1" data-i18n="form-challenge">التحدي الأكبر المطلوب حله في المعسكر:</label>
                 <input type="text" id="subChallenge" required placeholder="مثال: ارتفاع تكلفة الشراء، مشاكل الـ Scaling" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-magenta" />
               </div>
               <button id="bootcampSubmitBtn" type="submit" class="w-full py-2.5 rounded-lg brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity mt-2" data-i18n="form-btn">
@@ -429,31 +430,31 @@
 
       <div class="space-y-3 text-xs sm:text-sm">
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
-          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
+          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white" aria-controls="faq-answer-1">
             <span data-i18n="q1">لماذا تشترط مقابلة شخصية (Interview) قبل القبول في المعسكر التدريبي؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a1">
+          <div id="faq-answer-1" class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a1">
             لأن المعسكر عملي ومغلق على 20 مقعداً فقط؛ المقابلة تضمن أن خلفيتك وأهدافك ملائمة تماماً للمستوى المتقدم وتطبيق مهارات الـ Scaling.
           </div>
         </div>
 
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
-          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
+          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white" aria-controls="faq-answer-2">
             <span data-i18n="q2">هل المنهجية وحاسبة اقتصاديات الوحدة تناسب كافة أنواع الأنشطة؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a2">
+          <div id="faq-answer-2" class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a2">
             نعم، القواعد المالية لاقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة سواء في التجارة الإلكترونية، خدمات B2B، العقارات، أو قطاع الأغذية والمطاعم.
           </div>
         </div>
 
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
-          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
+          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white" aria-controls="faq-answer-3">
             <span data-i18n="q3">ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟</span>
             <i class="fa-solid fa-chevron-down text-brand-orange text-xs transition-transform duration-200"></i>
           </button>
-          <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a3">
+          <div id="faq-answer-3" class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3" data-i18n="a3">
             نفضل ميزانية لا تقل عن 20,000 إلى 30,000 ج.م شهرياً لضمان تدريب خوارزميات Meta و TikTok واختبار العروض والوصول إلى أداء مربح مستدام.
           </div>
         </div>
@@ -472,7 +473,7 @@
   <footer class="py-12 border-t border-white/10 bg-[#040308] text-xs text-slate-400">
     <div class="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-6 h-6 object-contain" onError="this.onerror=null; this.src='logo.png';" />
+        <img src="logo.png" alt="شعار إسلام سعيد" class="w-6 h-6 object-contain" onError="this.onerror=null; this.src='logo.png';" />
         <span class="text-white font-bold" data-i18n="my-name">إسلام سعيد</span>
         <span>&bull; <span data-i18n="rights">جميع الحقوق محفوظة</span> &copy; <span id="currentYear"></span></span>
       </div>
@@ -491,72 +492,95 @@
 
   <!-- Cloud Synchronization & Dynamic Features Module -->
   <script type="module">
-    import { CloudCMS } from './js/firebase-cms.js';
-    import { generateCalculatorPDF, renderROASChart } from './js/app-features.js';
-
-    // 1. Visit Tracking
-    if (!sessionStorage.getItem('visited')) {
-      CloudCMS.trackVisit();
-      sessionStorage.setItem('visited', 'true');
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    // 2. Realtime Bootcamp Status Check
-    CloudCMS.subscribeAnalytics(data => {
-      const btn = document.getElementById('bootcampSubmitBtn');
-      if (btn && data.bootcampOpen === false) {
-        btn.disabled = true;
-        btn.innerText = 'اكتملت المقاعد حالياً';
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
+    function isSafeMediaUrl(url) {
+      if (!url) return false;
+      try {
+        const parsed = new URL(url, window.location.href);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch (_) {
+        return false;
       }
-    });
+    }
 
-    // 3. Dynamic Realtime Portfolio Synchronization
-    CloudCMS.subscribePortfolio(items => {
-      const container = document.getElementById('dynamicPortfolioGrid');
-      if (!container) return;
+    let CloudCMS = null;
+    try {
+      ({ CloudCMS } = await import('./js/firebase-cms.js'));
+    } catch (error) {
+      console.warn('Firebase features unavailable; continuing with static/local experience.', error);
+    }
 
-      if (!items.length) {
-        container.innerHTML = '<p class="text-center text-slate-500 col-span-3 py-10 text-xs">لا توجد مشاريع مضافة حالياً في لوحة التحكم.</p>';
-        return;
+    if (!CloudCMS) {
+      const submitBtn = document.getElementById('bootcampSubmitBtn');
+      if (submitBtn && submitBtn.disabled) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    } else {
+      if (!sessionStorage.getItem('visited')) {
+        CloudCMS.trackVisit().catch(() => {});
+        sessionStorage.setItem('visited', 'true');
       }
 
-      container.innerHTML = items.map(item => `
-        <div onclick="window.location.href='case-study.html?id=${item.id}'" class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between hover:border-brand-magenta/50 transition-all cursor-pointer group overflow-hidden">
-          ${item.mediaUrl ? `<img src="${item.mediaUrl}" class="w-full h-40 object-cover rounded-xl mb-4" onError="this.style.display='none'" />` : ''}
-          <div class="space-y-3">
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-brand-magenta font-bold">${item.category}</span>
-              <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${item.roas}</span>
-            </div>
-            <h3 class="font-bold text-white text-lg group-hover:text-brand-magenta transition-colors break-words">${item.title}</h3>
-            <p class="text-xs text-slate-400 leading-relaxed line-clamp-3 break-words">${item.desc}</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans break-all">${item.budget}</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans break-all">${item.results}</span></div>
-            <div class="pt-2 text-left text-brand-magenta font-bold text-[11px] group-hover:underline">عرض دراسة الحالة بالكامل &larr;</div>
-          </div>
-        </div>
-      `).join('');
-    });
+      CloudCMS.subscribeAnalytics(data => {
+        const btn = document.getElementById('bootcampSubmitBtn');
+        if (btn && data.bootcampOpen === false) {
+          btn.disabled = true;
+          btn.innerText = 'اكتملت المقاعد حالياً';
+          btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+      });
 
-    // 4. Enhanced PDF Export Handler
-    document.getElementById('downloadPdfBtn')?.addEventListener('click', async () => {
-      const budget = parseFloat(document.getElementById('totalBudgetInput')?.value) || 40000;
-      await generateCalculatorPDF(budget, 4.0, 950);
-      CloudCMS.logEvent('PDF Download', 'تم تنزيل تقرير حاسبة القرار المالي PDF');
-    });
+      CloudCMS.subscribePortfolio(items => {
+        const container = document.getElementById('dynamicPortfolioGrid');
+        if (!container) return;
 
-    // 5. Bootcamp Form Submission Tracker
-    document.getElementById('waitlistForm')?.addEventListener('submit', (e) => {
-      const name = document.getElementById('subName')?.value;
-      const phone = document.getElementById('subPhone')?.value;
-      const exp = document.getElementById('subExperience')?.value;
-      const budget = document.getElementById('subBudget')?.value;
-      const challenge = document.getElementById('subChallenge')?.value;
+        if (!Array.isArray(items) || !items.length) {
+          container.innerHTML = '<p class="text-center text-slate-500 col-span-3 py-10 text-xs">لا توجد مشاريع مضافة حالياً في لوحة التحكم.</p>';
+          return;
+        }
 
-      CloudCMS.logEvent('Bootcamp Lead', `طلب ترشح: ${name} (${phone}) | الخبرة: ${exp} | الميزانية: ${budget} | التحدي: ${challenge}`);
-    });
+        container.innerHTML = items.map(item => {
+          const safeId = encodeURIComponent(String(item.id ?? ''));
+          const safeCategory = escapeHtml(item.category || 'غير مصنف');
+          const safeRoas = escapeHtml(item.roas || '-');
+          const safeTitle = escapeHtml(item.title || 'بدون عنوان');
+          const safeDesc = escapeHtml(item.desc || 'لا يوجد وصف');
+          const safeBudget = escapeHtml(item.budget || '-');
+          const safeResults = escapeHtml(item.results || '-');
+          const imagePart = isSafeMediaUrl(item.mediaUrl)
+            ? `<img src="${escapeHtml(item.mediaUrl)}" alt="نتيجة حملة: ${safeTitle}" class="w-full h-40 object-cover rounded-xl mb-4" onError="this.style.display='none'" loading="lazy" />`
+            : '';
+
+          return `
+            <a href="case-study.html?id=${safeId}" class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] flex flex-col justify-between hover:border-brand-magenta/50 transition-all cursor-pointer group overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-magenta">
+              ${imagePart}
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-brand-magenta font-bold">${safeCategory}</span>
+                  <span class="font-sans font-bold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">${safeRoas}</span>
+                </div>
+                <h3 class="font-bold text-white text-lg group-hover:text-brand-magenta transition-colors break-words">${safeTitle}</h3>
+                <p class="text-xs text-slate-400 leading-relaxed line-clamp-3 break-words">${safeDesc}</p>
+              </div>
+              <div class="mt-6 pt-4 border-t border-white/5 space-y-1 text-xs">
+                <div class="flex justify-between"><span class="text-slate-400">التفاصيل:</span><span class="font-bold text-white font-sans break-all">${safeBudget}</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="font-bold text-green-400 font-sans break-all">${safeResults}</span></div>
+                <div class="pt-2 text-left text-brand-magenta font-bold text-[11px] group-hover:underline">عرض دراسة الحالة بالكامل &larr;</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      });
+    }
   </script>
 
 </body>

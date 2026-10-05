@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>المقال | إسلام سعيد</title>
-  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <meta name="description" content="تفاصيل مقالات إسلام سعيد حول الأداء الإعلاني، النمو، واقتصاديات الوحدة." />
+  <link rel="canonical" href="https://islamsaeid.me/post.html" />
+  <meta property="og:title" content="المقال | إسلام سعيد" />
+  <meta property="og:description" content="محتوى معرفي عربي حول التحليل المالي للحملات والإعلانات." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://islamsaeid.me/logo.png" />
+  <link rel="icon" type="image/png" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -17,7 +23,7 @@
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
     <div class="max-w-4xl mx-auto px-5 flex justify-between items-center">
       <a href="blog.html" class="flex items-center gap-3">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <img src="logo.png" alt="شعار إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onerror="this.style.display='none'" />
         <span class="font-bold text-white">المدونة والنشرات</span>
       </a>
       <a href="blog.html" class="text-xs text-slate-300 hover:text-white">
@@ -28,7 +34,7 @@
 
   <main class="max-w-3xl mx-auto px-5 py-12 space-y-8">
     <div id="postLoading" class="text-center text-slate-400 py-20 text-sm">جاري تحميل المقال...</div>
-    
+
     <article id="postContent" class="hidden space-y-6">
       <div class="space-y-3 border-b border-white/10 pb-6">
         <div class="flex items-center gap-3 text-xs">
@@ -41,101 +47,171 @@
             <i class="fa-solid fa-user text-orange-400"></i>
             <span>بقلم: <strong id="postAuthor" class="text-white">إسلام سعيد</strong></span>
           </div>
-          <button id="likeBtn" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all">
+          <button id="likeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-pink-500/10 text-pink-400 hover:bg-pink-500/20 font-bold flex items-center gap-1.5 transition-all">
             <i class="fa-solid fa-heart"></i> <span id="likeCount">0</span>
           </button>
         </div>
       </div>
 
       <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
-
       <div id="postBody" class="text-sm leading-relaxed text-slate-300 space-y-4 font-normal break-words"></div>
 
-      <!-- Comments Section -->
       <div class="pt-8 border-t border-white/10 space-y-6">
-        <h3 class="text-lg font-bold text-white">التعليقات والمناقشات</h3>
+        <h2 class="text-lg font-bold text-white">التعليقات والمناقشات</h2>
 
         <div id="commentsList" class="space-y-3 text-xs">
           <p class="text-slate-500">لا توجد تعليقات حتى الآن.</p>
         </div>
 
-        <!-- Add Comment Form -->
         <form id="commentForm" class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
-          <h4 class="font-bold text-white">أضف تعليقاً:</h4>
-          <input type="text" id="cName" required placeholder="اسمك" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-          <textarea id="cContent" rows="3" required placeholder="اكتب تعليقك هنا..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
-          <button type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">إرسال التعليق للمراجعة</button>
+          <h3 class="font-bold text-white">أضف تعليقاً:</h3>
+          <label for="cName" class="sr-only">الاسم</label>
+          <input type="text" id="cName" required placeholder="اسمك" maxlength="70" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+          <label for="cContent" class="sr-only">محتوى التعليق</label>
+          <textarea id="cContent" rows="3" required maxlength="500" placeholder="اكتب تعليقك هنا..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white"></textarea>
+          <button id="commentSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-pink-600 text-white font-bold">إرسال التعليق للمراجعة</button>
         </form>
       </div>
     </article>
   </main>
 
+  <script src="js/cms-data.js"></script>
   <script type="module">
-    import { CloudCMS } from './js/firebase-cms.js';
-
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
+    const postLoading = document.getElementById('postLoading');
+    const postContent = document.getElementById('postContent');
+    const commentForm = document.getElementById('commentForm');
+    const commentSubmitBtn = document.getElementById('commentSubmitBtn');
+    const likeBtn = document.getElementById('likeBtn');
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeMultilineText(value) {
+      return escapeHtml(value || '').replace(/\n/g, '<br>');
+    }
+
+    function isSafeMediaUrl(url) {
+      if (!url) return false;
+      try {
+        const parsed = new URL(url, window.location.href);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function renderComments(comments) {
+      const list = document.getElementById('commentsList');
+      if (!Array.isArray(comments) || !comments.length) {
+        list.innerHTML = '<p class="text-slate-500">لا توجد تعليقات معتمدة بعد.</p>';
+        return;
+      }
+
+      list.innerHTML = comments.map((c) => `
+        <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1">
+          <div class="font-bold text-white flex justify-between">
+            <span>${escapeHtml(c.name || 'زائر')}</span>
+            <span class="text-[10px] text-slate-500">${new Date(c.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
+          </div>
+          <p class="text-slate-300">${escapeHtml(c.content || '')}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderPost(post) {
+      postLoading.classList.add('hidden');
+      postContent.classList.remove('hidden');
+
+      document.getElementById('postCategory').textContent = post.category || 'عام';
+      document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
+      document.getElementById('postTitle').textContent = post.title || 'بدون عنوان';
+      document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
+      document.getElementById('postBody').innerHTML = safeMultilineText(post.content || '');
+      document.getElementById('likeCount').textContent = String(post.likes || 0);
+
+      if (isSafeMediaUrl(post.image)) {
+        const imgBox = document.getElementById('postImageContainer');
+        imgBox.classList.remove('hidden');
+        imgBox.innerHTML = `<img src="${escapeHtml(post.image)}" alt="غلاف المقال: ${escapeHtml(post.title || 'مقال') }" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.classList.add('hidden')" />`;
+      }
+    }
 
     if (!postId) {
       window.location.href = 'blog.html';
     } else {
-      CloudCMS.getBlogPostById(postId).then(post => {
-        if (!post) {
-          document.getElementById('postLoading').textContent = 'المقال غير موجود أو تم حذفه.';
-          return;
+      let cms = null;
+      let post = null;
+
+      try {
+        const { CloudCMS } = await import('./js/firebase-cms.js');
+        cms = CloudCMS;
+        post = await CloudCMS.getBlogPostById(postId);
+      } catch (error) {
+        console.warn('Cloud post unavailable, using local fallback.', error);
+      }
+
+      if (!post && window.cmsEngine?.getBlog) {
+        const localPosts = window.cmsEngine.getBlog() || [];
+        post = localPosts.find((entry) => String(entry.id) === String(postId));
+      }
+
+      if (!post) {
+        postLoading.textContent = 'المقال غير موجود أو تم حذفه.';
+      } else {
+        renderPost(post);
+
+        if (cms?.subscribeComments) {
+          cms.subscribeComments(postId, renderComments);
+        } else {
+          renderComments([]);
         }
 
-        document.getElementById('postLoading').classList.add('hidden');
-        document.getElementById('postContent').classList.remove('hidden');
-
-        document.getElementById('postCategory').textContent = post.category || 'عام';
-        document.getElementById('postDate').textContent = new Date(post.createdAt || Date.now()).toLocaleDateString('ar-EG');
-        document.getElementById('postTitle').textContent = post.title;
-        document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
-        document.getElementById('postBody').innerHTML = post.content || '';
-        document.getElementById('likeCount').textContent = post.likes || 0;
-
-        if (post.image) {
-          const imgBox = document.getElementById('postImageContainer');
-          imgBox.classList.remove('hidden');
-          imgBox.innerHTML = `<img src="${post.image}" class="w-full max-h-96 object-cover" />`;
-        }
-
-        // Like Button
-        document.getElementById('likeBtn').addEventListener('click', async () => {
-          await CloudCMS.likeBlogPost(postId);
-          const current = parseInt(document.getElementById('likeCount').textContent);
-          document.getElementById('likeCount').textContent = current + 1;
-        });
-
-        // Subscribe to Approved Comments
-        CloudCMS.subscribeComments(postId, comments => {
-          const list = document.getElementById('commentsList');
-          if (!comments.length) {
-            list.innerHTML = '<p class="text-slate-500">لا توجد تعليقات معتمدة بعد.</p>';
-          } else {
-            list.innerHTML = comments.map(c => `
-              <div class="p-3.5 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-1">
-                <div class="font-bold text-white flex justify-between">
-                  <span>${c.name}</span>
-                  <span class="text-[10px] text-slate-500">${new Date(c.createdAt).toLocaleDateString('ar-EG')}</span>
-                </div>
-                <p class="text-slate-300">${c.content}</p>
-              </div>
-            `).join('');
+        likeBtn.addEventListener('click', async () => {
+          if (!cms?.likeBlogPost) return;
+          likeBtn.setAttribute('disabled', 'true');
+          try {
+            await cms.likeBlogPost(postId);
+            const current = parseInt(document.getElementById('likeCount').textContent || '0', 10);
+            document.getElementById('likeCount').textContent = String(current + 1);
+          } finally {
+            likeBtn.removeAttribute('disabled');
           }
         });
 
-        // Comment Submit Handler
-        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+        commentForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const name = document.getElementById('cName').value;
-          const content = document.getElementById('cContent').value;
-          await CloudCMS.addComment(postId, name, content);
-          alert('تم إرسال التعليق بنجاح وظهر فور إجازته من لوحة التحكم.');
-          e.target.reset();
+          if (!cms?.addComment) {
+            alert('التعليقات غير متاحة الآن لعدم توفر الاتصال السحابي.');
+            return;
+          }
+
+          const name = document.getElementById('cName').value.trim();
+          const content = document.getElementById('cContent').value.trim();
+          if (!name || !content) return;
+
+          commentSubmitBtn.setAttribute('disabled', 'true');
+          commentSubmitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+          try {
+            await cms.addComment(postId, name, content);
+            alert('تم إرسال التعليق بنجاح وسيظهر بعد المراجعة.');
+            e.target.reset();
+          } catch (error) {
+            console.error(error);
+            alert('تعذر إرسال التعليق حالياً، حاول مرة أخرى لاحقاً.');
+          } finally {
+            commentSubmitBtn.removeAttribute('disabled');
+            commentSubmitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+          }
         });
-      });
+      }
     }
   </script>
 </body>

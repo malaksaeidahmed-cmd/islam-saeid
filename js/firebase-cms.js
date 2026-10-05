@@ -1,7 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-  getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, increment, getDoc, setDoc, query, where, getDocs
+import {
+  getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc,
+  increment, getDoc, setDoc, query, where, getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { hashPassword, verifyPassword, isHashed } from "./crypto-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3qwLMIdzgVgFHNs-qlcrezUNTqKKKWI0",
@@ -16,52 +18,135 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const SUPER_ADMIN_USERNAME = "islam";
+const SUPER_ADMIN_DEFAULT_PASS = "Nour123@@##";
 
 async function initDefaults() {
   try {
     const analyticsRef = doc(db, "analytics", "main");
     const snap = await getDoc(analyticsRef);
     if (!snap.exists()) {
-      await setDoc(analyticsRef, { visits: 0, leads: 0, pdfDownloads: 0, bootcampOpen: true });
+      await setDoc(analyticsRef, {
+        visits: 0, leads: 0, pdfDownloads: 0,
+        bootcampOpen: true, maintenanceMode: false
+      });
+    } else {
+      const data = snap.data();
+      if (data.maintenanceMode === undefined) {
+        await updateDoc(analyticsRef, { maintenanceMode: false });
+      }
+      if (data.bootcampOpen === undefined) {
+        await updateDoc(analyticsRef, { bootcampOpen: true });
+      }
     }
-    
+
     const usersSnap = await getDocs(collection(db, "users"));
     if (usersSnap.empty) {
+      const hashedDefault = await hashPassword(SUPER_ADMIN_DEFAULT_PASS);
       await addDoc(collection(db, "users"), {
         username: SUPER_ADMIN_USERNAME,
-        password: "Nour123@@##",
+        password: hashedDefault,
         role: "super_admin",
         permissions: ["analytics", "portfolio", "blog", "users", "comments"],
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        updatedAt: Date.now()
       });
+    } else {
+      await migrateUserPasswords(usersSnap);
     }
   } catch (e) {
     console.error("Init Error:", e);
   }
 }
+
+async function migrateUserPasswords(usersSnap) {
+  for (const userDoc of usersSnap.docs) {
+    const data = userDoc.data();
+    if (data.password && !isHashed(data.password)) {
+      try {
+        const hashed = await hashPassword(data.password);
+        await updateDoc(doc(db, "users", userDoc.id), {
+          password: hashed,
+          updatedAt: Date.now()
+        });
+        console.info(`Migrated password for user: ${data.username}`);
+      } catch (e) {
+        console.warn(`Failed to migrate user ${data.username}:`, e);
+      }
+    }
+  }
+}
+
 initDefaults();
 
 export const CloudCMS = {
-  // Authentication with Fine-grained Permissions
+
   async loginUser(username, password) {
-    const q = query(collection(db, "users"), where("username", "==", username), where("password", "==", password));
-    const snap = await getDocs(q);
-    if (!snap.empty) {
-      const userDoc = snap.docs[0];
-      return { id: userDoc.id, ...userDoc.data() };
+    try {
+      const q = query(collection(db, "users"), where("username", "==", username));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+
+      for (const userDoc of snap.docs) {
+        const data = userDoc.data();
+        const { ok, needsUpgrade } = await verifyPassword(password, data.password);
+        if (ok) {
+          if (needsUpgrade) {
+            try {
+              const hashed = await hashPassword(password);
+              await updateDoc(doc(db, "users", userDoc.id), {
+                password: hashed,
+                updatedAt: Date.now()
+              });
+            } catch (_) {}
+          }
+          const { password: _pw, ...safe } = data;
+          return { id: userDoc.id, ...safe };
+        }
+      }
+      return null;
+    } catch (e) {
+      console.error("Login Error:", e);
+      return null;
     }
-    return null;
   },
 
   subscribeUsers(callback) {
     return onSnapshot(collection(db, "users"), (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const items = snapshot.docs.map((d) => {
+        const { password, ...safe } = d.data();
+        return { id: d.id, ...safe };
+      });
       callback(items);
     });
   },
 
   async addUser(userData) {
-    return await addDoc(collection(db, "users"), { ...userData, createdAt: Date.now() });
+    const hashed = await hashPassword(userData.password);
+    return await addDoc(collection(db, "users"), {
+      ...userData,
+      password: hashed,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+  },
+
+  async updateUser(id, updates) {
+    const snap = await getDoc(doc(db, "users", id));
+    if (!snap.exists()) throw new Error("المستخدم غير موجود");
+    const existing = snap.data();
+
+    if (existing.role === "super_admin") {
+      const allowed = {};
+      if (updates.password) allowed.password = await hashPassword(updates.password);
+      if (updates.permissions) allowed.permissions = updates.permissions;
+      allowed.updatedAt = Date.now();
+      return await updateDoc(doc(db, "users", id), allowed);
+    }
+
+    const payload = { ...updates, updatedAt: Date.now() };
+    if (payload.password) payload.password = await hashPassword(payload.password);
+    delete payload.id;
+    return await updateDoc(doc(db, "users", id), payload);
   },
 
   async deleteUser(id) {
@@ -72,16 +157,24 @@ export const CloudCMS = {
     return await deleteDoc(doc(db, "users", id));
   },
 
-  // Portfolio with View Tracking & Likes
   subscribePortfolio(callback) {
     return onSnapshot(collection(db, "portfolio"), (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       callback(items);
     });
   },
 
   async addPortfolioItem(data) {
-    return await addDoc(collection(db, "portfolio"), { ...data, views: 0, likes: 0, createdAt: Date.now() });
+    return await addDoc(collection(db, "portfolio"), {
+      ...data,
+      mediaGallery: Array.isArray(data.mediaGallery) ? data.mediaGallery : [],
+      views: 0, likes: 0, createdAt: Date.now()
+    });
+  },
+
+  async updatePortfolioItem(id, data) {
+    return await updateDoc(doc(db, "portfolio", id), { ...data, updatedAt: Date.now() });
   },
 
   async deletePortfolioItem(id) {
@@ -92,27 +185,33 @@ export const CloudCMS = {
     const itemRef = doc(db, "portfolio", id);
     const snap = await getDoc(itemRef);
     if (snap.exists()) {
-      await updateDoc(itemRef, { views: increment(1) });
+      try { await updateDoc(itemRef, { views: increment(1) }); } catch (_) {}
       return { id: snap.id, ...snap.data() };
     }
     return null;
   },
 
   async likePortfolioItem(id) {
-    const itemRef = doc(db, "portfolio", id);
-    await updateDoc(itemRef, { likes: increment(1) });
+    await updateDoc(doc(db, "portfolio", id), { likes: increment(1) });
   },
 
-  // Blog with Views, Likes & Dynamic Comments
   subscribeBlog(callback) {
     return onSnapshot(collection(db, "blog"), (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       callback(items);
     });
   },
 
   async addBlogPost(data) {
-    return await addDoc(collection(db, "blog"), { ...data, views: 0, likes: 0, createdAt: Date.now() });
+    return await addDoc(collection(db, "blog"), {
+      ...data,
+      views: 0, likes: 0, createdAt: Date.now()
+    });
+  },
+
+  async updateBlogPost(id, data) {
+    return await updateDoc(doc(db, "blog", id), { ...data, updatedAt: Date.now() });
   },
 
   async deleteBlogPost(id) {
@@ -123,40 +222,36 @@ export const CloudCMS = {
     const itemRef = doc(db, "blog", id);
     const snap = await getDoc(itemRef);
     if (snap.exists()) {
-      await updateDoc(itemRef, { views: increment(1) });
+      try { await updateDoc(itemRef, { views: increment(1) }); } catch (_) {}
       return { id: snap.id, ...snap.data() };
     }
     return null;
   },
 
   async likeBlogPost(id) {
-    const itemRef = doc(db, "blog", id);
-    await updateDoc(itemRef, { likes: increment(1) });
+    await updateDoc(doc(db, "blog", id), { likes: increment(1) });
   },
 
-  // Comments Moderation System
   subscribeComments(postId, callback) {
     const q = query(collection(db, "comments"), where("postId", "==", postId), where("approved", "==", true));
     return onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.createdAt - a.createdAt);
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => b.createdAt - a.createdAt);
       callback(items);
     });
   },
 
   subscribeAllComments(callback) {
     return onSnapshot(collection(db, "comments"), (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.createdAt - a.createdAt);
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => b.createdAt - a.createdAt);
       callback(items);
     });
   },
 
   async addComment(postId, name, content) {
     return await addDoc(collection(db, "comments"), {
-      postId,
-      name,
-      content,
-      approved: false, // Requires admin moderation
-      createdAt: Date.now()
+      postId, name, content, approved: false, createdAt: Date.now()
     });
   },
 
@@ -165,43 +260,52 @@ export const CloudCMS = {
   },
 
   async deleteComment(id) {
-    await deleteDoc(doc(db, "comments", id));
+    return await deleteDoc(doc(db, "comments", id));
   },
 
-  // System Controls & Analytics
   async toggleBootcampStatus(status) {
-    const analyticsRef = doc(db, "analytics", "main");
-    await updateDoc(analyticsRef, { bootcampOpen: status });
+    await updateDoc(doc(db, "analytics", "main"), { bootcampOpen: status });
+  },
+
+  async toggleMaintenanceMode(status) {
+    await updateDoc(doc(db, "analytics", "main"), { maintenanceMode: status });
   },
 
   subscribeAnalytics(callback) {
     return onSnapshot(doc(db, "analytics", "main"), (snap) => {
-      callback(snap.data() || { visits: 0, leads: 0, pdfDownloads: 0, bootcampOpen: true });
+      callback(snap.data() || {
+        visits: 0, leads: 0, pdfDownloads: 0,
+        bootcampOpen: true, maintenanceMode: false
+      });
     });
   },
 
-  subscribeEventLogs(callback) {
+  subscribeEventLogs(callback, maxItems = 50) {
     return onSnapshot(collection(db, "event_logs"), (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp);
+      const logs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+        .slice(0, maxItems);
       callback(logs);
     });
   },
 
   async trackVisit() {
-    const analyticsRef = doc(db, "analytics", "main");
-    await updateDoc(analyticsRef, { visits: increment(1) });
+    try { await updateDoc(doc(db, "analytics", "main"), { visits: increment(1) }); } catch (_) {}
   },
 
   async logEvent(type, details) {
-    const analyticsRef = doc(db, "analytics", "main");
-    if (type === "PDF Download") await updateDoc(analyticsRef, { pdfDownloads: increment(1) });
-    if (type === "Bootcamp Lead") await updateDoc(analyticsRef, { leads: increment(1) });
+    try {
+      const analyticsRef = doc(db, "analytics", "main");
+      if (type === "PDF Download") await updateDoc(analyticsRef, { pdfDownloads: increment(1) });
+      if (type === "Bootcamp Lead") await updateDoc(analyticsRef, { leads: increment(1) });
 
-    await addDoc(collection(db, "event_logs"), {
-      type,
-      details,
-      timestamp: Date.now(),
-      dateString: new Date().toLocaleString("ar-EG")
-    });
+      await addDoc(collection(db, "event_logs"), {
+        type, details,
+        timestamp: Date.now(),
+        dateString: new Date().toLocaleString("ar-EG")
+      });
+    } catch (e) {
+      console.warn("logEvent failed:", e);
+    }
   }
 };

@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>دراسة حالة | إسلام سعيد</title>
-  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <meta name="description" content="تفاصيل دراسات حالة الحملات الإعلانية ونتائج التنفيذ مع إسلام سعيد." />
+  <link rel="canonical" href="https://islamsaeid.me/case-study.html" />
+  <meta property="og:title" content="دراسة حالة | إسلام سعيد" />
+  <meta property="og:description" content="نتائج حملات موثقة وأرقام تشغيلية فعلية من سابقة الأعمال." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://islamsaeid.me/logo.png" />
+  <link rel="icon" type="image/png" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -17,7 +23,7 @@
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
     <div class="max-w-4xl mx-auto px-5 flex justify-between items-center">
       <a href="index.html#portfolio" class="flex items-center gap-3">
-        <img src="assets/logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <img src="logo.png" alt="شعار إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onerror="this.style.display='none'" />
         <span class="font-bold text-white">دراسة حالة وسابقة الأعمال</span>
       </a>
       <a href="index.html#portfolio" class="text-xs text-slate-300 hover:text-white">
@@ -36,7 +42,7 @@
           <span id="csRoas" class="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-bold font-sans"></span>
         </div>
         <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white break-words"></h1>
-        
+
         <div id="csMediaContainer" class="hidden my-4 rounded-2xl overflow-hidden border border-white/10"></div>
 
         <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed break-words"></p>
@@ -54,44 +60,82 @@
       </div>
 
       <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-hidden">
-        <h3 class="text-lg font-bold text-white border-b border-white/10 pb-3">تفاصيل الاستراتيجية والميديا</h3>
+        <h2 class="text-lg font-bold text-white border-b border-white/10 pb-3">تفاصيل الاستراتيجية والميديا</h2>
         <div id="csDetails" class="text-sm leading-relaxed text-slate-300 space-y-4 break-words"></div>
       </div>
     </div>
   </main>
 
+  <script src="js/cms-data.js"></script>
   <script type="module">
-    import { CloudCMS } from './js/firebase-cms.js';
-
     const urlParams = new URLSearchParams(window.location.search);
     const csId = urlParams.get('id');
+    const loadingEl = document.getElementById('caseLoading');
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeMultilineText(value) {
+      return escapeHtml(value || '').replace(/\n/g, '<br>');
+    }
+
+    function isSafeMediaUrl(url) {
+      if (!url) return false;
+      try {
+        const parsed = new URL(url, window.location.href);
+        return ['http:', 'https:'].includes(parsed.protocol);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function renderCase(item) {
+      document.getElementById('caseLoading').classList.add('hidden');
+      document.getElementById('caseContent').classList.remove('hidden');
+
+      document.getElementById('csCategory').textContent = item.category || 'غير مصنف';
+      document.getElementById('csRoas').textContent = item.roas || '-';
+      document.getElementById('csTitle').textContent = item.title || 'بدون عنوان';
+      document.getElementById('csDesc').textContent = item.desc || 'لا يوجد وصف متاح.';
+      document.getElementById('csBudget').textContent = item.budget || '-';
+      document.getElementById('csResults').textContent = item.results || '-';
+      document.getElementById('csDetails').innerHTML = safeMultilineText(item.details || item.desc || 'لا توجد تفاصيل إضافية.');
+
+      if (isSafeMediaUrl(item.mediaUrl)) {
+        const mediaBox = document.getElementById('csMediaContainer');
+        mediaBox.classList.remove('hidden');
+        mediaBox.innerHTML = `<img src="${escapeHtml(item.mediaUrl)}" alt="نتائج حملة: ${escapeHtml(item.title || 'مشروع') }" class="w-full max-h-96 object-cover" loading="lazy" onerror="this.parentElement.classList.add('hidden')" />`;
+      }
+    }
 
     if (!csId) {
       window.location.href = 'index.html#portfolio';
     } else {
-      CloudCMS.getPortfolioItemById(csId).then(item => {
-        if (!item) {
-          document.getElementById('caseLoading').textContent = 'المشروع غير موجود.';
-          return;
-        }
+      let item = null;
 
-        document.getElementById('caseLoading').classList.add('hidden');
-        document.getElementById('caseContent').classList.remove('hidden');
+      try {
+        const { CloudCMS } = await import('./js/firebase-cms.js');
+        item = await CloudCMS.getPortfolioItemById(csId);
+      } catch (error) {
+        console.warn('Cloud case study unavailable, using local fallback.', error);
+      }
 
-        document.getElementById('csCategory').textContent = item.category;
-        document.getElementById('csRoas').textContent = item.roas;
-        document.getElementById('csTitle').textContent = item.title;
-        document.getElementById('csDesc').textContent = item.desc;
-        document.getElementById('csBudget').textContent = item.budget;
-        document.getElementById('csResults').textContent = item.results;
-        document.getElementById('csDetails').innerHTML = item.details || item.desc;
+      if (!item && window.cmsEngine?.getPortfolio) {
+        const localPortfolio = window.cmsEngine.getPortfolio() || [];
+        item = localPortfolio.find((entry) => String(entry.id) === String(csId));
+      }
 
-        if (item.mediaUrl) {
-          const mediaBox = document.getElementById('csMediaContainer');
-          mediaBox.classList.remove('hidden');
-          mediaBox.innerHTML = `<img src="${item.mediaUrl}" class="w-full max-h-96 object-cover" />`;
-        }
-      });
+      if (!item) {
+        loadingEl.textContent = 'المشروع غير موجود أو تعذر تحميله حالياً.';
+      } else {
+        renderCase(item);
+      }
     }
   </script>
 </body>

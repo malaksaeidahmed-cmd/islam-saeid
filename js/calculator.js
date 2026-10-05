@@ -89,6 +89,7 @@ function initStrategicDecisionEngine() {
   if (!unitPriceInput || !industrySelect) return;
 
   let currentAnalysis = {};
+  const MAX_SAFE_MONEY = 1_000_000_000;
 
   // تحديث النسبة المباشرة تلقائياً عند تغيير المجال
   industrySelect.addEventListener('change', () => {
@@ -103,24 +104,34 @@ function initStrategicDecisionEngine() {
     const indKey = industrySelect.value || 'fashion';
     const m = marketData[indKey] || marketData.fashion;
 
-    const price = parseFloat(unitPriceInput.value) || 1;
-    const budget = parseFloat(totalBudgetInput.value) || 0;
-    const cogsPercent = parseFloat(cogsRatioInput ? cogsRatioInput.value : m.defaultCogsRatio) || m.defaultCogsRatio;
+    const rawPrice = parseFloat(unitPriceInput.value);
+    const rawBudget = parseFloat(totalBudgetInput.value);
+    const rawCogs = parseFloat(cogsRatioInput ? cogsRatioInput.value : m.defaultCogsRatio);
+
+    const safePrice = Number.isFinite(rawPrice) ? rawPrice : NaN;
+    const safeBudget = Number.isFinite(rawBudget) ? rawBudget : NaN;
+    const safeCogs = Number.isFinite(rawCogs) ? rawCogs : m.defaultCogsRatio;
+
+    const inputInvalid = !Number.isFinite(safePrice) || !Number.isFinite(safeBudget) || safePrice <= 0 || safeBudget < 0;
+
+    const price = Math.min(Math.max(safePrice || 0, 0), MAX_SAFE_MONEY);
+    const budget = Math.min(Math.max(safeBudget || 0, 0), MAX_SAFE_MONEY);
+    const cogsPercent = Math.min(Math.max(safeCogs, 0), 99.9);
 
     // 1. حسابات التكلفة المالية
-    const cogsValue = price * (cogsPercent / 100);
+    const cogsValue = Math.max(0, price * (cogsPercent / 100));
     const grossMargin = price - cogsValue;
-    const grossMarginRatio = grossMargin / price;
+    const grossMarginRatio = price > 0 ? (grossMargin / price) : 0;
 
     const breakEvenRoas = grossMargin > 0 ? (price / grossMargin) : 0;
-    const maxCac = Math.round(grossMargin);
+    const maxCac = Math.max(0, Math.round(grossMargin));
 
     // 2. حسابات معايير الوصول والـ Market Expectations
-    const estImpressions = (budget / m.cpm) * 1000;
+    const estImpressions = m.cpm > 0 ? (budget / m.cpm) * 1000 : 0;
     const minReach = Math.round(estImpressions * 0.7);
     const maxReach = Math.round(estImpressions * 0.9);
 
-    const estCpa = Math.round(price * m.cpaFactor);
+    const estCpa = Math.max(1, Math.round(price * m.cpaFactor));
     const estOrders = estCpa > 0 ? Math.round(budget / estCpa) : 0;
     const estRevenue = estOrders * price;
     const totalCosts = (estOrders * cogsValue) + budget;
@@ -132,7 +143,7 @@ function initStrategicDecisionEngine() {
     if (marketCtrVal) marketCtrVal.textContent = `${m.ctr}%`;
     if (marketCpaVal) marketCpaVal.textContent = `${estCpa.toLocaleString('ar-EG')} ج.م`;
 
-    if (beRoasOutput) beRoasOutput.textContent = breakEvenRoas > 0 ? breakEvenRoas.toFixed(2) + 'x' : 'غير متاح';
+    if (beRoasOutput) beRoasOutput.textContent = breakEvenRoas > 0 && Number.isFinite(breakEvenRoas) ? breakEvenRoas.toFixed(2) + 'x' : 'غير متاح';
     if (maxCacOutput) maxCacOutput.textContent = maxCac.toLocaleString('ar-EG') + ' ج.م';
     if (netProfitReal) {
       netProfitReal.textContent = Math.round(netProfit).toLocaleString('ar-EG') + ' ج.م';
@@ -143,7 +154,11 @@ function initStrategicDecisionEngine() {
     let statusTitle = '';
     let statusDesc = '';
 
-    if (grossMarginRatio >= 0.45 && budget >= 20000) {
+    if (inputInvalid) {
+      if (decisionBadge) decisionBadge.className = 'p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-right text-xs';
+      statusTitle = 'قيمة إدخال غير صحيحة';
+      statusDesc = 'الرجاء إدخال سعر أكبر من صفر وميزانية غير سالبة لحساب المؤشرات بدقة.';
+    } else if (grossMarginRatio >= 0.45 && budget >= 20000) {
       if (decisionBadge) decisionBadge.className = 'p-3.5 rounded-xl bg-green-500/20 border border-green-500/40 text-right text-xs';
       statusTitle = `جاهزية عالية: مجال (${m.name}) مؤهل للسكيلينج الضخم`;
       statusDesc = `هامش الربح (${Math.round(grossMarginRatio * 100)}%) وميزانية الإعلان المتاحة تضمن المزايدة القوية في السوق واقتناص أفضل شريحة عملاء.`;
@@ -176,6 +191,9 @@ function initStrategicDecisionEngine() {
 
     if (consultCalcBtn) {
       consultCalcBtn.href = `https://wa.me/201021252183?text=${encodeURIComponent(`مرحباً إسلام، قمت بتحليل مشروعي في مجال (${m.name}): سعر المنتجات ${price} ج.م، الميزانية ${budget} ج.م. النتيجة: (${statusTitle}). أود تنفيذ الخطة معكم.`)}`;
+      consultCalcBtn.setAttribute('aria-disabled', inputInvalid ? 'true' : 'false');
+      consultCalcBtn.classList.toggle('pointer-events-none', inputInvalid);
+      consultCalcBtn.classList.toggle('opacity-60', inputInvalid);
     }
   }
 
@@ -282,7 +300,7 @@ function initStrategicDecisionEngine() {
           downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> تنزيل تقرير الجدوى المالي (PDF)';
         });
       } else {
-        alert('جاري تحميل مكتبة PDF، يرجى المحاولة مرة أخرى.');
+        alert('تعذر تحميل مكتبة PDF حالياً. يمكنك المتابعة باستخدام بقية أدوات الموقع بدون مشكلة.');
         document.body.removeChild(pdfContainer);
         downloadPdfBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> تنزيل تقرير الجدوى المالي (PDF)';
       }

@@ -15,10 +15,12 @@ if (savedTheme === 'light') {
 }
 
 if (themeToggleBtn) {
+  themeToggleBtn.setAttribute('aria-pressed', savedTheme !== 'light' ? 'true' : 'false');
   themeToggleBtn.addEventListener('click', () => {
     const isDark = htmlEl.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun text-sm' : 'fa-solid fa-moon text-sm';
+    themeToggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
   });
 }
 
@@ -183,6 +185,7 @@ function applyLanguage(lang) {
   htmlEl.setAttribute('lang', lang);
   htmlEl.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
   if (langText) langText.textContent = lang === 'ar' ? 'EN' : 'عربي';
+  if (langToggleBtn) langToggleBtn.setAttribute('aria-label', lang === 'ar' ? 'Switch language to English' : 'تبديل اللغة إلى العربية');
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -272,39 +275,99 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 const form = document.getElementById('waitlistForm');
 if (form) {
+  const submitBtn = document.getElementById('bootcampSubmitBtn');
+  const phoneInput = document.getElementById('subPhone');
+  const nameInput = document.getElementById('subName');
+  const challengeInput = document.getElementById('subChallenge');
+  let isSubmitting = false;
+  let hasSubmitted = false;
+
+  function normalizePhone(rawPhone) {
+    const digits = String(rawPhone || '').replace(/\D/g, '');
+    if (digits.startsWith('20') && digits.length === 12) return `+${digits}`;
+    if (digits.startsWith('0') && digits.length === 11) return `+20${digits.slice(1)}`;
+    if (digits.length === 10 && digits.startsWith('1')) return `+20${digits}`;
+    return '';
+  }
+
+  function hasUnsavedFormData() {
+    if (hasSubmitted) return false;
+    const values = ['subName', 'subPhone', 'subChallenge'].map(id => (document.getElementById(id)?.value || '').trim());
+    return values.some(Boolean);
+  }
+
+  phoneInput?.addEventListener('blur', () => {
+    const normalized = normalizePhone(phoneInput.value);
+    if (!normalized) {
+      phoneInput.setCustomValidity('يرجى إدخال رقم واتساب مصري صحيح (مثال: 01xxxxxxxxx)');
+      return;
+    }
+    phoneInput.setCustomValidity('');
+  });
+
+  window.addEventListener('beforeunload', (event) => {
+    if (!hasUnsavedFormData()) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('subName').value;
-    const phone = document.getElementById('subPhone').value;
-    const budget = document.getElementById('subBudget').value;
-    const challenge = document.getElementById('subChallenge').value;
-    
+    if (isSubmitting) return;
+
+    const name = (nameInput?.value || '').trim();
+    const normalizedPhone = normalizePhone(phoneInput?.value || '');
+    const budget = document.getElementById('subBudget')?.value || '';
+    const experience = document.getElementById('subExperience')?.value || '';
+    const challenge = (challengeInput?.value || '').trim();
+
+    if (!name || !challenge || !normalizedPhone) {
+      if (phoneInput) {
+        phoneInput.setCustomValidity('يرجى إدخال رقم واتساب مصري صحيح (مثال: 01xxxxxxxxx)');
+        phoneInput.reportValidity();
+      }
+      return;
+    }
+    phoneInput?.setCustomValidity('');
+    isSubmitting = true;
+    hasSubmitted = true;
+    submitBtn?.setAttribute('disabled', 'true');
+    submitBtn?.classList.add('opacity-70', 'cursor-not-allowed');
+
     if (window.cmsEngine) {
-      window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${phone})`);
+      window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
     }
 
     form.classList.add('hidden');
     document.getElementById('waitlistSuccess').classList.remove('hidden');
     
     setTimeout(() => {
-      const msg = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج الأوفلاين في القاهرة (الدفعة المغلقة - 20 مقعداً).\n- الهاتف: ${phone}\n- الإنفاق الشهري الحالي: ${budget}\n- التحدي المطلوب حله: ${challenge}\nبانتظار تحديد موعد المقابلة.`);
+      const msg = encodeURIComponent(`مرحباً إسلام، أنا ${name} أرسلت طلب ترشح للمقابلة الشخصية للبرنامج الأوفلاين في القاهرة (الدفعة المغلقة - 20 مقعداً).\n- الهاتف: ${normalizedPhone}\n- مستوى الخبرة: ${experience}\n- الإنفاق الشهري الحالي: ${budget}\n- التحدي المطلوب حله: ${challenge}\nبانتظار تحديد موعد المقابلة.`);
       window.open(`https://wa.me/201021252183?text=${msg}`, '_blank');
+      isSubmitting = false;
     }, 1000);
   });
 }
 
 // FAQ Accordion
 document.querySelectorAll('.faq-btn').forEach(btn => {
+  const content = btn.nextElementSibling;
+  if (content?.id) {
+    btn.setAttribute('aria-controls', content.id);
+  }
+  btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
     const icon = btn.querySelector('i');
     const isHidden = content.classList.contains('hidden');
 
     document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+    document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
     document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
 
     if (isHidden) {
       content.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
       if (icon) icon.style.transform = 'rotate(180deg)';
     }
   });
@@ -314,6 +377,28 @@ document.querySelectorAll('.faq-btn').forEach(btn => {
 const mBtn = document.getElementById('mobileMenuBtn');
 const mMenu = document.getElementById('mobileMenu');
 if (mBtn && mMenu) {
-  mBtn.addEventListener('click', () => mMenu.classList.toggle('hidden'));
-  mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mMenu.classList.add('hidden')));
+  const closeMenu = () => {
+    mMenu.classList.add('hidden');
+    mBtn.setAttribute('aria-expanded', 'false');
+  };
+  const openMenu = () => {
+    mMenu.classList.remove('hidden');
+    mBtn.setAttribute('aria-expanded', 'true');
+  };
+
+  mBtn.setAttribute('aria-expanded', 'false');
+  mBtn.setAttribute('aria-controls', 'mobileMenu');
+  mBtn.addEventListener('click', () => {
+    if (mMenu.classList.contains('hidden')) openMenu();
+    else closeMenu();
+  });
+
+  mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
+  });
+  document.addEventListener('click', (event) => {
+    if (mMenu.classList.contains('hidden')) return;
+    if (!mMenu.contains(event.target) && !mBtn.contains(event.target)) closeMenu();
+  });
 }

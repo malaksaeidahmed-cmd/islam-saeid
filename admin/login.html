@@ -7,79 +7,290 @@
   <link rel="icon" type="image/png" href="../logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen flex items-center justify-center p-4">
 
   <div class="w-full max-w-md p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-6 shadow-2xl">
+
+    <!-- Logo & Title -->
     <div class="text-center space-y-2">
-      <img src="../logo.png" alt="شعار إسلام سعيد" class="w-12 h-12 object-contain mx-auto rounded-xl border border-white/10" onError="this.style.display='none'" />
-      <h1 class="text-xl font-bold text-white">تسجيل الدخول للوحة الإدارة</h1>
-      <p class="text-xs text-slate-400">أدخل اسم المستخدم وكلمة المرور للمتابعة</p>
+      <img src="../logo.png" alt="شعار إسلام سعيد" class="w-14 h-14 object-contain mx-auto rounded-xl border border-white/10" onError="this.style.display='none'" />
+      <h1 class="text-xl font-bold text-white">تسجيل الدخول للوحة التحكم</h1>
+      <p class="text-xs text-slate-400">أدخل بياناتك للوصول إلى لوحة الإدارة</p>
     </div>
 
-    <form id="loginForm" class="space-y-4 text-xs" autocomplete="on">
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-4 text-xs" autocomplete="on" novalidate>
+
+      <!-- Email -->
       <div>
-        <label class="block font-semibold text-slate-300 mb-1">اسم المستخدم (Username):</label>
-        <input type="text" id="userInput" required placeholder="islam" autocomplete="username"
-          class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
-      </div>
-      <div>
-        <label class="block font-semibold text-slate-300 mb-1">كلمة المرور:</label>
-        <input type="password" id="passInput" required placeholder="••••••••" autocomplete="current-password"
-          class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500" />
+        <label for="emailInput" class="block font-semibold text-slate-300 mb-1">
+          البريد الإلكتروني
+        </label>
+        <div class="relative">
+          <i class="fa-solid fa-envelope absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none"></i>
+          <input
+            type="email"
+            id="emailInput"
+            required
+            autocomplete="email"
+            placeholder="you@example.com"
+            dir="ltr"
+            class="w-full bg-black/50 border border-white/10 rounded-xl p-3 pr-10 pl-3 text-white text-left focus:outline-none focus:border-purple-500 transition-colors"
+          />
+        </div>
       </div>
 
-      <div id="loginError" class="hidden p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 text-center font-semibold">
-        اسم المستخدم أو كلمة المرور غير صحيحة
+      <!-- Password -->
+      <div>
+        <label for="passwordInput" class="block font-semibold text-slate-300 mb-1">
+          كلمة المرور
+        </label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none"></i>
+          <input
+            type="password"
+            id="passwordInput"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••"
+            class="w-full bg-black/50 border border-white/10 rounded-xl p-3 pr-10 pl-12 text-white focus:outline-none focus:border-purple-500 transition-colors"
+          />
+          <button
+            type="button"
+            id="togglePasswordBtn"
+            aria-label="إظهار/إخفاء كلمة المرور"
+            class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <i id="togglePasswordIcon" class="fa-solid fa-eye text-sm"></i>
+          </button>
+        </div>
       </div>
 
-      <button type="submit" id="submitBtn"
-        class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg text-xs disabled:opacity-60 disabled:cursor-not-allowed">
-        دخول لوحة التحكم
+      <!-- Remember + Forgot -->
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-2 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            id="rememberMeInput"
+            class="w-3.5 h-3.5 rounded border-white/20 bg-black/50 accent-purple-600 cursor-pointer"
+          />
+          <span class="text-slate-300 text-[11px]">تذكرني</span>
+        </label>
+        <button
+          type="button"
+          id="forgotPasswordBtn"
+          class="text-purple-400 hover:text-purple-300 text-[11px] font-semibold hover:underline transition-colors"
+        >
+          نسيت كلمة المرور؟
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div id="loginError" class="hidden p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 text-center font-semibold leading-relaxed">
+        <i class="fa-solid fa-circle-exclamation ml-1"></i>
+        <span id="loginErrorText"></span>
+      </div>
+
+      <!-- Success Message -->
+      <div id="loginSuccess" class="hidden p-3 rounded-lg bg-green-500/20 border border-green-500/40 text-green-300 text-center font-semibold leading-relaxed">
+        <i class="fa-solid fa-circle-check ml-1"></i>
+        <span id="loginSuccessText"></span>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        id="submitBtn"
+        class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg text-xs disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span id="submitBtnText">دخول لوحة التحكم</span>
       </button>
 
-      <p class="text-center text-[10px] text-slate-500 pt-2">
-        🔒 يتم تشفير كلمة المرور بـ SHA-256 قبل الإرسال
+      <!-- Security Note -->
+      <p class="text-center text-[10px] text-slate-500 pt-1">
+        <i class="fa-solid fa-shield-halved text-green-400/70"></i>
+        محمي بواسطة Firebase Authentication
       </p>
     </form>
+
+    <!-- Back Link -->
+    <div class="pt-3 border-t border-white/10 text-center">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-[11px] transition-colors">
+        <i class="fa-solid fa-arrow-right ml-1"></i>
+        العودة للموقع الرئيسي
+      </a>
+    </div>
+
   </div>
 
   <script type="module">
-    import { CloudCMS } from '../js/firebase-cms.js';
+    import { signIn, resetPassword, onAuthChange } from '../js/auth.js';
 
     const form = document.getElementById('loginForm');
-    const btn = document.getElementById('submitBtn');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const rememberMeInput = document.getElementById('rememberMeInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnText = document.getElementById('submitBtnText');
     const errorBox = document.getElementById('loginError');
+    const errorText = document.getElementById('loginErrorText');
+    const successBox = document.getElementById('loginSuccess');
+    const successText = document.getElementById('loginSuccessText');
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorBox.classList.add('hidden');
-      btn.disabled = true;
-      const originalText = btn.textContent;
-      btn.textContent = 'جاري التحقق...';
-
-      const user = document.getElementById('userInput').value.trim();
-      const pass = document.getElementById('passInput').value;
-
-      try {
-        const authData = await CloudCMS.loginUser(user, pass);
-        if (authData) {
-          sessionStorage.setItem('cms_auth', JSON.stringify(authData));
-          window.location.href = 'dashboard.html';
-          return;
-        }
-        errorBox.classList.remove('hidden');
-      } catch (err) {
-        console.error(err);
-        errorBox.textContent = 'حدث خطأ في الاتصال. حاول مرة أخرى.';
-        errorBox.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
+    // ============================================================
+    // Already logged in? → redirect
+    // ============================================================
+    onAuthChange((user, profile) => {
+      if (user && profile) {
+        window.location.href = 'dashboard.html';
       }
     });
+
+    // ============================================================
+    // Password Visibility Toggle
+    // ============================================================
+    togglePasswordBtn?.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePasswordIcon.className = isPassword ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
+    });
+
+    // ============================================================
+    // Forgot Password
+    // ============================================================
+    forgotPasswordBtn?.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        showError('الرجاء إدخال البريد الإلكتروني أولاً');
+        emailInput.focus();
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('البريد الإلكتروني غير صحيح');
+        emailInput.focus();
+        return;
+      }
+
+      hideMessages();
+      forgotPasswordBtn.disabled = true;
+      forgotPasswordBtn.textContent = 'جاري الإرسال...';
+
+      try {
+        await resetPassword(email);
+        showSuccess(`تم إرسال رابط إعادة التعيين إلى ${email}`);
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        forgotPasswordBtn.disabled = false;
+        forgotPasswordBtn.textContent = 'نسيت كلمة المرور؟';
+      }
+    });
+
+    // ============================================================
+    // Login Submit
+    // ============================================================
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const rememberMe = rememberMeInput.checked;
+
+      // Validate
+      if (!email) {
+        showError('الرجاء إدخال البريد الإلكتروني');
+        emailInput.focus();
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('البريد الإلكتروني غير صحيح');
+        emailInput.focus();
+        return;
+      }
+      if (!password || password.length < 6) {
+        showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        passwordInput.focus();
+        return;
+      }
+
+      // Disable UI
+      submitBtn.disabled = true;
+      const originalText = submitBtnText.textContent;
+      submitBtnText.textContent = 'جاري التحقق...';
+      submitBtn.querySelector('i').className = 'fa-solid fa-spinner fa-spin';
+
+      try {
+        const { user, profile } = await signIn(email, password, rememberMe);
+
+        showSuccess(`مرحباً ${profile.displayName || user.email}`);
+
+        // Redirect after short delay
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+      } catch (error) {
+        console.error('Login error:', error);
+        showError(error.message);
+
+        // Re-enable UI
+        submitBtn.disabled = false;
+        submitBtnText.textContent = originalText;
+        submitBtn.querySelector('i').className = 'fa-solid fa-right-to-bracket';
+
+        // Shake animation
+        form.classList.add('animate-shake');
+        setTimeout(() => form.classList.remove('animate-shake'), 400);
+      }
+    });
+
+    // ============================================================
+    // Helpers
+    // ============================================================
+    function showError(message) {
+      errorText.textContent = message;
+      errorBox.classList.remove('hidden');
+      successBox.classList.add('hidden');
+    }
+
+    function showSuccess(message) {
+      successText.textContent = message;
+      successBox.classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    }
+
+    function hideMessages() {
+      errorBox.classList.add('hidden');
+      successBox.classList.add('hidden');
+    }
+
+    // Clear error on typing
+    [emailInput, passwordInput].forEach(input => {
+      input?.addEventListener('input', hideMessages);
+    });
   </script>
+
+  <style>
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+
 </body>
 </html>

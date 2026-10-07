@@ -6,6 +6,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.
 import {
   getAuth,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut as fbSignOut,
   onAuthStateChanged,
   sendPasswordResetEmail,

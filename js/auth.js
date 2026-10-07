@@ -15,7 +15,7 @@ import {
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc
+  getFirestore, doc, getDoc, setDoc, deleteDoc, collection, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { firebaseConfig, SESSION_CONFIG, SUPER_ADMIN_UID } from '../firebase-config.js';
 
@@ -42,7 +42,7 @@ function getCachedProfile(uid) {
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.uid !== uid) return null;
-    if (Date.now() - data.cachedAt > 30 * 60 * 1000) return null; // 30 دقيقة
+    if (Date.now() - data.cachedAt > 30 * 60 * 1000) return null;
     return data.profile;
   } catch (_) {
     return null;
@@ -83,7 +83,7 @@ export async function signIn(email, password, rememberMe = false) {
 
     let adminProfile = await getAdminProfileWithTimeout(user.uid, 5000);
 
-    // Fallback: if Firestore failed BUT this is the known super admin UID, use minimal profile
+    // Fallback for super admin if Firestore is slow
     if (!adminProfile && user.uid === SUPER_ADMIN_UID) {
       console.warn('[Auth] Firestore unavailable — using super admin fallback');
       adminProfile = {
@@ -142,10 +142,9 @@ export async function signOut() {
 }
 
 // ============================================================
-// Auth State Listener — يستخدم cache أولاً
+// Auth State Listener
 // ============================================================
 export function onAuthChange(callback) {
-  // Check cache first — if valid, call callback immediately
   try {
     const metaRaw = sessionStorage.getItem(SESSION_CONFIG.storageKey);
     const cachedRaw = sessionStorage.getItem(PROFILE_CACHE_KEY);
@@ -156,7 +155,6 @@ export function onAuthChange(callback) {
           cached.profile && cached.profile.active !== false) {
         console.log('[Auth] onAuthChange → cache hit');
         callback({ uid: cached.uid, email: meta.email }, cached.profile);
-        // Still subscribe for real changes
       }
     }
   } catch (_) {}
@@ -178,7 +176,6 @@ export function onAuthChange(callback) {
 
     const profile = await getAdminProfileWithTimeout(user.uid, 5000);
     if (!profile || profile.active === false) {
-      // For super admin, use fallback if Firestore failed
       if (!profile && user.uid === SUPER_ADMIN_UID) {
         const fallback = {
           id: user.uid, email: user.email, displayName: 'إسلام سعيد',
@@ -230,6 +227,76 @@ export async function getAdminProfile(uid) {
     console.error('Get admin profile error:', error);
     return null;
   }
+}
+
+// ============================================================
+// Create New Admin (super_admin only)
+// ============================================================
+export async function createAdmin(email, password, adminData) {
+  // Save current admin session before Firebase signs us out
+  const currentMeta = sessionStorage.getItem(SESSION_CONFIG.storageKey);
+  const currentCache = sessionStorage.getItem(PROFILE_CACHE_KEY);
+
+  try {
+    // 1. Create Firebase Auth user (this signs out current admin)
+    const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+    const newUid = credential.user.uid;
+
+    // 2. Create admin doc in Firestore with the new UID
+    await setDoc(doc(db, 'admins', newUid), {
+      email: email.trim(),
+      displayName: adminData.displayName || email.split('@')[0],
+      role: adminData.role || 'sub_admin',
+      permissions: Array.isArray(adminData.permissions) ? adminData.permissions : [],
+      active: true,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+
+    return { uid: newUid, email: email.trim() };
+  } finally {
+    // 3. Sign out the newly created user, restore original admin session
+    try {
+      await fbSignOut(auth);
+      if (currentMeta && currentCache) {
+        sessionStorage.setItem(SESSION_CONFIG.storageKey, currentMeta);
+        sessionStorage.setItem(PROFILE_CACHE_KEY, currentCache);
+      }
+    } catch (e) {
+      console.warn('Restore session error:', e);
+    }
+  }
+}
+
+// ============================================================
+// Update Admin
+// ============================================================
+export async function updateAdmin(uid, updates) {
+  const adminRef = doc(db, 'admins', uid);
+  const payload = { ...updates, updatedAt: Date.now() };
+  delete payload.password;
+  await setDoc(adminRef, payload, { merge: true });
+}
+
+// ============================================================
+// Delete Admin
+// ============================================================
+export async function deleteAdmin(uid) {
+  const snap = await getDoc(doc(db, 'admins', uid));
+  if (snap.exists() && snap.data().role === 'super_admin') {
+    throw new Error('لا يمكن حذف الأدمن الرئيسي');
+  }
+  await deleteDoc(doc(db, 'admins', uid));
+}
+
+// ============================================================
+// Subscribe Admins (real-time)
+// ============================================================
+export function subscribeAdmins(callback) {
+  return onSnapshot(collection(db, 'admins'), (snapshot) => {
+    const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    callback(items);
+  });
 }
 
 // ============================================================

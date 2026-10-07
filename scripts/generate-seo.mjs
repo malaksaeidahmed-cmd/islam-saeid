@@ -91,6 +91,23 @@ const STATIC_PAGES = [
   { url: '/index.html#course', priority: '0.8', changefreq: 'monthly' }
 ];
 
+// ============================================================
+// Build URL — prefer slug over id
+// ============================================================
+function buildPostUrl(p) {
+  if (p.slug) {
+    return `${SITE_URL}/post.html?slug=${encodeURIComponent(p.slug)}`;
+  }
+  return `${SITE_URL}/post.html?id=${encodeURIComponent(p.id)}`;
+}
+
+function buildCaseUrl(p) {
+  if (p.slug) {
+    return `${SITE_URL}/case-study.html?slug=${encodeURIComponent(p.slug)}`;
+  }
+  return `${SITE_URL}/case-study.html?id=${encodeURIComponent(p.id)}`;
+}
+
 function buildSitemap(posts, projects) {
   const today = formatDate(Date.now());
   const urls = [];
@@ -104,7 +121,7 @@ function buildSitemap(posts, projects) {
 
   posts.forEach(p => {
     urls.push({
-      loc: `${SITE_URL}/post.html?id=${encodeURIComponent(p.id)}`,
+      loc: buildPostUrl(p),
       lastmod: formatDate(p.updatedAt || p.createdAt),
       changefreq: 'monthly',
       priority: '0.8'
@@ -113,7 +130,7 @@ function buildSitemap(posts, projects) {
 
   projects.forEach(p => {
     urls.push({
-      loc: `${SITE_URL}/case-study.html?id=${encodeURIComponent(p.id)}`,
+      loc: buildCaseUrl(p),
       lastmod: formatDate(p.updatedAt || p.createdAt),
       changefreq: 'monthly',
       priority: '0.7'
@@ -135,7 +152,7 @@ function buildRSS(posts) {
   const sorted = [...posts].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 20);
 
   const items = sorted.map(p => {
-    const link = `${SITE_URL}/post.html?id=${encodeURIComponent(p.id)}`;
+    const link = buildPostUrl(p);
     const desc = String(p.excerpt || p.metaDescription || String(p.content || '').replace(/<[^>]+>/g, ' ')).slice(0, 300).trim();
     const pubDate = formatRFC822(p.createdAt);
     const category = p.category ? `<category>${escapeXml(p.category)}</category>` : '';
@@ -179,6 +196,11 @@ async function main() {
 
   console.log(`✅ Found ${posts.length} posts and ${projects.length} projects`);
 
+  const postsWithSlug = posts.filter(p => p.slug).length;
+  const projectsWithSlug = projects.filter(p => p.slug).length;
+  console.log(`   Posts with slug: ${postsWithSlug}/${posts.length}`);
+  console.log(`   Projects with slug: ${projectsWithSlug}/${projects.length}`);
+
   const root = process.cwd();
 
   await fs.writeFile(path.join(root, 'sitemap.xml'), buildSitemap(posts, projects), 'utf8');
@@ -192,6 +214,8 @@ async function main() {
     lastUpdatedArabic: new Date().toLocaleString('ar-EG', { timeZone: 'Africa/Cairo' }),
     postsCount: posts.length,
     projectsCount: projects.length,
+    postsWithSlug,
+    projectsWithSlug,
     staticPagesCount: STATIC_PAGES.length
   };
   await fs.writeFile(path.join(root, 'seo-meta.json'), JSON.stringify(meta, null, 2), 'utf8');

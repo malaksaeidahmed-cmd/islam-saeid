@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أدوات SEO | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
+
+  <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-5 flex justify-between items-center">
+      <a href="dashboard.html" class="flex items-center gap-3">
+        <img src="../logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <span class="font-bold text-white">أدوات SEO</span>
+      </a>
+      <a href="dashboard.html" class="text-xs text-slate-300 hover:text-white">
+        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للوحة التحكم
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-5 py-10 space-y-6">
+
+    <!-- Intro -->
+    <div class="p-6 rounded-3xl border border-purple-500/30 bg-gradient-to-br from-[#0F0A1F] to-[#0E0B1A] space-y-3">
+      <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass-chart text-purple-400"></i>
+        توليد ملفات SEO
+      </h1>
+      <p class="text-sm text-slate-400 leading-relaxed">
+        الصفحة دي بتولّد <strong class="text-white">Sitemap.xml</strong> و <strong class="text-white">RSS Feed.xml</strong> تلقائياً من كل المقالات والمشاريع المنشورة.
+        انسخ المحتوى وارفعه على GitHub عشان Google و محركات البحث تكتشف محتواك فوراً.
+      </p>
+    </div>
+
+    <!-- Status -->
+    <div id="loadStatus" class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10 text-xs text-slate-400 text-center">
+      <i class="fa-solid fa-spinner fa-spin ml-2"></i>
+      جاري تحميل البيانات من Firestore...
+    </div>
+
+    <!-- Stats -->
+    <div id="statsBox" class="hidden grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 text-xs">
+        <div class="text-slate-400 mb-1">المقالات</div>
+        <div id="statPosts" class="text-xl font-bold text-white font-sans">0</div>
+      </div>
+      <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 text-xs">
+        <div class="text-slate-400 mb-1">المشاريع</div>
+        <div id="statProjects" class="text-xl font-bold text-orange-400 font-sans">0</div>
+      </div>
+      <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 text-xs">
+        <div class="text-slate-400 mb-1">صفحات ثابتة</div>
+        <div id="statStatic" class="text-xl font-bold text-purple-400 font-sans">0</div>
+      </div>
+      <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 text-xs">
+        <div class="text-slate-400 mb-1">آخر تحديث</div>
+        <div id="statDate" class="text-xs font-bold text-green-400 font-sans">—</div>
+      </div>
+    </div>
+
+    <!-- Sitemap -->
+    <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-white font-bold text-base flex items-center gap-2">
+            <i class="fa-solid fa-sitemap text-green-400"></i>
+            Sitemap.xml
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">يخبر Google بكل صفحات موقعك عشان يزحفها ويظهرها في البحث.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="copyToClipboard('sitemapOutput')" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold">
+            <i class="fa-solid fa-copy ml-1"></i> نسخ
+          </button>
+          <button onclick="downloadFile('sitemapOutput', 'sitemap.xml')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white text-xs font-bold">
+            <i class="fa-solid fa-download ml-1"></i> تنزيل
+          </button>
+        </div>
+      </div>
+      <textarea id="sitemapOutput" readonly rows="10" 
+        class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-[10px] text-slate-300 font-mono break-all-safe" 
+        dir="ltr" placeholder="سيتم توليد الـ Sitemap هنا..."></textarea>
+    </div>
+
+    <!-- RSS -->
+    <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-white font-bold text-base flex items-center gap-2">
+            <i class="fa-solid fa-rss text-orange-400"></i>
+            RSS Feed.xml
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">يخبر قارئات RSS و Feedly و المتابعين عن مقالاتك الجديدة تلقائياً.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="copyToClipboard('rssOutput')" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold">
+            <i class="fa-solid fa-copy ml-1"></i> نسخ
+          </button>
+          <button onclick="downloadFile('rssOutput', 'feed.xml')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white text-xs font-bold">
+            <i class="fa-solid fa-download ml-1"></i> تنزيل
+          </button>
+        </div>
+      </div>
+      <textarea id="rssOutput" readonly rows="10" 
+        class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-[10px] text-slate-300 font-mono break-all-safe" 
+        dir="ltr" placeholder="سيتم توليد الـ RSS هنا..."></textarea>
+    </div>
+
+    <!-- robots.txt -->
+    <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-white font-bold text-base flex items-center gap-2">
+            <i class="fa-solid fa-robot text-purple-400"></i>
+            robots.txt
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">يخبر محركات البحث بالـ Sitemap والمسارات المسموحة.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="copyToClipboard('robotsOutput')" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold">
+            <i class="fa-solid fa-copy ml-1"></i> نسخ
+          </button>
+          <button onclick="downloadFile('robotsOutput', 'robots.txt')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold">
+            <i class="fa-solid fa-download ml-1"></i> تنزيل
+          </button>
+        </div>
+      </div>
+      <textarea id="robotsOutput" readonly rows="4" 
+        class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-[11px] text-slate-300 font-mono" 
+        dir="ltr"></textarea>
+    </div>
+
+    <!-- Instructions -->
+    <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-amber-500/30 space-y-3">
+      <h3 class="text-amber-400 font-bold text-sm flex items-center gap-2">
+        <i class="fa-solid fa-circle-info"></i>
+        إزاي تستخدم الملفات دي؟
+      </h3>
+      <ol class="text-xs text-slate-300 space-y-2 list-decimal pr-5 leading-relaxed">
+        <li>اضغط <strong class="text-white">"تنزيل"</strong> لكل ملف على حدة</li>
+        <li>افتح GitHub → استبدل الملفات دي في الجذر:
+          <ul class="list-disc pr-5 mt-1 space-y-0.5 text-slate-400">
+            <li><code class="text-pink-400">sitemap.xml</code></li>
+            <li><code class="text-pink-400">feed.xml</code></li>
+            <li><code class="text-pink-400">robots.txt</code></li>
+          </ul>
+        </li>
+        <li>Commit changes → استنى دقيقة للنشر</li>
+        <li>افتح <a href="https://search.google.com/search-console" target="_blank" class="text-purple-400 hover:underline">Google Search Console</a> → Sitemaps → ضيف <code class="text-green-400">sitemap.xml</code></li>
+        <li><strong class="text-white">مهم:</strong> أعد توليد الملفات دي كل مرة تنشر مقال أو مشروع جديد</li>
+      </ol>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { CloudCMS } from '../js/firebase-cms.js';
+
+    const SITE_URL = 'https://islamsaeid.me';
+    const SITE_TITLE = 'إسلام سعيد';
+    const SITE_DESC = 'إدارة الميزانيات الإعلانية الضخمة بتحقيق عوائد استثمارية تصل إلى 30x ROAS';
+
+    // Static pages
+    const STATIC_PAGES = [
+      { url: '/', priority: '1.0', changefreq: 'weekly' },
+      { url: '/blog.html', priority: '0.9', changefreq: 'daily' },
+      { url: '/faq.html', priority: '0.7', changefreq: 'monthly' },
+      { url: '/index.html#portfolio', priority: '0.8', changefreq: 'weekly' },
+      { url: '/index.html#calculator', priority: '0.7', changefreq: 'monthly' },
+      { url: '/index.html#course', priority: '0.8', changefreq: 'monthly' }
+    ];
+
+    let allPosts = [];
+    let allProjects = [];
+    let loadedPosts = false;
+    let loadedProjects = false;
+
+    function escapeXml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function formatDate(timestamp) {
+      try {
+        return new Date(timestamp || Date.now()).toISOString().split('T')[0];
+      } catch (_) {
+        return new Date().toISOString().split('T')[0];
+      }
+    }
+
+    function formatRFC822(timestamp) {
+      try {
+        return new Date(timestamp || Date.now()).toUTCString();
+      } catch (_) {
+        return new Date().toUTCString();
+      }
+    }
+
+    // ============================================================
+    // Sitemap Generator
+    // ============================================================
+    function generateSitemap() {
+      const today = formatDate(Date.now());
+      const urls = [];
+
+      // Static pages
+      STATIC_PAGES.forEach(p => {
+        urls.push({
+          loc: `${SITE_URL}${p.url}`,
+          lastmod: today,
+          changefreq: p.changefreq,
+          priority: p.priority
+        });
+      });
+
+      // Blog posts
+      allPosts.forEach(p => {
+        if (!p.id) return;
+        urls.push({
+          loc: `${SITE_URL}/post.html?id=${encodeURIComponent(p.id)}`,
+          lastmod: formatDate(p.updatedAt || p.createdAt),
+          changefreq: 'monthly',
+          priority: '0.8'
+        });
+      });
+
+      // Portfolio projects
+      allProjects.forEach(p => {
+        if (!p.id) return;
+        urls.push({
+          loc: `${SITE_URL}/case-study.html?id=${encodeURIComponent(p.id)}`,
+          lastmod: formatDate(p.updatedAt || p.createdAt),
+          changefreq: 'monthly',
+          priority: '0.7'
+        });
+      });
+
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${escapeXml(u.loc)}</loc>
+    <lastmod>${u.lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+      return xml;
+    }
+
+    // ============================================================
+    // RSS Feed Generator
+    // ============================================================
+    function generateRSS() {
+      // Sort by createdAt desc
+      const sorted = [...allPosts].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 20);
+
+      const items = sorted.map(p => {
+        const link = `${SITE_URL}/post.html?id=${encodeURIComponent(p.id)}`;
+        const desc = String(p.excerpt || p.metaDescription || String(p.content || '').replace(/<[^>]+>/g, ' ')).slice(0, 300).trim();
+        const pubDate = formatRFC822(p.createdAt);
+        const category = p.category ? `<category>${escapeXml(p.category)}</category>` : '';
+        const image = p.image ? `<enclosure url="${escapeXml(p.image)}" type="image/jpeg" />` : '';
+
+        return `    <item>
+      <title>${escapeXml(p.title || 'بدون عنوان')}</title>
+      <link>${escapeXml(link)}</link>
+      <guid isPermaLink="true">${escapeXml(link)}</guid>
+      <pubDate>${pubDate}</pubDate>
+      <description><![CDATA[${desc}]]></description>
+      ${category}
+      ${image}
+    </item>`;
+      }).join('\n');
+
+      const lastBuildDate = formatRFC822(Date.now());
+
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeXml(SITE_TITLE)} - المدونة</title>
+    <link>${SITE_URL}/blog.html</link>
+    <description>${escapeXml(SITE_DESC)}</description>
+    <language>ar</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
+    <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />
+${items}
+  </channel>
+</rss>`;
+
+      return xml;
+    }
+
+    // ============================================================
+    // Robots.txt Generator
+    // ============================================================
+    function generateRobots() {
+      return `User-agent: *
+Allow: /
+
+# Disallow admin area
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: ${SITE_URL}/sitemap.xml
+
+# RSS Feed
+# ${SITE_URL}/feed.xml`;
+    }
+
+    // ============================================================
+    // Render
+    // ============================================================
+    function render() {
+      if (!loadedPosts || !loadedProjects) return;
+
+      document.getElementById('loadStatus').classList.add('hidden');
+      document.getElementById('statsBox').classList.remove('hidden');
+
+      document.getElementById('statPosts').textContent = allPosts.length;
+      document.getElementById('statProjects').textContent = allProjects.length;
+      document.getElementById('statStatic').textContent = STATIC_PAGES.length;
+      document.getElementById('statDate').textContent = new Date().toLocaleString('ar-EG', { 
+        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+      });
+
+      document.getElementById('sitemapOutput').value = generateSitemap();
+      document.getElementById('rssOutput').value = generateRSS();
+      document.getElementById('robotsOutput').value = generateRobots();
+    }
+
+    // ============================================================
+    // Actions
+    // ============================================================
+    window.copyToClipboard = async (textareaId) => {
+      const el = document.getElementById(textareaId);
+      if (!el || !el.value) { alert('لا يوجد محتوى للنسخ'); return; }
+      try {
+        await navigator.clipboard.writeText(el.value);
+        el.style.borderColor = 'rgba(34, 197, 94, 0.6)';
+        setTimeout(() => el.style.borderColor = '', 800);
+      } catch (err) {
+        el.select();
+        document.execCommand('copy');
+      }
+    };
+
+    window.downloadFile = (textareaId, filename) => {
+      const el = document.getElementById(textareaId);
+      if (!el || !el.value) { alert('لا يوجد محتوى للتنزيل'); return; }
+      const blob = new Blob([el.value], { type: 'application/xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    // ============================================================
+    // Load Data
+    // ============================================================
+    CloudCMS.subscribeBlog(items => {
+      allPosts = items || [];
+      loadedPosts = true;
+      render();
+    });
+
+    CloudCMS.subscribePortfolio(items => {
+      allProjects = items || [];
+      loadedProjects = true;
+      render();
+    });
+
+    // Timeout fallback
+    setTimeout(() => {
+      if (!loadedPosts && !loadedProjects) {
+        document.getElementById('loadStatus').innerHTML = `
+          <i class="fa-solid fa-triangle-exclamation text-amber-400 ml-2"></i>
+          <span class="text-amber-400">تعذر الاتصال بـ Firestore. تحقق من الإنترنت.</span>
+        `;
+      }
+    }, 8000);
+  </script>
+</body>
+</html>

@@ -15,9 +15,16 @@
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
+  <!-- Loading Overlay -->
+  <div id="authLoading" class="fixed inset-0 z-[9999] bg-[#07060E] flex items-center justify-center">
+    <div class="text-center space-y-3">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-400"></i>
+      <p class="text-slate-400 text-sm">جاري التحقق من الصلاحيات...</p>
+    </div>
+  </div>
+
   <div class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
     <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5 overflow-y-auto flex-shrink-0">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
@@ -62,10 +69,8 @@
       </div>
     </aside>
 
-    <!-- Main -->
     <main class="flex-1 overflow-y-auto p-6 lg:p-8">
 
-      <!-- ANALYTICS -->
       <section id="analyticsTab" class="tab-content space-y-6">
         <div>
           <h2 class="text-xl font-bold text-white">التحليلات اللحظية</h2>
@@ -97,7 +102,6 @@
         </div>
       </section>
 
-      <!-- PORTFOLIO -->
       <section id="portfolioTab" class="tab-content hidden space-y-6">
         <div class="flex items-center gap-2 border-b border-white/10 pb-3">
           <button id="portSubTabEditor" onclick="switchPortfolioSubTab('editor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-orange-600 text-white">
@@ -255,7 +259,6 @@
         <div id="portfolioPublishedView" class="hidden space-y-3"></div>
       </section>
 
-      <!-- BLOG -->
       <section id="blogTab" class="tab-content hidden space-y-6">
         <div class="flex items-center gap-2 border-b border-white/10 pb-3">
           <button id="subTabEditor" onclick="switchBlogSubTab('editor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white">
@@ -420,13 +423,11 @@
         <div id="blogPublishedView" class="hidden space-y-3"></div>
       </section>
 
-      <!-- COMMENTS -->
       <section id="commentsTab" class="tab-content hidden space-y-6">
         <h2 class="text-xl font-bold text-white">إدارة تعليقات الزوار</h2>
         <div id="commentsTable" class="space-y-3 text-xs"></div>
       </section>
 
-      <!-- USERS -->
       <section id="usersTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -441,7 +442,6 @@
     </main>
   </div>
 
-  <!-- MODAL: ADD USER -->
   <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">إضافة أدمن فرعي</h3>
@@ -465,7 +465,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT USER -->
   <div id="userEditModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">تعديل بيانات الأدمن</h3>
@@ -490,7 +489,6 @@
     </div>
   </div>
 
-  <!-- MODAL: PREVIEW -->
   <div id="previewModal" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
     <div class="bg-[#07060E] border border-white/10 rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
       <div class="sticky top-0 bg-[#0E0B1A] border-b border-white/10 p-4 flex justify-between items-center z-10">
@@ -515,27 +513,42 @@
       updateSerpPreview, bindCounter, parseVideoEmbed
     } from '../js/rich-editor.js';
 
-    // ---------- Auth (Firebase) ----------
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.2s ease';
+    // ---------- Auth ----------
+    console.log('[Dashboard] Initializing auth...');
 
-    let currentUser = null;
-    let currentProfile = null;
-    let authReady = false;
+    // Timeout fallback — don't stay on loading screen forever
+    const authTimeout = setTimeout(() => {
+      console.warn('[Dashboard] Auth timeout after 12s');
+      const loading = document.getElementById('authLoading');
+      if (loading) {
+        loading.innerHTML = `
+          <div class="text-center space-y-3 max-w-sm px-6">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-amber-400"></i>
+            <p class="text-slate-300 text-sm font-bold">تعذر التحقق من الجلسة</p>
+            <p class="text-slate-500 text-xs">تحقق من اتصال الإنترنت أو أعد تسجيل الدخول</p>
+            <a href="login.html" class="inline-block mt-3 px-5 py-2 rounded-lg bg-purple-600 text-white text-xs font-bold">إعادة تسجيل الدخول</a>
+          </div>
+        `;
+      }
+    }, 12000);
 
     onAuthChange((user, profile) => {
+      clearTimeout(authTimeout);
+      console.log('[Dashboard] Auth state:', user ? user.email : 'no-user', '| Profile:', profile ? profile.role : 'no-profile');
+
       if (!user || !profile) {
+        console.warn('[Dashboard] Not authenticated, redirecting...');
         window.location.href = 'login.html';
         return;
       }
 
-      currentUser = user;
-      currentProfile = profile;
-      authReady = true;
-
       // Update role badge
-      document.getElementById('userRoleBadge').textContent =
-        isSuperAdmin(profile) ? '• الأدمن الرئيسي' : '• أدمن فرعي';
+      const roleBadge = document.getElementById('userRoleBadge');
+      if (roleBadge) {
+        roleBadge.textContent = isSuperAdmin(profile)
+          ? '• الأدمن الرئيسي'
+          : '• أدمن فرعي';
+      }
 
       // Permission gating
       if (!isSuperAdmin(profile)) {
@@ -546,8 +559,9 @@
         document.getElementById('navUsers')?.remove();
       }
 
-      // Show page
-      document.body.style.opacity = '1';
+      // Hide loading overlay
+      document.getElementById('authLoading')?.remove();
+      console.log('[Dashboard] Auth complete, page ready');
     });
 
     function escapeHtml(v) {
@@ -556,7 +570,6 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // ---------- Tab Switching ----------
     window.switchTab = (tabId) => {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
@@ -611,7 +624,6 @@
     window.closeModals = () => document.querySelectorAll('#userModal, #userEditModal').forEach(m => m.classList.add('hidden'));
     window.closePreview = () => document.getElementById('previewModal').classList.add('hidden');
 
-    // ---------- Audio Notifications ----------
     let audioEnabled = false;
     document.addEventListener('click', () => { audioEnabled = true; }, { once: true });
 
@@ -629,7 +641,6 @@
       } catch (_) {}
     }
 
-    // ---------- Analytics ----------
     let currentBootcampStatus = true;
     let maintenanceStatus = false;
     let lastLeadCount = null;
@@ -679,7 +690,6 @@
       catch (e) { alert('تعذر التحديث'); }
     });
 
-    // ---------- Event Logs ----------
     CloudCMS.subscribeEventLogs(logs => {
       const el = document.getElementById('eventsLogList');
       if (!logs.length) { el.innerHTML = '<p class="text-slate-500 py-3">لا توجد أحداث بعد.</p>'; return; }
@@ -691,7 +701,6 @@
       `).join('');
     });
 
-    // ---------- Comments ----------
     CloudCMS.subscribeAllComments(comments => {
       const container = document.getElementById('commentsTable');
       if (!comments.length) { container.innerHTML = '<p class="text-slate-500 py-3">لا توجد تعليقات.</p>'; return; }
@@ -711,7 +720,6 @@
       `).join('');
     });
 
-    // ---------- Users ----------
     let currentUsers = [];
     CloudCMS.subscribeUsers(users => {
       currentUsers = users;
@@ -730,7 +738,6 @@
       `).join('');
     });
 
-    // ---------- Global Actions ----------
     window.approveComment = async (id) => { try { await CloudCMS.approveComment(id); showToast('تم النشر', 'success'); } catch { alert('تعذر'); } };
     window.deleteComment = async (id) => { if (!confirm('حذف؟')) return; try { await CloudCMS.deleteComment(id); showToast('تم الحذف', 'warning'); } catch { alert('تعذر'); } };
     window.deleteUser = async (id) => {
@@ -749,7 +756,6 @@
       openModal('userEditModal');
     };
 
-    // ---------- User Form ----------
     document.getElementById('userForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const perms = Array.from(document.querySelectorAll('input[name="perms"]:checked')).map(el => el.value);
@@ -783,9 +789,6 @@
       window.location.href = 'login.html';
     });
 
-    // ==========================================
-    // BLOG EDITOR
-    // ==========================================
     initRichEditor('editorContainer');
     const tagInput = initTagInput('tagInputContainer', 'postTags');
     const faqBuilder = initFaqBuilder('faqBuilderContainer');
@@ -1035,9 +1038,6 @@
       btn.dataset.editId = id;
     };
 
-    // ==========================================
-    // PORTFOLIO EDITOR
-    // ==========================================
     initRichEditor('portfolioEditorContainer');
     const portTagInput = initTagInput('portTagInputContainer', 'portTags');
     const portGalleryBuilder = initGalleryBuilder('portGalleryContainer');
@@ -1287,7 +1287,6 @@
       btn.dataset.editId = id;
     };
 
-    // Init
     updateSerp();
     updateAnalysis();
     updatePortSerp();

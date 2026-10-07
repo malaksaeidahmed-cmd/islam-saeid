@@ -6,3 +6,6 @@ Disallow: /admin/
 
 # Sitemap location
 Sitemap: https://islamsaeid.me/sitemap.xml
+
+# RSS Feed
+# https://islamsaeid.me/feed.xml

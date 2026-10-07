@@ -78,6 +78,68 @@ export const CloudCMS = {
     }
     return null;
   },
+
+  // ============================================================
+  // Drafts
+  // ============================================================
+  async saveDraft(draftId, data) {
+    try {
+      const draftRef = draftId
+        ? doc(db, 'blog_drafts', draftId)
+        : doc(collection(db, 'blog_drafts'));
+      const payload = {
+        ...data,
+        status: 'draft',
+        updatedAt: Date.now()
+      };
+      // Preserve createdAt if exists
+      if (!draftId) {
+        payload.createdAt = Date.now();
+      } else {
+        const existing = await getDoc(draftRef);
+        if (existing.exists() && existing.data().createdAt) {
+          payload.createdAt = existing.data().createdAt;
+        } else {
+          payload.createdAt = Date.now();
+        }
+      }
+      await setDoc(draftRef, payload, { merge: true });
+      return draftRef.id;
+    } catch (error) {
+      console.error('saveDraft error:', error);
+      throw error;
+    }
+  },
+
+  async getDraft(draftId) {
+    if (!draftId) return null;
+    try {
+      const snap = await getDoc(doc(db, 'blog_drafts', draftId));
+      if (snap.exists()) return { id: snap.id, ...snap.data() };
+      return null;
+    } catch (error) {
+      console.error('getDraft error:', error);
+      return null;
+    }
+  },
+
+  async deleteDraft(draftId) {
+    if (!draftId) return;
+    try {
+      await deleteDoc(doc(db, 'blog_drafts', draftId));
+    } catch (error) {
+      console.error('deleteDraft error:', error);
+      throw error;
+    }
+  },
+
+  subscribeDrafts(callback) {
+    return onSnapshot(collection(db, 'blog_drafts'), (snapshot) => {
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      callback(items);
+    });
+  },
   
   async getBlogPostBySlug(slug) {
     if (!slug) return null;

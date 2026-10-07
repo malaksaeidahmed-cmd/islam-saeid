@@ -25,6 +25,7 @@
 
   <div class="flex h-screen overflow-hidden">
 
+    <!-- Sidebar -->
     <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5 overflow-y-auto flex-shrink-0">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
@@ -69,6 +70,7 @@
       </div>
     </aside>
 
+    <!-- Main -->
     <main class="flex-1 overflow-y-auto p-6 lg:p-8">
 
       <!-- ANALYTICS -->
@@ -452,8 +454,8 @@
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">إضافة أدمن فرعي</h3>
       <form id="userForm" class="space-y-3">
-        <input type="text" id="uName" placeholder="اسم المستخدم" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        <input type="password" id="uPass" placeholder="كلمة المرور" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="email" id="uName" placeholder="البريد الإلكتروني (سيستخدمه للدخول)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-left" dir="ltr" />
+        <input type="password" id="uPass" placeholder="كلمة المرور (6 أحرف على الأقل)" required minlength="6" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <div>
           <label class="block text-slate-400 mb-1">الصلاحيات:</label>
           <div class="space-y-1">
@@ -477,8 +479,7 @@
       <h3 class="text-base font-bold text-white">تعديل بيانات الأدمن</h3>
       <form id="userEditForm" class="space-y-3">
         <input type="hidden" id="euId" />
-        <input type="text" id="euName" placeholder="اسم المستخدم" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
-        <input type="password" id="euPass" placeholder="كلمة مرور جديدة (اتركها فارغة لعدم التغيير)" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+        <input type="text" id="euName" placeholder="الاسم الظاهر" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <div>
           <label class="block text-slate-400 mb-1">الصلاحيات:</label>
           <div class="space-y-1">
@@ -512,7 +513,7 @@
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script type="module">
     import { CloudCMS } from '../js/firebase-cms.js';
-    import { onAuthChange, signOut, hasPermission, isSuperAdmin } from '../js/auth.js';
+    import { onAuthChange, signOut, hasPermission, isSuperAdmin, createAdmin, updateAdmin, deleteAdmin, subscribeAdmins } from '../js/auth.js';
     import { showToast } from '../js/app-features.js';
     import {
       initRichEditor, getEditorHTML, setEditorHTML,
@@ -522,7 +523,7 @@
     } from '../js/rich-editor.js';
 
     // ============================================================
-    // ---------- Auth: TRUST CACHE (no Firebase wait) ----------
+    // ---------- Auth: TRUST CACHE ----------
     // ============================================================
     console.log('[Dashboard] Initializing auth...');
 
@@ -567,7 +568,6 @@
       console.log('[Dashboard] Ready — page loaded');
     }
 
-    // ✅ TRUST CACHE — instant load without waiting for Firebase
     const fastAuth = readFastAuth();
 
     if (fastAuth) {
@@ -755,17 +755,22 @@
       `).join('');
     });
 
-    // ---------- Users ----------
+    // ---------- Admins (from admins collection) ----------
     let currentUsers = [];
-    CloudCMS.subscribeUsers(users => {
+    subscribeAdmins(users => {
       currentUsers = users;
       const subAdmins = users.filter(u => u.role !== 'super_admin');
       const container = document.getElementById('usersTable');
-      if (!subAdmins.length) { container.innerHTML = '<p class="text-slate-500 py-3 text-xs col-span-3">لا يوجد أدمنز فرعيون.</p>'; return; }
+      if (!subAdmins.length) {
+        container.innerHTML = '<p class="text-slate-500 py-3 text-xs col-span-3">لا يوجد أدمنز فرعيون.</p>';
+        return;
+      }
       container.innerHTML = subAdmins.map(u => `
         <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 space-y-2 text-xs overflow-safe-card">
-          <div class="font-bold text-white break-words-safe">${escapeHtml(u.username || u.email || 'بدون اسم')}</div>
+          <div class="font-bold text-white break-words-safe">${escapeHtml(u.displayName || u.email || 'بدون اسم')}</div>
+          <div class="text-[10px] text-slate-400 break-words-safe" dir="ltr">${escapeHtml(u.email || '')}</div>
           <div class="text-[10px] text-slate-400 break-words-safe">الصلاحيات: ${(u.permissions || []).map(escapeHtml).join(', ') || 'لا يوجد'}</div>
+          ${u.active === false ? '<div class="text-[10px] text-red-400 font-bold">⚠️ معطّل</div>' : ''}
           <div class="flex gap-2 pt-1">
             <button onclick="editUser('${u.id}')" class="text-blue-400 hover:underline text-[10px]">تعديل</button>
             <button onclick="deleteUser('${u.id}')" class="text-red-400 hover:underline text-[10px]">حذف</button>
@@ -777,49 +782,80 @@
     // ---------- Global Actions ----------
     window.approveComment = async (id) => { try { await CloudCMS.approveComment(id); showToast('تم النشر', 'success'); } catch { alert('تعذر'); } };
     window.deleteComment = async (id) => { if (!confirm('حذف؟')) return; try { await CloudCMS.deleteComment(id); showToast('تم الحذف', 'warning'); } catch { alert('تعذر'); } };
+
     window.deleteUser = async (id) => {
-      if (!confirm('حذف هذا الأدمن؟')) return;
-      try { await CloudCMS.deleteUser(id); showToast('تم الحذف', 'warning'); } catch(e) { alert(e.message); }
+      if (!confirm('حذف هذا الأدمن نهائياً؟')) return;
+      try {
+        await deleteAdmin(id);
+        showToast('تم الحذف', 'warning');
+      } catch(e) { alert(e.message); }
     };
+
     window.editUser = (id) => {
       const user = currentUsers.find(u => u.id === id);
       if (!user) return;
       document.getElementById('euId').value = id;
-      document.getElementById('euName').value = user.username || user.email || '';
-      document.getElementById('euPass').value = '';
+      document.getElementById('euName').value = user.displayName || '';
       document.querySelectorAll('input[name="euPerms"]').forEach(cb => {
         cb.checked = (user.permissions || []).includes(cb.value);
       });
       openModal('userEditModal');
     };
 
-    // ---------- User Form ----------
+    // ---------- Create Admin ----------
     document.getElementById('userForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
       const perms = Array.from(document.querySelectorAll('input[name="perms"]:checked')).map(el => el.value);
+      const email = document.getElementById('uName').value.trim();
+      const password = document.getElementById('uPass').value;
+
+      if (!email || !email.includes('@')) {
+        alert('الرجاء إدخال بريد إلكتروني صحيح');
+        return;
+      }
+      if (!password || password.length < 6) {
+        alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        return;
+      }
+
+      btn.disabled = true;
+      const origText = btn.textContent;
+      btn.textContent = 'جاري الإنشاء...';
+
       try {
-        await CloudCMS.addUser({
-          username: document.getElementById('uName').value.trim(),
-          password: document.getElementById('uPass').value,
-          role: 'sub_admin',
-          permissions: perms
-        });
-        closeModals(); e.target.reset();
-        showToast('تم الإنشاء', 'success');
-      } catch { alert('تعذر الإنشاء'); }
+        await createAdmin(email, password, { permissions: perms });
+        closeModals();
+        e.target.reset();
+        showToast('✅ تم إنشاء الأدمن بنجاح', 'success');
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (err) {
+        console.error(err);
+        let msg = err.message || 'تعذر الإنشاء';
+        if (err.code === 'auth/email-already-in-use') msg = 'هذا البريد الإلكتروني مستخدم بالفعل';
+        else if (err.code === 'auth/weak-password') msg = 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)';
+        else if (err.code === 'auth/invalid-email') msg = 'البريد الإلكتروني غير صحيح';
+        alert(msg);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
+      }
     });
 
+    // ---------- Edit Admin ----------
     document.getElementById('userEditForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('euId').value;
       const perms = Array.from(document.querySelectorAll('input[name="euPerms"]:checked')).map(el => el.value);
       const updates = { permissions: perms };
-      const newPass = document.getElementById('euPass').value.trim();
-      if (newPass) updates.password = newPass;
       const newName = document.getElementById('euName').value.trim();
-      if (newName) updates.username = newName;
-      try { await CloudCMS.updateUser(id, updates); closeModals(); showToast('تم التحديث', 'success'); }
-      catch (err) { alert(err.message || 'تعذر'); }
+      if (newName) updates.displayName = newName;
+
+      try {
+        await updateAdmin(id, updates);
+        closeModals();
+        showToast('تم التحديث', 'success');
+      } catch (err) { alert(err.message || 'تعذر'); }
     });
 
     document.getElementById('logoutBtn')?.addEventListener('click', async () => {

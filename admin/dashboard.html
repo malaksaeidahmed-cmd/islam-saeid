@@ -521,8 +521,8 @@
       updateSerpPreview, bindCounter, parseVideoEmbed
     } from '../js/rich-editor.js';
 
-        // ============================================================
-    // ---------- Auth: FAST PATH (Cache first) ----------
+    // ============================================================
+    // ---------- Auth: TRUST CACHE (no Firebase wait) ----------
     // ============================================================
     console.log('[Dashboard] Initializing auth...');
 
@@ -547,86 +547,39 @@
       }
     }
 
-    function applyAuth(fastUser, fastProfile) {
+    function applyAuth(user, profile) {
       const roleBadge = document.getElementById('userRoleBadge');
       if (roleBadge) {
-        roleBadge.textContent = isSuperAdmin(fastProfile)
+        roleBadge.textContent = isSuperAdmin(profile)
           ? '• الأدمن الرئيسي'
           : '• أدمن فرعي';
       }
 
-      if (!isSuperAdmin(fastProfile)) {
-        if (!hasPermission(fastProfile, 'analytics')) document.getElementById('navAnalytics')?.remove();
-        if (!hasPermission(fastProfile, 'portfolio')) document.getElementById('navPortfolio')?.remove();
-        if (!hasPermission(fastProfile, 'blog')) document.getElementById('navBlog')?.remove();
-        if (!hasPermission(fastProfile, 'comments')) document.getElementById('navComments')?.remove();
+      if (!isSuperAdmin(profile)) {
+        if (!hasPermission(profile, 'analytics')) document.getElementById('navAnalytics')?.remove();
+        if (!hasPermission(profile, 'portfolio')) document.getElementById('navPortfolio')?.remove();
+        if (!hasPermission(profile, 'blog')) document.getElementById('navBlog')?.remove();
+        if (!hasPermission(profile, 'comments')) document.getElementById('navComments')?.remove();
         document.getElementById('navUsers')?.remove();
       }
 
       document.getElementById('authLoading')?.remove();
-      console.log('[Dashboard] Ready — instant load from cache');
+      console.log('[Dashboard] Ready — page loaded');
     }
 
-    // Try fast path first
+    // ✅ TRUST CACHE — instant load without waiting for Firebase
     const fastAuth = readFastAuth();
 
     if (fastAuth) {
-      // ✅ Cache valid — show dashboard immediately
+      console.log('[Dashboard] Cache found — instant load');
       applyAuth(fastAuth.user, fastAuth.profile);
-
-      // Verify in background (non-blocking)
-      onAuthChange((user, profile) => {
-        console.log('[Dashboard] Background verify:', user ? 'ok' : 'failed');
-        if (!user || !profile) {
-          sessionStorage.clear();
-          window.location.href = 'login.html';
-        }
-      });
     } else {
-      // ❌ No cache — wait for Firebase (with timeout)
       console.warn('[Dashboard] No cache — waiting for Firebase Auth...');
 
       const authTimeout = setTimeout(() => {
-        console.warn('[Dashboard] Auth timeout after 12s — redirecting to login');
+        console.warn('[Dashboard] Auth timeout after 15s — redirecting to login');
         window.location.href = 'login.html';
-      }, 12000);
-
-      onAuthChange((user, profile) => {
-        clearTimeout(authTimeout);
-        console.log('[Dashboard] Auth resolved:', user ? user.email : 'no-user');
-
-        if (!user || !profile) {
-          window.location.href = 'login.html';
-          return;
-        }
-
-        applyAuth(user, profile);
-      });
-    }
-
-    // Try fast path first
-    const fastAuth = readFastAuth();
-
-    if (fastAuth) {
-      // ✅ Cache valid — show dashboard immediately
-      applyAuth(fastAuth.user, fastAuth.profile);
-
-      // Verify in background (non-blocking)
-      onAuthChange((user, profile) => {
-        console.log('[Dashboard] Background verify:', user ? 'ok' : 'failed');
-        if (!user || !profile) {
-          sessionStorage.clear();
-          window.location.href = 'login.html';
-        }
-      });
-    } else {
-      // ❌ No cache — wait for Firebase (with timeout)
-      console.warn('[Dashboard] No cache — waiting for Firebase Auth...');
-
-      const authTimeout = setTimeout(() => {
-        console.warn('[Dashboard] Auth timeout after 12s — redirecting to login');
-        window.location.href = 'login.html';
-      }, 12000);
+      }, 15000);
 
       onAuthChange((user, profile) => {
         clearTimeout(authTimeout);

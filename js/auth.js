@@ -1,6 +1,5 @@
 // ============================================================
 // Authentication Module — Firebase Auth + Firestore Roles
-// مع Cache محلي للبروفايل لتحسين السرعة
 // ============================================================
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -17,9 +16,8 @@ import {
 import {
   getFirestore, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { firebaseConfig, SESSION_CONFIG } from '../firebase-config.js';
+import { firebaseConfig, SESSION_CONFIG, SUPER_ADMIN_UID } from '../firebase-config.js';
 
-// ---------- Init (Singleton) ----------
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -27,14 +25,12 @@ const db = getFirestore(app);
 const PROFILE_CACHE_KEY = 'cms_cached_profile';
 
 // ============================================================
-// Profile Cache (sessionStorage)
+// Profile Cache
 // ============================================================
 function cacheProfile(uid, profile) {
   try {
     sessionStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({
-      uid,
-      profile,
-      cachedAt: Date.now()
+      uid, profile, cachedAt: Date.now()
     }));
   } catch (_) {}
 }
@@ -45,8 +41,7 @@ function getCachedProfile(uid) {
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.uid !== uid) return null;
-    // Cache valid for 10 minutes
-    if (Date.now() - data.cachedAt > 10 * 60 * 1000) return null;
+    if (Date.now() - data.cachedAt > 30 * 60 * 1000) return null; // 30 دقيقة
     return data.profile;
   } catch (_) {
     return null;
@@ -60,17 +55,16 @@ function clearProfileCache() {
 // ============================================================
 // Firestore Read with Timeout
 // ============================================================
-async function getAdminProfileWithTimeout(uid, timeoutMs = 4000) {
+async function getAdminProfileWithTimeout(uid, timeoutMs = 5000) {
   try {
-    const result = await Promise.race([
+    return await Promise.race([
       getAdminProfile(uid),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('firestore-timeout')), timeoutMs)
       )
     ]);
-    return result;
   } catch (err) {
-    console.warn('[Auth] Profile fetch failed/timed out:', err.message);
+    console.warn('[Auth] Profile fetch failed:', err.message);
     return null;
   }
 }
@@ -86,25 +80,34 @@ export async function signIn(email, password, rememberMe = false) {
     const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
     const user = credential.user;
 
-    // Try to get profile with timeout
-    let adminProfile = await getAdminProfileWithTimeout(user.uid, 6000);
+    let adminProfile = await getAdminProfileWithTimeout(user.uid, 5000);
+
+    // Fallback: if Firestore failed BUT this is the known super admin UID, use minimal profile
+    if (!adminProfile && user.uid === SUPER_ADMIN_UID) {
+      console.warn('[Auth] Firestore unavailable — using super admin fallback');
+      adminProfile = {
+        id: user.uid,
+        email: user.email,
+        displayName: 'إسلام سعيد',
+        role: 'super_admin',
+        active: true,
+        permissions: ['analytics', 'portfolio', 'blog', 'comments', 'users', 'settings'],
+        _pendingSync: true
+      };
+    }
 
     if (!adminProfile) {
-      // Firestore unavailable — create minimal fallback from Auth data
-      // BUT: we don't know role/permissions, so we need to decide
       await fbSignOut(auth);
-      throw new Error('تعذر تحميل بيانات الحساب. تحقق من الإنترنت وحاول مرة أخرى.');
+      throw new Error('تعذر تحميل بيانات الحساب. تواصل مع الأدمن الرئيسي.');
     }
 
     if (adminProfile.active === false) {
       await fbSignOut(auth);
-      throw new Error('هذا الحساب معطّل حالياً. تواصل مع الأدمن الرئيسي.');
+      throw new Error('هذا الحساب معطّل حالياً.');
     }
 
-    // Cache profile for fast dashboard load
     cacheProfile(user.uid, adminProfile);
 
-    // Save session metadata
     sessionStorage.setItem(SESSION_CONFIG.storageKey, JSON.stringify({
       uid: user.uid,
       email: user.email,
@@ -112,16 +115,12 @@ export async function signIn(email, password, rememberMe = false) {
       expiresAt: Date.now() + SESSION_CONFIG.ttlMs
     }));
 
-    if (rememberMe) {
-      localStorage.setItem(SESSION_CONFIG.rememberMeKey, 'true');
-    } else {
-      localStorage.removeItem(SESSION_CONFIG.rememberMeKey);
-    }
+    if (rememberMe) localStorage.setItem(SESSION_CONFIG.rememberMeKey, 'true');
+    else localStorage.removeItem(SESSION_CONFIG.rememberMeKey);
 
     return { user, profile: adminProfile };
   } catch (error) {
     console.error('Sign in error:', error);
-    // If our custom error, rethrow
     if (error?.message && !error?.code) throw error;
     throw new Error(translateAuthError(error));
   }
@@ -133,50 +132,63 @@ export async function signIn(email, password, rememberMe = false) {
 export async function signOut() {
   try {
     await fbSignOut(auth);
-    sessionStorage.removeItem(SESSION_CONFIG.storageKey);
-    localStorage.removeItem(SESSION_CONFIG.rememberMeKey);
-    clearProfileCache();
-  } catch (error) {
-    console.error('Sign out error:', error);
+  } catch (e) {
+    console.warn('Sign out error:', e);
   }
+  sessionStorage.removeItem(SESSION_CONFIG.storageKey);
+  localStorage.removeItem(SESSION_CONFIG.rememberMeKey);
+  clearProfileCache();
 }
 
 // ============================================================
-// Auth State Listener (مع Cache سريع)
+// Auth State Listener — يستخدم cache أولاً
 // ============================================================
 export function onAuthChange(callback) {
+  // Check cache first — if valid, call callback immediately
+  try {
+    const metaRaw = sessionStorage.getItem(SESSION_CONFIG.storageKey);
+    const cachedRaw = sessionStorage.getItem(PROFILE_CACHE_KEY);
+    if (metaRaw && cachedRaw) {
+      const meta = JSON.parse(metaRaw);
+      const cached = JSON.parse(cachedRaw);
+      if (meta.expiresAt && Date.now() < meta.expiresAt &&
+          cached.profile && cached.profile.active !== false) {
+        console.log('[Auth] onAuthChange → cache hit');
+        callback({ uid: cached.uid, email: meta.email }, cached.profile);
+        // Still subscribe for real changes
+      }
+    }
+  } catch (_) {}
+
   return onAuthStateChanged(auth, async (user) => {
     if (!user) {
+      console.log('[Auth] onAuthChange → no Firebase user');
       callback(null, null);
       return;
     }
 
-    // Session TTL check
-    const meta = getSessionMeta();
-    if (meta && meta.expiresAt && Date.now() > meta.expiresAt) {
-      await signOut();
-      callback(null, null);
-      return;
-    }
-
-    // ---------- FAST PATH: Use cached profile ----------
     const cached = getCachedProfile(user.uid);
     if (cached) {
-      console.log('[Auth] Using cached profile — instant load');
+      console.log('[Auth] onAuthChange → cached profile');
       callback(user, cached);
-
-      // Refresh in background (non-blocking)
       refreshProfileInBackground(user.uid);
       return;
     }
 
-    // ---------- SLOW PATH: Fetch from Firestore ----------
-    console.log('[Auth] No cache — fetching profile from Firestore...');
     const profile = await getAdminProfileWithTimeout(user.uid, 5000);
-
     if (!profile || profile.active === false) {
-      console.warn('[Auth] Profile not found or inactive');
-      await signOut();
+      // For super admin, use fallback if Firestore failed
+      if (!profile && user.uid === SUPER_ADMIN_UID) {
+        const fallback = {
+          id: user.uid, email: user.email, displayName: 'إسلام سعيد',
+          role: 'super_admin', active: true,
+          permissions: ['analytics', 'portfolio', 'blog', 'comments', 'users', 'settings'],
+          _pendingSync: true
+        };
+        cacheProfile(user.uid, fallback);
+        callback(user, fallback);
+        return;
+      }
       callback(null, null);
       return;
     }
@@ -189,9 +201,7 @@ export function onAuthChange(callback) {
 async function refreshProfileInBackground(uid) {
   try {
     const fresh = await getAdminProfileWithTimeout(uid, 4000);
-    if (fresh && fresh.active !== false) {
-      cacheProfile(uid, fresh);
-    }
+    if (fresh && fresh.active !== false) cacheProfile(uid, fresh);
   } catch (_) {}
 }
 
@@ -203,18 +213,16 @@ export async function resetPassword(email) {
     await sendPasswordResetEmail(auth, email.trim());
     return true;
   } catch (error) {
-    console.error('Reset password error:', error);
     throw new Error(translateAuthError(error));
   }
 }
 
 // ============================================================
-// Get Admin Profile (Firestore)
+// Get Admin Profile
 // ============================================================
 export async function getAdminProfile(uid) {
   try {
-    const adminRef = doc(db, 'admins', uid);
-    const snap = await getDoc(adminRef);
+    const snap = await getDoc(doc(db, 'admins', uid));
     if (!snap.exists()) return null;
     return { id: snap.id, ...snap.data() };
   } catch (error) {
@@ -235,39 +243,6 @@ export function hasPermission(profile, permission) {
 
 export function isSuperAdmin(profile) {
   return profile?.role === 'super_admin';
-}
-
-// ============================================================
-// Guards
-// ============================================================
-export async function requireAuth(redirectTo = '../login.html') {
-  return new Promise((resolve, reject) => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      unsub();
-      if (!user) {
-        window.location.href = redirectTo;
-        reject(new Error('Not authenticated'));
-        return;
-      }
-      const cached = getCachedProfile(user.uid);
-      const profile = cached || await getAdminProfileWithTimeout(user.uid, 5000);
-      if (!profile || profile.active === false) {
-        await signOut();
-        window.location.href = redirectTo;
-        reject(new Error('Not authorized'));
-        return;
-      }
-      resolve({ user, profile });
-    });
-  });
-}
-
-export async function requirePermission(permission, redirectTo = '../login.html') {
-  const { user, profile } = await requireAuth(redirectTo);
-  if (!hasPermission(profile, permission)) {
-    throw new Error('Insufficient permissions');
-  }
-  return { user, profile };
 }
 
 // ============================================================

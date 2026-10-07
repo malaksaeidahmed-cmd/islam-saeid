@@ -1,9 +1,9 @@
 name: Auto Update SEO Files
 
 on:
-  # كل 6 ساعات
+  # كل ساعة — لنشر المقالات المجدولة + تحديث SEO
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 * * * *'
   
   # عند أي commit على main
   push:
@@ -28,6 +28,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Publish scheduled posts
+        run: node scripts/publish-scheduled.mjs
 
       - name: Generate SEO files
         run: node scripts/generate-seo.mjs

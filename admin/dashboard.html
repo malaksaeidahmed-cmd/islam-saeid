@@ -15,7 +15,6 @@
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
-  <!-- Loading Overlay -->
   <div id="authLoading" class="fixed inset-0 z-[9999] bg-[#07060E] flex items-center justify-center">
     <div class="text-center space-y-3">
       <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-400"></i>
@@ -25,7 +24,6 @@
 
   <div class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
     <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5 overflow-y-auto flex-shrink-0">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
@@ -73,7 +71,6 @@
       </div>
     </aside>
 
-    <!-- Main -->
     <main class="flex-1 overflow-y-auto p-6 lg:p-8">
 
       <!-- ANALYTICS -->
@@ -275,6 +272,9 @@
           <button id="subTabDrafts" onclick="switchBlogSubTab('drafts')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-file-pen ml-1"></i> المسودات
           </button>
+          <button id="subTabScheduled" onclick="switchBlogSubTab('scheduled')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-calendar-check ml-1"></i> المجدولة
+          </button>
           <button id="subTabPublished" onclick="switchBlogSubTab('published')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-list ml-1"></i> المقالات المنشورة
           </button>
@@ -415,26 +415,40 @@
             </div>
           </div>
 
-          <div class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2 text-[11px] text-slate-400">
-              <i class="fa-solid fa-circle-info"></i>
-              <span id="saveStatusText">جاهز للنشر</span>
+          <!-- Sticky Bottom Bar with Schedule -->
+          <div class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                <i class="fa-solid fa-circle-info"></i>
+                <span id="saveStatusText">جاهز للنشر</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="previewBlogPost()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
+                  <i class="fa-solid fa-eye ml-1"></i> معاينة
+                </button>
+                <button type="button" id="saveDraftBtn" onclick="saveDraftManually()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
+                  <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ كمسودة
+                </button>
+                <button type="button" id="publishBtn" class="px-5 py-2 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs shadow-lg">
+                  <i class="fa-solid fa-rocket ml-1"></i> نشر المقال
+                </button>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-              <button type="button" onclick="previewBlogPost()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
-                <i class="fa-solid fa-eye ml-1"></i> معاينة
-              </button>
-              <button type="button" id="saveDraftBtn" onclick="saveDraftManually()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
-                <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ كمسودة
-              </button>
-              <button type="button" id="publishBtn" class="px-5 py-2 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs shadow-lg">
-                <i class="fa-solid fa-rocket ml-1"></i> نشر المقال
+            <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/10">
+              <label for="scheduleDateTime" class="text-[11px] text-slate-400 font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-check text-amber-400"></i>
+                جدولة النشر:
+              </label>
+              <input type="datetime-local" id="scheduleDateTime" class="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white text-[11px] font-sans" />
+              <button type="button" id="scheduleBtn" onclick="scheduleCurrentPost()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold text-xs shadow-lg">
+                <i class="fa-solid fa-clock ml-1"></i> جدولة
               </button>
             </div>
           </div>
         </div>
 
         <div id="blogDraftsView" class="hidden space-y-3"></div>
+        <div id="blogScheduledView" class="hidden space-y-3"></div>
         <div id="blogPublishedView" class="hidden space-y-3"></div>
       </section>
 
@@ -533,9 +547,7 @@
     } from '../js/rich-editor.js';
     import { DraftManager } from '../js/draft-manager.js';
 
-    // ============================================================
     // ---------- Auth: TRUST CACHE ----------
-    // ============================================================
     console.log('[Dashboard] Initializing auth...');
 
     const CACHE_KEY = 'cms_cached_profile';
@@ -546,27 +558,19 @@
         const cachedRaw = sessionStorage.getItem(CACHE_KEY);
         const metaRaw = sessionStorage.getItem(META_KEY);
         if (!cachedRaw || !metaRaw) return null;
-
         const cached = JSON.parse(cachedRaw);
         const meta = JSON.parse(metaRaw);
-
         if (!meta.expiresAt || Date.now() > meta.expiresAt) return null;
         if (!cached.profile || cached.profile.active === false) return null;
-
         return { user: { uid: cached.uid, email: meta.email }, profile: cached.profile };
-      } catch (_) {
-        return null;
-      }
+      } catch (_) { return null; }
     }
 
     function applyAuth(user, profile) {
       const roleBadge = document.getElementById('userRoleBadge');
       if (roleBadge) {
-        roleBadge.textContent = isSuperAdmin(profile)
-          ? '• الأدمن الرئيسي'
-          : '• أدمن فرعي';
+        roleBadge.textContent = isSuperAdmin(profile) ? '• الأدمن الرئيسي' : '• أدمن فرعي';
       }
-
       if (!isSuperAdmin(profile)) {
         if (!hasPermission(profile, 'analytics')) document.getElementById('navAnalytics')?.remove();
         if (!hasPermission(profile, 'portfolio')) document.getElementById('navPortfolio')?.remove();
@@ -574,33 +578,22 @@
         if (!hasPermission(profile, 'comments')) document.getElementById('navComments')?.remove();
         document.getElementById('navUsers')?.remove();
       }
-
       document.getElementById('authLoading')?.remove();
       console.log('[Dashboard] Ready — page loaded');
     }
 
     const fastAuth = readFastAuth();
-
     if (fastAuth) {
       console.log('[Dashboard] Cache found — instant load');
       applyAuth(fastAuth.user, fastAuth.profile);
     } else {
       console.warn('[Dashboard] No cache — waiting for Firebase Auth...');
-
       const authTimeout = setTimeout(() => {
-        console.warn('[Dashboard] Auth timeout after 15s — redirecting to login');
         window.location.href = 'login.html';
       }, 15000);
-
       onAuthChange((user, profile) => {
         clearTimeout(authTimeout);
-        console.log('[Dashboard] Auth resolved:', user ? user.email : 'no-user');
-
-        if (!user || !profile) {
-          window.location.href = 'login.html';
-          return;
-        }
-
+        if (!user || !profile) { window.location.href = 'login.html'; return; }
         applyAuth(user, profile);
       });
     }
@@ -627,9 +620,11 @@
     window.switchBlogSubTab = (which) => {
       const editorBtn = document.getElementById('subTabEditor');
       const draftsBtn = document.getElementById('subTabDrafts');
+      const scheduledBtn = document.getElementById('subTabScheduled');
       const publishedBtn = document.getElementById('subTabPublished');
       const editorView = document.getElementById('blogEditorView');
       const draftsView = document.getElementById('blogDraftsView');
+      const scheduledView = document.getElementById('blogScheduledView');
       const publishedView = document.getElementById('blogPublishedView');
 
       const activeClass = 'px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white';
@@ -637,10 +632,12 @@
 
       editorBtn.className = inactiveClass;
       draftsBtn.className = inactiveClass;
+      scheduledBtn.className = inactiveClass;
       publishedBtn.className = inactiveClass;
 
       editorView.classList.add('hidden');
       draftsView.classList.add('hidden');
+      scheduledView.classList.add('hidden');
       publishedView.classList.add('hidden');
 
       if (which === 'editor') {
@@ -649,6 +646,9 @@
       } else if (which === 'drafts') {
         draftsBtn.className = activeClass;
         draftsView.classList.remove('hidden');
+      } else if (which === 'scheduled') {
+        scheduledBtn.className = activeClass;
+        scheduledView.classList.remove('hidden');
       } else {
         publishedBtn.className = activeClass;
         publishedView.classList.remove('hidden');
@@ -660,7 +660,6 @@
       const publishedBtn = document.getElementById('portSubTabPublished');
       const editorView = document.getElementById('portfolioEditorView');
       const publishedView = document.getElementById('portfolioPublishedView');
-
       if (which === 'editor') {
         editorBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-orange-600 text-white';
         publishedBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5';
@@ -678,7 +677,7 @@
     window.closeModals = () => document.querySelectorAll('#userModal, #userEditModal').forEach(m => m.classList.add('hidden'));
     window.closePreview = () => document.getElementById('previewModal').classList.add('hidden');
 
-    // ---------- Audio Notifications ----------
+    // ---------- Audio ----------
     let audioEnabled = false;
     document.addEventListener('click', () => { audioEnabled = true; }, { once: true });
 
@@ -808,10 +807,7 @@
 
     window.deleteUser = async (id) => {
       if (!confirm('حذف هذا الأدمن نهائياً؟')) return;
-      try {
-        await deleteAdmin(id);
-        showToast('تم الحذف', 'warning');
-      } catch(e) { alert(e.message); }
+      try { await deleteAdmin(id); showToast('تم الحذف', 'warning'); } catch(e) { alert(e.message); }
     };
 
     window.editUser = (id) => {
@@ -825,47 +821,32 @@
       openModal('userEditModal');
     };
 
-    // ---------- Create Admin ----------
     document.getElementById('userForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button[type="submit"]');
       const perms = Array.from(document.querySelectorAll('input[name="perms"]:checked')).map(el => el.value);
       const email = document.getElementById('uName').value.trim();
       const password = document.getElementById('uPass').value;
-
-      if (!email || !email.includes('@')) {
-        alert('الرجاء إدخال بريد إلكتروني صحيح');
-        return;
-      }
-      if (!password || password.length < 6) {
-        alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-        return;
-      }
-
+      if (!email || !email.includes('@')) { alert('الرجاء إدخال بريد إلكتروني صحيح'); return; }
+      if (!password || password.length < 6) { alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
       btn.disabled = true;
       const origText = btn.textContent;
       btn.textContent = 'جاري الإنشاء...';
-
       try {
         await createAdmin(email, password, { permissions: perms });
-        closeModals();
-        e.target.reset();
+        closeModals(); e.target.reset();
         showToast('✅ تم إنشاء الأدمن بنجاح', 'success');
         setTimeout(() => window.location.reload(), 1500);
       } catch (err) {
-        console.error(err);
         let msg = err.message || 'تعذر الإنشاء';
-        if (err.code === 'auth/email-already-in-use') msg = 'هذا البريد الإلكتروني مستخدم بالفعل';
-        else if (err.code === 'auth/weak-password') msg = 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)';
-        else if (err.code === 'auth/invalid-email') msg = 'البريد الإلكتروني غير صحيح';
+        if (err.code === 'auth/email-already-in-use') msg = 'هذا البريد مستخدم بالفعل';
+        else if (err.code === 'auth/weak-password') msg = 'كلمة المرور ضعيفة';
         alert(msg);
       } finally {
-        btn.disabled = false;
-        btn.textContent = origText;
+        btn.disabled = false; btn.textContent = origText;
       }
     });
 
-    // ---------- Edit Admin ----------
     document.getElementById('userEditForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('euId').value;
@@ -873,12 +854,8 @@
       const updates = { permissions: perms };
       const newName = document.getElementById('euName').value.trim();
       if (newName) updates.displayName = newName;
-
-      try {
-        await updateAdmin(id, updates);
-        closeModals();
-        showToast('تم التحديث', 'success');
-      } catch (err) { alert(err.message || 'تعذر'); }
+      try { await updateAdmin(id, updates); closeModals(); showToast('تم التحديث', 'success'); }
+      catch (err) { alert(err.message || 'تعذر'); }
     });
 
     document.getElementById('logoutBtn')?.addEventListener('click', async () => {
@@ -893,9 +870,7 @@
     const tagInput = initTagInput('tagInputContainer', 'postTags');
     const faqBuilder = initFaqBuilder('faqBuilderContainer');
 
-    // ==========================================
-    // Draft Auto-Save
-    // ==========================================
+    // ---------- Draft Manager ----------
     let currentDraftId = null;
     let draftManager = null;
 
@@ -948,14 +923,12 @@
      'postSlug', 'postMetaTitle', 'postMetaDesc', 'postFocusKeyword', 'postKeyTakeaways'].forEach(id => {
       document.getElementById(id)?.addEventListener('input', () => draftManager?.markDirty());
     });
-
     setInterval(() => draftManager?.markDirty(), 5000);
     draftManager.start();
 
     window.addEventListener('beforeunload', (e) => {
       if (draftManager?.isDirty && draftManager?.enabled) {
-        e.preventDefault();
-        e.returnValue = '';
+        e.preventDefault(); e.returnValue = '';
       }
     });
 
@@ -1008,7 +981,7 @@
             document.getElementById('postCoverUrl').dispatchEvent(new Event('input'));
             draftManager?.markDirty();
             showToast('تم رفع الصورة', 'success');
-          } else throw new Error(data.error?.message || 'upload failed');
+          } else throw new Error('upload failed');
         } catch (err) { console.error(err); alert('فشل رفع الصورة'); }
       };
       input.click();
@@ -1018,12 +991,10 @@
       const html = getEditorHTML('editorContainer');
       const readingTime = calculateReadingTime(html);
       document.getElementById('readingTimeDisplay').textContent = `${readingTime} دقيقة`;
-
       const kw = document.getElementById('postFocusKeyword').value.trim();
       const analysis = analyzeKeywordDensity(html, kw);
       document.getElementById('kwCount').textContent = analysis.count;
       document.getElementById('kwDensity').textContent = `${analysis.density}%`;
-
       const statusEl = document.getElementById('kwStatus');
       if (analysis.status === 'good') { statusEl.textContent = '✅ ممتاز'; statusEl.className = 'text-green-400 font-bold'; }
       else if (analysis.status === 'low') { statusEl.textContent = '⚠️ قليلة'; statusEl.className = 'text-amber-400 font-bold'; }
@@ -1036,7 +1007,8 @@
     document.getElementById('resetEditorBtn')?.addEventListener('click', () => {
       if (!confirm('سيتم مسح كل البيانات. متأكد؟')) return;
       ['postTitleInput', 'postCategoryInput', 'postCoverUrl', 'postVideoUrl', 'postExcerpt',
-       'postSlug', 'postMetaTitle', 'postMetaDesc', 'postFocusKeyword', 'postKeyTakeaways'].forEach(id => {
+       'postSlug', 'postMetaTitle', 'postMetaDesc', 'postFocusKeyword', 'postKeyTakeaways',
+       'scheduleDateTime'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
@@ -1094,7 +1066,7 @@
       document.getElementById('previewModal').classList.remove('hidden');
     };
 
-    document.getElementById('publishBtn')?.addEventListener('click', async () => {
+    function buildPostPayload() {
       const title = document.getElementById('postTitleInput').value.trim();
       const category = document.getElementById('postCategoryInput').value.trim();
       const cover = document.getElementById('postCoverUrl').value.trim();
@@ -1110,10 +1082,19 @@
       const keyTakeaways = keyTakeawaysRaw ? keyTakeawaysRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
       const faqItems = faqBuilder.getValue();
       const readingTime = calculateReadingTime(content);
+      return {
+        title, category, image: cover, video: videoUrl, excerpt, content,
+        contentFormat: 'html', slug, metaTitle, metaDescription: metaDesc,
+        focusKeyword, tags, keyTakeaways, faqItems, readingTime,
+        author: 'إسلام سعيد', authorBio: 'Senior Media Buyer & Growth Strategist'
+      };
+    }
 
-      if (!title) { alert('الرجاء إدخال عنوان المقال'); return; }
-      if (!category) { alert('الرجاء إدخال التصنيف'); return; }
-      if (!content || content === '<p><br></p>') { alert('الرجاء كتابة محتوى المقال'); return; }
+    document.getElementById('publishBtn')?.addEventListener('click', async () => {
+      const payload = buildPostPayload();
+      if (!payload.title) { alert('الرجاء إدخال عنوان المقال'); return; }
+      if (!payload.category) { alert('الرجاء إدخال التصنيف'); return; }
+      if (!payload.content || payload.content === '<p><br></p>') { alert('الرجاء كتابة محتوى المقال'); return; }
 
       const btn = document.getElementById('publishBtn');
       const editId = btn.dataset.editId;
@@ -1121,14 +1102,9 @@
       const origText = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري الحفظ...';
 
-      const payload = {
-        title, category, image: cover, video: videoUrl, excerpt, content,
-        contentFormat: 'html', slug, metaTitle, metaDescription: metaDesc,
-        focusKeyword, tags, keyTakeaways, faqItems, readingTime,
-        author: 'إسلام سعيد', authorBio: 'Senior Media Buyer & Growth Strategist'
-      };
-
       try {
+        payload.status = 'published';
+        payload.publishedAt = Date.now();
         if (editId && CloudCMS.updateBlogPost) {
           await CloudCMS.updateBlogPost(editId, payload);
           showToast('✅ تم تحديث المقال', 'success');
@@ -1151,6 +1127,58 @@
         btn.innerHTML = origText;
       }
     });
+
+    // ==========================================
+    // SCHEDULE POST
+    // ==========================================
+    window.scheduleCurrentPost = async () => {
+      const payload = buildPostPayload();
+      if (!payload.title) { alert('الرجاء إدخال عنوان المقال'); return; }
+      if (!payload.category) { alert('الرجاء إدخال التصنيف'); return; }
+      if (!payload.content || payload.content === '<p><br></p>') { alert('الرجاء كتابة محتوى المقال'); return; }
+
+      const dtValue = document.getElementById('scheduleDateTime').value;
+      if (!dtValue) { alert('الرجاء اختيار تاريخ ووقت النشر'); return; }
+
+      const scheduledTime = new Date(dtValue).getTime();
+      if (isNaN(scheduledTime)) { alert('التاريخ/الوقت غير صحيح'); return; }
+      if (scheduledTime <= Date.now()) { alert('الرجاء اختيار وقت في المستقبل'); return; }
+
+      const btn = document.getElementById('scheduleBtn');
+      const publishBtn = document.getElementById('publishBtn');
+      const editId = publishBtn.dataset.editId;
+
+      btn.disabled = true;
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري الجدولة...';
+
+      try {
+        payload.status = 'scheduled';
+        payload.scheduledAt = new Date(scheduledTime).toISOString();
+
+        if (editId && CloudCMS.updateBlogPost) {
+          await CloudCMS.updateBlogPost(editId, payload);
+          showToast('📅 تم تحديث الجدولة', 'success');
+        } else {
+          await CloudCMS.addBlogPost(payload);
+          showToast('📅 تم جدولة المقال', 'success');
+        }
+
+        if (currentDraftId && CloudCMS.deleteDraft) {
+          try { await CloudCMS.deleteDraft(currentDraftId); } catch (_) {}
+          currentDraftId = null;
+        }
+        draftManager?.resetHash();
+        document.getElementById('resetEditorBtn').click();
+        switchBlogSubTab('scheduled');
+      } catch (err) {
+        console.error(err);
+        alert('تعذر جدولة المقال');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    };
 
     // ==========================================
     // DRAFTS LIST
@@ -1213,7 +1241,6 @@
       } else {
         setEditorHTML(String(draft.content || '').replace(/\n/g, '<br>'), 'editorContainer');
       }
-
       tagInput.setValue(draft.tags || []);
       faqBuilder.setValue(draft.faqItems || []);
 
@@ -1222,8 +1249,7 @@
         document.getElementById('coverPreviewImg').src = draft.image;
       }
 
-      updateSerp();
-      updateAnalysis();
+      updateSerp(); updateAnalysis();
       draftManager?.resetHash();
       updateSaveStatus('idle');
 
@@ -1245,7 +1271,133 @@
     };
 
     // ==========================================
-    // PUBLISHED POSTS
+    // SCHEDULED POSTS LIST
+    // ==========================================
+    let allScheduled = [];
+    function subscribeScheduled() {
+      CloudCMS.subscribeBlog(items => {
+        allScheduled = items.filter(p => p.status === 'scheduled');
+        const container = document.getElementById('blogScheduledView');
+        if (!container) return;
+        if (!allScheduled.length) {
+          container.innerHTML = `
+            <div class="text-center py-16 space-y-3">
+              <i class="fa-solid fa-calendar-check text-3xl text-slate-600"></i>
+              <p class="text-slate-500 text-xs">لا توجد مقالات مجدولة.</p>
+            </div>
+          `;
+          return;
+        }
+        container.innerHTML = allScheduled.map(item => {
+          const scheduledTime = item.scheduledAt ? new Date(item.scheduledAt).getTime() : 0;
+          const now = Date.now();
+          const diffMs = scheduledTime - now;
+          let countdown = '—';
+          if (diffMs > 0) {
+            const hours = Math.floor(diffMs / 3600000);
+            const minutes = Math.floor((diffMs % 3600000) / 60000);
+            countdown = hours > 0 ? `بعد ${hours}س ${minutes}د` : `بعد ${minutes}د`;
+          } else {
+            countdown = 'جاهز للنشر (الـ Action هينشره)';
+          }
+          const scheduledDateStr = item.scheduledAt 
+            ? new Date(item.scheduledAt).toLocaleString('ar-EG', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : '—';
+
+          return `
+            <div class="p-4 rounded-xl bg-[#0E0B1A] border border-amber-500/20 flex justify-between items-start gap-3 flex-wrap overflow-safe-card">
+              <div class="space-y-1 min-w-0 flex-1">
+                <h4 class="font-bold text-white text-sm break-words-safe">${escapeHtml(item.title)}</h4>
+                <div class="flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
+                  <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400">
+                    <i class="fa-solid fa-clock ml-1"></i>${escapeHtml(countdown)}
+                  </span>
+                  <span><i class="fa-solid fa-calendar ml-1"></i> ${scheduledDateStr}</span>
+                  ${item.category ? `<span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(item.category)}</span>` : ''}
+                </div>
+              </div>
+              <div class="flex gap-2 flex-shrink-0">
+                <button onclick="loadScheduledForEdit('${item.id}')" class="px-3 py-1.5 rounded bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 text-[11px]">
+                  <i class="fa-solid fa-pen"></i> تعديل
+                </button>
+                <button onclick="unschedulePost('${item.id}')" class="px-3 py-1.5 rounded bg-green-500/15 text-green-300 hover:bg-green-500/25 text-[11px]">
+                  <i class="fa-solid fa-rocket"></i> نشر الآن
+                </button>
+                <button onclick="deleteBlogPost('${item.id}')" class="px-3 py-1.5 rounded bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }, true); // includeScheduled = true
+    }
+    subscribeScheduled();
+
+    window.unschedulePost = async (id) => {
+      if (!confirm('نشر هذا المقال فوراً؟')) return;
+      try {
+        await CloudCMS.unscheduleBlogPost(id);
+        showToast('✅ تم نشر المقال', 'success');
+      } catch (err) {
+        console.error(err);
+        alert('تعذر النشر');
+      }
+    };
+
+    window.loadScheduledForEdit = async (id) => {
+      if (draftManager?.isDirty && !confirm('عندك تغييرات غير محفوظة. هل تريد تجاهلها؟')) return;
+      const item = allScheduled.find(p => p.id === id);
+      if (!item) return;
+
+      currentDraftId = null;
+      draftManager?.resetHash();
+
+      document.getElementById('postTitleInput').value = item.title || '';
+      document.getElementById('postCategoryInput').value = item.category || '';
+      document.getElementById('postCoverUrl').value = item.image || '';
+      document.getElementById('postVideoUrl').value = item.video || '';
+      document.getElementById('postExcerpt').value = item.excerpt || '';
+      document.getElementById('postSlug').value = item.slug || '';
+      document.getElementById('postMetaTitle').value = item.metaTitle || '';
+      document.getElementById('postMetaDesc').value = item.metaDescription || '';
+      document.getElementById('postFocusKeyword').value = item.focusKeyword || '';
+      document.getElementById('postKeyTakeaways').value = Array.isArray(item.keyTakeaways) ? item.keyTakeaways.join('\n') : '';
+
+      if (item.scheduledAt) {
+        const dt = new Date(item.scheduledAt);
+        const pad = n => String(n).padStart(2, '0');
+        document.getElementById('scheduleDateTime').value = 
+          `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+      }
+
+      if (item.contentFormat === 'html' || /<[a-z][\s\S]*>/i.test(item.content || '')) {
+        setEditorHTML(item.content || '', 'editorContainer');
+      } else {
+        setEditorHTML(String(item.content || '').replace(/\n/g, '<br>'), 'editorContainer');
+      }
+      tagInput.setValue(item.tags || []);
+      faqBuilder.setValue(item.faqItems || []);
+
+      if (item.image) {
+        document.getElementById('coverPreview').classList.remove('hidden');
+        document.getElementById('coverPreviewImg').src = item.image;
+      }
+
+      updateSerp(); updateAnalysis();
+      updateSaveStatus('idle');
+
+      switchBlogSubTab('editor');
+      switchTab('blogTab');
+      showToast('تم تحميل المقال المجدول', 'info');
+
+      const btn = document.getElementById('publishBtn');
+      btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
+      btn.dataset.editId = id;
+    };
+
+    // ==========================================
+    // PUBLISHED POSTS LIST
     // ==========================================
     let allPosts = [];
     CloudCMS.subscribeBlog(items => {
@@ -1309,7 +1461,6 @@
       } else {
         setEditorHTML(String(item.content || '').replace(/\n/g, '<br>'), 'editorContainer');
       }
-
       tagInput.setValue(item.tags || []);
       faqBuilder.setValue(item.faqItems || []);
 
@@ -1318,8 +1469,7 @@
         document.getElementById('coverPreviewImg').src = item.image;
       }
 
-      updateSerp();
-      updateAnalysis();
+      updateSerp(); updateAnalysis();
       updateSaveStatus('idle');
 
       switchBlogSubTab('editor');
@@ -1544,7 +1694,6 @@
     window.loadPortfolioForEdit = (id) => {
       const item = allPortfolio.find(p => p.id === id);
       if (!item) return;
-
       document.getElementById('portTitle').value = item.title || '';
       document.getElementById('portCategory').value = item.category || '';
       document.getElementById('portRoas').value = item.roas || '';
@@ -1564,7 +1713,6 @@
       } else {
         setEditorHTML(String(details).replace(/\n/g, '<br>'), 'portfolioEditorContainer');
       }
-
       portTagInput.setValue(item.tags || []);
       portGalleryBuilder.setValue(item.mediaGallery || []);
 
@@ -1572,7 +1720,6 @@
         document.getElementById('portMediaPreview').classList.remove('hidden');
         document.getElementById('portMediaPreviewImg').src = item.mediaUrl;
       }
-
       updatePortSerp();
       switchPortfolioSubTab('editor');
       switchTab('portfolioTab');
@@ -1583,7 +1730,6 @@
       btn.dataset.editId = id;
     };
 
-    // Init
     updateSerp();
     updateAnalysis();
     updatePortSerp();

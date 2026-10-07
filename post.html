@@ -26,7 +26,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* Rich HTML Article Content Styles */
     .article-content {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
       font-size: 0.95rem;
@@ -35,188 +34,35 @@
       overflow-wrap: anywhere;
       word-break: break-word;
     }
-    .article-content h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin: 2rem 0 0.75rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid rgba(217, 70, 239, 0.3);
-    }
-    .article-content h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin: 1.5rem 0 0.5rem;
-    }
-    .article-content h4 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #ffffff;
-      margin: 1.25rem 0 0.5rem;
-    }
-    .article-content p {
-      margin-bottom: 1rem;
-    }
-    .article-content a {
-      color: #ec4899;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .article-content a:hover {
-      color: #f472b6;
-    }
-    .article-content img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin: 1.5rem 0;
-      display: block;
-    }
-    .article-content iframe.ql-video,
-    .article-content iframe {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
-      border-radius: 14px;
-      margin: 1.5rem 0;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .article-content blockquote {
-      border-right: 4px solid #d946ef;
-      padding: 0.75rem 1rem;
-      margin: 1.5rem 0;
-      background: rgba(217, 70, 239, 0.05);
-      border-radius: 8px;
-      color: #e2e8f0;
-      font-style: italic;
-    }
-    .article-content ul,
-    .article-content ol {
-      padding-right: 1.5rem;
-      padding-left: 0;
-      margin-bottom: 1rem;
-    }
-    .article-content li {
-      margin-bottom: 0.5rem;
-    }
-    .article-content ul li {
-      list-style-type: disc;
-    }
-    .article-content ol li {
-      list-style-type: decimal;
-    }
-    .article-content pre {
-      background: #0a0a14;
-      color: #f472b6;
-      border-radius: 12px;
-      padding: 1rem;
-      font-family: 'Courier New', monospace;
-      direction: ltr;
-      text-align: left;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      font-size: 0.85rem;
-    }
-    .article-content code {
-      background: rgba(217, 70, 239, 0.1);
-      color: #f472b6;
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.85em;
-      direction: ltr;
-      display: inline-block;
-    }
-    .article-content strong {
-      color: #ffffff;
-      font-weight: 700;
-    }
-    .article-content em {
-      color: #e2e8f0;
-    }
-    .article-content hr {
-      border-color: rgba(255, 255, 255, 0.1);
-      margin: 2rem 0;
-    }
-
-    /* Reading Progress Bar */
-    #readingProgress {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #7c3aed, #d946ef, #f97316);
-      width: 0%;
-      z-index: 100;
-      transition: width 0.15s ease;
-    }
-
-    /* Tag chips */
-    .article-tag {
-      display: inline-block;
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      background: rgba(217, 70, 239, 0.12);
-      color: #f472b6;
-      border: 1px solid rgba(217, 70, 239, 0.25);
-      transition: all 0.2s ease;
-    }
-    .article-tag:hover {
-      background: rgba(217, 70, 239, 0.22);
-      color: #fbcfe8;
-    }
-
-    /* Key Takeaways Box */
-    .key-takeaways-box {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(217, 70, 239, 0.08));
-      border: 1px solid rgba(217, 70, 239, 0.25);
-      border-radius: 18px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    /* FAQ Accordion */
-    .post-faq-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-    .post-faq-item:hover {
-      border-color: rgba(217, 70, 239, 0.3);
-    }
-    .post-faq-btn {
-      width: 100%;
-      text-align: right;
-      padding: 1rem 1.25rem;
-      font-weight: 600;
-      color: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    .post-faq-content {
-      padding: 0 1.25rem 1rem;
-      color: #cbd5e1;
-      line-height: 1.8;
-      font-size: 0.85rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 0.85rem;
-      margin-top: 0;
-    }
+    .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(217,70,239,0.3); }
+    .article-content h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; }
+    .article-content h4 { font-size: 1.05rem; font-weight: 600; color: #fff; margin: 1.25rem 0 0.5rem; }
+    .article-content p { margin-bottom: 1rem; }
+    .article-content a { color: #ec4899; text-decoration: underline; text-underline-offset: 3px; }
+    .article-content a:hover { color: #f472b6; }
+    .article-content img { max-width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0; display: block; }
+    .article-content iframe.ql-video, .article-content iframe { width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 14px; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
+    .article-content blockquote { border-right: 4px solid #d946ef; padding: 0.75rem 1rem; margin: 1.5rem 0; background: rgba(217,70,239,0.05); border-radius: 8px; color: #e2e8f0; font-style: italic; }
+    .article-content ul, .article-content ol { padding-right: 1.5rem; padding-left: 0; margin-bottom: 1rem; }
+    .article-content li { margin-bottom: 0.5rem; }
+    .article-content ul li { list-style-type: disc; }
+    .article-content ol li { list-style-type: decimal; }
+    .article-content pre { background: #0a0a14; color: #f472b6; border-radius: 12px; padding: 1rem; font-family: 'Courier New', monospace; direction: ltr; text-align: left; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto; margin: 1.5rem 0; font-size: 0.85rem; }
+    .article-content code { background: rgba(217,70,239,0.1); color: #f472b6; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; direction: ltr; display: inline-block; }
+    .article-content strong { color: #fff; font-weight: 700; }
+    .article-content hr { border-color: rgba(255,255,255,0.1); margin: 2rem 0; }
+    #readingProgress { position: fixed; top: 0; right: 0; height: 3px; background: linear-gradient(90deg, #7c3aed, #d946ef, #f97316); width: 0%; z-index: 100; transition: width 0.15s ease; }
+    .article-tag { display: inline-block; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; background: rgba(217,70,239,0.12); color: #f472b6; border: 1px solid rgba(217,70,239,0.25); transition: all 0.2s ease; }
+    .article-tag:hover { background: rgba(217,70,239,0.22); color: #fbcfe8; }
+    .key-takeaways-box { background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(217,70,239,0.08)); border: 1px solid rgba(217,70,239,0.25); border-radius: 18px; padding: 1.5rem; margin: 2rem 0; }
+    .post-faq-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; transition: border-color 0.2s; }
+    .post-faq-item:hover { border-color: rgba(217,70,239,0.3); }
+    .post-faq-btn { width: 100%; text-align: right; padding: 1rem 1.25rem; font-weight: 600; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-size: 0.9rem; }
+    .post-faq-content { padding: 0 1.25rem 1rem; color: #cbd5e1; line-height: 1.8; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.85rem; }
   </style>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
 
-  <!-- Reading Progress -->
   <div id="readingProgress"></div>
 
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
@@ -238,7 +84,6 @@
     </div>
 
     <article id="postContent" class="hidden space-y-6">
-      <!-- Header -->
       <div class="space-y-4 border-b border-white/10 pb-6 overflow-safe-card">
         <div class="flex items-center gap-3 text-xs flex-wrap">
           <span id="postCategory" class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold"></span>
@@ -262,19 +107,12 @@
         </div>
       </div>
 
-      <!-- Cover -->
       <div id="postImageContainer" class="hidden rounded-2xl overflow-hidden border border-white/10"></div>
-
-      <!-- Featured Video -->
       <div id="postVideoContainer" class="hidden"></div>
-
-      <!-- Excerpt highlight -->
       <p id="postExcerptHighlight" class="hidden text-sm text-slate-300 leading-relaxed italic border-r-4 border-pink-500 pr-4 py-1"></p>
 
-      <!-- Article Content -->
       <div id="postBody" class="article-content"></div>
 
-      <!-- Key Takeaways -->
       <div id="keyTakeawaysSection" class="hidden key-takeaways-box">
         <h3 class="text-white font-bold text-base mb-3 flex items-center gap-2">
           <i class="fa-solid fa-key text-amber-400"></i> النقاط الرئيسية
@@ -282,7 +120,6 @@
         <ul id="keyTakeawaysList" class="space-y-2 text-sm text-slate-300"></ul>
       </div>
 
-      <!-- FAQ Section -->
       <section id="postFaqSection" class="hidden space-y-3 pt-4">
         <h2 class="text-lg font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
           <i class="fa-solid fa-circle-question text-purple-400"></i> الأسئلة الشائعة
@@ -290,13 +127,11 @@
         <div id="postFaqList" class="space-y-2"></div>
       </section>
 
-      <!-- Tags -->
       <div id="postTagsSection" class="hidden pt-4 border-t border-white/10">
         <h3 class="text-xs text-slate-400 mb-2 font-bold">الكلمات المفتاحية:</h3>
         <div id="postTagsList" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Author Box -->
       <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 flex items-start gap-4 overflow-safe-card">
         <img src="logo.png" alt="إسلام سعيد" class="w-14 h-14 object-contain rounded-xl border border-white/10 flex-shrink-0" onerror="this.style.display='none'" />
         <div class="min-w-0">
@@ -311,7 +146,6 @@
         </div>
       </div>
 
-      <!-- Comments Section -->
       <div class="pt-8 border-t border-white/10 space-y-6">
         <h2 class="text-lg font-bold text-white">التعليقات والمناقشات</h2>
         <div id="commentsList" class="space-y-3 text-xs">
@@ -337,8 +171,12 @@
   <script src="js/cms-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
+    // ============================================================
+    // URL Params: support both ?slug= and ?id=
+    // ============================================================
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
+    const postSlug = urlParams.get('slug');
     const postLoading = document.getElementById('postLoading');
     const postContent = document.getElementById('postContent');
 
@@ -380,24 +218,15 @@
       return null;
     }
 
-    // Sanitize rich HTML: allow only safe tags, remove scripts/events
     function sanitizeHtml(html) {
       if (!html) return '';
-      const allowedTags = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
-        'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
-        'a', 'img', 'iframe', 'hr', 'span', 'div', 'figure', 'figcaption',
-        'table', 'thead', 'tbody', 'tr', 'th', 'td'];
+      const allowedTags = ['p','br','strong','b','em','i','u','s','strike','h2','h3','h4','h5','h6','ul','ol','li','blockquote','pre','code','a','img','iframe','hr','span','div','figure','figcaption','table','thead','tbody','tr','th','td'];
       const div = document.createElement('div');
       div.innerHTML = html;
-
-      // Remove dangerous elements
       div.querySelectorAll('script, style, link, meta, object, embed, form, input, button').forEach(n => n.remove());
-
-      // Clean attributes
       div.querySelectorAll('*').forEach(el => {
         const tag = el.tagName.toLowerCase();
         if (!allowedTags.includes(tag)) {
-          // Unwrap unknown tags but keep children
           const text = document.createTextNode(el.textContent || '');
           el.parentNode?.replaceChild(text, el);
           return;
@@ -405,52 +234,23 @@
         Array.from(el.attributes).forEach(attr => {
           const name = attr.name.toLowerCase();
           const value = attr.value;
-          // Remove event handlers and dangerous attributes
-          if (name.startsWith('on') || name === 'srcdoc' || name === 'formaction') {
-            el.removeAttribute(attr.name);
-            return;
-          }
-          // For links, ensure safe href
-          if (name === 'href') {
-            if (!/^(https?:|mailto:|tel:|#|\/)/i.test(value)) {
-              el.removeAttribute(attr.name);
-            }
-          }
-          // For img src, ensure safe
-          if (name === 'src' && tag === 'img') {
-            if (!/^https?:/i.test(value)) {
-              el.removeAttribute(attr.name);
-            }
-          }
-          // For iframe src, only allow youtube/vimeo
-          if (name === 'src' && tag === 'iframe') {
-            if (!/(youtube\.com|youtu\.be|player\.vimeo\.com)/i.test(value)) {
-              el.removeAttribute(attr.name);
-            }
-          }
-          // Force safe target and rel on external links
-          if (tag === 'a' && name === 'href') {
-            el.setAttribute('target', '_blank');
-            el.setAttribute('rel', 'noopener noreferrer');
-          }
+          if (name.startsWith('on') || name === 'srcdoc' || name === 'formaction') { el.removeAttribute(attr.name); return; }
+          if (name === 'href' && !/^(https?:|mailto:|tel:|#|\/)/i.test(value)) el.removeAttribute(attr.name);
+          if (name === 'src' && tag === 'img' && !/^https?:/i.test(value)) el.removeAttribute(attr.name);
+          if (name === 'src' && tag === 'iframe' && !/(youtube\.com|youtu\.be|player\.vimeo\.com)/i.test(value)) el.removeAttribute(attr.name);
+          if (tag === 'a' && name === 'href') { el.setAttribute('target', '_blank'); el.setAttribute('rel', 'noopener noreferrer'); }
         });
-        // Add lazy loading to images and iframes
         if (tag === 'img' || tag === 'iframe') {
           el.setAttribute('loading', 'lazy');
           if (tag === 'iframe') el.setAttribute('allowfullscreen', 'true');
         }
       });
-
       return div.innerHTML;
     }
 
     function renderContent(raw) {
       if (!raw) return '';
-      // If content looks like HTML (from Quill), sanitize and return
-      if (/<[a-z][\s\S]*>/i.test(raw)) {
-        return sanitizeHtml(raw);
-      }
-      // Legacy: plain text with markers
+      if (/<[a-z][\s\S]*>/i.test(raw)) return sanitizeHtml(raw);
       let html = escapeHtml(raw);
       html = html.replace(/\[img\](https?:\/\/[^\[]+?)\[\/img\]/gi, (m, url) => {
         if (!isSafeMediaUrl(url)) return '';
@@ -465,13 +265,21 @@
       return html;
     }
 
-    // ---------- Update Meta Tags ----------
+    // ============================================================
+    // Build canonical URL — slug preferred over id
+    // ============================================================
+    function buildPostUrl(post) {
+      if (post.slug) {
+        return `https://islamsaeid.me/post.html?slug=${encodeURIComponent(post.slug)}`;
+      }
+      return `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
+    }
+
     function updateMetaTags(post) {
       const title = post.metaTitle || `${post.title || 'المقال'} | إسلام سعيد`;
       const desc = post.metaDescription || post.excerpt || String(post.content || '').replace(/<[^>]+>/g, ' ').slice(0, 160).replace(/\s+/g, ' ').trim();
       const img = isSafeMediaUrl(post.image) ? post.image : 'https://islamsaeid.me/logo.png';
-      const slug = post.slug || post.id;
-      const url = `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
+      const url = buildPostUrl(post);
 
       document.title = title;
       document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
@@ -486,9 +294,8 @@
       document.getElementById('canonicalLink')?.setAttribute('href', url);
     }
 
-    // ---------- JSON-LD Schema (Article + FAQ + Breadcrumb) ----------
     function injectJsonLd(post) {
-      const url = `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
+      const url = buildPostUrl(post);
       const image = isSafeMediaUrl(post.image) ? post.image : 'https://islamsaeid.me/logo.png';
       const desc = post.metaDescription || post.excerpt || 'مقال من إسلام سعيد';
 
@@ -501,18 +308,11 @@
           "image": image,
           "datePublished": new Date(post.createdAt || Date.now()).toISOString(),
           "dateModified": new Date(post.updatedAt || post.createdAt || Date.now()).toISOString(),
-          "author": {
-            "@type": "Person",
-            "name": post.author || "إسلام سعيد",
-            "url": "https://islamsaeid.me"
-          },
+          "author": { "@type": "Person", "name": post.author || "إسلام سعيد", "url": "https://islamsaeid.me" },
           "publisher": {
             "@type": "Organization",
             "name": "إسلام سعيد",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://islamsaeid.me/logo.png"
-            }
+            "logo": { "@type": "ImageObject", "url": "https://islamsaeid.me/logo.png" }
           },
           "mainEntityOfPage": { "@type": "WebPage", "@id": url },
           "keywords": Array.isArray(post.tags) ? post.tags.join(', ') : (post.focusKeyword || ''),
@@ -541,28 +341,18 @@
         });
       }
 
-      const ld = {
-        "@context": "https://schema.org",
-        "@graph": graph
-      };
-
-      // Remove any existing dynamic schema
       document.getElementById('dynamicJsonLd')?.remove();
       const script = document.createElement('script');
       script.type = 'application/ld+json';
       script.id = 'dynamicJsonLd';
-      script.textContent = JSON.stringify(ld);
+      script.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
       document.head.appendChild(script);
     }
 
-    // ---------- Render Sections ----------
     function renderKeyTakeaways(items) {
       const section = document.getElementById('keyTakeawaysSection');
       const list = document.getElementById('keyTakeawaysList');
-      if (!Array.isArray(items) || !items.length) {
-        section.classList.add('hidden');
-        return;
-      }
+      if (!Array.isArray(items) || !items.length) { section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
       list.innerHTML = items.map(t => `
         <li class="flex items-start gap-2">
@@ -575,10 +365,7 @@
     function renderPostFaq(items) {
       const section = document.getElementById('postFaqSection');
       const list = document.getElementById('postFaqList');
-      if (!Array.isArray(items) || !items.length) {
-        section.classList.add('hidden');
-        return;
-      }
+      if (!Array.isArray(items) || !items.length) { section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
       list.innerHTML = items.map((item, i) => `
         <div class="post-faq-item">
@@ -605,10 +392,7 @@
     function renderTags(tags) {
       const section = document.getElementById('postTagsSection');
       const list = document.getElementById('postTagsList');
-      if (!Array.isArray(tags) || !tags.length) {
-        section.classList.add('hidden');
-        return;
-      }
+      if (!Array.isArray(tags) || !tags.length) { section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
       list.innerHTML = tags.map(t => `<span class="article-tag">#${escapeHtml(t)}</span>`).join('');
     }
@@ -630,7 +414,6 @@
       `).join('');
     }
 
-    // ---------- Render Post ----------
     function renderPost(post) {
       postLoading.classList.add('hidden');
       postContent.classList.remove('hidden');
@@ -641,21 +424,17 @@
       document.getElementById('postAuthor').textContent = post.author || 'إسلام سعيد';
       document.getElementById('likeCount').textContent = String(post.likes || 0);
 
-      // Reading time
       const rt = post.readingTime || Math.max(1, Math.ceil(String(post.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200));
       document.getElementById('postReadingTime').innerHTML = `<i class="fa-solid fa-clock ml-1"></i> <span>${rt} دقيقة قراءة</span>`;
 
-      // Content
       document.getElementById('postBody').innerHTML = renderContent(post.content || '');
 
-      // Excerpt highlight
       if (post.excerpt) {
         const exEl = document.getElementById('postExcerptHighlight');
         exEl.textContent = post.excerpt;
         exEl.classList.remove('hidden');
       }
 
-      // Cover
       if (isSafeMediaUrl(post.image)) {
         const imgBox = document.getElementById('postImageContainer');
         imgBox.classList.remove('hidden');
@@ -665,7 +444,6 @@
           </a>`;
       }
 
-      // Featured video
       const embed = parseVideoEmbed(post.video);
       if (embed) {
         const vBox = document.getElementById('postVideoContainer');
@@ -673,20 +451,16 @@
         vBox.innerHTML = `<div class="video-embed-wrapper"><iframe src="${escapeHtml(embed)}" allowfullscreen loading="lazy" title="فيديو المقال"></iframe></div>`;
       }
 
-      // Key takeaways + FAQ + Tags
       renderKeyTakeaways(post.keyTakeaways);
       renderPostFaq(post.faqItems);
       renderTags(post.tags);
 
-      // Meta + Schema
       updateMetaTags(post);
       injectJsonLd(post);
 
-      // Fancybox
       if (window.Fancybox) Fancybox.bind('[data-fancybox]', {});
     }
 
-    // ---------- Reading Progress ----------
     function initReadingProgress() {
       const bar = document.getElementById('readingProgress');
       window.addEventListener('scroll', () => {
@@ -696,7 +470,6 @@
       }, { passive: true });
     }
 
-    // ---------- Share Button ----------
     function initShare(post) {
       document.getElementById('shareBtn')?.addEventListener('click', async () => {
         const url = window.location.href;
@@ -710,8 +483,10 @@
       });
     }
 
-    // ---------- Main ----------
-    if (!postId) {
+    // ============================================================
+    // Main
+    // ============================================================
+    if (!postId && !postSlug) {
       window.location.href = 'blog.html';
     } else {
       initReadingProgress();
@@ -722,14 +497,27 @@
       try {
         const { CloudCMS } = await import('./js/firebase-cms.js');
         cms = CloudCMS;
-        post = await CloudCMS.getBlogPostById(postId);
+
+        if (postSlug) {
+          console.log('[Post] Loading by slug:', postSlug);
+          post = await CloudCMS.getBlogPostBySlug(postSlug);
+        } else if (postId) {
+          console.log('[Post] Loading by id:', postId);
+          post = await CloudCMS.getBlogPostById(postId);
+        }
       } catch (error) {
         console.warn('Cloud post unavailable, using local fallback.', error);
       }
 
+      // Fallback: local cms
       if (!post && window.cmsEngine?.getBlog) {
         const localPosts = window.cmsEngine.getBlog() || [];
-        post = localPosts.find((entry) => String(entry.id) === String(postId));
+        if (postSlug) {
+          post = localPosts.find((entry) => String(entry.slug) === String(postSlug));
+        }
+        if (!post && postId) {
+          post = localPosts.find((entry) => String(entry.id) === String(postId));
+        }
       }
 
       if (!post) {
@@ -742,20 +530,20 @@
         renderPost(post);
         initShare(post);
 
-        // Comments
+        const postKey = post.id;
+
         if (cms?.subscribeComments) {
-          cms.subscribeComments(postId, renderComments);
+          cms.subscribeComments(postKey, renderComments);
         } else {
           renderComments([]);
         }
 
-        // Like
         document.getElementById('likeBtn')?.addEventListener('click', async () => {
           if (!cms?.likeBlogPost) return;
           const btn = document.getElementById('likeBtn');
           btn.setAttribute('disabled', 'true');
           try {
-            await cms.likeBlogPost(postId);
+            await cms.likeBlogPost(postKey);
             const current = parseInt(document.getElementById('likeCount').textContent || '0', 10);
             document.getElementById('likeCount').textContent = String(current + 1);
             btn.classList.add('bg-pink-500/30');
@@ -764,22 +552,18 @@
           }
         });
 
-        // Comment form
         const commentForm = document.getElementById('commentForm');
         const commentSubmitBtn = document.getElementById('commentSubmitBtn');
         commentForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          if (!cms?.addComment) {
-            alert('التعليقات غير متاحة الآن.');
-            return;
-          }
+          if (!cms?.addComment) { alert('التعليقات غير متاحة الآن.'); return; }
           const name = document.getElementById('cName').value.trim();
           const content = document.getElementById('cContent').value.trim();
           if (!name || !content) return;
 
           commentSubmitBtn.setAttribute('disabled', 'true');
           try {
-            await cms.addComment(postId, name, content);
+            await cms.addComment(postKey, name, content);
             alert('✅ تم إرسال التعليق وسيظهر بعد المراجعة.');
             e.target.reset();
           } catch (error) {

@@ -521,7 +521,7 @@
       updateSerpPreview, bindCounter, parseVideoEmbed
     } from '../js/rich-editor.js';
 
-    // ============================================================
+        // ============================================================
     // ---------- Auth: FAST PATH (Cache first) ----------
     // ============================================================
     console.log('[Dashboard] Initializing auth...');
@@ -565,6 +565,43 @@
 
       document.getElementById('authLoading')?.remove();
       console.log('[Dashboard] Ready — instant load from cache');
+    }
+
+    // Try fast path first
+    const fastAuth = readFastAuth();
+
+    if (fastAuth) {
+      // ✅ Cache valid — show dashboard immediately
+      applyAuth(fastAuth.user, fastAuth.profile);
+
+      // Verify in background (non-blocking)
+      onAuthChange((user, profile) => {
+        console.log('[Dashboard] Background verify:', user ? 'ok' : 'failed');
+        if (!user || !profile) {
+          sessionStorage.clear();
+          window.location.href = 'login.html';
+        }
+      });
+    } else {
+      // ❌ No cache — wait for Firebase (with timeout)
+      console.warn('[Dashboard] No cache — waiting for Firebase Auth...');
+
+      const authTimeout = setTimeout(() => {
+        console.warn('[Dashboard] Auth timeout after 12s — redirecting to login');
+        window.location.href = 'login.html';
+      }, 12000);
+
+      onAuthChange((user, profile) => {
+        clearTimeout(authTimeout);
+        console.log('[Dashboard] Auth resolved:', user ? user.email : 'no-user');
+
+        if (!user || !profile) {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        applyAuth(user, profile);
+      });
     }
 
     // Try fast path first

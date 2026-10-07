@@ -51,25 +51,21 @@
       <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">استراتيجيات متقدمة حول إعلانات Meta و TikTok واقتصاديات الوحدة لتنمية أعمالك.</p>
     </div>
 
-    <!-- Search -->
     <div class="max-w-md mx-auto">
       <label for="blogSearchInput" class="sr-only">بحث في المقالات</label>
       <input type="text" id="blogSearchInput" placeholder="بحث في المقالات..."
         class="w-full bg-[#0E0B1A] border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-pink-500" />
     </div>
 
-    <!-- Filters -->
     <div id="categoryFilters" class="flex flex-wrap items-center justify-center gap-2">
       <button class="filter-chip active" data-cat="all">الكل</button>
     </div>
 
-    <!-- Status -->
     <div id="blogStatus" class="text-center py-3 text-slate-500 text-xs">
       <i class="fa-solid fa-spinner fa-spin ml-2"></i>
       جاري جلب المقالات...
     </div>
 
-    <!-- Blog Container -->
     <div id="blogContainer" class="space-y-6"></div>
   </main>
 
@@ -103,6 +99,16 @@
         const parsed = new URL(url, window.location.href);
         return ['http:', 'https:'].includes(parsed.protocol);
       } catch (_) { return false; }
+    }
+
+    // ============================================================
+    // Build post URL — slug preferred, fallback to id
+    // ============================================================
+    function buildPostUrl(post) {
+      if (post.slug) {
+        return `post.html?slug=${encodeURIComponent(post.slug)}`;
+      }
+      return `post.html?id=${encodeURIComponent(post.id ?? '')}`;
     }
 
     function renderFilters() {
@@ -146,7 +152,7 @@
         const safeTitle = escapeHtml(p.title || 'بدون عنوان');
         const safeCategory = escapeHtml(p.category || 'عام');
         const safeAuthor = escapeHtml(p.author || 'إسلام سعيد');
-        const postId = encodeURIComponent(String(p.id ?? ''));
+        const postUrl = buildPostUrl(p);
         const hasImage = isSafeMediaUrl(p.image);
         const readingTime = p.readingTime || Math.max(1, Math.ceil(stripHtml(p.content).split(/\s+/).filter(Boolean).length / 200));
         const tags = Array.isArray(p.tags) ? p.tags.slice(0, 4) : [];
@@ -167,7 +173,7 @@
                 </div>
               </div>
               <h2 class="text-xl font-bold text-white group-hover:text-pink-400 transition-colors break-words-safe leading-snug">
-                <a href="post.html?id=${postId}">${safeTitle}</a>
+                <a href="${postUrl}">${safeTitle}</a>
               </h2>
               <p class="text-xs text-slate-300 leading-relaxed break-words-safe line-clamp-3">${escapeHtml(excerpt)}</p>
               ${tagsHtml}
@@ -176,7 +182,7 @@
               <span class="text-slate-400 break-words-safe">
                 <i class="fa-solid fa-pen-nib text-orange-400 ml-1"></i>${safeAuthor}
               </span>
-              <a href="post.html?id=${postId}" class="text-pink-400 hover:text-white font-bold flex items-center gap-1">
+              <a href="${postUrl}" class="text-pink-400 hover:text-white font-bold flex items-center gap-1">
                 <span>اقرأ المقال</span>
                 <i class="fa-solid fa-chevron-left text-[10px] group-hover:-translate-x-1 transition-transform"></i>
               </a>

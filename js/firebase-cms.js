@@ -78,6 +78,22 @@ export const CloudCMS = {
     }
     return null;
   },
+  
+  async getBlogPostBySlug(slug) {
+    if (!slug) return null;
+    try {
+      const q = query(collection(db, "blog"), where("slug", "==", slug));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const firstDoc = snap.docs[0];
+      const itemRef = doc(db, "blog", firstDoc.id);
+      try { await updateDoc(itemRef, { views: increment(1) }); } catch (_) {}
+      return { id: firstDoc.id, ...firstDoc.data() };
+    } catch (error) {
+      console.error('getBlogPostBySlug error:', error);
+      return null;
+    }
+  },
 
   async likePortfolioItem(id) {
     await updateDoc(doc(db, "portfolio", id), { likes: increment(1) });

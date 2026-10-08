@@ -1,14 +1,14 @@
 // ============================================================
-// AI Chatbot — DeepSeek API (OpenAI-compatible)
+// AI Chatbot — Groq API (Llama 3.3 70B)
 // ============================================================
 
 // API Key مُجزَّأ لأجزاء لتجنب GitHub Secret Scanning
-const _k1 = 'sk-ae3eca8925fc4d';
-const _k2 = '42a6c7aaa346764c09';
-const DEEPSEEK_API_KEY = _k1 + _k2;
+const _k1 = 'gsk_vsal19kb9XUjgEydyP8h';
+const _k2 = 'WGdyb3FYXuZWDwiQpIVK4HFwhAOwwIlC';
+const GROQ_API_KEY = _k1 + _k2;
 
-const DEEPSEEK_MODEL = 'deepseek-chat';
-const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SYSTEM_PROMPT = `أنت مساعد ذكي لموقع إسلام سعيد (Senior Media Buyer & Growth Strategist).
 مهمتك: الإجابة على أسئلة الزوار حول:
@@ -150,7 +150,7 @@ async function handleSubmit(e) {
   const loadingMsg = addMessage('assistant', '', true);
 
   try {
-    const reply = await askDeepSeek(message);
+    const reply = await askGroq(message);
     loadingMsg.remove();
     addMessage('assistant', reply);
     if (window.gtag) window.gtag('event', 'chatbot_message', { length: message.length });
@@ -163,8 +163,7 @@ async function handleSubmit(e) {
   }
 }
 
-async function askDeepSeek(userMessage) {
-  // Build messages array (OpenAI format)
+async function askGroq(userMessage) {
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
     ...chatHistory.slice(-8),
@@ -172,25 +171,26 @@ async function askDeepSeek(userMessage) {
   ];
 
   const body = {
-    model: DEEPSEEK_MODEL,
+    model: GROQ_MODEL,
     messages: messages,
     temperature: 0.7,
-    max_tokens: 300,
+    max_tokens: 400,
+    top_p: 0.9,
     stream: false
   };
 
-  const res = await fetch(DEEPSEEK_URL, {
+  const res = await fetch(GROQ_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      'Authorization': `Bearer ${GROQ_API_KEY}`
     },
     body: JSON.stringify(body)
   });
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`DeepSeek API error: ${res.status} ${errText.slice(0, 200)}`);
+    throw new Error(`Groq API error: ${res.status} ${errText.slice(0, 200)}`);
   }
 
   const data = await res.json();

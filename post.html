@@ -25,6 +25,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-N8FEC6LYZ7', { send_page_view: true });
+  </script>
+
   <style>
     .article-content {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
@@ -171,9 +181,9 @@
   <script src="js/cms-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
-    // ============================================================
-    // URL Params: support both ?slug= and ?id=
-    // ============================================================
+    import { initAnalyticsAuto, trackPostRead, trackLike, trackCommentSubmit, trackShare } from './js/analytics-events.js';
+    initAnalyticsAuto();
+
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
     const postSlug = urlParams.get('slug');
@@ -265,9 +275,6 @@
       return html;
     }
 
-    // ============================================================
-    // Build canonical URL — slug preferred over id
-    // ============================================================
     function buildPostUrl(post) {
       if (post.slug) {
         return `https://islamsaeid.me/post.html?slug=${encodeURIComponent(post.slug)}`;
@@ -458,6 +465,8 @@
       updateMetaTags(post);
       injectJsonLd(post);
 
+      trackPostRead(post.id, post.title || '', rt);
+
       if (window.Fancybox) Fancybox.bind('[data-fancybox]', {});
     }
 
@@ -475,17 +484,18 @@
         const url = window.location.href;
         const title = post.title || 'مقال من إسلام سعيد';
         if (navigator.share) {
-          try { await navigator.share({ title, url }); } catch (_) {}
+          try {
+            trackShare('native', 'post', post.id);
+            await navigator.share({ title, url });
+          } catch (_) {}
         } else {
+          trackShare('clipboard', 'post', post.id);
           await navigator.clipboard.writeText(url);
           alert('✅ تم نسخ رابط المقال');
         }
       });
     }
 
-    // ============================================================
-    // Main
-    // ============================================================
     if (!postId && !postSlug) {
       window.location.href = 'blog.html';
     } else {
@@ -509,7 +519,6 @@
         console.warn('Cloud post unavailable, using local fallback.', error);
       }
 
-      // Fallback: local cms
       if (!post && window.cmsEngine?.getBlog) {
         const localPosts = window.cmsEngine.getBlog() || [];
         if (postSlug) {
@@ -547,6 +556,7 @@
             const current = parseInt(document.getElementById('likeCount').textContent || '0', 10);
             document.getElementById('likeCount').textContent = String(current + 1);
             btn.classList.add('bg-pink-500/30');
+            trackLike(postKey);
           } finally {
             btn.removeAttribute('disabled');
           }
@@ -566,6 +576,7 @@
             await cms.addComment(postKey, name, content);
             alert('✅ تم إرسال التعليق وسيظهر بعد المراجعة.');
             e.target.reset();
+            trackCommentSubmit(postKey);
           } catch (error) {
             console.error(error);
             alert('تعذر إرسال التعليق.');

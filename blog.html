@@ -11,6 +11,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://islamsaeid.me/logo.png" />
   <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#D946EF" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -18,7 +20,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -77,12 +78,40 @@
     </div>
 
     <div id="blogContainer" class="space-y-6"></div>
+
+    <!-- NEWSLETTER -->
+    <div class="p-6 rounded-3xl bg-gradient-to-br from-[#0F0A1F] to-[#0E0B1A] border border-purple-500/20 text-center space-y-4">
+      <i class="fa-solid fa-envelope-open-text text-purple-400 text-3xl"></i>
+      <h2 class="text-xl font-bold text-white">اشترك في النشرة البريدية</h2>
+      <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+        احصل على أحدث المقالات والنصائح التسويقية مباشرة في بريدك
+      </p>
+      <form data-newsletter-form data-source="blog" class="max-w-md mx-auto space-y-2">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="email" required placeholder="بريدك الإلكتروني"
+            class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-pink-500" />
+          <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
+            <i class="fa-solid fa-paper-plane ml-1"></i> اشترك
+          </button>
+        </div>
+        <p data-newsletter-msg class="text-[11px] text-slate-500"></p>
+      </form>
+    </div>
   </main>
 
   <script src="js/cms-data.js"></script>
   <script type="module">
     import { initAnalyticsAuto } from './js/analytics-events.js';
+    import { initFloatingWidgets } from './js/floating-widgets.js';
+    import { initNewsletterForms } from './js/newsletter.js';
+    import { initPWA } from './js/pwa.js';
+    import { initChatbot } from './js/ai-chatbot.js';
+
     initAnalyticsAuto();
+    initFloatingWidgets();
+    initNewsletterForms();
+    initPWA();
+    setTimeout(() => initChatbot(), 3000);
 
     const statusEl = document.getElementById('blogStatus');
     const container = document.getElementById('blogContainer');
@@ -98,13 +127,8 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    function cleanText(value) {
-      return String(value ?? '').trim();
-    }
-
-    function stripHtml(html) {
-      return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    }
+    function cleanText(value) { return String(value ?? '').trim(); }
+    function stripHtml(html) { return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
 
     function isSafeMediaUrl(url) {
       if (!url) return false;
@@ -115,9 +139,7 @@
     }
 
     function buildPostUrl(post) {
-      if (post.slug) {
-        return `post.html?slug=${encodeURIComponent(post.slug)}`;
-      }
+      if (post.slug) return `post.html?slug=${encodeURIComponent(post.slug)}`;
       return `post.html?id=${encodeURIComponent(post.id ?? '')}`;
     }
 
@@ -127,15 +149,12 @@
         const c = cleanText(p.category);
         if (c) cats.add(c);
       });
-
       if (!cats.size) { filtersContainer.innerHTML = ''; return; }
-
       const chips = [`<button class="filter-chip ${activeCategory === 'all' ? 'active' : ''}" data-cat="all">الكل</button>`];
       cats.forEach(c => {
         chips.push(`<button class="filter-chip ${activeCategory === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`);
       });
       filtersContainer.innerHTML = chips.join('');
-
       filtersContainer.querySelectorAll('.filter-chip').forEach(btn => {
         btn.addEventListener('click', () => {
           activeCategory = btn.dataset.cat;
@@ -155,7 +174,6 @@
         `;
         return;
       }
-
       container.innerHTML = posts.map(p => {
         const rawText = p.excerpt || stripHtml(p.content);
         const excerpt = rawText.length > 160 ? `${rawText.substring(0, 160)}...` : rawText;
@@ -166,11 +184,9 @@
         const hasImage = isSafeMediaUrl(p.image);
         const readingTime = p.readingTime || Math.max(1, Math.ceil(stripHtml(p.content).split(/\s+/).filter(Boolean).length / 200));
         const tags = Array.isArray(p.tags) ? p.tags.slice(0, 4) : [];
-
         const tagsHtml = tags.length
           ? `<div class="flex flex-wrap gap-1.5 mt-2">${tags.map(t => `<span class="blog-card-tag">#${escapeHtml(t)}</span>`).join('')}</div>`
           : '';
-
         return `
           <article class="p-6 rounded-3xl border border-white/10 bg-[#0E0B1A] hover:border-pink-500/40 transition-all flex flex-col justify-between overflow-safe-card group">
             ${hasImage ? `<img src="${escapeHtml(p.image)}" alt="غلاف المقال: ${safeTitle}" class="w-full h-48 object-cover rounded-2xl mb-4" onerror="this.style.display='none'" loading="lazy" />` : ''}
@@ -202,14 +218,8 @@
       }).join('');
     }
 
-    function setStatus(text) {
-      statusEl.innerHTML = text;
-      statusEl.classList.remove('hidden');
-    }
-
-    function hideStatus() {
-      statusEl.classList.add('hidden');
-    }
+    function setStatus(text) { statusEl.innerHTML = text; statusEl.classList.remove('hidden'); }
+    function hideStatus() { statusEl.classList.add('hidden'); }
 
     function applyFilters() {
       let filtered = allPosts;
@@ -247,7 +257,6 @@
       } catch (error) {
         console.warn('Cloud blog data unavailable, using local fallback.', error);
       }
-
       if (window.cmsEngine?.getBlog) {
         allPosts = window.cmsEngine.getBlog() || [];
         setStatus('يتم عرض نسخة محلية بسبب تعذر الاتصال بالسحابة.');

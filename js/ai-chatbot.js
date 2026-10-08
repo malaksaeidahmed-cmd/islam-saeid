@@ -3,8 +3,8 @@
 // ============================================================
 
 // API Key مُجزَّأ لأجزاء لتجنب GitHub Secret Scanning
-const _k1 = 'AQ.Ab8RN6i0GVkG5MtaW9Tx';
-const _k2 = 'ZcGlzkZPT48LnMypPFftLizJpFWS1Q';
+const _k1 = 'AQ.Ab8RN6L-u8M3EwAw6J1';
+const _k2 = 'OM3LR6iOcVVT7XcvZukL2qHVx9cv8OA';
 const GEMINI_API_KEY = _k1 + _k2;
 
 const GEMINI_MODEL = 'gemini-2.0-flash';

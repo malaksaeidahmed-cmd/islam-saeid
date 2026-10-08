@@ -7,14 +7,11 @@
   <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني. إدارة ميزانيات كبرى وتحقيق عوائد استثمارية قياسية (حتى 30x ROAS)." />
   <meta name="keywords" content="إسلام سعيد, ميديا باينج, خبير إعلانات, Meta Ads, TikTok Ads, ROAS, Media Buyer Egypt" />
   <meta name="author" content="إسلام سعيد" />
-
-  <!-- Open Graph -->
   <meta property="og:title" content="إسلام سعيد | Senior Media Buyer & Growth Strategist" />
   <meta property="og:description" content="إدارة الميزانيات الإعلانية الضخمة بتحقيق عوائد استثمارية تصل إلى 30x ROAS." />
   <meta property="og:image" content="https://islamsaeid.me/logo.png" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://islamsaeid.me/" />
-
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="shortcut icon" type="image/png" href="logo.png" />
   <link rel="apple-touch-icon" href="logo.png" />
@@ -62,13 +59,20 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-N8FEC6LYZ7', { send_page_view: true });
+  </script>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-arabic antialiased selection:bg-brand-magenta selection:text-white">
 
-  <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-white/10 shadow-2xl">
     <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-
       <a href="#home" class="flex items-center gap-3 group">
         <img src="logo.png" alt="شعار إسلام سعيد" class="w-10 h-10 object-contain rounded-xl border border-white/10 group-hover:border-brand-magenta transition-all" onError="this.onerror=null; this.src='logo.png';" />
         <div class="flex flex-col">
@@ -94,16 +98,13 @@
         <button id="langToggleBtn" class="px-3 py-1.5 rounded-xl border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition-all">
           <span id="langText">EN</span>
         </button>
-
         <button id="themeToggleBtn" aria-label="تبديل الوضع الليلي/النهاري" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all">
           <i id="themeIcon" class="fa-solid fa-sun text-xs"></i>
         </button>
-
-        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أود%20الاستفسار%20عن%20إدارة%20حملة%20إعلانية%20لمشروعي" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl brand-gradient text-white text-xs font-bold shadow-lg hover:opacity-95 transition-all">
+        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20أود%20الاستفسار%20عن%20إدارة%20حملة%20إعلانية%20لمشروعي" target="_blank" data-source="header" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl brand-gradient text-white text-xs font-bold shadow-lg hover:opacity-95 transition-all">
           <i class="fa-brands fa-whatsapp text-sm"></i>
           <span data-i18n="contact-btn">تواصل معي</span>
         </a>
-
         <button id="mobileMenuBtn" class="lg:hidden text-slate-300 hover:text-white p-2" aria-label="القائمة">
           <i class="fa-solid fa-bars text-xl"></i>
         </button>
@@ -121,24 +122,19 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section id="home" class="pt-36 pb-20 md:pt-44 md:pb-28">
     <div class="max-w-5xl mx-auto px-5 text-center">
-
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-slate-300 mb-6">
         <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
         <span data-i18n="hero-tag">Senior Social Media Specialist & Performance Marketer</span>
       </div>
-
       <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight sm:leading-snug mb-6">
         <span data-i18n="hero-title1">إدارة الميزانيات الإعلانية الضخمة</span> <br />
         <span class="brand-gradient-text" data-i18n="hero-title2">بتحقيق عوائد استثمارية تصل إلى 30x ROAS</span>
       </h1>
-
       <p class="text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-8 font-normal" data-i18n="hero-desc">
         أنا <strong class="text-white font-semibold">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة، من خلال دمج التحليل المالي لاقتصاديات الوحدة (Unit Economics) مع صناعة المحتوى الإعلاني الموجه.
       </p>
-
       <div class="flex flex-wrap items-center justify-center gap-4 mb-14">
         <a href="#course" class="px-6 py-3 rounded-xl brand-gradient text-white text-sm font-semibold shadow-lg hover:opacity-95 transition-all" data-i18n="btn-course">
           البرنامج الأوفلاين المكثف (القاهرة)
@@ -147,7 +143,6 @@
           حاسبة القرار المالي للمشروع
         </a>
       </div>
-
       <div class="grid grid-cols-3 gap-4 max-w-xl mx-auto pt-8 border-t border-white/10 text-center">
         <div>
           <div class="text-2xl sm:text-3xl font-bold text-white font-sans">30x</div>
@@ -162,22 +157,18 @@
           <div class="text-xs text-slate-400 mt-1" data-i18n="stat3">ميزانية شهرية مدارة للبراند</div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Brands Section -->
   <section id="brands" class="py-16 border-y border-white/5 bg-white/[0.01] overflow-hidden">
     <div class="max-w-6xl mx-auto px-5 text-center mb-10">
       <span class="text-xs font-bold text-brand-orange uppercase tracking-widest" data-i18n="brands-tag">شركاء النجاح</span>
       <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="brands-title">أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا</h2>
       <p class="text-xs text-slate-400 mt-2" data-i18n="brands-desc">نستعرض هنا أبرز شركاء النجاح في قطاعات المطاعم، التجارة الإلكترونية، التشطيبات والديكورات، والمأكولات</p>
     </div>
-
     <div class="marquee-wrapper relative w-full overflow-hidden py-6 border-y border-white/5">
       <div class="absolute left-0 top-0 bottom-0 w-24 fade-overlay-left z-10 pointer-events-none"></div>
       <div class="absolute right-0 top-0 bottom-0 w-24 fade-overlay-right z-10 pointer-events-none"></div>
-
       <div class="marquee-track">
         <div id="brandsMarqueeGroup1" class="marquee-group"></div>
         <div id="brandsMarqueeGroup2" class="marquee-group" aria-hidden="true"></div>
@@ -185,16 +176,12 @@
     </div>
   </section>
 
-  <!-- About Section -->
   <section id="about" class="py-20">
     <div class="max-w-5xl mx-auto px-5">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-
         <div class="space-y-5">
           <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="about-tag">المنهج الإداري</span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug" data-i18n="about-title">
-            لماذا تنجح الحملات المدروسة محاسبياً وتفشل الإعلانات العشوائية؟
-          </h2>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug" data-i18n="about-title">لماذا تنجح الحملات المدروسة محاسبياً وتفشل الإعلانات العشوائية؟</h2>
           <p class="text-slate-300 text-sm leading-relaxed" data-i18n="about-desc">
             الإعلانات الممولة ليست مجرد تجارب لاستهداف عشوائي؛ بل تبدأ من داخل دفاتر حسابات البيزنس. أحسب معك تكلفة كل طلب، والحد الأقصى المسموح به للشراء (Max CAC)، لنضمن أن زيادة الميزانية تؤدي إلى صافي ربح حقيقي في جيب صاحب المشروع وليس مجرد تفاعل وهمي على المنشورات.
           </p>
@@ -203,7 +190,6 @@
             <span><i class="fa-solid fa-location-dot text-brand-orange ml-1"></i> <span data-i18n="cairo-loc">القاهرة، مصر</span></span>
           </div>
         </div>
-
         <div class="space-y-4">
           <div class="p-5 rounded-2xl border border-white/5 bg-white/[0.02]">
             <h3 class="font-bold text-white text-base mb-1.5"><i class="fa-solid fa-chart-line text-brand-magenta ml-2"></i>Full-Funnel Growth Strategy</h3>
@@ -214,30 +200,23 @@
             <p class="text-xs text-slate-400 leading-relaxed" data-i18n="about-card2">توجيه كتابة وتصوير الفيديوهات القصيرة (Reels & TikToks) لجذب انتباه العميل في أول ثانيتين وحثه المباشر على اتخاذ قرار الشراء.</p>
           </div>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- Dynamic Portfolio Section -->
   <section id="portfolio" class="py-20 bg-white/[0.01] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-5">
-
       <div class="text-center max-w-xl mx-auto mb-8">
         <span class="text-xs font-bold text-brand-orange uppercase tracking-wider" data-i18n="portfolio-tag">سجلات أداء حقيقية</span>
         <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="portfolio-title">نتائج حملات موثقة من مدير الإعلانات</h2>
       </div>
-
       <div id="portfolioFilters" class="flex flex-wrap items-center justify-center gap-2 mb-8"></div>
       <div id="dynamicPortfolioGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-
     </div>
   </section>
 
-  <!-- Calculator Section -->
   <section id="calculator" class="py-20">
     <div class="max-w-4xl mx-auto px-5">
-
       <div class="text-center max-w-2xl mx-auto mb-10">
         <span class="text-xs font-bold text-brand-gold uppercase tracking-wider" data-i18n="calc-tag">الذكاء المالي واستشراف نتائج الحملات</span>
         <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1" data-i18n="calc-title">حاسبة القرار التسويقي واقتصاديات السوق</h2>
@@ -246,7 +225,6 @@
 
       <div class="p-6 sm:p-10 rounded-3xl border border-white/10 bg-[#0E0B1A]">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-
           <div class="space-y-4 text-xs">
             <div>
               <label for="industrySelect" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-industry-lbl">اختر المجال / النشاط التجاري:</label>
@@ -261,44 +239,27 @@
                 <option value="b2b">الخدمات والشركات واستشارات B2B (B2B Services)</option>
               </select>
             </div>
-
             <div>
               <label for="unitPriceInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-price-lbl">متوسط سعر الخدمة / الطلب (ج.م):</label>
               <input type="number" id="unitPriceInput" value="950" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
-
             <div>
               <label for="totalBudgetInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-budget-lbl">الميزانية الإعلانية الشهرية (ج.م):</label>
               <input type="number" id="totalBudgetInput" value="40000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
-
             <div>
               <label for="cogsRatioInput" class="block font-semibold text-slate-300 mb-1" data-i18n="calc-cogs-lbl">نسبة تكلفة البضاعة/الخدمة المباشرة (%):</label>
               <input type="number" id="cogsRatioInput" value="45" min="5" max="90" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm focus:outline-none focus:border-brand-magenta" />
             </div>
-
             <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 text-[11px] text-slate-400">
-              <div class="flex justify-between items-center">
-                <span data-i18n="reach-lbl-calc">متوسط الوصول التقديري (Reach):</span>
-                <span id="marketReachVal" class="text-white font-bold font-sans">180,000 - 240,000 عميل</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span data-i18n="cr-lbl-calc">معدل التحويل المتوقع (CR%):</span>
-                <span id="marketCrVal" class="text-brand-orange font-bold font-sans">2.5%</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span data-i18n="ctr-lbl-calc">معدل النقر للإعلان (CTR%):</span>
-                <span id="marketCtrVal" class="text-slate-200 font-bold font-sans">1.8%</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span data-i18n="cpa-lbl-calc">تكلفة الشراء/العميل المتوقعة (CPA):</span>
-                <span id="marketCpaVal" class="text-green-400 font-bold font-sans">160 ج.م</span>
-              </div>
+              <div class="flex justify-between items-center"><span data-i18n="reach-lbl-calc">متوسط الوصول التقديري (Reach):</span><span id="marketReachVal" class="text-white font-bold font-sans">180,000 - 240,000 عميل</span></div>
+              <div class="flex justify-between items-center"><span data-i18n="cr-lbl-calc">معدل التحويل المتوقع (CR%):</span><span id="marketCrVal" class="text-brand-orange font-bold font-sans">2.5%</span></div>
+              <div class="flex justify-between items-center"><span data-i18n="ctr-lbl-calc">معدل النقر للإعلان (CTR%):</span><span id="marketCtrVal" class="text-slate-200 font-bold font-sans">1.8%</span></div>
+              <div class="flex justify-between items-center"><span data-i18n="cpa-lbl-calc">تكلفة الشراء/العميل المتوقعة (CPA):</span><span id="marketCpaVal" class="text-green-400 font-bold font-sans">160 ج.م</span></div>
             </div>
           </div>
 
           <div class="p-6 rounded-2xl bg-black/50 border border-white/5 space-y-4 text-center">
-
             <div id="decisionBadge" class="p-3.5 rounded-xl bg-brand-violet/20 border border-brand-violet/40 text-right text-xs">
               <div class="font-bold text-white mb-0.5" id="decisionTitle">مؤشر الجدوى التسويقية والجاهزية</div>
               <p class="text-[11px] text-slate-300 leading-relaxed" id="decisionDesc">جاري حساب معطيات المجال...</p>
@@ -328,32 +289,25 @@
             </div>
 
             <div class="space-y-2 pt-2">
-              <a id="consultCalcBtn" href="https://wa.me/201021252183" target="_blank" class="block w-full py-3 rounded-xl brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity">
+              <a id="consultCalcBtn" href="https://wa.me/201021252183" target="_blank" data-source="calculator" class="block w-full py-3 rounded-xl brand-gradient text-white font-bold text-xs shadow hover:opacity-95 transition-opacity">
                 <i class="fa-brands fa-whatsapp ml-1"></i> <span data-i18n="btn-plan-wa">طلب تنفيذ هذه الخطة عبر واتساب</span>
               </a>
               <button id="downloadPdfBtn" type="button" class="block w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs border border-white/10 transition-colors">
                 <i class="fa-solid fa-file-arrow-down text-brand-gold ml-1"></i> <span data-i18n="btn-download-pdf">تنزيل تقرير الجدوى المالي (PDF)</span>
               </button>
             </div>
-
           </div>
-
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Course Section -->
   <section id="course" class="py-20 bg-white/[0.01] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-5">
       <div class="p-8 sm:p-12 rounded-3xl border border-brand-orange/30 bg-[#0F0A1F]">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-
           <div class="md:col-span-7 space-y-4">
-            <span class="px-3 py-1 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-bold border border-brand-orange/40 inline-block" data-i18n="course-tag">
-              أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط
-            </span>
+            <span class="px-3 py-1 rounded-full bg-brand-orange/20 text-brand-orange text-xs font-bold border border-brand-orange/40 inline-block" data-i18n="course-tag">أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط</span>
             <h2 class="text-2xl sm:text-4xl font-bold text-white leading-snug">
               <span data-i18n="course-title-1">معسكر الميديا باينج وتطبيق الـ</span> <span class="brand-gradient-text">30x ROAS</span>
             </h2>
@@ -370,7 +324,6 @@
           <div class="md:col-span-5 p-6 rounded-2xl bg-black/60 border border-white/10">
             <h3 class="font-bold text-white text-sm mb-1" data-i18n="form-title">طلب الترشح للمقابلة الشخصية</h3>
             <p class="text-xs text-slate-400 mb-4" data-i18n="form-desc">سجل بياناتك لحجز أسبقية موعد المقابلة والاستفادة من خصم الـ 50%.</p>
-
             <form id="waitlistForm" class="space-y-3 text-xs">
               <div>
                 <label for="subName" class="block font-medium text-slate-300 mb-1" data-i18n="form-name">الاسم الكامل:</label>
@@ -405,19 +358,16 @@
                 إرسال طلب الترشح للمقابلة
               </button>
             </form>
-
             <div id="waitlistSuccess" class="hidden mt-3 p-3 rounded-lg bg-green-500/20 border border-green-500/40 text-center text-xs">
               <span class="font-bold text-white block" data-i18n="form-success-title">تم استلام طلبك بنجاح</span>
               <span class="text-slate-300 text-[11px]" data-i18n="form-success-sub">يتم توجيهك إلى واتساب لترتيب موعد المقابلة...</span>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section -->
   <section id="faq" class="py-20">
     <div class="max-w-3xl mx-auto px-5">
       <div class="text-center mb-10">
@@ -435,7 +385,6 @@
             لأن المعسكر عملي ومغلق على 20 مقعداً فقط؛ المقابلة تضمن أن خلفيتك وأهدافك ملائمة تماماً للمستوى المتقدم وتطبيق مهارات الـ Scaling.
           </div>
         </div>
-
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
           <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white" aria-controls="faq-answer-2">
             <span data-i18n="q2">هل المنهجية وحاسبة اقتصاديات الوحدة تناسب كافة أنواع الأنشطة؟</span>
@@ -445,7 +394,6 @@
             نعم، القواعد المالية لاقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة سواء في التجارة الإلكترونية، خدمات B2B، العقارات، أو قطاع الأغذية والمطاعم.
           </div>
         </div>
-
         <div class="border border-white/10 rounded-xl overflow-hidden bg-white/[0.01]">
           <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white" aria-controls="faq-answer-3">
             <span data-i18n="q3">ما هي أقل ميزانية إعلانية شهرية توصي بها للبدء في إدارة الحملات؟</span>
@@ -465,7 +413,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="py-12 border-t border-white/10 bg-[#040308] text-xs text-slate-400">
     <div class="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
@@ -475,24 +422,20 @@
       </div>
       <div class="flex items-center gap-4">
         <a href="https://linkedin.com/in/islamsaeid" target="_blank" class="hover:text-white transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
-        <a href="https://wa.me/201021252183" target="_blank" class="hover:text-white transition-colors" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+        <a href="https://wa.me/201021252183" target="_blank" data-source="footer" class="hover:text-white transition-colors" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
         <a href="mailto:islamsaeidahmed@gmail.com" class="hover:text-white transition-colors" aria-label="Email"><i class="fa-solid fa-envelope text-sm"></i></a>
       </div>
     </div>
   </footer>
 
-  <!-- Original Local System Scripts -->
   <script src="js/cms-data.js"></script>
   <script src="js/calculator.js"></script>
-  <script src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 
-  <!-- Fancybox for dynamic content -->
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
-    // Initialize Fancybox for dynamically loaded media (portfolio cards, etc.)
     if (window.Fancybox) {
       Fancybox.bind('[data-fancybox]', {});
-      // Re-bind when portfolio grid updates
       const grid = document.getElementById('dynamicPortfolioGrid');
       if (grid) {
         const observer = new MutationObserver(() => {

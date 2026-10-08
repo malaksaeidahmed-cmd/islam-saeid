@@ -1,0 +1,45 @@
+{
+  "name": "إسلام سعيد - Senior Media Buyer",
+  "short_name": "إسلام سعيد",
+  "description": "إدارة الميزانيات الإعلانية الضخمة بتحقيق عوائد استثمارية تصل إلى 30x ROAS",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07060E",
+  "theme_color": "#D946EF",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["business", "marketing", "education"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "المدونة",
+      "url": "/blog.html",
+      "description": "اقرأ آخر المقالات"
+    },
+    {
+      "name": "حاسبة القرار المالي",
+      "url": "/index.html#calculator",
+      "description": "احسب جدوى حملتك الإعلانية"
+    },
+    {
+      "name": "دراسات الحالة",
+      "url": "/index.html#portfolio",
+      "description": "شاهد نتائج الحملات"
+    }
+  ]
+}

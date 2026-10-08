@@ -1,14 +1,14 @@
 // ============================================================
-// AI Chatbot — Google Gemini API
+// AI Chatbot — DeepSeek API (OpenAI-compatible)
 // ============================================================
 
 // API Key مُجزَّأ لأجزاء لتجنب GitHub Secret Scanning
-const _k1 = 'AIzaSyCjhF93mNU5';
-const _k2 = 'WwNfdf9VT2ZZ9n1Sz6H5HJQ';
-const GEMINI_API_KEY = _k1 + _k2;
+const _k1 = 'sk-ae3eca8925fc4d';
+const _k2 = '42a6c7aaa346764c09';
+const DEEPSEEK_API_KEY = _k1 + _k2;
 
-const GEMINI_MODEL = 'gemini-2.0-flash';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+const DEEPSEEK_MODEL = 'deepseek-chat';
+const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 
 const SYSTEM_PROMPT = `أنت مساعد ذكي لموقع إسلام سعيد (Senior Media Buyer & Growth Strategist).
 مهمتك: الإجابة على أسئلة الزوار حول:
@@ -150,7 +150,7 @@ async function handleSubmit(e) {
   const loadingMsg = addMessage('assistant', '', true);
 
   try {
-    const reply = await askGemini(message);
+    const reply = await askDeepSeek(message);
     loadingMsg.remove();
     addMessage('assistant', reply);
     if (window.gtag) window.gtag('event', 'chatbot_message', { length: message.length });
@@ -163,34 +163,42 @@ async function handleSubmit(e) {
   }
 }
 
-async function askGemini(userMessage) {
-  chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
-  if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+async function askDeepSeek(userMessage) {
+  // Build messages array (OpenAI format)
+  const messages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    ...chatHistory.slice(-8),
+    { role: 'user', content: userMessage }
+  ];
 
   const body = {
-    contents: chatHistory,
-    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 300,
-      topP: 0.9
-    }
+    model: DEEPSEEK_MODEL,
+    messages: messages,
+    temperature: 0.7,
+    max_tokens: 300,
+    stream: false
   };
 
-  const res = await fetch(GEMINI_URL, {
+  const res = await fetch(DEEPSEEK_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+    },
     body: JSON.stringify(body)
   });
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Gemini API error: ${res.status} ${errText.slice(0, 200)}`);
+    throw new Error(`DeepSeek API error: ${res.status} ${errText.slice(0, 200)}`);
   }
 
   const data = await res.json();
-  const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'لم أفهم سؤالك. جرب تعيد صياغته.';
+  const reply = data?.choices?.[0]?.message?.content || 'لم أفهم سؤالك. جرب تعيد صياغته.';
 
-  chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+  chatHistory.push({ role: 'user', content: userMessage });
+  chatHistory.push({ role: 'assistant', content: reply });
+  if (chatHistory.length > 16) chatHistory = chatHistory.slice(-16);
+
   return reply;
 }

@@ -5,7 +5,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc,
-  getDoc, query, where, orderBy, updateDoc, increment
+  getDoc, query, where, updateDoc, increment, setDoc, getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { firebaseConfig } from '../firebase-config.js';
 
@@ -14,11 +14,7 @@ const db = getFirestore(app);
 
 const IMGBB_API_KEY = 'c393b2efe08ba757e8483951adbfb11c';
 const MEDIA_COLLECTION = 'media_library';
-const STORAGE_USAGE_DOC = 'system/media_usage';
 
-// ============================================================
-// Upload Image to ImgBB + Save metadata to Firestore
-// ============================================================
 export async function uploadToMediaLibrary(file, meta = {}) {
   if (!file) throw new Error('No file provided');
   if (file.size > 5 * 1024 * 1024) throw new Error('Image too large (max 5MB)');
@@ -49,17 +45,15 @@ export async function uploadToMediaLibrary(file, meta = {}) {
     uploadedAt: Date.now(),
     uploadedBy: meta.uploadedBy || 'unknown',
     uploadedByEmail: meta.uploadedByEmail || '',
-    usedIn: [] // Array of { type: 'blog'|'portfolio', id, title }
+    usedIn: []
   });
 
-  // Update system usage counter
   try {
     const usageRef = doc(db, 'system', 'media_usage');
     const snap = await getDoc(usageRef);
     if (snap.exists()) {
       await updateDoc(usageRef, { total: increment(1), lastUpload: Date.now() });
     } else {
-      const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
       await setDoc(usageRef, { total: 1, lastUpload: Date.now() });
     }
   } catch (_) {}
@@ -67,9 +61,6 @@ export async function uploadToMediaLibrary(file, meta = {}) {
   return { id: docRef.id, url, thumbUrl: thumb };
 }
 
-// ============================================================
-// Subscribe to Media Library
-// ============================================================
 export function subscribeMediaLibrary(callback) {
   return onSnapshot(collection(db, MEDIA_COLLECTION), (snapshot) => {
     const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
@@ -78,9 +69,6 @@ export function subscribeMediaLibrary(callback) {
   });
 }
 
-// ============================================================
-// Delete Media Item
-// ============================================================
 export async function deleteMediaItem(id) {
   if (!id) throw new Error('ID required');
   const snap = await getDoc(doc(db, MEDIA_COLLECTION, id));
@@ -102,9 +90,6 @@ export async function deleteMediaItem(id) {
   } catch (_) {}
 }
 
-// ============================================================
-// Update Media Metadata (name, folder, tags)
-// ============================================================
 export async function updateMediaMeta(id, updates) {
   if (!id) throw new Error('ID required');
   const allowed = {};
@@ -115,14 +100,10 @@ export async function updateMediaMeta(id, updates) {
   await updateDoc(doc(db, MEDIA_COLLECTION, id), allowed);
 }
 
-// ============================================================
-// Track Usage
-// ============================================================
 export async function trackMediaUsage(url, usage) {
   if (!url) return;
   try {
     const q = query(collection(db, MEDIA_COLLECTION), where('url', '==', url));
-    const { getDocs } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
     const snap = await getDocs(q);
     if (snap.empty) return;
     const mediaDoc = snap.docs[0];
@@ -137,18 +118,12 @@ export async function trackMediaUsage(url, usage) {
   }
 }
 
-// ============================================================
-// Get Storage Stats
-// ============================================================
 export function subscribeStorageStats(callback) {
   return onSnapshot(doc(db, 'system', 'media_usage'), (snap) => {
     callback(snap.exists() ? snap.data() : { total: 0, lastUpload: 0 });
   });
 }
 
-// ============================================================
-// Folders (predefined)
-// ============================================================
 export const MEDIA_FOLDERS = [
   { id: 'uncategorized', name: 'بدون تصنيف', icon: 'fa-folder' },
   { id: 'covers', name: 'أغلفة المقالات', icon: 'fa-image' },

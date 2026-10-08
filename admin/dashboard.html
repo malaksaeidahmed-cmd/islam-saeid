@@ -415,14 +415,13 @@
             </div>
           </div>
 
-          <!-- Sticky Bottom Bar with Schedule -->
           <div class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-2 text-[11px] text-slate-400">
                 <i class="fa-solid fa-circle-info"></i>
                 <span id="saveStatusText">جاهز للنشر</span>
               </div>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-2" id="editorActionButtons">
                 <button type="button" onclick="previewBlogPost()" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs">
                   <i class="fa-solid fa-eye ml-1"></i> معاينة
                 </button>
@@ -547,11 +546,15 @@
     } from '../js/rich-editor.js';
     import { DraftManager } from '../js/draft-manager.js';
 
-    // ---------- Auth: TRUST CACHE ----------
+    // ============================================================
+    // AUTH
+    // ============================================================
     console.log('[Dashboard] Initializing auth...');
 
     const CACHE_KEY = 'cms_cached_profile';
     const META_KEY = 'cms_session_meta';
+    let currentUser = null;
+    let currentProfile = null;
 
     function readFastAuth() {
       try {
@@ -567,6 +570,8 @@
     }
 
     function applyAuth(user, profile) {
+      currentUser = user;
+      currentProfile = profile;
       const roleBadge = document.getElementById('userRoleBadge');
       if (roleBadge) {
         roleBadge.textContent = isSuperAdmin(profile) ? '• الأدمن الرئيسي' : '• أدمن فرعي';
@@ -587,10 +592,7 @@
       console.log('[Dashboard] Cache found — instant load');
       applyAuth(fastAuth.user, fastAuth.profile);
     } else {
-      console.warn('[Dashboard] No cache — waiting for Firebase Auth...');
-      const authTimeout = setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 15000);
+      const authTimeout = setTimeout(() => { window.location.href = 'login.html'; }, 15000);
       onAuthChange((user, profile) => {
         clearTimeout(authTimeout);
         if (!user || !profile) { window.location.href = 'login.html'; return; }
@@ -640,19 +642,10 @@
       scheduledView.classList.add('hidden');
       publishedView.classList.add('hidden');
 
-      if (which === 'editor') {
-        editorBtn.className = activeClass;
-        editorView.classList.remove('hidden');
-      } else if (which === 'drafts') {
-        draftsBtn.className = activeClass;
-        draftsView.classList.remove('hidden');
-      } else if (which === 'scheduled') {
-        scheduledBtn.className = activeClass;
-        scheduledView.classList.remove('hidden');
-      } else {
-        publishedBtn.className = activeClass;
-        publishedView.classList.remove('hidden');
-      }
+      if (which === 'editor') { editorBtn.className = activeClass; editorView.classList.remove('hidden'); }
+      else if (which === 'drafts') { draftsBtn.className = activeClass; draftsView.classList.remove('hidden'); }
+      else if (which === 'scheduled') { scheduledBtn.className = activeClass; scheduledView.classList.remove('hidden'); }
+      else { publishedBtn.className = activeClass; publishedView.classList.remove('hidden'); }
     };
 
     window.switchPortfolioSubTab = (which) => {
@@ -745,7 +738,6 @@
       catch (e) { alert('تعذر التحديث'); }
     });
 
-    // ---------- Event Logs ----------
     CloudCMS.subscribeEventLogs(logs => {
       const el = document.getElementById('eventsLogList');
       if (!logs.length) { el.innerHTML = '<p class="text-slate-500 py-3">لا توجد أحداث بعد.</p>'; return; }
@@ -757,7 +749,6 @@
       `).join('');
     });
 
-    // ---------- Comments ----------
     CloudCMS.subscribeAllComments(comments => {
       const container = document.getElementById('commentsTable');
       if (!comments.length) { container.innerHTML = '<p class="text-slate-500 py-3">لا توجد تعليقات.</p>'; return; }
@@ -801,7 +792,6 @@
       `).join('');
     });
 
-    // ---------- Global Actions ----------
     window.approveComment = async (id) => { try { await CloudCMS.approveComment(id); showToast('تم النشر', 'success'); } catch { alert('تعذر'); } };
     window.deleteComment = async (id) => { if (!confirm('حذف؟')) return; try { await CloudCMS.deleteComment(id); showToast('تم الحذف', 'warning'); } catch { alert('تعذر'); } };
 
@@ -1004,6 +994,27 @@
     document.getElementById('postFocusKeyword')?.addEventListener('input', updateAnalysis);
     setInterval(updateAnalysis, 2000);
 
+    // ---------- History Button ----------
+    function showHistoryButton(postId) {
+      let btn = document.getElementById('viewHistoryBtn');
+      if (!btn) {
+        btn = document.createElement('a');
+        btn.id = 'viewHistoryBtn';
+        btn.target = '_blank';
+        btn.className = 'px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs inline-flex items-center gap-1.5';
+        btn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> تاريخ المراجعات';
+        const publishBtn = document.getElementById('publishBtn');
+        publishBtn?.parentElement?.insertBefore(btn, publishBtn);
+      }
+      btn.href = `post-history.html?post=${encodeURIComponent(postId)}`;
+      btn.style.display = 'inline-flex';
+    }
+
+    function hideHistoryButton() {
+      const btn = document.getElementById('viewHistoryBtn');
+      if (btn) btn.style.display = 'none';
+    }
+
     document.getElementById('resetEditorBtn')?.addEventListener('click', () => {
       if (!confirm('سيتم مسح كل البيانات. متأكد؟')) return;
       ['postTitleInput', 'postCategoryInput', 'postCoverUrl', 'postVideoUrl', 'postExcerpt',
@@ -1021,6 +1032,7 @@
       currentDraftId = null;
       draftManager?.resetHash();
       updateSaveStatus('idle');
+      hideHistoryButton();
       const btn = document.getElementById('publishBtn');
       btn.innerHTML = '<i class="fa-solid fa-rocket ml-1"></i> نشر المقال';
       btn.dataset.editId = '';
@@ -1105,6 +1117,24 @@
       try {
         payload.status = 'published';
         payload.publishedAt = Date.now();
+
+        // Save revision BEFORE updating (only if editing existing post)
+        if (editId) {
+          try {
+            const currentPost = allPosts.find(p => p.id === editId);
+            if (currentPost) {
+              await CloudCMS.saveRevision(editId, currentPost, {
+                savedBy: currentUser?.uid || 'unknown',
+                savedByEmail: currentUser?.email || '',
+                reason: 'update'
+              });
+              console.log('[Dashboard] Revision saved before update');
+            }
+          } catch (revErr) {
+            console.warn('Failed to save revision:', revErr);
+          }
+        }
+
         if (editId && CloudCMS.updateBlogPost) {
           await CloudCMS.updateBlogPost(editId, payload);
           showToast('✅ تم تحديث المقال', 'success');
@@ -1128,9 +1158,7 @@
       }
     });
 
-    // ==========================================
-    // SCHEDULE POST
-    // ==========================================
+    // ---------- SCHEDULE ----------
     window.scheduleCurrentPost = async () => {
       const payload = buildPostPayload();
       if (!payload.title) { alert('الرجاء إدخال عنوان المقال'); return; }
@@ -1156,6 +1184,22 @@
         payload.status = 'scheduled';
         payload.scheduledAt = new Date(scheduledTime).toISOString();
 
+        // Save revision before scheduling (if editing)
+        if (editId) {
+          try {
+            const currentPost = allPosts.find(p => p.id === editId);
+            if (currentPost) {
+              await CloudCMS.saveRevision(editId, currentPost, {
+                savedBy: currentUser?.uid || 'unknown',
+                savedByEmail: currentUser?.email || '',
+                reason: 'before_schedule'
+              });
+            }
+          } catch (revErr) {
+            console.warn('Failed to save revision:', revErr);
+          }
+        }
+
         if (editId && CloudCMS.updateBlogPost) {
           await CloudCMS.updateBlogPost(editId, payload);
           showToast('📅 تم تحديث الجدولة', 'success');
@@ -1180,9 +1224,7 @@
       }
     };
 
-    // ==========================================
-    // DRAFTS LIST
-    // ==========================================
+    // ---------- DRAFTS ----------
     let allDrafts = [];
     CloudCMS.subscribeDrafts(drafts => {
       allDrafts = drafts;
@@ -1252,6 +1294,7 @@
       updateSerp(); updateAnalysis();
       draftManager?.resetHash();
       updateSaveStatus('idle');
+      hideHistoryButton();
 
       switchBlogSubTab('editor');
       switchTab('blogTab');
@@ -1270,9 +1313,7 @@
       } catch { alert('تعذر الحذف'); }
     };
 
-    // ==========================================
-    // SCHEDULED POSTS LIST
-    // ==========================================
+    // ---------- SCHEDULED ----------
     let allScheduled = [];
     function subscribeScheduled() {
       CloudCMS.subscribeBlog(items => {
@@ -1298,7 +1339,7 @@
             const minutes = Math.floor((diffMs % 3600000) / 60000);
             countdown = hours > 0 ? `بعد ${hours}س ${minutes}د` : `بعد ${minutes}د`;
           } else {
-            countdown = 'جاهز للنشر (الـ Action هينشره)';
+            countdown = 'جاهز للنشر';
           }
           const scheduledDateStr = item.scheduledAt 
             ? new Date(item.scheduledAt).toLocaleString('ar-EG', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -1330,7 +1371,7 @@
             </div>
           `;
         }).join('');
-      }, true); // includeScheduled = true
+      }, true);
     }
     subscribeScheduled();
 
@@ -1394,11 +1435,11 @@
       const btn = document.getElementById('publishBtn');
       btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
       btn.dataset.editId = id;
+
+      showHistoryButton(id);
     };
 
-    // ==========================================
-    // PUBLISHED POSTS LIST
-    // ==========================================
+    // ---------- PUBLISHED ----------
     let allPosts = [];
     CloudCMS.subscribeBlog(items => {
       allPosts = items;
@@ -1479,6 +1520,8 @@
       const btn = document.getElementById('publishBtn');
       btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
       btn.dataset.editId = id;
+
+      showHistoryButton(id);
     };
 
     // ==========================================
@@ -1730,6 +1773,7 @@
       btn.dataset.editId = id;
     };
 
+    // Init
     updateSerp();
     updateAnalysis();
     updatePortSerp();

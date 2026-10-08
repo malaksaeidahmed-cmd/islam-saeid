@@ -15,6 +15,10 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="shortcut icon" type="image/png" href="logo.png" />
   <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#D946EF" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <script type="application/ld+json">
   {
@@ -60,7 +64,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -302,6 +305,33 @@
     </div>
   </section>
 
+  <!-- NEWSLETTER SECTION -->
+  <section id="newsletter" class="py-16 border-y border-white/5 bg-gradient-to-br from-[#0F0A1F] via-[#0E0B1A] to-[#07060E]">
+    <div class="max-w-3xl mx-auto px-5 text-center space-y-6">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mx-auto">
+        <i class="fa-solid fa-envelope-open-text text-white text-2xl"></i>
+      </div>
+      <div class="space-y-3">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white">انضم لقائمة المتابعين</h2>
+        <p class="text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+          اشترك ليصلك كل جديد من المقالات والنشرات الحصرية عن الميديا باينج واستراتيجيات النمو الإعلاني
+        </p>
+      </div>
+
+      <form data-newsletter-form data-source="homepage" class="max-w-md mx-auto space-y-3">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <label for="newsletterEmailHome" class="sr-only">البريد الإلكتروني</label>
+          <input type="email" id="newsletterEmailHome" required placeholder="بريدك الإلكتروني"
+            class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-pink-500" />
+          <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
+            <i class="fa-solid fa-paper-plane ml-1"></i> اشترك
+          </button>
+        </div>
+        <p data-newsletter-msg class="text-[11px] text-slate-500">لن نرسل أي رسائل مزعجة — فقط محتوى قيمة.</p>
+      </form>
+    </div>
+  </section>
+
   <section id="course" class="py-20 bg-white/[0.01] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-5">
       <div class="p-8 sm:p-12 rounded-3xl border border-brand-orange/30 bg-[#0F0A1F]">
@@ -434,6 +464,16 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
+    import { initFloatingWidgets } from './js/floating-widgets.js';
+    import { initNewsletterForms } from './js/newsletter.js';
+    import { initPWA } from './js/pwa.js';
+    import { initChatbot } from './js/ai-chatbot.js';
+
+    initFloatingWidgets();
+    initNewsletterForms();
+    initPWA();
+    setTimeout(() => initChatbot(), 3000);
+
     if (window.Fancybox) {
       Fancybox.bind('[data-fancybox]', {});
       const grid = document.getElementById('dynamicPortfolioGrid');

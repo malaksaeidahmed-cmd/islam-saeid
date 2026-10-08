@@ -275,6 +275,9 @@
           <button id="subTabScheduled" onclick="switchBlogSubTab('scheduled')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-calendar-check ml-1"></i> المجدولة
           </button>
+          <button id="subTabTemplates" onclick="switchBlogSubTab('templates')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-file-lines ml-1"></i> القوالب
+          </button>
           <button id="subTabPublished" onclick="switchBlogSubTab('published')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-list ml-1"></i> المقالات المنشورة
           </button>
@@ -448,6 +451,7 @@
 
         <div id="blogDraftsView" class="hidden space-y-3"></div>
         <div id="blogScheduledView" class="hidden space-y-3"></div>
+        <div id="blogTemplatesView" class="hidden space-y-4"></div>
         <div id="blogPublishedView" class="hidden space-y-3"></div>
       </section>
 
@@ -545,6 +549,8 @@
       updateSerpPreview, bindCounter, parseVideoEmbed
     } from '../js/rich-editor.js';
     import { DraftManager } from '../js/draft-manager.js';
+    import { getAllTemplates, addCustomTemplate, deleteCustomTemplate } from '../js/templates.js';
+    import { BulkSelection, bulkDelete, bulkUpdate } from '../js/bulk-actions.js';
 
     // ============================================================
     // AUTH
@@ -589,7 +595,6 @@
 
     const fastAuth = readFastAuth();
     if (fastAuth) {
-      console.log('[Dashboard] Cache found — instant load');
       applyAuth(fastAuth.user, fastAuth.profile);
     } else {
       const authTimeout = setTimeout(() => { window.location.href = 'login.html'; }, 15000);
@@ -620,32 +625,31 @@
     };
 
     window.switchBlogSubTab = (which) => {
-      const editorBtn = document.getElementById('subTabEditor');
-      const draftsBtn = document.getElementById('subTabDrafts');
-      const scheduledBtn = document.getElementById('subTabScheduled');
-      const publishedBtn = document.getElementById('subTabPublished');
-      const editorView = document.getElementById('blogEditorView');
-      const draftsView = document.getElementById('blogDraftsView');
-      const scheduledView = document.getElementById('blogScheduledView');
-      const publishedView = document.getElementById('blogPublishedView');
+      const tabs = {
+        editor: document.getElementById('subTabEditor'),
+        drafts: document.getElementById('subTabDrafts'),
+        scheduled: document.getElementById('subTabScheduled'),
+        templates: document.getElementById('subTabTemplates'),
+        published: document.getElementById('subTabPublished')
+      };
+      const views = {
+        editor: document.getElementById('blogEditorView'),
+        drafts: document.getElementById('blogDraftsView'),
+        scheduled: document.getElementById('blogScheduledView'),
+        templates: document.getElementById('blogTemplatesView'),
+        published: document.getElementById('blogPublishedView')
+      };
 
       const activeClass = 'px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white';
       const inactiveClass = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5';
 
-      editorBtn.className = inactiveClass;
-      draftsBtn.className = inactiveClass;
-      scheduledBtn.className = inactiveClass;
-      publishedBtn.className = inactiveClass;
+      Object.values(tabs).forEach(t => { if (t) t.className = inactiveClass; });
+      Object.values(views).forEach(v => { if (v) v.classList.add('hidden'); });
 
-      editorView.classList.add('hidden');
-      draftsView.classList.add('hidden');
-      scheduledView.classList.add('hidden');
-      publishedView.classList.add('hidden');
+      if (tabs[which]) tabs[which].className = activeClass;
+      if (views[which]) views[which].classList.remove('hidden');
 
-      if (which === 'editor') { editorBtn.className = activeClass; editorView.classList.remove('hidden'); }
-      else if (which === 'drafts') { draftsBtn.className = activeClass; draftsView.classList.remove('hidden'); }
-      else if (which === 'scheduled') { scheduledBtn.className = activeClass; scheduledView.classList.remove('hidden'); }
-      else { publishedBtn.className = activeClass; publishedView.classList.remove('hidden'); }
+      if (which === 'templates') renderTemplatesView();
     };
 
     window.switchPortfolioSubTab = (which) => {
@@ -670,7 +674,6 @@
     window.closeModals = () => document.querySelectorAll('#userModal, #userEditModal').forEach(m => m.classList.add('hidden'));
     window.closePreview = () => document.getElementById('previewModal').classList.add('hidden');
 
-    // ---------- Audio ----------
     let audioEnabled = false;
     document.addEventListener('click', () => { audioEnabled = true; }, { once: true });
 
@@ -1118,7 +1121,6 @@
         payload.status = 'published';
         payload.publishedAt = Date.now();
 
-        // Save revision BEFORE updating (only if editing existing post)
         if (editId) {
           try {
             const currentPost = allPosts.find(p => p.id === editId);
@@ -1128,7 +1130,6 @@
                 savedByEmail: currentUser?.email || '',
                 reason: 'update'
               });
-              console.log('[Dashboard] Revision saved before update');
             }
           } catch (revErr) {
             console.warn('Failed to save revision:', revErr);
@@ -1184,7 +1185,6 @@
         payload.status = 'scheduled';
         payload.scheduledAt = new Date(scheduledTime).toISOString();
 
-        // Save revision before scheduling (if editing)
         if (editId) {
           try {
             const currentPost = allPosts.find(p => p.id === editId);
@@ -1439,6 +1439,194 @@
       showHistoryButton(id);
     };
 
+    // ---------- TEMPLATES ----------
+    let templatesSearchQuery = '';
+
+    function renderTemplatesView() {
+      const container = document.getElementById('blogTemplatesView');
+      if (!container) return;
+
+      const allTemplates = getAllTemplates();
+      const filtered = templatesSearchQuery
+        ? allTemplates.filter(t =>
+            t.name.toLowerCase().includes(templatesSearchQuery.toLowerCase()) ||
+            (t.description || '').toLowerCase().includes(templatesSearchQuery.toLowerCase())
+          )
+        : allTemplates;
+
+      container.innerHTML = `
+        <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-white font-bold text-sm flex items-center gap-2">
+                <i class="fa-solid fa-file-lines text-purple-400"></i>
+                القوالب الجاهزة
+              </h3>
+              <p class="text-[10px] text-slate-400 mt-1">اختر قالب للبدء بسرعة، أو احفظ قالب مخصص من مقال حالي.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="text" id="templateSearchInput" placeholder="ابحث..." value="${escapeHtml(templatesSearchQuery)}"
+                class="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white text-[11px]" />
+              <button onclick="saveCurrentAsTemplate()" class="px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[11px] font-bold whitespace-nowrap">
+                <i class="fa-solid fa-plus ml-1"></i> حفظ الحالي كقالب
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${filtered.map(t => `
+            <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 hover:border-purple-500/40 transition-all flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+                  <i class="fa-solid ${t.icon || 'fa-file'} text-purple-400"></i>
+                </div>
+                <h4 class="font-bold text-white text-sm">${escapeHtml(t.name)}</h4>
+                <p class="text-[11px] text-slate-400 leading-relaxed">${escapeHtml(t.description || '')}</p>
+                ${t.isCustom ? '<span class="inline-block px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 text-[10px] font-bold">مخصص</span>' : '<span class="inline-block px-2 py-0.5 rounded bg-green-500/15 text-green-400 text-[10px] font-bold">افتراضي</span>'}
+              </div>
+              <div class="flex gap-2 pt-4 mt-3 border-t border-white/5">
+                <button onclick="useTemplate('${t.id}')" class="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[11px] font-bold">
+                  <i class="fa-solid fa-wand-magic-sparkles ml-1"></i> استخدم
+                </button>
+                ${t.isCustom ? `<button onclick="deleteTemplate('${t.id}')" class="px-3 py-2 rounded-lg bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]"><i class="fa-solid fa-trash"></i></button>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        ${!filtered.length ? '<p class="text-center text-slate-500 py-10 text-xs">لا توجد قوالب مطابقة.</p>' : ''}
+      `;
+
+      document.getElementById('templateSearchInput')?.addEventListener('input', (e) => {
+        templatesSearchQuery = e.target.value;
+        renderTemplatesView();
+      });
+    }
+
+    window.useTemplate = (templateId) => {
+      const templates = getAllTemplates();
+      const template = templates.find(t => t.id === templateId);
+      if (!template) return;
+
+      if (draftManager?.isDirty) {
+        if (!confirm('عندك تغييرات غير محفوظة. استبدالها بالقالب؟')) return;
+      }
+
+      const d = template.data;
+      document.getElementById('postTitleInput').value = d.title || '';
+      document.getElementById('postCategoryInput').value = d.category || '';
+      document.getElementById('postExcerpt').value = d.excerpt || '';
+      document.getElementById('postMetaDesc').value = d.excerpt || '';
+      document.getElementById('postKeyTakeaways').value = Array.isArray(d.keyTakeaways) ? d.keyTakeaways.join('\n') : '';
+      document.getElementById('postFocusKeyword').value = '';
+      document.getElementById('postSlug').value = '';
+
+      setEditorHTML(d.content || '', 'editorContainer');
+      tagInput.setValue(d.tags || []);
+      faqBuilder.setValue(d.faqItems || []);
+
+      currentDraftId = null;
+      draftManager?.resetHash();
+      updateSaveStatus('dirty');
+      updateSerp();
+      updateAnalysis();
+      hideHistoryButton();
+
+      switchBlogSubTab('editor');
+      showToast(`✅ تم تطبيق قالب: ${template.name}`, 'success');
+    };
+
+    window.saveCurrentAsTemplate = () => {
+      const title = document.getElementById('postTitleInput').value.trim();
+      if (!title) { alert('الرجاء إدخال عنوان المقال أولاً'); return; }
+      const name = prompt('اسم القالب:', title.slice(0, 40));
+      if (!name) return;
+
+      addCustomTemplate({
+        name: name.trim(),
+        icon: 'fa-star',
+        description: 'قالب مخصص محفوظ من مقال',
+        data: buildPostPayload()
+      });
+      showToast('✅ تم حفظ القالب', 'success');
+      renderTemplatesView();
+    };
+
+    window.deleteTemplate = (id) => {
+      if (!confirm('حذف هذا القالب؟')) return;
+      deleteCustomTemplate(id);
+      renderTemplatesView();
+      showToast('تم حذف القالب', 'warning');
+    };
+
+    // ---------- BULK ACTIONS ----------
+    const publishedSelection = new BulkSelection((selection) => {
+      updateBulkBar(selection);
+    });
+
+    function updateBulkBar(selection) {
+      let bar = document.getElementById('bulkActionBar');
+      if (!selection.length) { if (bar) bar.remove(); return; }
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'bulkActionBar';
+        bar.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] p-3 rounded-2xl bg-[#0E0B1A] border border-pink-500/40 shadow-2xl flex items-center gap-3';
+        document.body.appendChild(bar);
+      }
+      bar.innerHTML = `
+        <span class="text-white text-xs font-bold px-2">
+          <i class="fa-solid fa-check-circle text-pink-400 ml-1"></i>
+          ${selection.length} محدد
+        </span>
+        <button onclick="bulkPublishSelected()" class="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-[11px] font-bold">
+          <i class="fa-solid fa-rocket ml-1"></i> نشر
+        </button>
+        <button onclick="bulkDeleteSelected()" class="px-3 py-2 rounded-lg bg-red-600/20 text-red-300 hover:bg-red-600/30 text-[11px] font-bold">
+          <i class="fa-solid fa-trash ml-1"></i> حذف
+        </button>
+        <button onclick="publishedSelection.clear()" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-[11px]">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      `;
+    }
+
+    window.bulkDeleteSelected = async () => {
+      const ids = publishedSelection.getSelection();
+      if (!ids.length) return;
+      if (!confirm(`حذف ${ids.length} مقال نهائياً؟`)) return;
+      const result = await bulkDelete(ids, (id) => CloudCMS.deleteBlogPost(id));
+      publishedSelection.clear();
+      showToast(`✅ تم حذف ${result.success} مقال`, 'success');
+    };
+
+    window.bulkPublishSelected = async () => {
+      const ids = publishedSelection.getSelection();
+      if (!ids.length) return;
+      if (!confirm(`نشر ${ids.length} مقال فوراً؟`)) return;
+      const result = await bulkUpdate(ids, (id, data) => CloudCMS.updateBlogPost(id, data), { status: 'published', publishedAt: Date.now() });
+      publishedSelection.clear();
+      showToast(`✅ تم نشر ${result.success} مقال`, 'success');
+    };
+
+    window.toggleBulkSelection = (id) => {
+      publishedSelection.toggle(id);
+      const card = document.getElementById(`pub-${id}`);
+      if (card) {
+        if (publishedSelection.isSelected(id)) card.classList.add('ring-2', 'ring-pink-500');
+        else card.classList.remove('ring-2', 'ring-pink-500');
+      }
+    };
+
+    window.bulkSelectAll = () => {
+      const ids = allPosts.map(p => p.id);
+      publishedSelection.selectAll(ids);
+      ids.forEach(id => {
+        const card = document.getElementById(`pub-${id}`);
+        if (card) card.classList.add('ring-2', 'ring-pink-500');
+      });
+    };
+
     // ---------- PUBLISHED ----------
     let allPosts = [];
     CloudCMS.subscribeBlog(items => {
@@ -1448,28 +1636,38 @@
         container.innerHTML = '<p class="text-center text-slate-500 py-10 text-xs">لا توجد مقالات منشورة بعد.</p>';
         return;
       }
-      container.innerHTML = items.map(item => `
-        <div class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-start gap-3 flex-wrap overflow-safe-card">
-          <div class="space-y-1 min-w-0 flex-1">
-            <h4 class="font-bold text-white text-sm break-words-safe">${escapeHtml(item.title)}</h4>
-            <div class="flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
-              <span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(item.category || 'عام')}</span>
-              <span><i class="fa-solid fa-eye ml-1"></i> ${item.views || 0}</span>
-              <span><i class="fa-solid fa-heart ml-1 text-pink-400"></i> ${item.likes || 0}</span>
-              <span><i class="fa-solid fa-clock ml-1"></i> ${item.readingTime || 1} د</span>
-              <span>${new Date(item.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
+      container.innerHTML = `
+        <div class="flex justify-end">
+          <button onclick="bulkSelectAll()" class="text-[11px] text-slate-400 hover:text-white">
+            <i class="fa-solid fa-check-double ml-1"></i> تحديد الكل
+          </button>
+        </div>
+        ${items.map(item => `
+          <div id="pub-${item.id}" class="p-4 rounded-xl bg-[#0E0B1A] border border-white/10 flex justify-between items-start gap-3 flex-wrap overflow-safe-card transition-all">
+            <div class="flex items-start gap-3 min-w-0 flex-1">
+              <input type="checkbox" onchange="toggleBulkSelection('${item.id}')" ${publishedSelection.isSelected(item.id) ? 'checked' : ''} class="mt-1 w-4 h-4 rounded accent-pink-600 cursor-pointer" />
+              <div class="space-y-1 min-w-0 flex-1">
+                <h4 class="font-bold text-white text-sm break-words-safe">${escapeHtml(item.title)}</h4>
+                <div class="flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
+                  <span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(item.category || 'عام')}</span>
+                  <span><i class="fa-solid fa-eye ml-1"></i> ${item.views || 0}</span>
+                  <span><i class="fa-solid fa-heart ml-1 text-pink-400"></i> ${item.likes || 0}</span>
+                  <span><i class="fa-solid fa-clock ml-1"></i> ${item.readingTime || 1} د</span>
+                  <span>${new Date(item.createdAt || Date.now()).toLocaleDateString('ar-EG')}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+              <button onclick="loadPostForEdit('${item.id}')" class="px-3 py-1.5 rounded bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 text-[11px]">
+                <i class="fa-solid fa-pen"></i> تعديل
+              </button>
+              <button onclick="deleteBlogPost('${item.id}')" class="px-3 py-1.5 rounded bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
           </div>
-          <div class="flex gap-2 flex-shrink-0">
-            <button onclick="loadPostForEdit('${item.id}')" class="px-3 py-1.5 rounded bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 text-[11px]">
-              <i class="fa-solid fa-pen"></i> تعديل
-            </button>
-            <button onclick="deleteBlogPost('${item.id}')" class="px-3 py-1.5 rounded bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
+        `).join('')}
+      `;
     });
 
     window.deleteBlogPost = async (id) => {

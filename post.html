@@ -18,6 +18,8 @@
   <meta name="twitter:description" content="محتوى معرفي عربي حول التحليل المالي للحملات." id="twDesc" />
   <meta name="twitter:image" content="https://islamsaeid.me/logo.png" id="twImage" />
   <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#D946EF" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -26,7 +28,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -36,16 +37,9 @@
   </script>
 
   <style>
-    .article-content {
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.95;
-      color: #cbd5e1;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-    .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(217,70,239,0.3); }
-    .article-content h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; }
+    .article-content { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.95rem; line-height: 1.95; color: #cbd5e1; overflow-wrap: anywhere; word-break: break-word; }
+    .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(217,70,239,0.3); scroll-margin-top: 100px; }
+    .article-content h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; scroll-margin-top: 100px; }
     .article-content h4 { font-size: 1.05rem; font-weight: 600; color: #fff; margin: 1.25rem 0 0.5rem; }
     .article-content p { margin-bottom: 1rem; }
     .article-content a { color: #ec4899; text-decoration: underline; text-underline-offset: 3px; }
@@ -121,6 +115,9 @@
       <div id="postVideoContainer" class="hidden"></div>
       <p id="postExcerptHighlight" class="hidden text-sm text-slate-300 leading-relaxed italic border-r-4 border-pink-500 pr-4 py-1"></p>
 
+      <!-- TOC Container -->
+      <div id="tocContainer" class="hidden"></div>
+
       <div id="postBody" class="article-content"></div>
 
       <div id="keyTakeawaysSection" class="hidden key-takeaways-box">
@@ -150,10 +147,32 @@
             Senior Media Buyer & Growth Strategist — متخصص في إدارة الميزانيات الإعلانية الضخمة وتحقيق عوائد استثمارية قياسية عبر Meta و TikTok Ads.
           </p>
           <div class="flex items-center gap-3 mt-2">
-            <a href="https://wa.me/201021252183" target="_blank" class="text-[11px] text-green-400 hover:underline"><i class="fa-brands fa-whatsapp"></i> تواصل</a>
+            <a href="https://wa.me/201021252183" target="_blank" data-source="post-author" class="text-[11px] text-green-400 hover:underline"><i class="fa-brands fa-whatsapp"></i> تواصل</a>
             <a href="https://linkedin.com/in/islamsaeid" target="_blank" class="text-[11px] text-blue-400 hover:underline"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
           </div>
         </div>
+      </div>
+
+      <!-- Related Posts -->
+      <div id="relatedPostsContainer" class="hidden"></div>
+
+      <!-- Newsletter -->
+      <div class="p-6 rounded-3xl bg-gradient-to-br from-[#0F0A1F] to-[#0E0B1A] border border-purple-500/20 text-center space-y-4">
+        <i class="fa-solid fa-envelope-open-text text-purple-400 text-3xl"></i>
+        <h2 class="text-xl font-bold text-white">اشترك في النشرة البريدية</h2>
+        <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+          احصل على أحدث المقالات والنصائح التسويقية مباشرة في بريدك
+        </p>
+        <form data-newsletter-form data-source="post" class="max-w-md mx-auto space-y-2">
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="email" required placeholder="بريدك الإلكتروني"
+              class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-pink-500" />
+            <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
+              <i class="fa-solid fa-paper-plane ml-1"></i> اشترك
+            </button>
+          </div>
+          <p data-newsletter-msg class="text-[11px] text-slate-500"></p>
+        </form>
       </div>
 
       <div class="pt-8 border-t border-white/10 space-y-6">
@@ -182,7 +201,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
     import { initAnalyticsAuto, trackPostRead, trackLike, trackCommentSubmit, trackShare } from './js/analytics-events.js';
+    import { renderRelatedPosts } from './js/related-posts.js';
+    import { initTOC } from './js/toc.js';
+    import { initFloatingWidgets } from './js/floating-widgets.js';
+    import { initNewsletterForms } from './js/newsletter.js';
+    import { initPWA } from './js/pwa.js';
+    import { initChatbot } from './js/ai-chatbot.js';
+
     initAnalyticsAuto();
+    initFloatingWidgets();
+    initNewsletterForms();
+    initPWA();
+    setTimeout(() => initChatbot(), 3000);
 
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
@@ -276,9 +306,7 @@
     }
 
     function buildPostUrl(post) {
-      if (post.slug) {
-        return `https://islamsaeid.me/post.html?slug=${encodeURIComponent(post.slug)}`;
-      }
+      if (post.slug) return `https://islamsaeid.me/post.html?slug=${encodeURIComponent(post.slug)}`;
       return `https://islamsaeid.me/post.html?id=${encodeURIComponent(post.id)}`;
     }
 
@@ -316,11 +344,7 @@
           "datePublished": new Date(post.createdAt || Date.now()).toISOString(),
           "dateModified": new Date(post.updatedAt || post.createdAt || Date.now()).toISOString(),
           "author": { "@type": "Person", "name": post.author || "إسلام سعيد", "url": "https://islamsaeid.me" },
-          "publisher": {
-            "@type": "Organization",
-            "name": "إسلام سعيد",
-            "logo": { "@type": "ImageObject", "url": "https://islamsaeid.me/logo.png" }
-          },
+          "publisher": { "@type": "Organization", "name": "إسلام سعيد", "logo": { "@type": "ImageObject", "url": "https://islamsaeid.me/logo.png" } },
           "mainEntityOfPage": { "@type": "WebPage", "@id": url },
           "keywords": Array.isArray(post.tags) ? post.tags.join(', ') : (post.focusKeyword || ''),
           "articleSection": post.category || '',
@@ -383,7 +407,6 @@
           <div class="post-faq-content hidden">${escapeHtml(item.answer || '')}</div>
         </div>
       `).join('');
-
       list.querySelectorAll('.post-faq-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const content = btn.nextElementSibling;
@@ -467,6 +490,12 @@
 
       trackPostRead(post.id, post.title || '', rt);
 
+      // Init TOC (after content rendered)
+      setTimeout(() => initTOC('.article-content', 'tocContainer'), 100);
+
+      // Load related posts
+      renderRelatedPosts(post.id, 'relatedPostsContainer', 3);
+
       if (window.Fancybox) Fancybox.bind('[data-fancybox]', {});
     }
 
@@ -500,19 +529,15 @@
       window.location.href = 'blog.html';
     } else {
       initReadingProgress();
-
       let cms = null;
       let post = null;
 
       try {
         const { CloudCMS } = await import('./js/firebase-cms.js');
         cms = CloudCMS;
-
         if (postSlug) {
-          console.log('[Post] Loading by slug:', postSlug);
           post = await CloudCMS.getBlogPostBySlug(postSlug);
         } else if (postId) {
-          console.log('[Post] Loading by id:', postId);
           post = await CloudCMS.getBlogPostById(postId);
         }
       } catch (error) {
@@ -521,12 +546,8 @@
 
       if (!post && window.cmsEngine?.getBlog) {
         const localPosts = window.cmsEngine.getBlog() || [];
-        if (postSlug) {
-          post = localPosts.find((entry) => String(entry.slug) === String(postSlug));
-        }
-        if (!post && postId) {
-          post = localPosts.find((entry) => String(entry.id) === String(postId));
-        }
+        if (postSlug) post = localPosts.find((entry) => String(entry.slug) === String(postSlug));
+        if (!post && postId) post = localPosts.find((entry) => String(entry.id) === String(postId));
       }
 
       if (!post) {
@@ -570,7 +591,6 @@
           const name = document.getElementById('cName').value.trim();
           const content = document.getElementById('cContent').value.trim();
           if (!name || !content) return;
-
           commentSubmitBtn.setAttribute('disabled', 'true');
           try {
             await cms.addComment(postKey, name, content);

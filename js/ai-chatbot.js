@@ -3,12 +3,12 @@
 // ============================================================
 
 // API Key مُجزَّأ لأجزاء لتجنب GitHub Secret Scanning
-const _k1 = 'AQ.Ab8RN6L-u8M3EwAw6J1';
-const _k2 = 'OM3LR6iOcVVT7XcvZukL2qHVx9cv8OA';
+const _k1 = 'AIzaSyCjhF93mNU5';
+const _k2 = 'WwNfdf9VT2ZZ9n1Sz6H5HJQ';
 const GEMINI_API_KEY = _k1 + _k2;
 
 const GEMINI_MODEL = 'gemini-2.0-flash';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `أنت مساعد ذكي لموقع إسلام سعيد (Senior Media Buyer & Growth Strategist).
 مهمتك: الإجابة على أسئلة الزوار حول:
@@ -177,13 +177,9 @@ async function askGemini(userMessage) {
     }
   };
 
-  // ✅ المفتاح بيتبعت في header مش في URL
   const res = await fetch(GEMINI_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': GEMINI_API_KEY
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
 

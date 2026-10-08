@@ -1,5 +1,5 @@
 // ============================================================
-// AI Chatbot — Groq API (Llama 3.3 70B)
+// AI Chatbot — Groq API (Llama 3.1 8B Instant)
 // ============================================================
 
 // API Key مُجزَّأ لأجزاء لتجنب GitHub Secret Scanning
@@ -7,7 +7,7 @@ const _k1 = 'gsk_vsal19kb9XUjgEydyP8h';
 const _k2 = 'WGdyb3FYXuZWDwiQpIVK4HFwhAOwwIlC';
 const GROQ_API_KEY = _k1 + _k2;
 
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_MODEL = 'llama-3.1-8b-instant';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SYSTEM_PROMPT = `أنت مساعد ذكي لموقع إسلام سعيد (Senior Media Buyer & Growth Strategist).

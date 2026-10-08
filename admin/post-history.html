@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تاريخ المراجعات | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
+
+  <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-5 flex justify-between items-center">
+      <a href="dashboard.html" class="flex items-center gap-3">
+        <img src="../logo.png" alt="إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onError="this.style.display='none'" />
+        <span class="font-bold text-white">تاريخ المراجعات</span>
+      </a>
+      <a href="dashboard.html" class="text-xs text-slate-300 hover:text-white">
+        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للوحة التحكم
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-5 py-10 space-y-6">
+
+    <!-- Post Info -->
+    <div id="postInfoBox" class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3 text-xs">
+      <div class="text-slate-400 text-center">
+        <i class="fa-solid fa-spinner fa-spin ml-2"></i>
+        جاري تحميل معلومات المقال...
+      </div>
+    </div>
+
+    <!-- Info Alert -->
+    <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-[11px] text-blue-200 leading-relaxed flex items-start gap-2">
+      <i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i>
+      <div>
+        <strong>تلقائي:</strong> كل مرة تعدّل المقال من الداشبورد، النظام يحفظ نسخة قبل التعديل. الحد الأقصى: <strong>5 نسخ</strong> لكل مقال (الأقدم يُحذف تلقائياً).
+      </div>
+    </div>
+
+    <!-- Revisions List -->
+    <div id="revisionsBox" class="space-y-3">
+      <div class="text-center py-10 text-slate-400 text-xs">
+        <i class="fa-solid fa-spinner fa-spin ml-2"></i>
+        جاري تحميل المراجعات...
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { CloudCMS } from '../js/firebase-cms.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('post');
+
+    function escapeHtml(v) {
+      return String(v ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function stripHtml(html) {
+      return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    function formatDate(ts) {
+      if (!ts) return '—';
+      return new Date(ts).toLocaleString('ar-EG', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function timeAgo(ts) {
+      if (!ts) return '';
+      const diff = Date.now() - ts;
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      if (minutes < 1) return 'الآن';
+      if (minutes < 60) return `منذ ${minutes} دقيقة`;
+      if (hours < 24) return `منذ ${hours} ساعة`;
+      return `منذ ${days} يوم`;
+    }
+
+    async function loadPostInfo() {
+      if (!postId) {
+        document.getElementById('postInfoBox').innerHTML = `
+          <div class="text-center text-red-400 py-4">
+            <i class="fa-solid fa-triangle-exclamation text-2xl block mb-2"></i>
+            <p>لم يتم تحديد مقال. اذهب للداشبورد واختر مقال ثم "تاريخ المراجعات".</p>
+            <a href="dashboard.html" class="inline-block mt-3 px-5 py-2 rounded-lg bg-pink-600 text-white text-xs font-bold">العودة للداشبورد</a>
+          </div>
+        `;
+        return null;
+      }
+
+      const post = await CloudCMS.getBlogPostById(postId);
+      const box = document.getElementById('postInfoBox');
+
+      if (!post) {
+        box.innerHTML = `
+          <div class="text-center text-red-400 py-4">
+            <i class="fa-solid fa-triangle-exclamation text-2xl block mb-2"></i>
+            <p>المقال غير موجود</p>
+          </div>
+        `;
+        return null;
+      }
+
+      box.innerHTML = `
+        <div class="flex items-start gap-4 flex-wrap">
+          ${post.image ? `<img src="${escapeHtml(post.image)}" class="w-24 h-24 object-cover rounded-xl border border-white/10" onerror="this.style.display='none'" />` : ''}
+          <div class="min-w-0 flex-1">
+            <h2 class="font-bold text-white text-base mb-1 break-words-safe">${escapeHtml(post.title || 'بدون عنوان')}</h2>
+            <div class="flex items-center gap-3 text-[10px] text-slate-400 flex-wrap">
+              ${post.category ? `<span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(post.category)}</span>` : ''}
+              <span>آخر تحديث: ${formatDate(post.updatedAt || post.createdAt)}</span>
+              <span>${(stripHtml(post.content).split(/\s+/).filter(Boolean).length)} كلمة</span>
+            </div>
+          </div>
+          <a href="dashboard.html" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[11px] whitespace-nowrap">
+            <i class="fa-solid fa-pen ml-1"></i> العودة للتعديل
+          </a>
+        </div>
+      `;
+      return post;
+    }
+
+    function renderRevisions(revisions) {
+      const box = document.getElementById('revisionsBox');
+      if (!revisions.length) {
+        box.innerHTML = `
+          <div class="text-center py-16 space-y-3">
+            <i class="fa-solid fa-clock-rotate-left text-3xl text-slate-600"></i>
+            <p class="text-slate-500 text-xs">لا توجد مراجعات محفوظة بعد.</p>
+            <p class="text-slate-600 text-[10px]">هتظهر أول مراجعة لما تعدّل المقال من الداشبورد.</p>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = revisions.map((rev, idx) => {
+        const num = revisions.length - idx;
+        const wordCount = stripHtml(rev.content).split(/\s+/).filter(Boolean).length;
+        const excerptShort = String(rev.excerpt || stripHtml(rev.content)).slice(0, 150);
+
+        return `
+          <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 hover:border-purple-500/40 transition-all space-y-3">
+            <div class="flex items-start justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 font-bold text-sm">
+                  ${num}
+                </div>
+                <div>
+                  <div class="font-bold text-white text-sm">النسخة #${num}</div>
+                  <div class="text-[10px] text-slate-400">${formatDate(rev.savedAt)} · ${timeAgo(rev.savedAt)}</div>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="previewRevision('${rev.id}')" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[11px]">
+                  <i class="fa-solid fa-eye ml-1"></i> معاينة
+                </button>
+                <button onclick="restoreRevision('${rev.id}')" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white text-[11px] font-bold">
+                  <i class="fa-solid fa-rotate-left ml-1"></i> استرجاع
+                </button>
+                <button onclick="deleteRevisionById('${rev.id}')" class="px-3 py-1.5 rounded-lg bg-red-500/15 text-red-300 hover:bg-red-500/25 text-[11px]">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+              <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                <div class="text-slate-400">العنوان</div>
+                <div class="text-white font-bold truncate" title="${escapeHtml(rev.title)}">${escapeHtml(rev.title || '—')}</div>
+              </div>
+              <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                <div class="text-slate-400">التصنيف</div>
+                <div class="text-pink-400 font-bold truncate">${escapeHtml(rev.category || '—')}</div>
+              </div>
+              <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                <div class="text-slate-400">كلمات</div>
+                <div class="text-white font-bold font-sans">${wordCount}</div>
+              </div>
+              <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                <div class="text-slate-400">Tags</div>
+                <div class="text-amber-400 font-bold">${(rev.tags || []).length}</div>
+              </div>
+            </div>
+
+            ${excerptShort ? `
+              <p class="text-[11px] text-slate-400 leading-relaxed line-clamp-2">${escapeHtml(excerptShort)}${excerptShort.length >= 150 ? '...' : ''}</p>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ============================================================
+    // Actions
+    // ============================================================
+    let currentRevisions = [];
+
+    window.previewRevision = (revId) => {
+      const rev = currentRevisions.find(r => r.id === revId);
+      if (!rev) return;
+
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4';
+      modal.id = 'previewModalTemp';
+      modal.innerHTML = `
+        <div class="bg-[#07060E] border border-white/10 rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+          <div class="sticky top-0 bg-[#0E0B1A] border-b border-white/10 p-4 flex justify-between items-center z-10">
+            <div>
+              <h3 class="text-white font-bold text-sm"><i class="fa-solid fa-clock-rotate-left ml-2 text-purple-400"></i> معاينة النسخة</h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">${formatDate(rev.savedAt)}</p>
+            </div>
+            <button onclick="document.getElementById('previewModalTemp').remove()" class="text-slate-400 hover:text-white">
+              <i class="fa-solid fa-times text-lg"></i>
+            </button>
+          </div>
+          <div class="p-6 sm:p-8 space-y-4">
+            <div class="flex items-center gap-2 text-xs flex-wrap">
+              ${rev.category ? `<span class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 font-bold">${escapeHtml(rev.category)}</span>` : ''}
+              <span class="text-slate-400">${rev.readingTime || 1} دقيقة قراءة</span>
+            </div>
+            <h1 class="text-2xl font-bold text-white leading-snug">${escapeHtml(rev.title || 'بدون عنوان')}</h1>
+            ${rev.image ? `<img src="${escapeHtml(rev.image)}" class="w-full max-h-96 object-cover rounded-2xl border border-white/10" onerror="this.style.display='none'" />` : ''}
+            ${rev.excerpt ? `<p class="text-sm text-slate-300 leading-relaxed italic border-r-4 border-pink-500 pr-4">${escapeHtml(rev.excerpt)}</p>` : ''}
+            <div class="ql-editor" style="padding:0;color:#cbd5e1;min-height:auto">${rev.content || '<p class="text-slate-500">لا يوجد محتوى</p>'}</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    };
+
+    window.restoreRevision = async (revId) => {
+      const rev = currentRevisions.find(r => r.id === revId);
+      if (!rev) return;
+
+      if (!confirm(`سيتم استرجاع النسخة #${currentRevisions.indexOf(rev) + 1}.\n\nملاحظة: النسخة الحالية هتتحفظ تلقائياً كنسخة جديدة قبل الاسترجاع.`)) return;
+
+      try {
+        // Get current post state and save it as a revision before restoring
+        const currentPost = await CloudCMS.getBlogPostById(postId);
+        if (currentPost) {
+          await CloudCMS.saveRevision(postId, currentPost, {
+            savedBy: 'super_admin',
+            reason: 'before_restore'
+          });
+        }
+
+        // Restore the revision
+        await CloudCMS.updateBlogPost(postId, {
+          title: rev.title,
+          category: rev.category,
+          image: rev.image,
+          video: rev.video,
+          excerpt: rev.excerpt,
+          content: rev.content,
+          contentFormat: rev.contentFormat,
+          slug: rev.slug,
+          metaTitle: rev.metaTitle,
+          metaDescription: rev.metaDescription,
+          focusKeyword: rev.focusKeyword,
+          tags: rev.tags,
+          keyTakeaways: rev.keyTakeaways,
+          faqItems: rev.faqItems,
+          readingTime: rev.readingTime
+        });
+
+        alert('✅ تم استرجاع النسخة بنجاح');
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+        alert('تعذر استرجاع النسخة: ' + (err.message || ''));
+      }
+    };
+
+    window.deleteRevisionById = async (revId) => {
+      if (!confirm('حذف هذه المراجعة نهائياً؟')) return;
+      try {
+        await CloudCMS.deleteRevision(revId);
+        alert('✅ تم الحذف');
+      } catch (err) {
+        console.error(err);
+        alert('تعذر الحذف');
+      }
+    };
+
+    // ============================================================
+    // Load
+    // ============================================================
+    (async () => {
+      const post = await loadPostInfo();
+      if (!post) return;
+
+      CloudCMS.subscribeRevisions(postId, (revisions) => {
+        currentRevisions = revisions;
+        renderRevisions(revisions);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -16,6 +16,8 @@
   <meta name="twitter:description" content="نتائج حملات موثقة من إسلام سعيد." id="twDesc" />
   <meta name="twitter:image" content="https://islamsaeid.me/logo.png" id="twImage" />
   <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#D946EF" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -24,7 +26,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -34,14 +35,7 @@
   </script>
 
   <style>
-    .case-content {
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.95;
-      color: #cbd5e1;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
+    .case-content { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.95rem; line-height: 1.95; color: #cbd5e1; overflow-wrap: anywhere; word-break: break-word; }
     .case-content h2 { font-size: 1.4rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(249,115,22,0.3); }
     .case-content h3 { font-size: 1.15rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; }
     .case-content h4 { font-size: 1rem; font-weight: 600; color: #fff; margin: 1.25rem 0 0.5rem; }
@@ -135,7 +129,7 @@
         <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
           نتائج مبنية على تحليل مالي دقيق واقتصاديات وحدة مدروسة، مش مجرد حملات عشوائية.
         </p>
-        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20شاهدت%20دراسة%20الحالة%20وأريد%20استشارة" target="_blank"
+        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20شاهدت%20دراسة%20الحالة%20وأريد%20استشارة" target="_blank" data-source="case-study"
            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
           <i class="fa-brands fa-whatsapp"></i> احجز استشارة مجانية
         </a>
@@ -147,7 +141,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
     import { initAnalyticsAuto } from './js/analytics-events.js';
+    import { initFloatingWidgets } from './js/floating-widgets.js';
+    import { initPWA } from './js/pwa.js';
+    import { initChatbot } from './js/ai-chatbot.js';
+
     initAnalyticsAuto();
+    initFloatingWidgets();
+    initPWA();
+    setTimeout(() => initChatbot(), 3000);
 
     const urlParams = new URLSearchParams(window.location.search);
     const csId = urlParams.get('id');
@@ -266,11 +267,7 @@
           "datePublished": new Date(item.createdAt || Date.now()).toISOString(),
           "dateModified": new Date(item.updatedAt || item.createdAt || Date.now()).toISOString(),
           "author": { "@type": "Person", "name": "إسلام سعيد", "url": "https://islamsaeid.me" },
-          "publisher": {
-            "@type": "Organization",
-            "name": "إسلام سعيد",
-            "logo": { "@type": "ImageObject", "url": "https://islamsaeid.me/logo.png" }
-          },
+          "publisher": { "@type": "Organization", "name": "إسلام سعيد", "logo": { "@type": "ImageObject", "url": "https://islamsaeid.me/logo.png" } },
           "mainEntityOfPage": { "@type": "WebPage", "@id": url },
           "keywords": Array.isArray(item.tags) ? item.tags.join(', ') : (item.focusKeyword || ''),
           "articleSection": item.category || '',
@@ -300,7 +297,6 @@
       if (!Array.isArray(gallery) || !gallery.length) { section.classList.add('hidden'); return; }
       const valid = gallery.filter(g => g && isSafeMediaUrl(g.url));
       if (!valid.length) { section.classList.add('hidden'); return; }
-
       section.classList.remove('hidden');
       grid.innerHTML = valid.map((g, idx) => {
         const isVideo = g.type === 'video';
@@ -318,7 +314,6 @@
             <img src="${escapeHtml(g.url)}" alt="${escapeHtml(g.caption || `صورة ${idx + 1}`)}" loading="lazy" />
           </a>`;
       }).join('');
-
       if (window.Fancybox) Fancybox.bind('[data-fancybox="cs-gallery"]', {});
     }
 
@@ -379,7 +374,6 @@
       window.location.href = 'index.html#portfolio';
     } else {
       initReadingProgress();
-
       let item = null;
       try {
         const { CloudCMS } = await import('./js/firebase-cms.js');
@@ -392,13 +386,11 @@
       } catch (error) {
         console.warn('Cloud case study unavailable, using local fallback.', error);
       }
-
       if (!item && window.cmsEngine?.getPortfolio) {
         const localPortfolio = window.cmsEngine.getPortfolio() || [];
         if (csSlug) item = localPortfolio.find((e) => String(e.slug) === String(csSlug));
         if (!item && csId) item = localPortfolio.find((e) => String(e.id) === String(csId));
       }
-
       if (!item) {
         loadingEl.innerHTML = `
           <i class="fa-solid fa-file-circle-question text-3xl block mb-3 text-slate-500"></i>

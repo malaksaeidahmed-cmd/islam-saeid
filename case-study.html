@@ -23,6 +23,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-N8FEC6LYZ7', { send_page_view: true });
+  </script>
+
   <style>
     .case-content {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
@@ -32,11 +42,7 @@
       overflow-wrap: anywhere;
       word-break: break-word;
     }
-    .case-content h2 {
-      font-size: 1.4rem; font-weight: 700; color: #fff;
-      margin: 2rem 0 0.75rem; padding-bottom: 0.5rem;
-      border-bottom: 2px solid rgba(249, 115, 22, 0.3);
-    }
+    .case-content h2 { font-size: 1.4rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(249,115,22,0.3); }
     .case-content h3 { font-size: 1.15rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; }
     .case-content h4 { font-size: 1rem; font-weight: 600; color: #fff; margin: 1.25rem 0 0.5rem; }
     .case-content p { margin-bottom: 1rem; }
@@ -44,58 +50,22 @@
     .case-content a:hover { color: #fdba74; }
     .case-content img { max-width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0; display: block; }
     .case-content iframe { width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 14px; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
-    .case-content blockquote {
-      border-right: 4px solid #f97316; padding: 0.75rem 1rem;
-      margin: 1.5rem 0; background: rgba(249,115,22,0.05);
-      border-radius: 8px; color: #e2e8f0; font-style: italic;
-    }
+    .case-content blockquote { border-right: 4px solid #f97316; padding: 0.75rem 1rem; margin: 1.5rem 0; background: rgba(249,115,22,0.05); border-radius: 8px; color: #e2e8f0; font-style: italic; }
     .case-content ul, .case-content ol { padding-right: 1.5rem; padding-left: 0; margin-bottom: 1rem; }
     .case-content li { margin-bottom: 0.5rem; }
     .case-content ul li { list-style-type: disc; }
     .case-content ol li { list-style-type: decimal; }
-    .case-content pre {
-      background: #0a0a14; color: #fb923c; border-radius: 12px;
-      padding: 1rem; font-family: 'Courier New', monospace;
-      direction: ltr; text-align: left; border: 1px solid rgba(255,255,255,0.1);
-      overflow-x: auto; margin: 1.5rem 0; font-size: 0.85rem;
-    }
-    .case-content code {
-      background: rgba(249,115,22,0.1); color: #fb923c;
-      padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em;
-      direction: ltr; display: inline-block;
-    }
+    .case-content pre { background: #0a0a14; color: #fb923c; border-radius: 12px; padding: 1rem; font-family: 'Courier New', monospace; direction: ltr; text-align: left; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto; margin: 1.5rem 0; font-size: 0.85rem; }
+    .case-content code { background: rgba(249,115,22,0.1); color: #fb923c; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; direction: ltr; display: inline-block; }
     .case-content strong { color: #fff; font-weight: 700; }
-
-    .case-tag {
-      display: inline-block; padding: 0.35rem 0.85rem; border-radius: 9999px;
-      font-size: 0.7rem; font-weight: 600;
-      background: rgba(249,115,22,0.12); color: #fb923c;
-      border: 1px solid rgba(249,115,22,0.25);
-    }
+    .case-tag { display: inline-block; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); transition: all 0.2s ease; }
     .case-tag:hover { background: rgba(249,115,22,0.22); color: #fdba74; }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 0.75rem;
-    }
-    .gallery-item {
-      position: relative; aspect-ratio: 1/1; border-radius: 0.75rem;
-      overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
-      cursor: zoom-in; transition: all 0.2s ease;
-      background: rgba(255,255,255,0.02);
-    }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; }
+    .gallery-item { position: relative; aspect-ratio: 1/1; border-radius: 0.75rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); cursor: zoom-in; transition: all 0.2s ease; background: rgba(255,255,255,0.02); }
     .gallery-item:hover { transform: scale(1.02); border-color: rgba(249,115,22,0.5); }
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-    .gallery-play-badge {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.4); color: white; font-size: 1.75rem; pointer-events: none;
-    }
-    #readingProgress {
-      position: fixed; top: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, #f97316, #d946ef, #7c3aed);
-      width: 0%; z-index: 100; transition: width 0.15s ease;
-    }
+    .gallery-play-badge { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); color: white; font-size: 1.75rem; pointer-events: none; }
+    #readingProgress { position: fixed; top: 0; right: 0; height: 3px; background: linear-gradient(90deg, #f97316, #d946ef, #7c3aed); width: 0%; z-index: 100; transition: width 0.15s ease; }
   </style>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen">
@@ -121,17 +91,14 @@
     </div>
 
     <div id="caseContent" class="hidden space-y-8">
-      <!-- Header Card -->
       <div class="p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
         <div class="flex items-center justify-between text-xs flex-wrap gap-2">
           <span id="csCategory" class="text-orange-400 font-bold break-words-safe"></span>
           <span id="csRoas" class="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-bold font-sans break-words-safe"></span>
         </div>
         <h1 id="csTitle" class="text-2xl sm:text-4xl font-bold text-white break-words-safe leading-snug"></h1>
-
         <div id="csMediaContainer" class="hidden my-4 rounded-2xl overflow-hidden border border-white/10"></div>
         <div id="csVideoContainer" class="hidden my-4"></div>
-
         <p id="csDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed break-words-safe"></p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10 text-xs">
@@ -146,7 +113,6 @@
         </div>
       </div>
 
-      <!-- Gallery -->
       <div id="csGallerySection" class="hidden p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
         <h2 class="text-lg font-bold text-white border-b border-white/10 pb-3 flex items-center gap-2">
           <i class="fa-solid fa-images text-amber-400"></i> معرض الصور والفيديوهات
@@ -154,25 +120,23 @@
         <div id="csGalleryGrid" class="gallery-grid"></div>
       </div>
 
-      <!-- Rich Details -->
       <div class="p-6 sm:p-8 rounded-3xl border border-white/10 bg-[#0E0B1A] space-y-4 overflow-safe-card">
         <h2 class="text-lg font-bold text-white border-b border-white/10 pb-3">تفاصيل الاستراتيجية والنتائج</h2>
         <div id="csDetails" class="case-content"></div>
       </div>
 
-      <!-- Tags -->
       <div id="csTagsSection" class="hidden pt-4 border-t border-white/10">
         <h3 class="text-xs text-slate-400 mb-2 font-bold">الكلمات المفتاحية:</h3>
         <div id="csTagsList" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- CTA -->
       <div class="p-6 rounded-3xl border border-orange-500/30 bg-gradient-to-br from-[#0F0A1F] to-[#0E0B1A] text-center space-y-4">
         <h3 class="text-white font-bold text-lg">هل تريد نتائج مشابهة لمشروعك؟</h3>
         <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
           نتائج مبنية على تحليل مالي دقيق واقتصاديات وحدة مدروسة، مش مجرد حملات عشوائية.
         </p>
-        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20شاهدت%20دراسة%20الحالة%20وأريد%20استشارة" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
+        <a href="https://wa.me/201021252183?text=مرحباً%20إسلام،%20شاهدت%20دراسة%20الحالة%20وأريد%20استشارة" target="_blank"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-lg hover:opacity-95">
           <i class="fa-brands fa-whatsapp"></i> احجز استشارة مجانية
         </a>
       </div>
@@ -182,8 +146,12 @@
   <script src="js/cms-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script type="module">
+    import { initAnalyticsAuto } from './js/analytics-events.js';
+    initAnalyticsAuto();
+
     const urlParams = new URLSearchParams(window.location.search);
     const csId = urlParams.get('id');
+    const csSlug = urlParams.get('slug');
     const loadingEl = document.getElementById('caseLoading');
 
     function escapeHtml(value) {
@@ -260,11 +228,16 @@
       return escapeHtml(raw).replace(/\n/g, '<br>');
     }
 
+    function buildCaseUrl(item) {
+      if (item.slug) return `https://islamsaeid.me/case-study.html?slug=${encodeURIComponent(item.slug)}`;
+      return `https://islamsaeid.me/case-study.html?id=${encodeURIComponent(item.id)}`;
+    }
+
     function updateMetaTags(item) {
       const title = item.metaTitle || `${item.title || 'دراسة حالة'} | إسلام سعيد`;
       const desc = item.metaDescription || item.desc || String(item.details || '').replace(/<[^>]+>/g, ' ').slice(0, 160).replace(/\s+/g, ' ').trim();
       const img = isSafeMediaUrl(item.mediaUrl) ? item.mediaUrl : 'https://islamsaeid.me/logo.png';
-      const url = `https://islamsaeid.me/case-study.html?id=${encodeURIComponent(item.id)}`;
+      const url = buildCaseUrl(item);
 
       document.title = title;
       document.getElementById('metaDesc')?.setAttribute('content', desc);
@@ -279,7 +252,7 @@
     }
 
     function injectJsonLd(item) {
-      const url = `https://islamsaeid.me/case-study.html?id=${encodeURIComponent(item.id)}`;
+      const url = buildCaseUrl(item);
       const image = isSafeMediaUrl(item.mediaUrl) ? item.mediaUrl : 'https://islamsaeid.me/logo.png';
       const desc = item.metaDescription || item.desc || 'دراسة حالة من إسلام سعيد';
 
@@ -324,11 +297,7 @@
     function renderGallery(gallery) {
       const section = document.getElementById('csGallerySection');
       const grid = document.getElementById('csGalleryGrid');
-
-      if (!Array.isArray(gallery) || !gallery.length) {
-        section.classList.add('hidden');
-        return;
-      }
+      if (!Array.isArray(gallery) || !gallery.length) { section.classList.add('hidden'); return; }
       const valid = gallery.filter(g => g && isSafeMediaUrl(g.url));
       if (!valid.length) { section.classList.add('hidden'); return; }
 
@@ -336,7 +305,6 @@
       grid.innerHTML = valid.map((g, idx) => {
         const isVideo = g.type === 'video';
         const embed = isVideo ? parseVideoEmbed(g.url) : null;
-
         if (isVideo && embed) {
           const thumb = g.thumbnail && isSafeMediaUrl(g.thumbnail) ? g.thumbnail : 'logo.png';
           return `
@@ -407,7 +375,7 @@
       }, { passive: true });
     }
 
-    if (!csId) {
+    if (!csId && !csSlug) {
       window.location.href = 'index.html#portfolio';
     } else {
       initReadingProgress();
@@ -415,14 +383,20 @@
       let item = null;
       try {
         const { CloudCMS } = await import('./js/firebase-cms.js');
-        item = await CloudCMS.getPortfolioItemById(csId);
+        if (csSlug && CloudCMS.getPortfolioItemBySlug) {
+          item = await CloudCMS.getPortfolioItemBySlug(csSlug);
+        }
+        if (!item && csId) {
+          item = await CloudCMS.getPortfolioItemById(csId);
+        }
       } catch (error) {
         console.warn('Cloud case study unavailable, using local fallback.', error);
       }
 
       if (!item && window.cmsEngine?.getPortfolio) {
         const localPortfolio = window.cmsEngine.getPortfolio() || [];
-        item = localPortfolio.find((entry) => String(entry.id) === String(csId));
+        if (csSlug) item = localPortfolio.find((e) => String(e.slug) === String(csSlug));
+        if (!item && csId) item = localPortfolio.find((e) => String(e.id) === String(csId));
       }
 
       if (!item) {

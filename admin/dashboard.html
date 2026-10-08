@@ -23,7 +23,6 @@
   </div>
 
   <div class="flex h-screen overflow-hidden">
-
     <aside class="w-64 bg-[#0C0A18] border-l border-white/10 flex flex-col justify-between p-5 overflow-y-auto flex-shrink-0">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
@@ -43,6 +42,9 @@
           </button>
           <button id="navBlog" onclick="switchTab('blogTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-newspaper text-pink-400"></i> المدونة والمقالات
+          </button>
+          <button id="navMedia" onclick="switchTab('mediaTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
+            <i class="fa-solid fa-images text-cyan-400"></i> مكتبة الوسائط
           </button>
           <button id="navComments" onclick="switchTab('commentsTab')" class="nav-btn w-full p-3 rounded-xl text-right flex items-center gap-2.5 text-slate-400 hover:text-white hover:bg-white/5">
             <i class="fa-solid fa-comments text-amber-400"></i> إدارة التعليقات
@@ -73,7 +75,6 @@
 
     <main class="flex-1 overflow-y-auto p-6 lg:p-8">
 
-      <!-- ANALYTICS -->
       <section id="analyticsTab" class="tab-content space-y-6">
         <div>
           <h2 class="text-xl font-bold text-white">التحليلات اللحظية</h2>
@@ -105,7 +106,6 @@
         </div>
       </section>
 
-      <!-- PORTFOLIO -->
       <section id="portfolioTab" class="tab-content hidden space-y-6">
         <div class="flex items-center gap-2 border-b border-white/10 pb-3">
           <button id="portSubTabEditor" onclick="switchPortfolioSubTab('editor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-orange-600 text-white">
@@ -156,7 +156,7 @@
                 <input type="text" id="portResults" placeholder="مثال: 3,000,000+ EGP مبيعات" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">صورة المشروع الرئيسية (Featured Image)</label>
+                <label class="block text-slate-400 mb-1">صورة المشروع الرئيسية</label>
                 <div class="flex gap-2">
                   <input type="url" id="portMediaUrl" placeholder="https://..." class="flex-1 bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
                   <button type="button" onclick="uploadPortfolioImage('media')" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[11px] whitespace-nowrap">
@@ -168,11 +168,11 @@
                 </div>
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">فيديو رئيسي (اختياري - YouTube/Vimeo)</label>
+                <label class="block text-slate-400 mb-1">فيديو رئيسي (اختياري)</label>
                 <input type="url" id="portVideoUrl" placeholder="https://youtube.com/watch?v=..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">الوصف القصير (يظهر في كروت الرئيسية) <span class="text-pink-400">*</span></label>
+                <label class="block text-slate-400 mb-1">الوصف القصير <span class="text-pink-400">*</span></label>
                 <textarea id="portDesc" rows="2" maxlength="200" placeholder="وصف مختصر في 100-150 حرف..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
                 <span id="portDescCounter" class="text-[10px] text-green-400 font-bold">0 / 200</span>
               </div>
@@ -192,7 +192,6 @@
               <i class="fa-solid fa-images text-amber-400"></i>
               <h3 class="text-white font-bold text-sm">معرض الصور والفيديوهات</h3>
             </div>
-            <p class="text-[10px] text-slate-400">أضف صور الحملات والفيديوهات ليعرضها الزائر في معرض احترافي داخل دراسة الحالة.</p>
             <div id="portGalleryContainer" class="space-y-2"></div>
           </div>
 
@@ -213,24 +212,20 @@
                   <i class="fa-solid fa-wand-magic-sparkles ml-1"></i> توليد تلقائي
                 </button>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">الكلمة المفتاحية الرئيسية</label>
                 <input type="text" id="portFocusKeyword" placeholder="مثال: media buying case study" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
               </div>
-
               <div>
-                <label class="block text-slate-400 mb-1">عنوان الـ SEO (Meta Title)</label>
-                <input type="text" id="portMetaTitle" maxlength="60" placeholder="عنوان يظهر في Google..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                <label class="block text-slate-400 mb-1">عنوان الـ SEO</label>
+                <input type="text" id="portMetaTitle" maxlength="60" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
                 <span id="portMetaTitleCounter" class="text-[10px] text-green-400 font-bold">0 / 60</span>
               </div>
-
               <div>
-                <label class="block text-slate-400 mb-1">وصف الـ SEO (Meta Description)</label>
-                <textarea id="portMetaDesc" rows="3" maxlength="160" placeholder="وصف يظهر في Google..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
+                <label class="block text-slate-400 mb-1">وصف الـ SEO</label>
+                <textarea id="portMetaDesc" rows="3" maxlength="160" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
                 <span id="portMetaDescCounter" class="text-[10px] text-green-400 font-bold">0 / 160</span>
               </div>
-
               <div class="md:col-span-2">
                 <label class="block text-slate-400 mb-1">الكلمات المفتاحية / Tags</label>
                 <div id="portTagInputContainer"></div>
@@ -263,7 +258,6 @@
         <div id="portfolioPublishedView" class="hidden space-y-3"></div>
       </section>
 
-      <!-- BLOG -->
       <section id="blogTab" class="tab-content hidden space-y-6">
         <div class="flex items-center gap-2 border-b border-white/10 pb-3 flex-wrap">
           <button id="subTabEditor" onclick="switchBlogSubTab('editor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white">
@@ -298,7 +292,7 @@
               </div>
               <div>
                 <label class="block text-slate-400 mb-1">التصنيف <span class="text-pink-400">*</span></label>
-                <input type="text" id="postCategoryInput" list="categorySuggestions" placeholder="مثال: استراتيجيات مالية" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
+                <input type="text" id="postCategoryInput" list="categorySuggestions" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
                 <datalist id="categorySuggestions">
                   <option value="استراتيجيات مالية" />
                   <option value="صناعة المحتوى الإعلاني" />
@@ -309,14 +303,14 @@
                 </datalist>
               </div>
               <div>
-                <label class="block text-slate-400 mb-1">وقت القراءة (يُحسب تلقائياً)</label>
+                <label class="block text-slate-400 mb-1">وقت القراءة</label>
                 <div class="flex items-center gap-2 bg-black/50 border border-white/10 rounded-lg p-2.5">
                   <i class="fa-solid fa-clock text-amber-400"></i>
                   <span id="readingTimeDisplay" class="text-white">1 دقيقة</span>
                 </div>
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">صورة الغلاف (Featured Image)</label>
+                <label class="block text-slate-400 mb-1">صورة الغلاف</label>
                 <div class="flex gap-2">
                   <input type="url" id="postCoverUrl" placeholder="https://..." class="flex-1 bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
                   <button type="button" onclick="uploadCoverImage()" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[11px] whitespace-nowrap">
@@ -328,12 +322,12 @@
                 </div>
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">فيديو رئيسي (اختياري - YouTube/Vimeo)</label>
+                <label class="block text-slate-400 mb-1">فيديو رئيسي (اختياري)</label>
                 <input type="url" id="postVideoUrl" placeholder="https://youtube.com/watch?v=..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
               </div>
               <div class="md:col-span-2">
-                <label class="block text-slate-400 mb-1">المقتطف (Excerpt)</label>
-                <textarea id="postExcerpt" rows="2" maxlength="250" placeholder="ملخص جذاب في 150-200 حرف..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
+                <label class="block text-slate-400 mb-1">المقتطف</label>
+                <textarea id="postExcerpt" rows="2" maxlength="250" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
                 <span id="excerptCounter" class="text-[10px] text-green-400 font-bold">0 / 250</span>
               </div>
             </div>
@@ -353,7 +347,6 @@
                 <i class="fa-solid fa-magnifying-glass-chart text-green-400"></i>
                 <h3 class="text-white font-bold text-sm">تحسين محركات البحث (SEO)</h3>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">الرابط الدائم (Slug)</label>
                 <div class="flex items-center gap-2 bg-black/50 border border-white/10 rounded-lg p-2.5">
@@ -364,35 +357,30 @@
                   <i class="fa-solid fa-wand-magic-sparkles ml-1"></i> توليد تلقائي من العنوان
                 </button>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">عنوان الـ SEO (Meta Title)</label>
-                <input type="text" id="postMetaTitle" maxlength="60" placeholder="عنوان يظهر في Google..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                <input type="text" id="postMetaTitle" maxlength="60" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
                 <span id="metaTitleCounter" class="text-[10px] text-green-400 font-bold">0 / 60</span>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">وصف الـ SEO (Meta Description)</label>
-                <textarea id="postMetaDesc" rows="3" maxlength="160" placeholder="وصف يظهر في Google..." class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
+                <textarea id="postMetaDesc" rows="3" maxlength="160" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]"></textarea>
                 <span id="metaDescCounter" class="text-[10px] text-green-400 font-bold">0 / 160</span>
               </div>
-
               <div>
-                <label class="block text-slate-400 mb-1">الكلمة المفتاحية الرئيسية (Focus Keyword)</label>
-                <input type="text" id="postFocusKeyword" placeholder="مثال: roas calculator" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
+                <label class="block text-slate-400 mb-1">الكلمة المفتاحية الرئيسية</label>
+                <input type="text" id="postFocusKeyword" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px]" />
                 <div class="mt-2 p-2 rounded-lg bg-black/30 border border-white/5 text-[10px] text-slate-400 space-y-0.5">
                   <div class="flex justify-between"><span>عدد الظهور:</span><span id="kwCount" class="text-white font-bold">0</span></div>
                   <div class="flex justify-between"><span>كثافة الكلمة:</span><span id="kwDensity" class="text-white font-bold">0%</span></div>
                   <div class="flex justify-between"><span>التقييم:</span><span id="kwStatus" class="text-slate-400">—</span></div>
                 </div>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">الكلمات المفتاحية / Tags</label>
                 <div id="tagInputContainer"></div>
                 <input type="hidden" id="postTags" />
               </div>
-
               <div class="pt-3 border-t border-white/10">
                 <label class="block text-slate-400 mb-2 text-[11px]">معاينة Google (SERP Preview)</label>
                 <div id="serpPreview"></div>
@@ -404,13 +392,10 @@
                 <i class="fa-solid fa-brain text-purple-400"></i>
                 <h3 class="text-white font-bold text-sm">تحسين الظهور في AI Search</h3>
               </div>
-              <p class="text-[10px] text-slate-400 leading-relaxed">هذه البيانات تساعد ChatGPT و Perplexity و Google AI Overview على فهم محتواك.</p>
-
               <div>
                 <label class="block text-slate-400 mb-1">النقاط الرئيسية (Key Takeaways)</label>
                 <textarea id="postKeyTakeaways" rows="5" placeholder="نقطة واحدة في كل سطر" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-[11px] leading-relaxed"></textarea>
               </div>
-
               <div>
                 <label class="block text-slate-400 mb-1">الأسئلة الشائعة (FAQ)</label>
                 <div id="faqBuilderContainer" class="space-y-2"></div>
@@ -455,13 +440,33 @@
         <div id="blogPublishedView" class="hidden space-y-3"></div>
       </section>
 
-      <!-- COMMENTS -->
+      <section id="mediaTab" class="tab-content hidden space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold text-white">مكتبة الوسائط</h2>
+            <p class="text-xs text-slate-400">كل الصور المرفوعة في مكان واحد</p>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" id="mediaSearchInput" placeholder="ابحث..." class="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white text-xs" />
+            <button onclick="openMediaUpload()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs">
+              <i class="fa-solid fa-cloud-arrow-up ml-1"></i> رفع جديد
+            </button>
+          </div>
+        </div>
+
+        <div id="mediaFolderFilters" class="flex flex-wrap gap-2"></div>
+        <div id="mediaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+        <div id="mediaEmpty" class="hidden text-center py-16 space-y-3">
+          <i class="fa-solid fa-images text-3xl text-slate-600"></i>
+          <p class="text-slate-500 text-xs">لا توجد صور بعد</p>
+        </div>
+      </section>
+
       <section id="commentsTab" class="tab-content hidden space-y-6">
         <h2 class="text-xl font-bold text-white">إدارة تعليقات الزوار</h2>
         <div id="commentsTable" class="space-y-3 text-xs"></div>
       </section>
 
-      <!-- USERS -->
       <section id="usersTab" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -476,12 +481,11 @@
     </main>
   </div>
 
-  <!-- MODAL: ADD USER -->
   <div id="userModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">إضافة أدمن فرعي</h3>
       <form id="userForm" class="space-y-3">
-        <input type="email" id="uName" placeholder="البريد الإلكتروني (سيستخدمه للدخول)" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-left" dir="ltr" />
+        <input type="email" id="uName" placeholder="البريد الإلكتروني" required class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-left" dir="ltr" />
         <input type="password" id="uPass" placeholder="كلمة المرور (6 أحرف على الأقل)" required minlength="6" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white" />
         <div>
           <label class="block text-slate-400 mb-1">الصلاحيات:</label>
@@ -500,7 +504,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT USER -->
   <div id="userEditModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-[#0E0B1A] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4 text-xs">
       <h3 class="text-base font-bold text-white">تعديل بيانات الأدمن</h3>
@@ -524,7 +527,6 @@
     </div>
   </div>
 
-  <!-- MODAL: PREVIEW -->
   <div id="previewModal" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
     <div class="bg-[#07060E] border border-white/10 rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
       <div class="sticky top-0 bg-[#0E0B1A] border-b border-white/10 p-4 flex justify-between items-center z-10">
@@ -551,12 +553,12 @@
     import { DraftManager } from '../js/draft-manager.js';
     import { getAllTemplates, addCustomTemplate, deleteCustomTemplate } from '../js/templates.js';
     import { BulkSelection, bulkDelete, bulkUpdate } from '../js/bulk-actions.js';
+    import { uploadToMediaLibrary, subscribeMediaLibrary, deleteMediaItem, MEDIA_FOLDERS } from '../js/media-library.js';
 
     // ============================================================
     // AUTH
     // ============================================================
     console.log('[Dashboard] Initializing auth...');
-
     const CACHE_KEY = 'cms_cached_profile';
     const META_KEY = 'cms_session_meta';
     let currentUser = null;
@@ -590,7 +592,7 @@
         document.getElementById('navUsers')?.remove();
       }
       document.getElementById('authLoading')?.remove();
-      console.log('[Dashboard] Ready — page loaded');
+      console.log('[Dashboard] Ready');
     }
 
     const fastAuth = readFastAuth();
@@ -611,7 +613,6 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // ---------- Tab Switching ----------
     window.switchTab = (tabId) => {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
@@ -639,16 +640,12 @@
         templates: document.getElementById('blogTemplatesView'),
         published: document.getElementById('blogPublishedView')
       };
-
       const activeClass = 'px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 text-white';
       const inactiveClass = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5';
-
       Object.values(tabs).forEach(t => { if (t) t.className = inactiveClass; });
       Object.values(views).forEach(v => { if (v) v.classList.add('hidden'); });
-
       if (tabs[which]) tabs[which].className = activeClass;
       if (views[which]) views[which].classList.remove('hidden');
-
       if (which === 'templates') renderTemplatesView();
     };
 
@@ -691,7 +688,6 @@
       } catch (_) {}
     }
 
-    // ---------- Analytics ----------
     let currentBootcampStatus = true;
     let maintenanceStatus = false;
     let lastLeadCount = null;
@@ -703,7 +699,6 @@
       document.getElementById('statPdfs').textContent = (data.pdfDownloads || 0).toLocaleString('ar-EG');
       const cr = data.visits > 0 ? ((data.leads / data.visits) * 100).toFixed(1) : 0;
       document.getElementById('statCr').textContent = `${cr}%`;
-
       currentBootcampStatus = data.bootcampOpen !== false;
       const btn = document.getElementById('toggleBootcampBtn');
       if (currentBootcampStatus) {
@@ -713,12 +708,10 @@
         btn.textContent = 'مغلق';
         btn.className = 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-red-600';
       }
-
       maintenanceStatus = data.maintenanceMode === true;
       const mBtn = document.getElementById('toggleMaintenanceBtn');
       mBtn.textContent = maintenanceStatus ? 'مفعّل' : 'متوقف';
       mBtn.className = `px-2.5 py-1 rounded-lg text-[10px] font-bold text-white ${maintenanceStatus ? 'bg-red-600' : 'bg-green-600'}`;
-
       if (lastLeadCount !== null && (data.leads || 0) > lastLeadCount) {
         showToast(`🎉 طلب ترشح جديد! الإجمالي: ${data.leads}`, 'success');
         playNotificationSound();
@@ -771,7 +764,6 @@
       `).join('');
     });
 
-    // ---------- Admins ----------
     let currentUsers = [];
     subscribeAdmins(users => {
       currentUsers = users;
@@ -863,7 +855,6 @@
     const tagInput = initTagInput('tagInputContainer', 'postTags');
     const faqBuilder = initFaqBuilder('faqBuilderContainer');
 
-    // ---------- Draft Manager ----------
     let currentDraftId = null;
     let draftManager = null;
 
@@ -962,20 +953,21 @@
       input.onchange = async () => {
         const file = input.files?.[0];
         if (!file) return;
-        if (file.size > 5 * 1024 * 1024) { alert('حجم الصورة يجب أن يكون أقل من 5MB'); return; }
-        const IMGBB_API_KEY = 'c393b2efe08ba757e8483951adbfb11c';
-        const formData = new FormData();
-        formData.append('image', file);
         try {
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success) {
-            document.getElementById('postCoverUrl').value = data.data.url;
-            document.getElementById('postCoverUrl').dispatchEvent(new Event('input'));
-            draftManager?.markDirty();
-            showToast('تم رفع الصورة', 'success');
-          } else throw new Error('upload failed');
-        } catch (err) { console.error(err); alert('فشل رفع الصورة'); }
+          const result = await uploadToMediaLibrary(file, {
+            name: file.name,
+            uploadedBy: currentUser?.uid || 'unknown',
+            uploadedByEmail: currentUser?.email || '',
+            folder: 'covers'
+          });
+          document.getElementById('postCoverUrl').value = result.url;
+          document.getElementById('postCoverUrl').dispatchEvent(new Event('input'));
+          draftManager?.markDirty();
+          showToast('تم رفع الصورة للمكتبة', 'success');
+        } catch (err) {
+          console.error(err);
+          alert(err.message || 'فشل رفع الصورة');
+        }
       };
       input.click();
     };
@@ -997,7 +989,6 @@
     document.getElementById('postFocusKeyword')?.addEventListener('input', updateAnalysis);
     setInterval(updateAnalysis, 2000);
 
-    // ---------- History Button ----------
     function showHistoryButton(postId) {
       let btn = document.getElementById('viewHistoryBtn');
       if (!btn) {
@@ -1065,7 +1056,6 @@
       const html = getEditorHTML('editorContainer');
       const excerpt = document.getElementById('postExcerpt').value;
       const readingTime = calculateReadingTime(html);
-
       document.getElementById('previewContent').innerHTML = `
         <article class="space-y-5">
           <div class="flex items-center gap-3 text-xs flex-wrap">
@@ -1131,9 +1121,7 @@
                 reason: 'update'
               });
             }
-          } catch (revErr) {
-            console.warn('Failed to save revision:', revErr);
-          }
+          } catch (revErr) { console.warn('Revision save failed:', revErr); }
         }
 
         if (editId && CloudCMS.updateBlogPost) {
@@ -1159,47 +1147,25 @@
       }
     });
 
-    // ---------- SCHEDULE ----------
     window.scheduleCurrentPost = async () => {
       const payload = buildPostPayload();
       if (!payload.title) { alert('الرجاء إدخال عنوان المقال'); return; }
       if (!payload.category) { alert('الرجاء إدخال التصنيف'); return; }
       if (!payload.content || payload.content === '<p><br></p>') { alert('الرجاء كتابة محتوى المقال'); return; }
-
       const dtValue = document.getElementById('scheduleDateTime').value;
       if (!dtValue) { alert('الرجاء اختيار تاريخ ووقت النشر'); return; }
-
       const scheduledTime = new Date(dtValue).getTime();
       if (isNaN(scheduledTime)) { alert('التاريخ/الوقت غير صحيح'); return; }
       if (scheduledTime <= Date.now()) { alert('الرجاء اختيار وقت في المستقبل'); return; }
-
       const btn = document.getElementById('scheduleBtn');
       const publishBtn = document.getElementById('publishBtn');
       const editId = publishBtn.dataset.editId;
-
       btn.disabled = true;
       const origText = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري الجدولة...';
-
       try {
         payload.status = 'scheduled';
         payload.scheduledAt = new Date(scheduledTime).toISOString();
-
-        if (editId) {
-          try {
-            const currentPost = allPosts.find(p => p.id === editId);
-            if (currentPost) {
-              await CloudCMS.saveRevision(editId, currentPost, {
-                savedBy: currentUser?.uid || 'unknown',
-                savedByEmail: currentUser?.email || '',
-                reason: 'before_schedule'
-              });
-            }
-          } catch (revErr) {
-            console.warn('Failed to save revision:', revErr);
-          }
-        }
-
         if (editId && CloudCMS.updateBlogPost) {
           await CloudCMS.updateBlogPost(editId, payload);
           showToast('📅 تم تحديث الجدولة', 'success');
@@ -1207,7 +1173,6 @@
           await CloudCMS.addBlogPost(payload);
           showToast('📅 تم جدولة المقال', 'success');
         }
-
         if (currentDraftId && CloudCMS.deleteDraft) {
           try { await CloudCMS.deleteDraft(currentDraftId); } catch (_) {}
           currentDraftId = null;
@@ -1224,7 +1189,6 @@
       }
     };
 
-    // ---------- DRAFTS ----------
     let allDrafts = [];
     CloudCMS.subscribeDrafts(drafts => {
       allDrafts = drafts;
@@ -1265,7 +1229,6 @@
       if (draftManager?.isDirty && !confirm('عندك تغييرات غير محفوظة. هل تريد تجاهلها؟')) return;
       const draft = allDrafts.find(d => d.id === id);
       if (!draft) return;
-
       currentDraftId = draft.id;
       document.getElementById('postTitleInput').value = draft.title || '';
       document.getElementById('postCategoryInput').value = draft.category || '';
@@ -1277,7 +1240,6 @@
       document.getElementById('postMetaDesc').value = draft.metaDescription || '';
       document.getElementById('postFocusKeyword').value = draft.focusKeyword || '';
       document.getElementById('postKeyTakeaways').value = Array.isArray(draft.keyTakeaways) ? draft.keyTakeaways.join('\n') : '';
-
       if (draft.contentFormat === 'html' || /<[a-z][\s\S]*>/i.test(draft.content || '')) {
         setEditorHTML(draft.content || '', 'editorContainer');
       } else {
@@ -1285,17 +1247,14 @@
       }
       tagInput.setValue(draft.tags || []);
       faqBuilder.setValue(draft.faqItems || []);
-
       if (draft.image) {
         document.getElementById('coverPreview').classList.remove('hidden');
         document.getElementById('coverPreviewImg').src = draft.image;
       }
-
       updateSerp(); updateAnalysis();
       draftManager?.resetHash();
       updateSaveStatus('idle');
       hideHistoryButton();
-
       switchBlogSubTab('editor');
       switchTab('blogTab');
       showToast('تم تحميل المسودة', 'info');
@@ -1313,7 +1272,6 @@
       } catch { alert('تعذر الحذف'); }
     };
 
-    // ---------- SCHEDULED ----------
     let allScheduled = [];
     function subscribeScheduled() {
       CloudCMS.subscribeBlog(items => {
@@ -1344,7 +1302,6 @@
           const scheduledDateStr = item.scheduledAt 
             ? new Date(item.scheduledAt).toLocaleString('ar-EG', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             : '—';
-
           return `
             <div class="p-4 rounded-xl bg-[#0E0B1A] border border-amber-500/20 flex justify-between items-start gap-3 flex-wrap overflow-safe-card">
               <div class="space-y-1 min-w-0 flex-1">
@@ -1354,7 +1311,6 @@
                     <i class="fa-solid fa-clock ml-1"></i>${escapeHtml(countdown)}
                   </span>
                   <span><i class="fa-solid fa-calendar ml-1"></i> ${scheduledDateStr}</span>
-                  ${item.category ? `<span class="px-2 py-0.5 rounded bg-pink-500/15 text-pink-400">${escapeHtml(item.category)}</span>` : ''}
                 </div>
               </div>
               <div class="flex gap-2 flex-shrink-0">
@@ -1390,10 +1346,8 @@
       if (draftManager?.isDirty && !confirm('عندك تغييرات غير محفوظة. هل تريد تجاهلها؟')) return;
       const item = allScheduled.find(p => p.id === id);
       if (!item) return;
-
       currentDraftId = null;
       draftManager?.resetHash();
-
       document.getElementById('postTitleInput').value = item.title || '';
       document.getElementById('postCategoryInput').value = item.category || '';
       document.getElementById('postCoverUrl').value = item.image || '';
@@ -1404,14 +1358,12 @@
       document.getElementById('postMetaDesc').value = item.metaDescription || '';
       document.getElementById('postFocusKeyword').value = item.focusKeyword || '';
       document.getElementById('postKeyTakeaways').value = Array.isArray(item.keyTakeaways) ? item.keyTakeaways.join('\n') : '';
-
       if (item.scheduledAt) {
         const dt = new Date(item.scheduledAt);
         const pad = n => String(n).padStart(2, '0');
         document.getElementById('scheduleDateTime').value = 
           `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
       }
-
       if (item.contentFormat === 'html' || /<[a-z][\s\S]*>/i.test(item.content || '')) {
         setEditorHTML(item.content || '', 'editorContainer');
       } else {
@@ -1419,33 +1371,29 @@
       }
       tagInput.setValue(item.tags || []);
       faqBuilder.setValue(item.faqItems || []);
-
       if (item.image) {
         document.getElementById('coverPreview').classList.remove('hidden');
         document.getElementById('coverPreviewImg').src = item.image;
       }
-
       updateSerp(); updateAnalysis();
       updateSaveStatus('idle');
-
       switchBlogSubTab('editor');
       switchTab('blogTab');
       showToast('تم تحميل المقال المجدول', 'info');
-
       const btn = document.getElementById('publishBtn');
       btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
       btn.dataset.editId = id;
-
       showHistoryButton(id);
     };
 
-    // ---------- TEMPLATES ----------
+    // ==========================================
+    // TEMPLATES
+    // ==========================================
     let templatesSearchQuery = '';
 
     function renderTemplatesView() {
       const container = document.getElementById('blogTemplatesView');
       if (!container) return;
-
       const allTemplates = getAllTemplates();
       const filtered = templatesSearchQuery
         ? allTemplates.filter(t =>
@@ -1453,7 +1401,6 @@
             (t.description || '').toLowerCase().includes(templatesSearchQuery.toLowerCase())
           )
         : allTemplates;
-
       container.innerHTML = `
         <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-3">
@@ -1473,7 +1420,6 @@
             </div>
           </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           ${filtered.map(t => `
             <div class="p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 hover:border-purple-500/40 transition-all flex flex-col justify-between">
@@ -1494,10 +1440,8 @@
             </div>
           `).join('')}
         </div>
-
         ${!filtered.length ? '<p class="text-center text-slate-500 py-10 text-xs">لا توجد قوالب مطابقة.</p>' : ''}
       `;
-
       document.getElementById('templateSearchInput')?.addEventListener('input', (e) => {
         templatesSearchQuery = e.target.value;
         renderTemplatesView();
@@ -1508,11 +1452,9 @@
       const templates = getAllTemplates();
       const template = templates.find(t => t.id === templateId);
       if (!template) return;
-
       if (draftManager?.isDirty) {
         if (!confirm('عندك تغييرات غير محفوظة. استبدالها بالقالب؟')) return;
       }
-
       const d = template.data;
       document.getElementById('postTitleInput').value = d.title || '';
       document.getElementById('postCategoryInput').value = d.category || '';
@@ -1521,18 +1463,15 @@
       document.getElementById('postKeyTakeaways').value = Array.isArray(d.keyTakeaways) ? d.keyTakeaways.join('\n') : '';
       document.getElementById('postFocusKeyword').value = '';
       document.getElementById('postSlug').value = '';
-
       setEditorHTML(d.content || '', 'editorContainer');
       tagInput.setValue(d.tags || []);
       faqBuilder.setValue(d.faqItems || []);
-
       currentDraftId = null;
       draftManager?.resetHash();
       updateSaveStatus('dirty');
       updateSerp();
       updateAnalysis();
       hideHistoryButton();
-
       switchBlogSubTab('editor');
       showToast(`✅ تم تطبيق قالب: ${template.name}`, 'success');
     };
@@ -1542,7 +1481,6 @@
       if (!title) { alert('الرجاء إدخال عنوان المقال أولاً'); return; }
       const name = prompt('اسم القالب:', title.slice(0, 40));
       if (!name) return;
-
       addCustomTemplate({
         name: name.trim(),
         icon: 'fa-star',
@@ -1560,7 +1498,9 @@
       showToast('تم حذف القالب', 'warning');
     };
 
-    // ---------- BULK ACTIONS ----------
+    // ==========================================
+    // BULK ACTIONS
+    // ==========================================
     const publishedSelection = new BulkSelection((selection) => {
       updateBulkBar(selection);
     });
@@ -1627,7 +1567,117 @@
       });
     };
 
-    // ---------- PUBLISHED ----------
+    // ==========================================
+    // MEDIA LIBRARY
+    // ==========================================
+    let allMedia = [];
+    let currentMediaFolder = 'all';
+    let mediaSearchQuery = '';
+
+    function renderMediaFolderFilters() {
+      const container = document.getElementById('mediaFolderFilters');
+      if (!container) return;
+      const folders = [{ id: 'all', name: 'الكل', icon: 'fa-th' }, ...MEDIA_FOLDERS];
+      container.innerHTML = folders.map(f => `
+        <button onclick="filterMediaFolder('${f.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${currentMediaFolder === f.id ? 'bg-cyan-500 text-white' : 'bg-white/5 text-slate-400 hover:text-white'}">
+          <i class="fa-solid ${f.icon} ml-1"></i>${f.name}
+        </button>
+      `).join('');
+    }
+
+    function renderMediaGrid() {
+      const grid = document.getElementById('mediaGrid');
+      const empty = document.getElementById('mediaEmpty');
+      if (!grid || !empty) return;
+      let filtered = allMedia;
+      if (currentMediaFolder !== 'all') filtered = filtered.filter(m => m.folder === currentMediaFolder);
+      if (mediaSearchQuery) {
+        const q = mediaSearchQuery.toLowerCase();
+        filtered = filtered.filter(m =>
+          (m.name || '').toLowerCase().includes(q) ||
+          (m.tags || []).some(t => t.toLowerCase().includes(q))
+        );
+      }
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      grid.innerHTML = filtered.map(m => `
+        <div class="group relative rounded-xl overflow-hidden border border-white/10 bg-[#0E0B1A] aspect-square">
+          <img src="${escapeHtml(m.thumbUrl || m.url)}" alt="${escapeHtml(m.name)}" class="w-full h-full object-cover" loading="lazy" />
+          <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2">
+            <div class="text-[9px] text-white text-center truncate w-full px-1" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</div>
+            <button onclick="copyMediaUrl('${escapeHtml(m.url)}')" class="w-full px-2 py-1 rounded bg-cyan-600 text-white text-[10px] font-bold"><i class="fa-solid fa-copy ml-1"></i> نسخ</button>
+            <button onclick="deleteMedia('${m.id}')" class="w-full px-2 py-1 rounded bg-red-600/80 text-white text-[10px] font-bold"><i class="fa-solid fa-trash ml-1"></i> حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.filterMediaFolder = (id) => {
+      currentMediaFolder = id;
+      renderMediaFolderFilters();
+      renderMediaGrid();
+    };
+
+    window.copyMediaUrl = async (url) => {
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast('✅ تم نسخ الرابط', 'success');
+      } catch {
+        prompt('انسخ الرابط:', url);
+      }
+    };
+
+    window.deleteMedia = async (id) => {
+      if (!confirm('حذف هذه الصورة؟')) return;
+      try {
+        await deleteMediaItem(id);
+        showToast('تم الحذف', 'warning');
+      } catch (err) {
+        alert(err.message || 'تعذر الحذف');
+      }
+    };
+
+    window.openMediaUpload = () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.onchange = async () => {
+        const files = Array.from(input.files || []);
+        if (!files.length) return;
+        showToast(`جاري رفع ${files.length} صورة...`, 'info');
+        for (const file of files) {
+          try {
+            await uploadToMediaLibrary(file, {
+              uploadedBy: currentUser?.uid || 'unknown',
+              uploadedByEmail: currentUser?.email || '',
+              folder: currentMediaFolder === 'all' ? 'uncategorized' : currentMediaFolder
+            });
+          } catch (err) { console.error(err); }
+        }
+        showToast('✅ تم الرفع', 'success');
+      };
+      input.click();
+    };
+
+    subscribeMediaLibrary(items => {
+      allMedia = items || [];
+      renderMediaFolderFilters();
+      renderMediaGrid();
+    });
+
+    document.getElementById('mediaSearchInput')?.addEventListener('input', (e) => {
+      mediaSearchQuery = e.target.value;
+      renderMediaGrid();
+    });
+
+    // ==========================================
+    // PUBLISHED POSTS
+    // ==========================================
     let allPosts = [];
     CloudCMS.subscribeBlog(items => {
       allPosts = items;
@@ -1680,10 +1730,8 @@
       if (draftManager?.isDirty && !confirm('عندك تغييرات غير محفوظة. هل تريد تجاهلها؟')) return;
       const item = allPosts.find(p => p.id === id);
       if (!item) return;
-
       currentDraftId = null;
       draftManager?.resetHash();
-
       document.getElementById('postTitleInput').value = item.title || '';
       document.getElementById('postCategoryInput').value = item.category || '';
       document.getElementById('postCoverUrl').value = item.image || '';
@@ -1694,7 +1742,6 @@
       document.getElementById('postMetaDesc').value = item.metaDescription || '';
       document.getElementById('postFocusKeyword').value = item.focusKeyword || '';
       document.getElementById('postKeyTakeaways').value = Array.isArray(item.keyTakeaways) ? item.keyTakeaways.join('\n') : '';
-
       if (item.contentFormat === 'html' || /<[a-z][\s\S]*>/i.test(item.content || '')) {
         setEditorHTML(item.content || '', 'editorContainer');
       } else {
@@ -1702,23 +1749,18 @@
       }
       tagInput.setValue(item.tags || []);
       faqBuilder.setValue(item.faqItems || []);
-
       if (item.image) {
         document.getElementById('coverPreview').classList.remove('hidden');
         document.getElementById('coverPreviewImg').src = item.image;
       }
-
       updateSerp(); updateAnalysis();
       updateSaveStatus('idle');
-
       switchBlogSubTab('editor');
       switchTab('blogTab');
       showToast('تم تحميل المقال للتعديل', 'info');
-
       const btn = document.getElementById('publishBtn');
       btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المقال';
       btn.dataset.editId = id;
-
       showHistoryButton(id);
     };
 
@@ -1765,21 +1807,22 @@
       input.onchange = async () => {
         const file = input.files?.[0];
         if (!file) return;
-        if (file.size > 5 * 1024 * 1024) { alert('حجم الصورة يجب أن يكون أقل من 5MB'); return; }
-        const IMGBB_API_KEY = 'c393b2efe08ba757e8483951adbfb11c';
-        const formData = new FormData();
-        formData.append('image', file);
         try {
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success) {
-            if (which === 'media') {
-              document.getElementById('portMediaUrl').value = data.data.url;
-              document.getElementById('portMediaUrl').dispatchEvent(new Event('input'));
-            }
-            showToast('تم رفع الصورة', 'success');
-          } else throw new Error('upload failed');
-        } catch (err) { console.error(err); alert('فشل رفع الصورة'); }
+          const result = await uploadToMediaLibrary(file, {
+            name: file.name,
+            uploadedBy: currentUser?.uid || 'unknown',
+            uploadedByEmail: currentUser?.email || '',
+            folder: 'portfolio'
+          });
+          if (which === 'media') {
+            document.getElementById('portMediaUrl').value = result.url;
+            document.getElementById('portMediaUrl').dispatchEvent(new Event('input'));
+          }
+          showToast('تم رفع الصورة للمكتبة', 'success');
+        } catch (err) {
+          console.error(err);
+          alert(err.message || 'فشل رفع الصورة');
+        }
       };
       input.click();
     };
@@ -1811,7 +1854,6 @@
       const results = document.getElementById('portResults').value;
       const desc = document.getElementById('portDesc').value;
       const details = getEditorHTML('portfolioEditorContainer');
-
       document.getElementById('previewContent').innerHTML = `
         <article class="space-y-5">
           <div class="flex items-center justify-between gap-2 flex-wrap">
@@ -1947,7 +1989,6 @@
       document.getElementById('portMetaTitle').value = item.metaTitle || '';
       document.getElementById('portMetaDesc').value = item.metaDescription || '';
       document.getElementById('portFocusKeyword').value = item.focusKeyword || '';
-
       const details = item.details || '';
       if (item.detailsFormat === 'html' || /<[a-z][\s\S]*>/i.test(details)) {
         setEditorHTML(details, 'portfolioEditorContainer');
@@ -1956,7 +1997,6 @@
       }
       portTagInput.setValue(item.tags || []);
       portGalleryBuilder.setValue(item.mediaGallery || []);
-
       if (item.mediaUrl) {
         document.getElementById('portMediaPreview').classList.remove('hidden');
         document.getElementById('portMediaPreviewImg').src = item.mediaUrl;
@@ -1965,7 +2005,6 @@
       switchPortfolioSubTab('editor');
       switchTab('portfolioTab');
       showToast('تم تحميل المشروع للتعديل', 'info');
-
       const btn = document.getElementById('portPublishBtn');
       btn.innerHTML = '<i class="fa-solid fa-save ml-1"></i> تحديث المشروع';
       btn.dataset.editId = id;

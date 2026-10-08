@@ -1,4 +1,10 @@
 // ==========================================
+// GA4 Analytics Auto
+// ==========================================
+import { initAnalyticsAuto, trackWhatsAppClick, trackCalculatorUse, trackPdfDownload, trackBootcampSubmit } from './analytics-events.js';
+initAnalyticsAuto();
+
+// ==========================================
 // 1. Theme Management (Dark / Light Mode)
 // ==========================================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -228,7 +234,7 @@ if (timerEl) {
 }
 
 // ==========================================
-// 4. Brands Marquee Render Engine
+// 4. Brands Marquee
 // ==========================================
 const realBrandNames = [
   "King Burger", "ملك الشاورما", "على الشرقاوي", "الشيبي", "كبابجي فرحات الشرقاوي",
@@ -243,18 +249,13 @@ const brandsList = realBrandNames.map((name, index) => ({ id: index + 1, name: n
 function renderBrandsMarquee() {
   const group1 = document.getElementById('brandsMarqueeGroup1');
   const group2 = document.getElementById('brandsMarqueeGroup2');
-
   if (!group1 || !group2) return;
 
   const htmlContent = brandsList.map(brand => `
     <div class="brand-card w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-3 flex items-center justify-center flex-shrink-0 hover:border-brand-orange/50 transition-all group relative">
-      <img
-        src="assets/${brand.id}.webp"
-        alt="${brand.name}"
+      <img src="assets/${brand.id}.webp" alt="${brand.name}"
         class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-300"
-        loading="lazy"
-        onError="this.onerror=null; this.src='assets/${brand.id}.png';"
-      />
+        loading="lazy" onError="this.onerror=null; this.src='assets/${brand.id}.png';" />
       <span class="absolute -bottom-2 bg-black/90 text-[9px] text-slate-300 px-2 py-0.5 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
         ${brand.name}
       </span>
@@ -270,7 +271,7 @@ function renderBrandsMarquee() {
 // ==========================================
 async function checkMaintenanceMode() {
   try {
-    if (sessionStorage.getItem('cms_auth')) return; // Admins bypass
+    if (sessionStorage.getItem('cms_auth')) return;
 
     const { CloudCMS } = await import('./firebase-cms.js');
     CloudCMS.subscribeAnalytics((data) => {
@@ -282,9 +283,9 @@ async function checkMaintenanceMode() {
         overlay.innerHTML = `
           <div class="max-w-md space-y-4">
             <i class="fa-solid fa-screwdriver-wrench text-5xl text-brand-orange"></i>
-            <h1 class="text-2xl font-bold text-white" data-i18n="maintenance-title">${translations[currentLang]['maintenance-title']}</h1>
-            <p class="text-sm text-slate-400" data-i18n="maintenance-desc">${translations[currentLang]['maintenance-desc']}</p>
-            <a href="https://wa.me/201021252183" class="inline-block mt-4 px-5 py-2.5 rounded-xl brand-gradient text-white text-xs font-bold" data-i18n="maintenance-contact">${translations[currentLang]['maintenance-contact']}</a>
+            <h1 class="text-2xl font-bold text-white">${translations[currentLang]['maintenance-title']}</h1>
+            <p class="text-sm text-slate-400">${translations[currentLang]['maintenance-desc']}</p>
+            <a href="https://wa.me/201021252183" class="inline-block mt-4 px-5 py-2.5 rounded-xl brand-gradient text-white text-xs font-bold">${translations[currentLang]['maintenance-contact']}</a>
           </div>
         `;
         document.body.appendChild(overlay);
@@ -292,13 +293,11 @@ async function checkMaintenanceMode() {
         document.getElementById('maintenanceOverlay')?.remove();
       }
     });
-  } catch (_) {
-    // Silent fail — don't break the page
-  }
+  } catch (_) {}
 }
 
 // ==========================================
-// 6. Portfolio Category Filters (Index Page)
+// 6. Portfolio Filters
 // ==========================================
 let allPortfolioItems = [];
 let activePortfolioCategory = 'all';
@@ -342,14 +341,18 @@ function renderFilteredPortfolio() {
     return;
   }
 
+  const escapeHtmlLocal = (v) => String(v ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   container.innerHTML = items.map(item => {
     const safeId = encodeURIComponent(String(item.id ?? ''));
-    const safeCategory = String(item.category || 'غير مصنف').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-    const safeRoas = String(item.roas || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-    const safeTitle = String(item.title || 'بدون عنوان').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-    const safeDesc = String(item.desc || 'لا يوجد وصف').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-    const safeBudget = String(item.budget || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-    const safeResults = String(item.results || '-').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeCategory = escapeHtmlLocal(item.category || 'غير مصنف');
+    const safeRoas = escapeHtmlLocal(item.roas || '-');
+    const safeTitle = escapeHtmlLocal(item.title || 'بدون عنوان');
+    const safeDesc = escapeHtmlLocal(item.desc || 'لا يوجد وصف');
+    const safeBudget = escapeHtmlLocal(item.budget || '-');
+    const safeResults = escapeHtmlLocal(item.results || '-');
 
     const imagePart = item.mediaUrl && /^https?:/i.test(item.mediaUrl)
       ? `<img src="${item.mediaUrl.replace(/"/g, '&quot;')}" alt="نتيجة حملة: ${safeTitle}" class="w-full h-40 object-cover rounded-xl mb-4" onError="this.style.display='none'" loading="lazy" />`
@@ -377,18 +380,16 @@ function renderFilteredPortfolio() {
 }
 
 // ==========================================
-// 7. Initializations & Cloud Sync
+// 7. Initializations
 // ==========================================
 document.addEventListener('DOMContentLoaded', async () => {
   applyLanguage(currentLang);
   renderBrandsMarquee();
   checkMaintenanceMode();
 
-  // Cloud portfolio for index page
   try {
     const { CloudCMS } = await import('./firebase-cms.js');
 
-    // Track visit once per session
     if (!sessionStorage.getItem('visited')) {
       CloudCMS.trackVisit().catch(() => {});
       sessionStorage.setItem('visited', 'true');
@@ -410,7 +411,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   } catch (error) {
     console.warn('Firebase features unavailable; using local fallback.', error);
-
     if (window.cmsEngine) {
       window.cmsEngine.trackVisit();
       window.cmsEngine.renderPortfolio('dynamicPortfolioGrid');
@@ -482,7 +482,6 @@ if (form) {
     submitBtn?.setAttribute('disabled', 'true');
     submitBtn?.classList.add('opacity-70', 'cursor-not-allowed');
 
-    // Log to cloud (with fallback)
     try {
       const { CloudCMS } = await import('./firebase-cms.js');
       await CloudCMS.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
@@ -491,6 +490,8 @@ if (form) {
         window.cmsEngine.logEvent('Bootcamp Lead', `Applied: ${name} (${normalizedPhone}) | Experience: ${experience}`);
       }
     }
+
+    trackBootcampSubmit('index');
 
     form.classList.add('hidden');
     document.getElementById('waitlistSuccess').classList.remove('hidden');
@@ -506,9 +507,7 @@ if (form) {
 // FAQ Accordion
 document.querySelectorAll('.faq-btn').forEach(btn => {
   const content = btn.nextElementSibling;
-  if (content?.id) {
-    btn.setAttribute('aria-controls', content.id);
-  }
+  if (content?.id) btn.setAttribute('aria-controls', content.id);
   btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', () => {
     const content = btn.nextElementSibling;
@@ -539,14 +538,12 @@ if (mBtn && mMenu) {
     mMenu.classList.remove('hidden');
     mBtn.setAttribute('aria-expanded', 'true');
   };
-
   mBtn.setAttribute('aria-expanded', 'false');
   mBtn.setAttribute('aria-controls', 'mobileMenu');
   mBtn.addEventListener('click', () => {
     if (mMenu.classList.contains('hidden')) openMenu();
     else closeMenu();
   });
-
   mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeMenu();

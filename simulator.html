@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>محاكي استراتيجيات التسويق | إسلام سعيد</title>
-  <meta name="description" content="محاكي تفاعلي لبناء وتنفيذ استراتيجية تسويق رقمي احترافية خطوة بخطوة مع نتائج حقيقية بناء على اختياراتك." />
+  <title>محاكي الاستراتيجيات التسويقية | إسلام سعيد</title>
+  <meta name="description" content="محاكي تفاعلي بمستوى عالمي لبناء وتنفيذ استراتيجية تسويق رقمي عبر 12 مرحلة، مع تقرير شامل وتحليل 8 محاور." />
   <link rel="canonical" href="https://islamsaeid.me/simulator.html" />
-  <meta property="og:title" content="محاكي استراتيجيات التسويق | إسلام سعيد" />
-  <meta property="og:description" content="أداة تعليمية تفاعلية لبناء استراتيجية تسويق رقمية من الصفر." />
+  <meta property="og:title" content="محاكي الاستراتيجيات التسويقية | إسلام سعيد" />
+  <meta property="og:description" content="أداة تعليمية عالمية لبناء استراتيجية تسويق من الصفر." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://islamsaeid.me/logo.png" />
   <link rel="icon" type="image/png" href="logo.png" />
@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-N8FEC6LYZ7"></script>
   <script>
@@ -32,10 +34,9 @@
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(217, 70, 239, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(217, 70, 239, 0); } }
     @keyframes numberPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
     .anim-fade-up { animation: fadeInUp 0.5s ease forwards; }
     .anim-pop { animation: numberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-    .anim-slide-right { animation: slideInRight 0.4s ease forwards; }
     .glow-pulse { animation: pulseGlow 2s infinite; }
 
     .option-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
@@ -52,15 +53,21 @@
     input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #d946ef, #7c3aed); cursor: pointer; border: none; }
 
     .score-ring { transform: rotate(-90deg); transform-origin: center; }
-    .score-ring-fill { stroke-dasharray: 283; stroke-dashoffset: 283; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .score-ring-fill { stroke-dasharray: 283; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .progress-bar { background: linear-gradient(90deg, #7c3aed, #d946ef, #f97316); }
+    .chip-selected { background: linear-gradient(135deg, #d946ef, #7c3aed); color: white; border-color: transparent; }
+
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
   </style>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen overflow-x-hidden">
 
-  <!-- Background Gradient -->
+  <!-- Background -->
   <div class="fixed inset-0 pointer-events-none z-0">
     <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px]"></div>
     <div class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-pink-600/10 blur-[120px]"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-cyan-600/5 blur-[140px]"></div>
   </div>
 
   <header class="glass-header border-b border-white/5 py-5 sticky top-0 z-50">
@@ -69,7 +76,7 @@
         <img src="logo.png" alt="شعار إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onerror="this.style.display='none'" />
         <div>
           <div class="font-bold text-white text-sm">محاكي الاستراتيجيات</div>
-          <div class="text-[10px] text-purple-400 font-bold">Marketing Simulator</div>
+          <div class="text-[10px] text-purple-400 font-bold">Marketing Strategy Simulator · v2.0</div>
         </div>
       </a>
       <div class="flex items-center gap-3">
@@ -83,9 +90,12 @@
     </div>
   </header>
 
-  <!-- Progress Bar -->
+  <!-- Progress -->
   <div class="border-b border-white/5 bg-[#0C0A18]/80 backdrop-blur-sm sticky top-[73px] z-40">
     <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="mb-2 h-1 rounded-full bg-white/5 overflow-hidden">
+        <div id="progressBar" class="h-full progress-bar rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
       <div id="progressStages" class="flex items-center gap-2 overflow-x-auto pb-1 text-[10px]"></div>
     </div>
   </div>
@@ -93,18 +103,16 @@
   <main class="relative z-10 max-w-7xl mx-auto px-5 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      <!-- Main Content (Left) -->
       <div class="lg:col-span-2 space-y-5">
         <div id="stageContent" class="space-y-5"></div>
 
-        <!-- Navigation -->
         <div id="stageNav" class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 flex items-center justify-between gap-3">
           <button id="prevBtn" onclick="prevStage()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs disabled:opacity-40 disabled:cursor-not-allowed">
             <i class="fa-solid fa-arrow-right ml-1"></i> السابق
           </button>
           <div class="text-[10px] text-slate-400 text-center">
             <div class="font-bold text-white" id="stageTitleNav">المرحلة</div>
-            <div id="stageProgressText">0 / 7</div>
+            <div id="stageProgressText">0 / 12</div>
           </div>
           <button id="nextBtn" onclick="nextStage()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs shadow-lg disabled:opacity-40 disabled:cursor-not-allowed">
             التالي <i class="fa-solid fa-arrow-left mr-1"></i>
@@ -112,37 +120,50 @@
         </div>
       </div>
 
-      <!-- Live Summary Sidebar (Right) -->
       <div class="lg:col-span-1">
-        <div class="lg:sticky lg:top-[140px] p-5 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-4">
+        <div class="lg:sticky lg:top-[140px] p-5 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-4 max-h-[calc(100vh-160px)] overflow-y-auto">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-white text-sm flex items-center gap-2">
-              <i class="fa-solid fa-chart-pie text-pink-400"></i>
-              الاستراتيجية الحالية
+              <i class="fa-solid fa-chart-pie text-pink-400"></i> الاستراتيجية
             </h3>
-            <span id="completionBadge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">جاري البناء</span>
+            <span id="completionBadge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">0%</span>
           </div>
-          <div id="liveSummary" class="space-y-3 text-xs"></div>
-          <div id="liveEstimate" class="hidden p-3 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 space-y-2 text-[11px]"></div>
+
+          <div class="w-full h-2 rounded-full bg-white/5 overflow-hidden">
+            <div id="sidebarProgressBar" class="h-full bg-gradient-to-r from-pink-600 to-purple-600 transition-all duration-500" style="width: 0%"></div>
+          </div>
+
+          <div id="liveSummary" class="space-y-2 text-[11px]"></div>
+
+          <div id="liveEstimate" class="hidden p-3 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 space-y-2"></div>
         </div>
       </div>
 
     </div>
   </main>
 
-  <!-- Results Modal -->
-  <div id="resultsModal" class="hidden fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm overflow-y-auto">
+  <!-- ============================================================ -->
+  <!-- RESULTS MODAL -->
+  <!-- ============================================================ -->
+  <div id="resultsModal" class="hidden fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen p-4 sm:p-8">
-      <div class="max-w-5xl mx-auto bg-[#0E0B1A] border border-white/10 rounded-3xl overflow-hidden">
+      <div class="max-w-6xl mx-auto bg-[#0E0B1A] border border-white/10 rounded-3xl overflow-hidden">
+        
+        <!-- Modal Header -->
         <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-600/20 via-pink-600/10 to-transparent border-b border-white/10">
           <div class="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">نتيجة المحاكاة</div>
-              <h2 class="text-2xl sm:text-3xl font-bold text-white">تقرير أداء الحملة</h2>
+              <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Simulation Report</div>
+              <h2 class="text-2xl sm:text-3xl font-bold text-white">تقرير الأداء الشامل</h2>
             </div>
-            <button onclick="closeResults()" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center">
-              <i class="fa-solid fa-times"></i>
-            </button>
+            <div class="flex gap-2">
+              <button onclick="downloadReportPDF()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs">
+                <i class="fa-solid fa-file-pdf ml-1"></i> تنزيل PDF
+              </button>
+              <button onclick="closeResults()" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -150,24 +171,56 @@
         <div class="p-6 sm:p-8 space-y-6">
           <div id="scoreBox" class="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl bg-black/40 border border-white/10"></div>
 
-          <!-- Metrics Grid -->
+          <!-- 8 Scores -->
+          <div id="scoresGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+
+          <!-- Key Metrics -->
           <div id="metricsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
 
           <!-- Revenue Breakdown -->
           <div id="revenueBreakdown" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
 
+          <!-- Funnel Visualization -->
+          <div id="funnelSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4"></div>
+
+          <!-- Cohort Chart -->
+          <div id="cohortSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-users-viewfinder text-cyan-400"></i> تحليل Cohort (12 شهر)
+            </h3>
+            <div class="rounded-xl bg-black/30 p-4">
+              <canvas id="cohortChart" class="w-full max-h-64"></canvas>
+            </div>
+            <div id="cohortInsights" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+          </div>
+
           <!-- Platform Performance -->
           <div id="platformBreakdown" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
 
-          <!-- Feedback -->
-          <div id="feedbackSection" class="space-y-3"></div>
+          <!-- Attribution -->
+          <div id="attributionSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
+
+          <!-- Learning Phase + Ad Fatigue -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div id="learningPhaseSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
+            <div id="adFatigueSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
+          </div>
+
+          <!-- Risks -->
+          <div id="risksSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
+
+          <!-- Recommendations -->
+          <div id="recommendationsSection" class="space-y-3"></div>
+
+          <!-- Optimizations -->
+          <div id="optimizationsSection" class="space-y-3"></div>
 
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 pt-4 border-t border-white/10">
             <button onclick="closeResults()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-sm">
               <i class="fa-solid fa-sliders ml-1"></i> تعديل الاستراتيجية
             </button>
-            <button onclick="runSimulation()" class="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm">
+            <button onclick="runSimulationClick()" class="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm">
               <i class="fa-solid fa-redo ml-1"></i> إعادة المحاكاة
             </button>
             <button onclick="resetSimulator()" class="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm">
@@ -179,199 +232,71 @@
     </div>
   </div>
 
+  <!-- Report HTML Container for PDF -->
+  <div id="reportPdfContainer" class="fixed -left-[9999px] top-0"></div>
+
   <script type="module">
-    // ============================================================
-    // CONFIGURATION & BENCHMARKS
-    // ============================================================
-    const INDUSTRIES = {
-      fashion:      { name: 'الملابس والأزياء',     cpm: 65,  ctr: 2.2, cvr: 2.8, cogsDefault: 40, aovFactor: 1.15, icon: 'fa-shirt' },
-      restaurants:  { name: 'المطاعم والأغذية',     cpm: 45,  ctr: 2.8, cvr: 3.8, cogsDefault: 35, aovFactor: 1.0, icon: 'fa-utensils' },
-      cosmetics:    { name: 'مستحضرات التجميل',     cpm: 75,  ctr: 2.0, cvr: 2.4, cogsDefault: 30, aovFactor: 1.2, icon: 'fa-spa' },
-      furniture:    { name: 'الأثاث والديكور',     cpm: 90,  ctr: 1.5, cvr: 1.4, cogsDefault: 50, aovFactor: 1.8, icon: 'fa-couch' },
-      realestate:   { name: 'العقارات',             cpm: 140, ctr: 1.1, cvr: 0.8, cogsDefault: 10, aovFactor: 3.0, icon: 'fa-building' },
-      healthcare:   { name: 'العيادات والخدمات الطبية', cpm: 80, ctr: 1.9, cvr: 2.0, cogsDefault: 25, aovFactor: 1.3, icon: 'fa-stethoscope' },
-      education:    { name: 'التعليم والدورات',     cpm: 70,  ctr: 2.1, cvr: 2.2, cogsDefault: 20, aovFactor: 1.0, icon: 'fa-graduation-cap' },
-      b2b:          { name: 'خدمات B2B',             cpm: 110, ctr: 1.4, cvr: 1.5, cogsDefault: 15, aovFactor: 2.2, icon: 'fa-handshake' }
-    };
+    import {
+      INDUSTRIES, PLATFORMS, OBJECTIVES, FRAMEWORKS, CHANNEL_TYPES,
+      CREATIVE_TYPES, HOOK_QUALITY, OFFER_STRENGTH, LANDING_QUALITY,
+      BIDDING_STRATEGY, OPT_EVENTS, TESTING, SCALING, RETENTION,
+      ATTRIBUTION, BUSINESS_STAGE, JOURNEY_STAGES, PRICING_STRATEGY,
+      SEASONALITY, CATEGORIES, DEFAULT_STATE
+    } from './js/simulator-data.js';
 
-    const PLATFORMS = {
-      meta:     { name: 'Meta Ads',     cpmMult: 1.00, ctrMult: 1.00, cvrMult: 1.00, icon: 'fa-facebook', color: '#1877F2' },
-      tiktok:   { name: 'TikTok Ads',   cpmMult: 0.72, ctrMult: 1.40, cvrMult: 0.65, icon: 'fa-tiktok',   color: '#000000' },
-      google:   { name: 'Google Ads',   cpmMult: 1.30, ctrMult: 1.10, cvrMult: 1.45, icon: 'fa-google',   color: '#4285F4' },
-      snapchat: { name: 'Snapchat Ads', cpmMult: 0.58, ctrMult: 0.85, cvrMult: 0.75, icon: 'fa-snapchat', color: '#FFFC00' },
-      youtube:  { name: 'YouTube Ads',  cpmMult: 1.50, ctrMult: 0.75, cvrMult: 1.15, icon: 'fa-youtube',  color: '#FF0000' }
-    };
-
-    const OBJECTIVES = {
-      awareness: { name: 'الوعي بالعلامة التجارية', cvrMult: 0.4, penalty: 'awareness' },
-      traffic:   { name: 'زيارات الموقع',           cvrMult: 0.7, penalty: 'traffic' },
-      engagement: { name: 'التفاعل',                cvrMult: 0.5, penalty: 'engagement' },
-      leads:     { name: 'توليد العملاء المحتملين', cvrMult: 1.1, penalty: null },
-      sales:     { name: 'المبيعات المباشرة',       cvrMult: 1.3, penalty: null }
-    };
-
-    const AUDIENCE_TYPES = {
-      broad:      { name: 'استهداف واسع (Broad)',         mult: 0.90, reachFactor: 1.0, note: 'مناسب للبداية والاختبار' },
-      interest:   { name: 'استهداف بالاهتمامات',          mult: 1.05, reachFactor: 0.6, note: 'أداء مستقر لكن أقل مرونة' },
-      lookalike:  { name: 'جمهور مشابه (Lookalike)',      mult: 1.20, reachFactor: 0.45, note: 'ممتاز لو عندك بيانات عملاء' },
-      retargeting: { name: 'إعادة استهداف (Retargeting)',  mult: 1.55, reachFactor: 0.15, note: 'أعلى أداء لكن حجم محدود' }
-    };
-
-    const CREATIVE_TYPES = {
-      static:    { name: 'صور ثابتة',         mult: 0.85 },
-      video:     { name: 'فيديو احترافي',     mult: 1.15 },
-      ugc:       { name: 'UGC (محتوى المستخدم)', mult: 1.35 },
-      carousel:  { name: 'Carousel',          mult: 1.10 },
-      reels:     { name: 'Reels قصيرة',       mult: 1.25 }
-    };
-
-    const HOOK_QUALITY = {
-      weak:    { name: 'ضعيف (تخطي سريع)',    mult: 0.65 },
-      medium:  { name: 'متوسط (مقبول)',       mult: 1.00 },
-      strong:  { name: 'قوي (يوقف السكرول)',  mult: 1.30 },
-      viral:   { name: 'فيروسي (استثنائي)',   mult: 1.65 }
-    };
-
-    const OFFER_STRENGTH = {
-      none:    { name: 'بدون عرض',            mult: 0.80 },
-      small:   { name: 'خصم 10%',             mult: 1.05 },
-      medium:  { name: 'خصم 20%',             mult: 1.20 },
-      strong:  { name: 'خصم 30%',             mult: 1.35 },
-      bundle:  { name: 'عرض مجمع / Bundle',   mult: 1.45 }
-    };
-
-    const LANDING_QUALITY = {
-      bad:      { name: 'ضعيفة (تحميل بطيء)',  mult: 0.55 },
-      average:  { name: 'عادية',                mult: 1.00 },
-      good:     { name: 'جيدة (سريعة وواضحة)', mult: 1.25 },
-      excellent: { name: 'احترافية (A/B tested)', mult: 1.50 }
-    };
-
-    const BUSINESS_STAGE = {
-      new:         { name: 'مشروع جديد', mult: 0.80 },
-      growing:     { name: 'مشروع نامي', mult: 1.00 },
-      established: { name: 'مشروع راسخ', mult: 1.15 }
-    };
-
-    const BIDDING_STRATEGY = {
-      lowest:  { name: 'Lowest Cost (تلقائي)', mult: 1.00, note: 'خيار آمن للاختبار' },
-      costcap: { name: 'Cost Cap (سقف التكلفة)', mult: 1.05, note: 'يحتاج بيانات كافية' },
-      bidcap:  { name: 'Bid Cap (سقف المزايدة)', mult: 0.85, note: 'مخاطرة عالية' }
-    };
-
-    const OPT_EVENTS = {
-      view:    { name: 'View Content',   cvrMult: 0.6, note: 'يقلل تكلفة التعلم' },
-      click:   { name: 'Click / Landing', cvrMult: 0.9, note: 'خيار متوازن' },
-      lead:    { name: 'Lead / Add to Cart', cvrMult: 1.15, note: 'لبناء بيانات الاستهداف' },
-      purchase: { name: 'Purchase',      cvrMult: 1.30, note: 'الأفضل عندما يكون الحساب جاهز' }
-    };
-
-    const TESTING = {
-      none:    { name: 'بدون اختبار',        mult: 0.80 },
-      ab:      { name: 'A/B Testing منتظم',  mult: 1.20 },
-      multivariant: { name: 'Multivariate',  mult: 1.35 }
-    };
-
-    const SCALING = {
-      conservative: { name: 'تحفظ (20% / أسبوع)', mult: 1.05, note: 'نمو صحي مستقر' },
-      aggressive:   { name: 'هجومي (50% / أسبوع)', mult: 0.85, note: 'خطر فقدان الأداء' },
-      aggressive_horizontal: { name: 'توسع أفقي',   mult: 1.25, note: 'فتح جماهير جديدة' }
-    };
+    import { runSimulation, generateReportHTML } from './js/simulator-engine.js';
 
     // ============================================================
     // STATE
     // ============================================================
-    const DEFAULT_STATE = {
-      business: {
-        industry: null,
-        stage: 'new',
-        price: 950,
-        cogs: 45,
-        aov: 1100
-      },
-      audience: {
-        objective: null,
-        audienceType: null,
-        age: [],
-        location: 'egypt',
-        estimatedSize: 2000000
-      },
-      budget: {
-        platforms: [],
-        totalBudget: 40000,
-        duration: 30,
-        allocations: {}
-      },
-      creative: {
-        type: null,
-        hook: null,
-        offer: null,
-        landing: null
-      },
-      optimization: {
-        bidding: null,
-        event: null,
-        testing: null,
-        scaling: null
-      }
-    };
-
     let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-
-    const STAGES = [
-      { id: 'business',    name: 'البيزنس',      icon: 'fa-briefcase',       short: 'البيزنس' },
-      { id: 'audience',    name: 'الهدف والجمهور', icon: 'fa-users',          short: 'الجمهور' },
-      { id: 'budget',      name: 'الميزانية',     icon: 'fa-wallet',         short: 'الميزانية' },
-      { id: 'creative',    name: 'الكرياتيف',     icon: 'fa-photo-film',     short: 'الكرياتيف' },
-      { id: 'optimization', name: 'التحسين',       icon: 'fa-sliders',       short: 'التحسين' },
-      { id: 'review',      name: 'المراجعة',      icon: 'fa-clipboard-check', short: 'المراجعة' }
-    ];
-
     let currentStage = 0;
 
+    const STAGES = [
+      { id: 'foundation', name: 'أساسيات البيزنس', icon: 'fa-briefcase', short: 'الأساسيات' },
+      { id: 'market', name: 'السوق والمنافسة', icon: 'fa-chart-line', short: 'السوق' },
+      { id: 'persona', name: 'شخصية العميل', icon: 'fa-user-tie', short: 'العميل' },
+      { id: 'objective', name: 'الهدف التسويقي', icon: 'fa-bullseye', short: 'الهدف' },
+      { id: 'framework', name: 'الإطار التسويقي', icon: 'fa-diagram-project', short: 'الإطار' },
+      { id: 'channels', name: 'استراتيجية القنوات', icon: 'fa-sitemap', short: 'القنوات' },
+      { id: 'budget', name: 'الميزانية والإعلام', icon: 'fa-wallet', short: 'الميزانية' },
+      { id: 'creative', name: 'الكرياتيف والرسالة', icon: 'fa-photo-film', short: 'الكرياتيف' },
+      { id: 'funnel', name: 'الفانل والهبوط', icon: 'fa-filter', short: 'الفانل' },
+      { id: 'optimization', name: 'المزايدة والتحسين', icon: 'fa-sliders', short: 'التحسين' },
+      { id: 'scaling', name: 'التوسع والاحتفاظ', icon: 'fa-arrow-trend-up', short: 'التوسع' },
+      { id: 'analytics', name: 'القياس والـ Attribution', icon: 'fa-chart-simple', short: 'القياس' }
+    ];
+
     // ============================================================
-    // LOCAL STORAGE
+    // PERSISTENCE
     // ============================================================
-    function saveState() {
-      try { localStorage.setItem('simulator_state', JSON.stringify(state)); } catch (_) {}
-    }
+    function saveState() { try { localStorage.setItem('sim_v2_state', JSON.stringify(state)); } catch (_) {} }
     function loadState() {
       try {
-        const raw = localStorage.getItem('simulator_state');
-        if (raw) state = { ...DEFAULT_STATE, ...JSON.parse(raw) };
+        const raw = localStorage.getItem('sim_v2_state');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { ...DEFAULT_STATE, ...parsed };
+        }
       } catch (_) {}
     }
 
     // ============================================================
-    // RENDER PROGRESS
+    // HELPERS
     // ============================================================
-    function renderProgress() {
-      const container = document.getElementById('progressStages');
-      container.innerHTML = STAGES.map((s, i) => {
-        const isDone = i < currentStage;
-        const isActive = i === currentStage;
-        const cls = isActive
-          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-          : isDone
-            ? 'bg-green-500/20 text-green-300 border-green-500/40'
-            : 'bg-white/5 text-slate-400 border-white/10';
-        return `
-          <button onclick="goToStage(${i})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border whitespace-nowrap transition-all ${cls}">
-            <i class="fa-solid ${isDone ? 'fa-check' : s.icon} text-[10px]"></i>
-            <span>${s.short}</span>
-          </button>
-        `;
-      }).join('');
-      document.getElementById('stageProgressText').textContent = `${currentStage + 1} / ${STAGES.length}`;
-      document.getElementById('stageTitleNav').textContent = STAGES[currentStage].name;
+    function escapeHtml(v) {
+      return String(v ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // ============================================================
-    // OPTION CARD HELPER
-    // ============================================================
+    function formatCurrency(n) {
+      return Math.round(n).toLocaleString('ar-EG') + ' ج.م';
+    }
+
     function optionCard(value, title, subtitle, icon, isSelected, onClick) {
       return `
-        <button onclick="${onClick}" 
+        <button onclick="${onClick}"
           class="option-card w-full text-right p-4 rounded-2xl border ${isSelected ? 'selected' : 'border-white/10 bg-white/[0.02]'} flex items-start gap-3 relative">
           <div class="w-10 h-10 rounded-xl ${isSelected ? 'bg-pink-500/20 text-pink-400' : 'bg-white/5 text-slate-400'} flex items-center justify-center flex-shrink-0">
             <i class="fa-solid ${icon || 'fa-circle'}"></i>
@@ -386,184 +311,165 @@
     }
 
     // ============================================================
+    // RENDER PROGRESS
+    // ============================================================
+    function renderProgress() {
+      const container = document.getElementById('progressStages');
+      container.innerHTML = STAGES.map((s, i) => {
+        const isDone = i < currentStage;
+        const isActive = i === currentStage;
+        const cls = isActive
+          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent'
+          : isDone
+            ? 'bg-green-500/20 text-green-300 border-green-500/40'
+            : 'bg-white/5 text-slate-400 border-white/10';
+        return `
+          <button onclick="goToStage(${i})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border whitespace-nowrap transition-all ${cls}">
+            <i class="fa-solid ${isDone ? 'fa-check' : s.icon} text-[10px]"></i>
+            <span>${s.short}</span>
+          </button>
+        `;
+      }).join('');
+
+      const pct = ((currentStage + 1) / STAGES.length) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('stageProgressText').textContent = `${currentStage + 1} / ${STAGES.length}`;
+      document.getElementById('stageTitleNav').textContent = STAGES[currentStage].name;
+    }
+
+    // ============================================================
     // LIVE SUMMARY
     // ============================================================
     function renderLiveSummary() {
       const s = state;
-      const totalSteps = 20; // rough count of required choices
+
+      // Completion
       let filled = 0;
-      if (s.business.industry) filled++;
-      if (s.business.stage) filled++;
-      if (s.business.price) filled++;
-      if (s.business.cogs !== null) filled++;
-      if (s.audience.objective) filled++;
-      if (s.audience.audienceType) filled++;
-      if (s.audience.age.length) filled++;
-      if (s.budget.platforms.length) filled++;
+      const totalChecks = 30;
+      if (s.foundation.industry) filled++;
+      if (s.foundation.businessStage) filled++;
+      if (s.foundation.pricingStrategy) filled++;
+      if (s.market.targetMarketSize) filled++;
+      if (s.market.competitionLevel) filled++;
+      if (s.market.marketMaturity) filled++;
+      if (s.market.uniqueAdvantage) filled++;
+      if (s.persona.journeyStage) filled++;
+      if (s.persona.gender) filled++;
+      if (s.persona.ageRange.length) filled++;
+      if (s.persona.painPoints.length) filled++;
+      if (s.objective.primaryGoal) filled++;
+      if (s.framework.primary) filled++;
+      if (s.channels.mix.length) filled++;
+      if (s.channels.platforms.length) filled++;
       if (s.budget.totalBudget) filled++;
       if (s.budget.duration) filled++;
       if (s.creative.type) filled++;
       if (s.creative.hook) filled++;
       if (s.creative.offer) filled++;
-      if (s.creative.landing) filled++;
+      if (s.creative.messagingAngle) filled++;
+      if (s.funnel.landingQuality) filled++;
+      if (s.funnel.funnelType) filled++;
       if (s.optimization.bidding) filled++;
       if (s.optimization.event) filled++;
       if (s.optimization.testing) filled++;
-      if (s.optimization.scaling) filled++;
-      filled += 2; // base
+      if (s.scaling.strategy) filled++;
+      if (s.scaling.retention) filled++;
+      if (s.analytics.attributionModel) filled++;
+      if (s.analytics.trackingSetup) filled++;
 
-      const pct = Math.round((filled / totalSteps) * 100);
+      const pct = Math.round((filled / totalChecks) * 100);
       const badge = document.getElementById('completionBadge');
-      if (pct >= 90) {
-        badge.textContent = 'جاهزة للمحاكاة';
-        badge.className = 'px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-[10px] font-bold';
-      } else {
-        badge.textContent = `${pct}% مكتملة`;
-        badge.className = 'px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold';
-      }
+      badge.textContent = pct + '%';
+      badge.className = pct >= 90
+        ? 'px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-[10px] font-bold'
+        : pct >= 50
+          ? 'px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold'
+          : 'px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold';
 
+      document.getElementById('sidebarProgressBar').style.width = pct + '%';
+
+      // Summary Rows
       const rows = [
-        { label: 'القطاع', value: s.business.industry ? INDUSTRIES[s.business.industry].name : '—' },
-        { label: 'المرحلة', value: s.business.stage ? BUSINESS_STAGE[s.business.stage].name : '—' },
-        { label: 'الهدف', value: s.audience.objective ? OBJECTIVES[s.audience.objective].name : '—' },
-        { label: 'الجمهور', value: s.audience.audienceType ? AUDIENCE_TYPES[s.audience.audienceType].name : '—' },
-        { label: 'المنصات', value: s.budget.platforms.length ? s.budget.platforms.map(p => PLATFORMS[p].name).join(', ') : '—' },
-        { label: 'الميزانية', value: s.budget.totalBudget ? `${s.budget.totalBudget.toLocaleString('ar-EG')} ج.م` : '—' },
-        { label: 'المدة', value: s.budget.duration ? `${s.budget.duration} يوم` : '—' },
+        { label: 'القطاع', value: s.foundation.industry ? INDUSTRIES[s.foundation.industry].name : '—' },
+        { label: 'المرحلة', value: s.foundation.businessStage ? BUSINESS_STAGE[s.foundation.businessStage].name : '—' },
+        { label: 'الهدف', value: s.objective.primaryGoal ? OBJECTIVES[s.objective.primaryGoal].name : '—' },
+        { label: 'الإطار', value: s.framework.primary ? FRAMEWORKS[s.framework.primary].name : '—' },
+        { label: 'المنصات', value: s.channels.platforms.length ? s.channels.platforms.map(p => PLATFORMS[p].name).join('، ') : '—' },
+        { label: 'الميزانية', value: s.budget.totalBudget ? s.budget.totalBudget.toLocaleString('ar-EG') + ' ج.م' : '—' },
+        { label: 'المدة', value: s.budget.duration ? s.budget.duration + ' يوم' : '—' },
         { label: 'الكرياتيف', value: s.creative.type ? CREATIVE_TYPES[s.creative.type].name : '—' },
-        { label: 'العرض', value: s.creative.offer ? OFFER_STRENGTH[s.creative.offer].name : '—' }
+        { label: 'العرض', value: s.creative.offer ? OFFER_STRENGTH[s.creative.offer].name : '—' },
+        { label: 'الفانل', value: s.funnel.funnelType || '—' }
       ];
 
       document.getElementById('liveSummary').innerHTML = rows.map(r => `
         <div class="flex items-center justify-between gap-2 py-1.5 border-b border-white/5 last:border-0">
-          <span class="text-slate-500 text-[11px]">${r.label}</span>
-          <span class="text-white font-bold text-[11px] text-left truncate max-w-[60%]">${r.value}</span>
+          <span class="text-slate-500">${r.label}</span>
+          <span class="text-white font-bold text-left truncate max-w-[60%]" title="${escapeHtml(r.value)}">${escapeHtml(r.value)}</span>
         </div>
       `).join('');
 
-      // Preliminary estimate
+      // Live Estimate
       const estimateBox = document.getElementById('liveEstimate');
-      if (s.business.industry && s.budget.platforms.length && s.budget.totalBudget && s.audience.objective) {
-        const metrics = calculateMetrics();
-        estimateBox.classList.remove('hidden');
-        estimateBox.innerHTML = `
-          <div class="flex items-center gap-2 text-[11px] font-bold text-purple-300">
-            <i class="fa-solid fa-bolt"></i>
-            تقدير مبدئي
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-[10px]">
-            <div class="p-2 rounded-lg bg-black/30">
-              <div class="text-slate-500">ROAS متوقع</div>
-              <div class="text-white font-bold font-sans">${metrics.roas.toFixed(2)}x</div>
-            </div>
-            <div class="p-2 rounded-lg bg-black/30">
-              <div class="text-slate-500">صافي ربح</div>
-              <div class="font-bold font-sans ${metrics.profit >= 0 ? 'text-green-400' : 'text-red-400'}">${Math.round(metrics.profit).toLocaleString('ar-EG')} ج.م</div>
-            </div>
-          </div>
-        `;
+      const canEstimate = s.foundation.industry && s.channels.platforms.length && s.budget.totalBudget && s.objective.primaryGoal;
+      if (canEstimate) {
+        try {
+          const testState = JSON.parse(JSON.stringify(state));
+          // Fill minimal defaults to allow calculation
+          if (!testState.foundation.businessStage) testState.foundation.businessStage = 'new';
+          if (!testState.market.competitionLevel) testState.market.competitionLevel = 'medium';
+          if (!testState.market.targetMarketSize) testState.market.targetMarketSize = 'national';
+          if (!testState.persona.journeyStage) testState.persona.journeyStage = 'problemAware';
+          if (!testState.framework.primary) testState.framework.primary = 'aida';
+          if (!testState.channels.mix.length) testState.channels.mix = ['paid'];
+          if (!testState.creative.type) testState.creative.type = 'static';
+          if (!testState.creative.hook) testState.creative.hook = 'average';
+          if (!testState.creative.offer) testState.creative.offer = 'none';
+          if (!testState.funnel.landingQuality) testState.funnel.landingQuality = 'average';
+          if (!testState.optimization.bidding) testState.optimization.bidding = 'lowestCost';
+          if (!testState.optimization.event) testState.optimization.event = 'purchase';
+          if (!testState.optimization.testing) testState.optimization.testing = 'none';
+          if (!testState.scaling.retention) testState.scaling.retention = 'none';
+          if (!testState.analytics.attributionModel) testState.analytics.attributionModel = 'linear';
+          if (!testState.analytics.trackingSetup) testState.analytics.trackingSetup = 'basic';
+
+          const result = runSimulation(testState);
+          if (result.success) {
+            const t = result.totals;
+            estimateBox.classList.remove('hidden');
+            estimateBox.innerHTML = `
+              <div class="flex items-center gap-2 text-[11px] font-bold text-purple-300">
+                <i class="fa-solid fa-bolt"></i> تقدير مبدئي
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="p-2 rounded-lg bg-black/30">
+                  <div class="text-slate-500">ROAS</div>
+                  <div class="text-white font-bold font-sans">${t.avgROAS.toFixed(2)}x</div>
+                </div>
+                <div class="p-2 rounded-lg bg-black/30">
+                  <div class="text-slate-500">صافي ربح</div>
+                  <div class="font-bold font-sans ${t.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}">${Math.round(t.netProfit).toLocaleString('ar-EG')}</div>
+                </div>
+                <div class="p-2 rounded-lg bg-black/30">
+                  <div class="text-slate-500">طلبات</div>
+                  <div class="text-white font-bold font-sans">${t.totalOrders.toLocaleString('ar-EG')}</div>
+                </div>
+                <div class="p-2 rounded-lg bg-black/30">
+                  <div class="text-slate-500">CPA</div>
+                  <div class="text-amber-400 font-bold font-sans">${Math.round(t.avgCPA).toLocaleString('ar-EG')}</div>
+                </div>
+              </div>
+            `;
+          } else {
+            estimateBox.classList.add('hidden');
+          }
+        } catch (err) {
+          console.warn('Live estimate error:', err);
+          estimateBox.classList.add('hidden');
+        }
       } else {
         estimateBox.classList.add('hidden');
       }
-    }
-
-    // ============================================================
-    // CALCULATE METRICS
-    // ============================================================
-    function calculateMetrics() {
-      const s = state;
-      if (!s.business.industry || !s.budget.platforms.length) return { roas: 0, profit: 0 };
-
-      const ind = INDUSTRIES[s.business.industry];
-      const stageMult = BUSINESS_STAGE[s.business.stage]?.mult || 1.0;
-      const objective = OBJECTIVES[s.audience.objective];
-      const audienceMult = AUDIENCE_TYPES[s.audience.audienceType]?.mult || 1.0;
-      const creativeMult = CREATIVE_TYPES[s.creative.type]?.mult || 1.0;
-      const hookMult = HOOK_QUALITY[s.creative.hook]?.mult || 1.0;
-      const offerMult = OFFER_STRENGTH[s.creative.offer]?.mult || 1.0;
-      const landingMult = LANDING_QUALITY[s.creative.landing]?.mult || 1.0;
-      const biddingMult = BIDDING_STRATEGY[s.optimization.bidding]?.mult || 1.0;
-      const testingMult = TESTING[s.optimization.testing]?.mult || 1.0;
-      const scalingMult = SCALING[s.optimization.scaling]?.mult || 1.0;
-      const eventCvrMult = OPT_EVENTS[s.optimization.event]?.cvrMult || 1.0;
-
-      const totalPlatforms = s.budget.platforms.length;
-      const synergyMult = totalPlatforms >= 3 ? 1.05 : 1.0;
-
-      const totalCogsRatio = s.business.cogs / 100;
-      const price = s.business.price;
-      const aov = s.business.aov || price;
-
-      // Cross-platform computation
-      const platformResults = [];
-      let totalRevenue = 0;
-      let totalOrders = 0;
-      let totalSpend = 0;
-      let totalImpressions = 0;
-      let totalClicks = 0;
-
-      const avgBudgetPerPlatform = s.budget.totalBudget / totalPlatforms;
-
-      s.budget.platforms.forEach(pk => {
-        const p = PLATFORMS[pk];
-        const budget = s.budget.allocations[pk] || avgBudgetPerPlatform;
-
-        const adjustedCPM = ind.cpm * p.cpmMult;
-        const adjustedCTR = ind.ctr * p.ctrMult * (hookMult * 0.5 + 0.5) * (creativeMult * 0.4 + 0.6);
-        const adjustedCVR = ind.cvr * p.cvrMult * audienceMult * creativeMult * offerMult * landingMult * eventCvrMult * objective.cvrMult * stageMult;
-
-        const impressions = (budget / adjustedCPM) * 1000;
-        const clicks = impressions * (adjustedCTR / 100);
-        const lpv = clicks * 0.85;
-        const orders = lpv * (adjustedCVR / 100);
-        const revenue = orders * aov;
-
-        totalImpressions += impressions;
-        totalClicks += clicks;
-        totalOrders += orders;
-        totalSpend += budget;
-        totalRevenue += revenue;
-
-        platformResults.push({
-          platform: pk,
-          name: p.name,
-          icon: p.icon,
-          color: p.color,
-          budget,
-          impressions: Math.round(impressions),
-          clicks: Math.round(clicks),
-          ctr: adjustedCTR,
-          orders: Math.round(orders),
-          cpa: orders > 0 ? budget / orders : 0,
-          revenue: Math.round(revenue),
-          roas: budget > 0 ? revenue / budget : 0
-        });
-      });
-
-      const profit = totalRevenue - (totalOrders * price * totalCogsRatio) - totalSpend;
-      const roas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
-      const cpa = totalOrders > 0 ? totalSpend / totalOrders : 0;
-      const breakevenRoas = (price / (price - price * totalCogsRatio));
-
-      return {
-        platformResults,
-        totalImpressions: Math.round(totalImpressions),
-        totalClicks: Math.round(totalClicks),
-        totalOrders: Math.round(totalOrders),
-        totalSpend,
-        totalRevenue: Math.round(totalRevenue),
-        profit: Math.round(profit),
-        roas,
-        cpa,
-        breakevenRoas,
-        targeting: {
-          objective, audienceType: AUDIENCE_TYPES[s.audience.audienceType], creative: CREATIVE_TYPES[s.creative.type],
-          hook: HOOK_QUALITY[s.creative.hook], offer: OFFER_STRENGTH[s.creative.offer],
-          landing: LANDING_QUALITY[s.creative.landing], bidding: BIDDING_STRATEGY[s.optimization.bidding],
-          event: OPT_EVENTS[s.optimization.event], testing: TESTING[s.optimization.testing],
-          scaling: SCALING[s.optimization.scaling]
-        }
-      };
     }
 
     // ============================================================
@@ -573,23 +479,35 @@
       const stageId = STAGES[currentStage].id;
       const container = document.getElementById('stageContent');
       const renderers = {
-        business: renderBusinessStage,
-        audience: renderAudienceStage,
+        foundation: renderFoundationStage,
+        market: renderMarketStage,
+        persona: renderPersonaStage,
+        objective: renderObjectiveStage,
+        framework: renderFrameworkStage,
+        channels: renderChannelsStage,
         budget: renderBudgetStage,
         creative: renderCreativeStage,
+        funnel: renderFunnelStage,
         optimization: renderOptimizationStage,
-        review: renderReviewStage
+        scaling: renderScalingStage,
+        analytics: renderAnalyticsStage
       };
       container.innerHTML = `<div class="anim-fade-up">${renderers[stageId]()}</div>`;
       renderProgress();
       renderLiveSummary();
       updateNavButtons();
-      bindStageEvents();
+      setTimeout(() => bindDynamicInputs(), 50);
     }
 
-    // ---- Stage 1: Business ----
-    function renderBusinessStage() {
-      const s = state.business;
+    // ---- Stage 1: Foundation ----
+    function renderFoundationStage() {
+      const s = state.foundation;
+      const industriesByCategory = {};
+      Object.entries(INDUSTRIES).forEach(([key, ind]) => {
+        if (!industriesByCategory[ind.category]) industriesByCategory[ind.category] = [];
+        industriesByCategory[ind.category].push({ key, ...ind });
+      });
+
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
@@ -597,175 +515,435 @@
               <i class="fa-solid fa-briefcase text-white"></i>
             </div>
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">إيه نوع البيزنس بتاعك؟</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">اختار القطاع اللي بيوصف نشاطك عشان نحسبلك معدلات السوق الحقيقية في مصر.</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 1: أساسيات البيزنس</h2>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">كل استراتيجية تبدأ من فهم البيزنس نفسه. اختر القطاع والمرحلة والسعر.</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            ${Object.entries(INDUSTRIES).map(([key, ind]) => optionCard(
-              key,
-              ind.name,
-              `CPM ~${ind.cpm}ج · CTR ~${ind.ctr}% · CVR ~${ind.cvr}%`,
-              ind.icon,
-              s.industry === key,
-              `setBusiness('industry', '${key}')`
-            )).join('')}
+          <div class="space-y-4">
+            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-store text-orange-400 ml-2"></i>القطاع / النشاط</h3>
+            ${Object.entries(industriesByCategory).map(([cat, items]) => `
+              <div>
+                <div class="text-[10px] text-slate-500 font-bold mb-2 flex items-center gap-1.5">
+                  <i class="fa-solid ${CATEGORIES[cat]?.icon || 'fa-circle'}"></i>
+                  ${CATEGORIES[cat]?.name || cat}
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  ${items.map(ind => optionCard(
+                    ind.key, ind.name,
+                    `CPM ~${ind.cpm}ج · CVR ~${ind.cvr}% · AOV ~${ind.aov}ج`,
+                    ind.icon, s.industry === ind.key, `setFoundation('industry', '${ind.key}')`
+                  )).join('')}
+                </div>
+              </div>
+            `).join('')}
           </div>
 
           <div class="pt-4 border-t border-white/10 space-y-3">
-            <h3 class="font-bold text-white text-sm">في أي مرحلة البيزنس؟</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-chart-simple text-cyan-400 ml-2"></i>مرحلة البيزنس</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
               ${Object.entries(BUSINESS_STAGE).map(([key, st]) => optionCard(
-                key, st.name,
-                key === 'new' ? 'أقل من سنة، لسه بتكتشف السوق' : key === 'growing' ? 'من 1-3 سنين، عندك traction' : 'أكتر من 3 سنين، علامة معروفة',
-                'fa-chart-simple', s.stage === key, `setBusiness('stage', '${key}')`
+                key, st.name, st.note,
+                'fa-flag', s.businessStage === key, `setFoundation('businessStage', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">سعر المنتج / الخدمة (ج.م)</label>
-              <input type="number" value="${s.price}" min="10" oninput="setBusiness('price', +this.value)" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">سعر المنتج/الخدمة (ج.م)</label>
+              <input type="number" id="input_price" value="${s.price}" min="10" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">نسبة تكلفة البضاعة (%)</label>
-              <input type="number" value="${s.cogs}" min="0" max="90" oninput="setBusiness('cogs', +this.value)" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">نسبة COGS (%)</label>
+              <input type="number" id="input_cogs" value="${s.cogs}" min="0" max="90" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">متوسط قيمة الطلب (AOV)</label>
-              <input type="number" value="${s.aov}" min="10" oninput="setBusiness('aov', +this.value)" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">متوسط قيمة الطلب AOV</label>
+              <input type="number" id="input_aov" value="${s.aov}" min="10" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[11px] text-blue-200 leading-relaxed flex items-start gap-2">
-            <i class="fa-solid fa-lightbulb text-blue-400 mt-0.5"></i>
-            <div>
-              <strong>نصيحة:</strong> كل ما تحسب الـ COGS بدقة، كل ما نتائج المحاكاة تكون أدق. الـ AOV مهم لو بتقدم عروض مجمعة أو up-sells.
+          <div class="pt-4 border-t border-white/10 space-y-3">
+            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-tag text-purple-400 ml-2"></i>استراتيجية التسعير</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              ${Object.entries(PRICING_STRATEGY).map(([key, p]) => optionCard(
+                key, p.name, p.note,
+                'fa-money-bill', s.pricingStrategy === key, `setFoundation('pricingStrategy', '${key}')`
+              )).join('')}
             </div>
           </div>
+
+          ${s.industry ? `
+            <div class="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30 text-[11px] text-purple-200 leading-relaxed">
+              <strong>💡 Insights للقطاع ${INDUSTRIES[s.industry].name}:</strong>
+              CPM ~${INDUSTRIES[s.industry].cpm} ج.م · CTR ~${INDUSTRIES[s.industry].ctr}% · CVR ~${INDUSTRIES[s.industry].cvr}% ·
+              Churn ~${Math.round(INDUSTRIES[s.industry].churnRate * 100)}% · LTV Multiplier: ${INDUSTRIES[s.industry].ltvMult}x
+            </div>
+          ` : ''}
         </div>
       `;
     }
 
-    // ---- Stage 2: Audience ----
-    function renderAudienceStage() {
-      const s = state.audience;
-      const ages = ['18-24', '25-34', '35-44', '45-54', '55+'];
+    // ---- Stage 2: Market ----
+    function renderMarketStage() {
+      const s = state.market;
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-users text-white"></i>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-chart-line text-white"></i>
             </div>
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">الهدف والجمهور المستهدف</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">هدف الحملة واستراتيجية الاستهداف بيحددوا 40% من نجاح الحملة.</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 2: تحليل السوق</h2>
+              <p class="text-xs text-slate-400 mt-1">حجم السوق، المنافسة، ومرحلة النضج — 3 عوامل تحدد صعوبة المهمة.</p>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-bullseye text-pink-400 ml-2"></i>الهدف الأساسي للحملة</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              ${Object.entries(OBJECTIVES).map(([key, o]) => optionCard(
-                key, o.name,
-                key === 'sales' ? 'الأفضل لو عندك منتج واضح' : key === 'leads' ? 'مناسب للخدمات B2B والعيادات' : key === 'awareness' ? 'مش مناسب لو هتقيس مبيعات' : 'مناسب للتفاعل والمتابعين',
-                'fa-crosshairs', s.objective === key, `setAudience('objective', '${key}')`
+            <h3 class="font-bold text-white text-sm">حجم السوق المستهدف</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${[
+                { id: 'local', name: 'محلي', note: 'مدينة/منطقة' },
+                { id: 'national', name: 'وطني', note: 'كل مصر' },
+                { id: 'regional', name: 'إقليمي', note: 'MENA' },
+                { id: 'global', name: 'عالمي', note: 'عالمياً' }
+              ].map(m => optionCard(
+                m.id, m.name, m.note, 'fa-globe', s.targetMarketSize === m.id, `setMarket('targetMarketSize', '${m.id}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-magnifying-glass-location text-cyan-400 ml-2"></i>نوع الاستهداف</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              ${Object.entries(AUDIENCE_TYPES).map(([key, a]) => optionCard(
-                key, a.name, a.note,
-                'fa-user-group', s.audienceType === key, `setAudience('audienceType', '${key}')`
+            <h3 class="font-bold text-white text-sm">مستوى المنافسة</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              ${[
+                { id: 'low', name: 'منخفضة', note: 'فرصة سانحة' },
+                { id: 'medium', name: 'متوسطة', note: 'توازن' },
+                { id: 'high', name: 'عالية', note: 'منافسة شديدة' }
+              ].map(m => optionCard(
+                m.id, m.name, m.note, 'fa-swords', s.competitionLevel === m.id, `setMarket('competitionLevel', '${m.id}')`
               )).join('')}
             </div>
           </div>
 
-          <div class="pt-4 border-t border-white/10 space-y-3">
-            <h3 class="font-bold text-white text-sm">الفئة العمرية (اختر أكتر من واحدة)</h3>
-            <div class="flex flex-wrap gap-2">
-              ${ages.map(age => `
-                <button onclick="toggleAge('${age}')" class="px-4 py-2 rounded-full border text-xs font-bold transition-all ${s.age.includes(age) ? 'bg-pink-600 border-pink-600 text-white' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}">
-                  ${age}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="pt-4 border-t border-white/10 space-y-3">
-            <h3 class="font-bold text-white text-sm">الموقع الجغرافي</h3>
-            <div class="grid grid-cols-3 gap-3">
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">مرحلة نضج السوق</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               ${[
-                { id: 'egypt', name: 'مصر' },
-                { id: 'gcc', name: 'الخليج' },
-                { id: 'global', name: 'عالمي' }
-              ].map(loc => `
-                <button onclick="setAudience('location', '${loc.id}')" class="p-3 rounded-xl border text-xs font-bold transition-all ${s.location === loc.id ? 'bg-pink-600/20 border-pink-500 text-white' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}">
-                  <i class="fa-solid fa-location-dot ml-1"></i>${loc.name}
-                </button>
-              `).join('')}
+                { id: 'emerging', name: 'ناشئ', note: 'فرص كبيرة' },
+                { id: 'growing', name: 'نامي', note: 'الأفضل للدخول' },
+                { id: 'mature', name: 'ناضج', note: 'يحتاج تميز' },
+                { id: 'saturated', name: 'مشبع', note: 'أصعب مرحلة' }
+              ].map(m => optionCard(
+                m.id, m.name, m.note, 'fa-layer-group', s.marketMaturity === m.id, `setMarket('marketMaturity', '${m.id}')`
+              )).join('')}
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200 leading-relaxed flex items-start gap-2">
-            <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5"></i>
-            <div>
-              <strong>تنبيه مهم:</strong> اختيار "زيارات" أو "تفاعل" كهدف، مع تتبع المبيعات، ممكن يودي لخسارة 50% من الأداء. اختار "المبيعات المباشرة" لو تقدر تتبعها.
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">الميزة التنافسية الفريدة (USP)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${[
+                { id: 'price', name: 'أرخص سعر', note: 'الأقوى للبداية' },
+                { id: 'quality', name: 'أعلى جودة', note: 'Premium positioning' },
+                { id: 'speed', name: 'أسرع توصيل', note: 'Delivery advantage' },
+                { id: 'service', name: 'خدمة استثنائية', note: 'Customer Experience' },
+                { id: 'innovation', name: 'منتج مبتكر', note: 'أول من نوعه' },
+                { id: 'trust', name: 'ثقة وسمعة', note: 'Brand trust' }
+              ].map(u => optionCard(
+                u.id, u.name, u.note, 'fa-star', s.uniqueAdvantage === u.id, `setMarket('uniqueAdvantage', '${u.id}')`
+              )).join('')}
             </div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 3: Budget & Platforms ----
-    function renderBudgetStage() {
-      const s = state.budget;
-      const defaultAlloc = s.platforms.length ? Math.floor(s.totalBudget / s.platforms.length) : 0;
+    // ---- Stage 3: Persona ----
+    function renderPersonaStage() {
+      const s = state.persona;
+      const ages = ['18-24', '25-34', '35-44', '45-54', '55+'];
+      const painPoints = [
+        'السعر عالي', 'صعوبة الوصول', 'مش عارف يبدأ',
+        'خايف من الجودة', 'تجربة سابقة سيئة', 'مفيش ثقة',
+        'الوقت مش كافي', 'مفيش معلومة كافية'
+      ];
+      const buyingTriggers = [
+        'خصم كبير', 'توصيل مجاني', 'ضمان استرجاع',
+        'تقييمات إيجابية', 'ترشيح صديق', 'حاجة ملحة',
+        'مقارنة السعر', 'Impulse Purchase'
+      ];
+
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-wallet text-white"></i>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-user-tie text-white"></i>
             </div>
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">المنصات والميزانية</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">كل منصة لها طبيعة جمهور مختلفة. الاختيار الذكي = توفير فلوس + وصول أفضل.</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 3: شخصية العميل</h2>
+              <p class="text-xs text-slate-400 mt-1">"لو مش عارف عميلك مين، هتصرف فلوسك على الجمهور الغلط".</p>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-layer-group text-orange-400 ml-2"></i>اختر المنصات</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <h3 class="font-bold text-white text-sm">مرحلة العميل في الرحلة</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+              ${Object.entries(JOURNEY_STAGES).map(([key, j]) => optionCard(
+                key, j.name, j.desc, 'fa-route', s.journeyStage === key, `setPersona('journeyStage', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+            <div class="space-y-2">
+              <h3 class="font-bold text-white text-sm">الجنس</h3>
+              <div class="flex gap-2">
+                ${['all', 'male', 'female'].map(g => `
+                  <button onclick="setPersona('gender', '${g}')" class="flex-1 px-4 py-2 rounded-lg border text-xs font-bold ${s.gender === g ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                    ${g === 'all' ? 'الكل' : g === 'male' ? 'رجال' : 'نساء'}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="font-bold text-white text-sm">الفئات العمرية</h3>
+              <div class="flex flex-wrap gap-2">
+                ${ages.map(age => `
+                  <button onclick="togglePersonaAge('${age}')" class="px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${s.ageRange.includes(age) ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                    ${age}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">نقاط الألم (Pain Points)</h3>
+            <div class="flex flex-wrap gap-2">
+              ${painPoints.map(p => `
+                <button onclick="togglePainPoint('${p}')" class="px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${s.painPoints.includes(p) ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                  ${p}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">المحفزات الشرائية</h3>
+            <div class="flex flex-wrap gap-2">
+              ${buyingTriggers.map(t => `
+                <button onclick="toggleBuyingTrigger('${t}')" class="px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${s.buyingTriggers.includes(t) ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                  ${t}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Stage 4: Objective ----
+    function renderObjectiveStage() {
+      const s = state.objective;
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-bullseye text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 4: الهدف التسويقي</h2>
+              <p class="text-xs text-slate-400 mt-1">الهدف الخاطئ = فشل مؤكد. اختر هدفك بذكاء.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">الهدف الأساسي</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              ${Object.entries(OBJECTIVES).map(([key, o]) => optionCard(
+                key, o.name,
+                `KPI: ${o.kpi} · ${o.note}`,
+                o.icon, s.primaryGoal === key, `setObjective('primaryGoal', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">ROAS المستهدف (Target)</label>
+              <input type="number" id="input_kpiTarget" value="${s.kpiTarget}" step="0.1" min="0.5" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <div class="text-[10px] text-slate-500 mt-1">سيكون هناك حساب تلقائي لـ Break-Even ROAS بناءً على COGS</div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">المدة المستهدفة (أشهر)</label>
+              <input type="number" id="input_timelineMonths" value="${s.timelineMonths}" min="1" max="24" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Stage 5: Framework ----
+    function renderFrameworkStage() {
+      const s = state.framework;
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-diagram-project text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 5: الإطار التسويقي</h2>
+              <p class="text-xs text-slate-400 mt-1">الإطار هو "العقل" اللي بيمشي عليه كل قراراتك التسويقية.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">الإطار الأساسي</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              ${Object.entries(FRAMEWORKS).map(([key, f]) => optionCard(
+                key, f.name,
+                `${f.fullName} · ${f.description}`,
+                f.icon, s.primary === key, `setFramework('primary', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">إطار ثانوي (اختياري - مضاعف)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              <button onclick="setFramework('secondary', null)" class="p-3 rounded-xl border text-xs font-bold ${!s.secondary ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                <i class="fa-solid fa-ban ml-1"></i> بدون
+              </button>
+              ${Object.entries(FRAMEWORKS).filter(([k]) => k !== s.primary).map(([key, f]) => `
+                <button onclick="setFramework('secondary', '${key}')" class="p-3 rounded-xl border text-xs font-bold ${s.secondary === key ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                  <i class="fa-solid ${f.icon} ml-1"></i> ${f.name}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          ${s.primary ? `
+            <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 space-y-2">
+              <div class="text-xs font-bold text-indigo-300">خطوات الإطار ${FRAMEWORKS[s.primary].name}:</div>
+              <div class="flex flex-wrap gap-2">
+                ${FRAMEWORKS[s.primary].stages.map((stage, i) => `
+                  <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px]">
+                    <span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[9px] font-bold">${i + 1}</span>
+                    ${stage}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // ---- Stage 6: Channels ----
+    function renderChannelsStage() {
+      const s = state.channels;
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-sitemap text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 6: استراتيجية القنوات</h2>
+              <p class="text-xs text-slate-400 mt-1">مزيج القنوات الصح = 20-40% تحسين في الأداء.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">نوع الميديا (PESO Model)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${Object.entries(CHANNEL_TYPES).map(([key, c]) => optionCard(
+                key, c.name, `${c.note} · التكلفة: ${Math.round(c.costMult * 100)}% · التأثير: ${c.effectiveness}x`,
+                c.icon, s.mix.includes(key), `toggleChannelMix('${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">المنصات الإعلانية</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
               ${Object.entries(PLATFORMS).map(([key, p]) => optionCard(
                 key, p.name,
-                `CPM ${p.cpmMult > 1 ? 'أعلى' : 'أقل'} · CTR ${p.ctrMult > 1 ? 'أفضل' : 'أضعف'} · CVR ${p.cvrMult > 1 ? 'أقوى' : 'أضعف'}`,
+                `CPM ${p.cpmMult}x · CTR ${p.ctrMult}x · CVR ${p.cvrMult}x`,
                 p.icon, s.platforms.includes(key), `togglePlatform('${key}')`
               )).join('')}
             </div>
           </div>
 
-          <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">إجمالي الميزانية (ج.م)</label>
-              <input type="number" value="${s.totalBudget}" min="5000" step="1000" oninput="setBudget('totalBudget', +this.value)" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">قنوات Owned Media (المملوكة)</h3>
+            <div class="flex flex-wrap gap-2">
+              ${['موقع ويب', 'Email List', 'Blog', 'YouTube Channel', 'WhatsApp', 'Telegram', 'Mobile App'].map(m => `
+                <button onclick="toggleOwnedMedia('${m}')" class="px-3 py-1.5 rounded-full border text-[11px] font-bold ${s.ownedMedia.includes(m) ? 'chip-selected' : 'bg-white/5 border-white/10 text-slate-300'}">
+                  ${m}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          ${s.platforms.length >= 2 ? `
+            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-[11px] text-green-200">
+              <i class="fa-solid fa-check-circle ml-1"></i>
+              ${s.platforms.length} منصات مختارة — ده يوفر تنويع مخاطر ويحسن الأداء العام.
+            </div>
+          ` : s.platforms.length === 1 ? `
+            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
+              <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+              منصة واحدة = مخاطرة. يفضل إضافة منصة ثانية.
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // ---- Stage 7: Budget ----
+    function renderBudgetStage() {
+      const s = state.budget;
+      const defaultAlloc = s.platforms.length ? Math.floor(s.totalBudget / s.platforms.length) : 0;
+      const totalAlloc = Object.values(s.allocations).reduce((a, b) => a + (b || 0), 0);
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-600 to-orange-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-wallet text-white"></i>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">مدة الحملة (يوم)</label>
-              <input type="number" value="${s.duration}" min="7" max="180" oninput="setBudget('duration', +this.value)" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 7: الميزانية والإعلام</h2>
+              <p class="text-xs text-slate-400 mt-1">إدارة الميزانية + التوقيت = نصف نجاح الحملة.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">إجمالي الميزانية (ج.م)</label>
+              <input type="number" id="input_totalBudget" value="${s.totalBudget}" min="1000" step="500" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">المدة (يوم)</label>
+              <input type="number" id="input_duration" value="${s.duration}" min="7" max="365" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">الاحتياطي (%)</label>
+              <input type="number" id="input_reservePercent" value="${s.reservePercent}" min="0" max="30" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
             </div>
           </div>
 
           ${s.platforms.length ? `
-            <div class="pt-4 border-t border-white/10 space-y-3">
+            <div class="space-y-3 pt-4 border-t border-white/10">
               <h3 class="font-bold text-white text-sm">توزيع الميزانية بين المنصات</h3>
               ${s.platforms.map(pk => {
                 const p = PLATFORMS[pk];
                 const alloc = s.allocations[pk] || defaultAlloc;
+                const percent = s.totalBudget > 0 ? (alloc / s.totalBudget) * 100 : 0;
                 return `
                   <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10">
                     <div class="flex items-center justify-between mb-2">
@@ -773,195 +951,390 @@
                         <i class="fa-brands ${p.icon}" style="color:${p.color}"></i>
                         <span class="font-bold text-white text-sm">${p.name}</span>
                       </div>
-                      <span class="font-bold text-pink-400 font-sans text-sm" id="alloc_${pk}_val">${alloc.toLocaleString('ar-EG')} ج.م</span>
+                      <div class="text-left">
+                        <span class="font-bold text-pink-400 font-sans text-sm" id="alloc_${pk}_val">${alloc.toLocaleString('ar-EG')} ج.م</span>
+                        <span class="text-[10px] text-slate-500 font-sans mr-1" id="alloc_${pk}_pct">(${percent.toFixed(0)}%)</span>
+                      </div>
                     </div>
-                    <input type="range" min="0" max="${s.totalBudget}" step="500" value="${alloc}" 
-                      oninput="setAllocation('${pk}', +this.value); document.getElementById('alloc_${pk}_val').textContent = (+this.value).toLocaleString('ar-EG') + ' ج.م';"
-                      class="w-full" />
+                    <input type="range" data-alloc="${pk}" min="0" max="${s.totalBudget}" step="500" value="${alloc}" class="w-full alloc-slider" />
                   </div>
                 `;
               }).join('')}
               <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-[11px] flex items-center justify-between">
                 <span class="text-slate-300">المجموع الموزع:</span>
-                <span class="font-bold text-white font-sans">${Object.values(s.allocations).reduce((a,b)=>a+ (b||0), 0).toLocaleString('ar-EG')} ج.م</span>
+                <span class="font-bold ${Math.abs(totalAlloc - s.totalBudget) < 1000 ? 'text-green-400' : 'text-amber-400'} font-sans">${totalAlloc.toLocaleString('ar-EG')} / ${s.totalBudget.toLocaleString('ar-EG')} ج.م</span>
               </div>
             </div>
           ` : `
-            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200 flex items-center gap-2">
-              <i class="fa-solid fa-circle-info"></i>
-              اختر منصة واحدة على الأقل لعرض إعدادات التوزيع.
+            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
+              <i class="fa-solid fa-circle-info ml-1"></i> اختر منصات أولاً في المرحلة السابقة.
             </div>
           `}
-        </div>
-      `;
-    }
 
-    // ---- Stage 4: Creative ----
-    function renderCreativeStage() {
-      const s = state.creative;
-      return `
-        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-photo-film text-white"></i>
-            </div>
-            <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">الكرياتيف والعرض</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">الكرياتيف بيمثل 60% من نجاح أي حملة إعلانية. الاختيار هنا هو اللي يحدد الفرق.</p>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-video text-pink-400 ml-2"></i>نوع الكرياتيف الأساسي</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              ${Object.entries(CREATIVE_TYPES).map(([key, c]) => optionCard(
-                key, c.name,
-                key === 'ugc' ? 'أعلى تفاعل وأقل تكلفة' : key === 'reels' ? 'الأفضل لـ TikTok و Reels' : key === 'static' ? 'الأرخص لكن أداء أقل' : '',
-                'fa-clapperboard', s.type === key, `setCreative('type', '${key}')`
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">نمط الصرف (Pacing)</h3>
+            <div class="grid grid-cols-3 gap-2">
+              ${[
+                { id: 'even', name: 'موزع بالتساوي', note: 'الآمن' },
+                { id: 'front-loaded', name: 'مقدم (كثيف بالبداية)', note: 'للإطلاق' },
+                { id: 'back-loaded', name: 'مؤخر (يبدأ خفيف)', note: 'للاختبار' }
+              ].map(p => optionCard(
+                p.id, p.name, p.note, 'fa-chart-bar', s.pacing === p.id, `setBudget('pacing', '${p.id}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-bolt text-amber-400 ml-2"></i>قوة أول 3 ثواني (Hook)</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <h3 class="font-bold text-white text-sm">الموسمية</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${Object.entries(SEASONALITY).map(([key, season]) => optionCard(
+                key, season.name,
+                season.cpmMult > 1 ? `CPM +${Math.round((season.cpmMult - 1) * 100)}%` : '',
+                'fa-calendar', s.seasonality === key, `setBudget('seasonality', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Stage 8: Creative ----
+    function renderCreativeStage() {
+      const s = state.creative;
+      const angles = [
+        { id: 'pain', name: 'حل المشكلة', note: 'ركز على الوجع' },
+        { id: 'aspiration', name: 'الطموح', note: 'اعرض الحياة الأفضل' },
+        { id: 'social-proof', name: 'الدليل الاجتماعي', note: 'تقييمات وأرقام' },
+        { id: 'urgency', name: 'الإلحاح', note: 'محدود أو خصم' },
+        { id: 'education', name: 'التعليم', note: 'اشرح المشكلة' },
+        { id: 'humor', name: 'الفكاهة', note: 'ترفيهي' },
+        { id: 'story', name: 'قصة', note: 'Narrative-driven' },
+        { id: 'comparison', name: 'المقارنة', note: 'We vs Them' }
+      ];
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-photo-film text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 8: الكرياتيف والرسالة</h2>
+              <p class="text-xs text-slate-400 mt-1">الكرياتيف = 60% من نجاح الحملة. أهم مرحلة على الإطلاق.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">نوع الكرياتيف</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${Object.entries(CREATIVE_TYPES).map(([key, c]) => optionCard(
+                key, c.name, `أداء: ${c.mult}x`,
+                c.icon, s.type === key, `setCreative('type', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">قوة الـ Hook</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
               ${Object.entries(HOOK_QUALITY).map(([key, h]) => optionCard(
-                key, h.name,
-                key === 'viral' ? '+65% أداء' : key === 'strong' ? '+30% أداء' : key === 'weak' ? '-35% أداء' : '',
+                key, h.name, h.note,
                 'fa-fire', s.hook === key, `setCreative('hook', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-tags text-green-400 ml-2"></i>قوة العرض</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <h3 class="font-bold text-white text-sm">قوة العرض (Offer)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               ${Object.entries(OFFER_STRENGTH).map(([key, o]) => optionCard(
-                key, o.name, '', 'fa-gift', s.offer === key, `setCreative('offer', '${key}')`
+                key, o.name, '',
+                'fa-gift', s.offer === key, `setCreative('offer', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-window-restore text-cyan-400 ml-2"></i>جودة صفحة الهبوط</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              ${Object.entries(LANDING_QUALITY).map(([key, l]) => optionCard(
-                key, l.name, '', 'fa-desktop', s.landing === key, `setCreative('landing', '${key}')`
+            <h3 class="font-bold text-white text-sm">زاوية الرسالة (Messaging Angle)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${angles.map(a => optionCard(
+                a.id, a.name, a.note, 'fa-comment-dots', s.messagingAngle === a.id, `setCreative('messagingAngle', '${a.id}')`
               )).join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">عدد Variants (نسخ مختلفة)</label>
+              <input type="number" id="input_variants" value="${s.variants}" min="1" max="20" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+              <div class="text-[10px] text-slate-500 mt-1">4-6 variants يقلل التعب ويرفع الأداء</div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">جودة الإنتاج</label>
+              <select id="input_productionQuality" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500">
+                ${[
+                  { id: 'low', name: 'منخفض (هاتف)' },
+                  { id: 'medium', name: 'متوسط (احترافي بسيط)' },
+                  { id: 'high', name: 'عالي (استوديو)' },
+                  { id: 'premium', name: 'Premium (أفلام)' }
+                ].map(o => `<option value="${o.id}" ${s.productionQuality === o.id ? 'selected' : ''}>${o.name}</option>`).join('')}
+              </select>
             </div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 5: Optimization ----
-    function renderOptimizationStage() {
-      const s = state.optimization;
+    // ---- Stage 9: Funnel ----
+    function renderFunnelStage() {
+      const s = state.funnel;
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-sliders text-white"></i>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-filter text-white"></i>
             </div>
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">التحسين والمزايدة</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">إعدادات المزايدة والأحداث بتحدد تكلفة التعلم وسرعة التحسين.</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 9: الفانل وصفحة الهبوط</h2>
+              <p class="text-xs text-slate-400 mt-1">صفحة الهبوط + استراتيجية الفانل = 40% من التحويلات.</p>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="font-bold text-white text-sm">استراتيجية المزايدة</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              ${Object.entries(BIDDING_STRATEGY).map(([key, b]) => optionCard(
-                key, b.name, b.note, 'fa-gavel', s.bidding === key, `setOptimization('bidding', '${key}')`
+            <h3 class="font-bold text-white text-sm">جودة صفحة الهبوط</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              ${Object.entries(LANDING_QUALITY).map(([key, l]) => optionCard(
+                key, l.name, '',
+                'fa-desktop', s.landingQuality === key, `setFunnel('landingQuality', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm">حدث التحسين (Optimization Event)</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <h3 class="font-bold text-white text-sm">نوع الفانل</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${[
+                { id: 'direct', name: 'Direct (صفحة → شراء)', note: 'الأسرع' },
+                { id: 'lead-magnet', name: 'Lead Magnet', note: 'PDF/Checklist' },
+                { id: 'webinar', name: 'Webinar', note: 'للـ B2B' },
+                { id: 'video-series', name: 'Video Series', note: 'VSL' }
+              ].map(f => optionCard(
+                f.id, f.name, f.note, 'fa-route', s.funnelType === f.id, `setFunnel('funnelType', '${f.id}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">الاستراتيجيات المتقدمة</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="setFunnel('retargetingStrategy', ${s.retargetingStrategy ? 'null' : "'basic'"})" class="p-4 rounded-xl border text-right ${s.retargetingStrategy ? 'selected' : 'border-white/10 bg-white/[0.02]'}">
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-crosshairs ${s.retargetingStrategy ? 'text-pink-400' : 'text-slate-400'} text-xl"></i>
+                  <div>
+                    <div class="font-bold text-white text-sm">Retargeting</div>
+                    <div class="text-[10px] text-slate-400">إعادة استهداف زوار الموقع</div>
+                  </div>
+                  <i class="fa-solid fa-check-circle text-pink-400 ml-auto ${s.retargetingStrategy ? '' : 'opacity-0'}"></i>
+                </div>
+              </button>
+
+              <button onclick="setFunnel('abandonedCart', ${s.abandonedCart ? 'false' : 'true'})" class="p-4 rounded-xl border text-right ${s.abandonedCart ? 'selected' : 'border-white/10 bg-white/[0.02]'}">
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-shopping-cart ${s.abandonedCart ? 'text-pink-400' : 'text-slate-400'} text-xl"></i>
+                  <div>
+                    <div class="font-bold text-white text-sm">Abandoned Cart Recovery</div>
+                    <div class="text-[10px] text-slate-400">استعادة السلات المتروكة</div>
+                  </div>
+                  <i class="fa-solid fa-check-circle text-pink-400 ml-auto ${s.abandonedCart ? '' : 'opacity-0'}"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          ${s.retargetingStrategy && s.abandonedCart ? `
+            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-[11px] text-green-200">
+              <i class="fa-solid fa-sparkles ml-1"></i> كومبو ممتاز! Retargeting + Abandoned Cart Recovery معروف عنهم تحسين 20-35% في المبيعات.
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // ---- Stage 10: Optimization ----
+    function renderOptimizationStage() {
+      const s = state.optimization;
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-sliders text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 10: المزايدة والتحسين</h2>
+              <p class="text-xs text-slate-400 mt-1">هنا بنتكلم بلغة الخوارزمية. اختيار صح = فرق 30%+ في الأداء.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">استراتيجية المزايدة</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              ${Object.entries(BIDDING_STRATEGY).map(([key, b]) => optionCard(
+                key, b.name, `Learning: ${b.learningDays} أيام`,
+                'fa-gavel', s.bidding === key, `setOptimization('bidding', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">حدث التحسين</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               ${Object.entries(OPT_EVENTS).map(([key, e]) => optionCard(
-                key, e.name, e.note, 'fa-bullseye', s.event === key, `setOptimization('event', '${key}')`
+                key, e.name, `جودة التعلم: ${e.learningQuality}`,
+                'fa-bullseye', s.event === key, `setOptimization('event', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">منهجية الاختبار</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               ${Object.entries(TESTING).map(([key, t]) => optionCard(
-                key, t.name, '', 'fa-flask', s.testing === key, `setOptimization('testing', '${key}')`
+                key, t.name, '',
+                'fa-flask', s.testing === key, `setOptimization('testing', '${key}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10">
+            <label class="block text-xs font-bold text-slate-300 mb-1.5">Frequency Cap (الحد الأقصى للتكرار)</label>
+            <input type="number" id="input_frequencyCap" value="${s.frequencyCap}" min="1" max="10" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
+            <div class="text-[10px] text-slate-500 mt-1">3-4 = توازن مثالي. أعلى من 5 = Ad Fatigue.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Stage 11: Scaling & Retention ----
+    function renderScalingStage() {
+      const s = state.scaling;
+      return `
+        <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-600 to-cyan-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-arrow-trend-up text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 11: التوسع والاحتفاظ</h2>
+              <p class="text-xs text-slate-400 mt-1">التوسع الذكي + الاحتفاظ = نمو مستدام بدون خسارة الأداء.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">استراتيجية التوسع (Scaling)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              ${Object.entries(SCALING).map(([key, sc]) => optionCard(
+                key, sc.name, `مخاطرة: ${sc.risk} · ${sc.note}`,
+                'fa-chart-line', s.strategy === key, `setScaling('strategy', '${key}')`
               )).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
-            <h3 class="font-bold text-white text-sm">استراتيجية التوسع (Scaling)</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              ${Object.entries(SCALING).map(([key, sc]) => optionCard(
-                key, sc.name, sc.note, 'fa-arrow-trend-up', s.scaling === key, `setOptimization('scaling', '${key}')`
+            <h3 class="font-bold text-white text-sm">استراتيجية الاحتفاظ (Retention)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              ${Object.entries(RETENTION).map(([key, r]) => optionCard(
+                key, r.name, `LTV Multiplier: ${r.ltvMult}x · ${r.note}`,
+                'fa-user-check', s.retention === key, `setScaling('retention', '${key}')`
               )).join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-white/10">
+            <button onclick="setScaling('referralProgram', ${s.referralProgram ? 'false' : 'true'})" class="p-4 rounded-xl border text-right ${s.referralProgram ? 'selected' : 'border-white/10 bg-white/[0.02]'}">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-users-rays ${s.referralProgram ? 'text-pink-400' : 'text-slate-400'} text-xl"></i>
+                <div>
+                  <div class="font-bold text-white text-sm">Referral Program</div>
+                  <div class="text-[10px] text-slate-400">برنامج الإحالة</div>
+                </div>
+                <i class="fa-solid fa-check-circle text-pink-400 ml-auto ${s.referralProgram ? '' : 'opacity-0'}"></i>
+              </div>
+            </button>
+
+            <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-right">
+              <label class="block text-xs font-bold text-slate-300 mb-2">Upsell Strategy</label>
+              <select id="input_upsellStrategy" class="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-white text-xs">
+                <option value="">بدون upsell</option>
+                <option value="post-purchase" ${s.upsellStrategy === 'post-purchase' ? 'selected' : ''}>Post-Purchase Upsell</option>
+                <option value="bundle" ${s.upsellStrategy === 'bundle' ? 'selected' : ''}>Bundle Offer</option>
+                <option value="subscription" ${s.upsellStrategy === 'subscription' ? 'selected' : ''}>تحويل لاشتراك</option>
+              </select>
             </div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 6: Review ----
-    function renderReviewStage() {
-      const s = state;
-      const checks = [
-        { label: 'البيزنس', done: s.business.industry && s.business.stage, stage: 0 },
-        { label: 'الهدف والجمهور', done: s.audience.objective && s.audience.audienceType && s.audience.age.length, stage: 1 },
-        { label: 'الميزانية', done: s.budget.platforms.length > 0 && s.budget.totalBudget > 0, stage: 2 },
-        { label: 'الكرياتيف', done: s.creative.type && s.creative.hook && s.creative.offer && s.creative.landing, stage: 3 },
-        { label: 'التحسين', done: s.optimization.bidding && s.optimization.event && s.optimization.testing && s.optimization.scaling, stage: 4 }
-      ];
-      const allDone = checks.every(c => c.done);
-      const metrics = allDone ? calculateMetrics() : null;
+    // ---- Stage 12: Analytics ----
+    function renderAnalyticsStage() {
+      const s = state.analytics;
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-clipboard-check text-white"></i>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-chart-simple text-white"></i>
             </div>
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">المراجعة النهائية</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">راجع اختياراتك، وبعدها اضغط "تشغيل المحاكاة" لرؤية النتائج الحقيقية.</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 12: القياس والـ Attribution</h2>
+              <p class="text-xs text-slate-400 mt-1">"مش بتقيس، مش بتدير." دقة القياس تحدد جودة القرارات.</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            ${checks.map(c => `
-              <button onclick="goToStage(${c.stage})" class="p-4 rounded-xl border text-right ${c.done ? 'bg-green-500/10 border-green-500/40' : 'bg-red-500/10 border-red-500/40'}">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-bold ${c.done ? 'text-green-400' : 'text-red-400'}">
-                    <i class="fa-solid ${c.done ? 'fa-check-circle' : 'fa-exclamation-circle'} ml-1"></i>
-                    ${c.done ? 'مكتمل' : 'ناقص'}
-                  </span>
-                  <i class="fa-solid fa-arrow-left text-slate-500 text-[10px]"></i>
-                </div>
-                <div class="font-bold text-white text-sm">${c.label}</div>
-              </button>
-            `).join('')}
+          <div class="space-y-3">
+            <h3 class="font-bold text-white text-sm">نموذج الـ Attribution</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              ${Object.entries(ATTRIBUTION).map(([key, a]) => optionCard(
+                key, a.name, `${a.note} · Focus: ${a.bias}`,
+                'fa-diagram-project', s.attributionModel === key, `setAnalytics('attributionModel', '${key}')`
+              )).join('')}
+            </div>
           </div>
 
-          ${allDone ? `
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">مستوى Tracking Setup</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              ${[
+                { id: 'basic', name: 'أساسي', note: 'Pixel فقط' },
+                { id: 'advanced', name: 'متقدم', note: 'Pixel + Conversion API' },
+                { id: 'world-class', name: 'عالمي', note: 'Server-side + GTM' }
+              ].map(t => optionCard(
+                t.id, t.name, t.note, 'fa-satellite-dish', s.trackingSetup === t.id, `setAnalytics('trackingSetup', '${t.id}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="font-bold text-white text-sm">وتيرة التقارير</h3>
+            <div class="grid grid-cols-3 gap-2">
+              ${[
+                { id: 'daily', name: 'يومي', note: 'متقدم' },
+                { id: 'weekly', name: 'أسبوعي', note: 'قياسي' },
+                { id: 'monthly', name: 'شهري', note: 'استراتيجي' }
+              ].map(w => optionCard(
+                w.id, w.name, w.note, 'fa-calendar-check', s.reportingCadence === w.id, `setAnalytics('reportingCadence', '${w.id}')`
+              )).join('')}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10">
             <div class="p-6 rounded-2xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-pink-500/40 space-y-3 text-center glow-pulse">
-              <div class="text-2xl">🎯</div>
-              <div class="text-white font-bold">جاهز لتشغيل المحاكاة</div>
-              <p class="text-xs text-slate-300">كل الاختيارات مكتملة. اضغط الزر تحت عشان نشوف النتائج الفعلية.</p>
-              <button onclick="runSimulation()" class="mt-2 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg hover:opacity-95 transition-opacity">
+              <div class="text-3xl">🎯</div>
+              <div class="text-white font-bold text-lg">جاهز لتشغيل المحاكاة</div>
+              <p class="text-xs text-slate-300">كل المراحل اكتملت. اضغط الزر تحت لعرض التقرير الشامل.</p>
+              <button onclick="runSimulationClick()" class="mt-2 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg hover:opacity-95 transition-opacity">
                 <i class="fa-solid fa-play ml-1"></i> تشغيل المحاكاة الآن
               </button>
             </div>
-          ` : `
-            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200 flex items-center gap-2">
-              <i class="fa-solid fa-circle-info"></i>
-              أكمل الاختيارات الناقصة قبل تشغيل المحاكاة.
-            </div>
-          `}
+          </div>
         </div>
       `;
     }
@@ -969,247 +1342,643 @@
     // ============================================================
     // STATE MUTATIONS
     // ============================================================
-    window.setBusiness = (key, val) => {
-      state.business[key] = val;
+    window.setFoundation = (key, val) => {
+      state.foundation[key] = val;
       if (key === 'industry' && val) {
-        state.business.cogs = INDUSTRIES[val].cogsDefault;
+        state.foundation.cogs = INDUSTRIES[val].cogs;
+        state.foundation.aov = INDUSTRIES[val].aov;
+        state.foundation.price = INDUSTRIES[val].aov;
       }
       saveState(); renderStage();
     };
-    window.setAudience = (key, val) => { state.audience[key] = val; saveState(); renderStage(); };
-    window.toggleAge = (age) => {
-      const i = state.audience.age.indexOf(age);
-      if (i === -1) state.audience.age.push(age); else state.audience.age.splice(i, 1);
+    window.setMarket = (key, val) => { state.market[key] = val; saveState(); renderStage(); };
+    window.setPersona = (key, val) => { state.persona[key] = val; saveState(); renderStage(); };
+    window.togglePersonaAge = (age) => {
+      const i = state.persona.ageRange.indexOf(age);
+      if (i === -1) state.persona.ageRange.push(age); else state.persona.ageRange.splice(i, 1);
+      saveState(); renderStage();
+    };
+    window.togglePainPoint = (p) => {
+      const i = state.persona.painPoints.indexOf(p);
+      if (i === -1) state.persona.painPoints.push(p); else state.persona.painPoints.splice(i, 1);
+      saveState(); renderStage();
+    };
+    window.toggleBuyingTrigger = (t) => {
+      const i = state.persona.buyingTriggers.indexOf(t);
+      if (i === -1) state.persona.buyingTriggers.push(t); else state.persona.buyingTriggers.splice(i, 1);
+      saveState(); renderStage();
+    };
+    window.setObjective = (key, val) => { state.objective[key] = val; saveState(); renderStage(); };
+    window.setFramework = (key, val) => { state.framework[key] = val; saveState(); renderStage(); };
+    window.toggleChannelMix = (key) => {
+      const i = state.channels.mix.indexOf(key);
+      if (i === -1) state.channels.mix.push(key); else state.channels.mix.splice(i, 1);
       saveState(); renderStage();
     };
     window.togglePlatform = (pk) => {
-      const i = state.budget.platforms.indexOf(pk);
+      const i = state.channels.platforms.indexOf(pk);
       if (i === -1) {
-        state.budget.platforms.push(pk);
+        state.channels.platforms.push(pk);
       } else {
-        state.budget.platforms.splice(i, 1);
+        state.channels.platforms.splice(i, 1);
         delete state.budget.allocations[pk];
       }
       redistributeBudget();
       saveState(); renderStage();
     };
-    window.setBudget = (key, val) => {
-      state.budget[key] = val;
-      redistributeBudget();
+    window.toggleOwnedMedia = (m) => {
+      const i = state.channels.ownedMedia.indexOf(m);
+      if (i === -1) state.channels.ownedMedia.push(m); else state.channels.ownedMedia.splice(i, 1);
       saveState(); renderStage();
     };
-    window.setAllocation = (pk, val) => {
-      state.budget.allocations[pk] = val;
-      saveState(); renderLiveSummary();
+    window.setBudget = (key, val) => {
+      state.budget[key] = val;
+      if (key === 'totalBudget') redistributeBudget();
+      saveState(); renderStage();
     };
     window.setCreative = (key, val) => { state.creative[key] = val; saveState(); renderStage(); };
+    window.setFunnel = (key, val) => { state.funnel[key] = val; saveState(); renderStage(); };
     window.setOptimization = (key, val) => { state.optimization[key] = val; saveState(); renderStage(); };
+    window.setScaling = (key, val) => { state.scaling[key] = val; saveState(); renderStage(); };
+    window.setAnalytics = (key, val) => { state.analytics[key] = val; saveState(); renderStage(); };
 
     function redistributeBudget() {
-      const n = state.budget.platforms.length;
+      const n = state.channels.platforms.length;
       if (!n) return;
       const each = Math.floor(state.budget.totalBudget / n);
-      state.budget.platforms.forEach(pk => { state.budget.allocations[pk] = each; });
+      state.channels.platforms.forEach(pk => { state.budget.allocations[pk] = each; });
+    }
+
+    // ============================================================
+    // DYNAMIC INPUT BINDING (for number/select inputs)
+    // ============================================================
+    function bindDynamicInputs() {
+      const bind = (id, callback) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => callback(e.target.value, e.target));
+      };
+      const bindChange = (id, callback) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', (e) => callback(e.target.value, e.target));
+      };
+
+      bind('input_price', (v) => { state.foundation.price = +v; saveState(); renderLiveSummary(); });
+      bind('input_cogs', (v) => { state.foundation.cogs = +v; saveState(); renderLiveSummary(); });
+      bind('input_aov', (v) => { state.foundation.aov = +v; saveState(); renderLiveSummary(); });
+      bind('input_kpiTarget', (v) => { state.objective.kpiTarget = +v; saveState(); });
+      bind('input_timelineMonths', (v) => { state.objective.timelineMonths = +v; saveState(); });
+      bind('input_totalBudget', (v) => { state.budget.totalBudget = +v; redistributeBudget(); saveState(); renderStage(); });
+      bind('input_duration', (v) => { state.budget.duration = +v; saveState(); renderLiveSummary(); });
+      bind('input_reservePercent', (v) => { state.budget.reservePercent = +v; saveState(); renderLiveSummary(); });
+      bind('input_variants', (v) => { state.creative.variants = +v; saveState(); });
+      bind('input_frequencyCap', (v) => { state.optimization.frequencyCap = +v; saveState(); });
+      bindChange('input_productionQuality', (v) => { state.creative.productionQuality = v; saveState(); });
+      bindChange('input_upsellStrategy', (v) => { state.scaling.upsellStrategy = v; saveState(); });
+
+      // Sliders
+      document.querySelectorAll('.alloc-slider').forEach(slider => {
+        slider.addEventListener('input', (e) => {
+          const pk = e.target.dataset.alloc;
+          const val = +e.target.value;
+          state.budget.allocations[pk] = val;
+          const valEl = document.getElementById(`alloc_${pk}_val`);
+          const pctEl = document.getElementById(`alloc_${pk}_pct`);
+          if (valEl) valEl.textContent = val.toLocaleString('ar-EG') + ' ج.م';
+          if (pctEl && state.budget.totalBudget > 0) pctEl.textContent = `(${Math.round((val / state.budget.totalBudget) * 100)}%)`;
+          saveState();
+          renderLiveSummary();
+        });
+      });
     }
 
     // ============================================================
     // NAVIGATION
     // ============================================================
-    window.goToStage = (i) => { currentStage = Math.max(0, Math.min(STAGES.length - 1, i)); renderStage(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    window.goToStage = (i) => {
+      currentStage = Math.max(0, Math.min(STAGES.length - 1, i));
+      renderStage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
     window.nextStage = () => goToStage(currentStage + 1);
     window.prevStage = () => goToStage(currentStage - 1);
 
     function updateNavButtons() {
       document.getElementById('prevBtn').disabled = currentStage === 0;
       document.getElementById('nextBtn').disabled = currentStage === STAGES.length - 1;
-      document.getElementById('nextBtn').innerHTML = currentStage === STAGES.length - 2
-        ? 'المراجعة النهائية <i class="fa-solid fa-arrow-left mr-1"></i>'
-        : 'التالي <i class="fa-solid fa-arrow-left mr-1"></i>';
-    }
-
-    // ============================================================
-    // BIND EVENTS AFTER RENDER
-    // ============================================================
-    function bindStageEvents() {
-      // No-op — events are inline in HTML
     }
 
     // ============================================================
     // RUN SIMULATION
     // ============================================================
-    window.runSimulation = () => {
-      const s = state;
-      const required = [
-        s.business.industry, s.business.stage,
-        s.audience.objective, s.audience.audienceType, s.audience.age.length,
-        s.budget.platforms.length, s.budget.totalBudget,
-        s.creative.type, s.creative.hook, s.creative.offer, s.creative.landing,
-        s.optimization.bidding, s.optimization.event, s.optimization.testing, s.optimization.scaling
-      ];
-      if (required.some(r => !r)) { alert('الرجاء إكمال كل الاختيارات أولاً'); return; }
-
-      const m = calculateMetrics();
-      showResults(m);
+    window.runSimulationClick = () => {
+      const result = runSimulation(state);
+      if (result.error) {
+        alert('الرجاء إكمال الاختيارات:\n' + result.error.join('\n'));
+        return;
+      }
+      showResults(result);
     };
 
-    function showResults(m) {
+    let lastResult = null;
+    let cohortChartInstance = null;
+
+    function showResults(result) {
+      lastResult = result;
       const modal = document.getElementById('resultsModal');
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
 
-      // Score calculation
-      const targetRoas = m.breakevenRoas * 1.5;
-      let score = 0;
-      if (m.roas >= targetRoas * 1.5) score = 95 + Math.random() * 5;
-      else if (m.roas >= targetRoas) score = 75 + Math.random() * 15;
-      else if (m.roas >= m.breakevenRoas) score = 55 + Math.random() * 15;
-      else if (m.roas >= m.breakevenRoas * 0.7) score = 35 + Math.random() * 15;
-      else score = Math.max(5, (m.roas / m.breakevenRoas) * 35);
-      score = Math.round(score);
+      const { totals, scores, verdict, funnel, cohort, attribution, risks, recommendations, optimizations, platformResults, learningPhase, adFatigue } = result;
 
-      const verdict = score >= 90 ? { text: 'أداء استثنائي 🏆', color: 'green', icon: 'fa-trophy' }
-        : score >= 75 ? { text: 'أداء ممتاز ✅', color: 'green', icon: 'fa-circle-check' }
-        : score >= 60 ? { text: 'أداء جيد 👍', color: 'cyan', icon: 'fa-thumbs-up' }
-        : score >= 40 ? { text: 'أداء مقبول ⚠️', color: 'amber', icon: 'fa-triangle-exclamation' }
-        : { text: 'أداء ضعيف ❌', color: 'red', icon: 'fa-circle-xmark' };
-
-      const verdictColorMap = { green: '#22c55e', cyan: '#06b6d4', amber: '#f59e0b', red: '#ef4444' };
-      const scoreRingColor = verdictColorMap[verdict.color];
+      // Score Box
+      const scoreColor = verdict.color === 'green' ? '#22c55e' 
+        : verdict.color === 'cyan' ? '#06b6d4' 
+        : verdict.color === 'amber' ? '#f59e0b' 
+        : verdict.color === 'orange' ? '#f97316' 
+        : '#ef4444';
 
       document.getElementById('scoreBox').innerHTML = `
         <div class="relative flex-shrink-0">
-          <svg width="140" height="140" viewBox="0 0 100 100" class="score-ring">
+          <svg width="160" height="160" viewBox="0 0 100 100" class="score-ring">
             <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6" />
-            <circle cx="50" cy="50" r="45" fill="none" stroke="${scoreRingColor}" stroke-width="6" stroke-linecap="round" class="score-ring-fill" style="stroke-dashoffset: ${283 - (283 * score / 100)}" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="${scoreColor}" stroke-width="6" stroke-linecap="round" class="score-ring-fill" style="stroke-dashoffset: ${283 - (283 * scores.adjustedOverall / 100)}" />
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-3xl font-bold text-white font-sans">${score}</div>
-            <div class="text-[10px] text-slate-400">/ 100</div>
+            <div class="text-5xl font-bold text-white font-sans">${verdict.grade}</div>
+            <div class="text-sm font-bold" style="color:${scoreColor}">${scores.adjustedOverall}/100</div>
           </div>
         </div>
-        <div class="flex-1 text-center sm:text-right space-y-2">
-          <div class="text-2xl font-bold ${verdict.color === 'green' ? 'text-green-400' : verdict.color === 'red' ? 'text-red-400' : verdict.color === 'amber' ? 'text-amber-400' : 'text-cyan-400'}">
+        <div class="flex-1 text-center sm:text-right space-y-3">
+          <div class="text-2xl sm:text-3xl font-bold" style="color:${scoreColor}">
             <i class="fa-solid ${verdict.icon}"></i> ${verdict.text}
           </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            ${score >= 75 ? 'استراتيجيتك مدروسة ومبنية على أسس قوية. النتيجة تدل على فهم ممتاز لاقتصاديات الوحدة.' :
-              score >= 55 ? 'أداء إيجابي، لكن فيه فرص لتحسين الربحية بشكل ملحوظ.' :
-              score >= 35 ? 'الاستراتيجية تحتاج تعديلات جوهرية. راجع الاقتراحات تحت.' :
-              'محاكاة بتخسر. المشكلة في أساسيات الاستراتيجية أو اقتصاديات الوحدة.'}
-          </p>
+          <p class="text-sm text-slate-300 leading-relaxed">${verdict.summary}</p>
+          <div class="flex items-center gap-2 text-xs flex-wrap justify-center sm:justify-start">
+            <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
+              <i class="fa-solid fa-briefcase ml-1"></i> ${result.metadata.industry}
+            </span>
+            <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
+              <i class="fa-solid fa-bullseye ml-1"></i> ${result.metadata.objective}
+            </span>
+            <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
+              <i class="fa-solid fa-layer-group ml-1"></i> ${result.metadata.platformCount} منصات
+            </span>
+          </div>
         </div>
       `;
 
-      // Metrics Grid
+      // 8 Scores Grid
+      const scoreLabels = {
+        strategyQuality: { name: 'جودة الاستراتيجية', icon: 'fa-lightbulb' },
+        targeting: { name: 'الاستهداف', icon: 'fa-crosshairs' },
+        creativeQuality: { name: 'الكرياتيف', icon: 'fa-photo-film' },
+        budgetEfficiency: { name: 'كفاءة الميزانية', icon: 'fa-wallet' },
+        funnelIntegrity: { name: 'الفانل', icon: 'fa-filter' },
+        sustainability: { name: 'الاستدامة', icon: 'fa-seedling' },
+        measurement: { name: 'القياس', icon: 'fa-chart-simple' },
+        profitability: { name: 'الربحية', icon: 'fa-sack-dollar' }
+      };
+
+      document.getElementById('scoresGrid').innerHTML = Object.entries(scoreLabels).map(([key, info]) => {
+        const val = scores[key];
+        const color = val >= 75 ? 'green' : val >= 50 ? 'amber' : 'red';
+        const colorClass = color === 'green' ? 'text-green-400' : color === 'amber' ? 'text-amber-400' : 'text-red-400';
+        const barColor = color === 'green' ? 'bg-green-500' : color === 'amber' ? 'bg-amber-500' : 'bg-red-500';
+        return `
+          <div class="p-3 rounded-xl bg-black/40 border border-white/10">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+                <i class="fa-solid ${info.icon}"></i> ${info.name}
+              </div>
+              <div class="text-xs font-bold font-sans ${colorClass}">${val}/100</div>
+            </div>
+            <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+              <div class="h-full rounded-full ${barColor} transition-all" style="width: ${val}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Key Metrics
       document.getElementById('metricsGrid').innerHTML = [
-        { label: 'المبيعات (Orders)', value: m.totalOrders.toLocaleString('ar-EG'), color: 'text-white', icon: 'fa-bag-shopping' },
-        { label: 'الإيرادات', value: m.totalRevenue.toLocaleString('ar-EG') + ' ج.م', color: 'text-green-400', icon: 'fa-coins' },
-        { label: 'ROAS', value: m.roas.toFixed(2) + 'x', color: m.roas >= m.breakevenRoas ? 'text-green-400' : 'text-red-400', icon: 'fa-chart-line' },
-        { label: 'صافي الربح', value: (m.profit >= 0 ? '+' : '') + m.profit.toLocaleString('ar-EG') + ' ج.م', color: m.profit >= 0 ? 'text-green-400' : 'text-red-400', icon: 'fa-sack-dollar' },
-        { label: 'المشاهدات (Impr.)', value: m.totalImpressions.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-eye' },
-        { label: 'النقرات (Clicks)', value: m.totalClicks.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-hand-pointer' },
-        { label: 'تكلفة الطلب (CPA)', value: Math.round(m.cpa).toLocaleString('ar-EG') + ' ج.م', color: 'text-amber-400', icon: 'fa-tag' },
-        { label: 'إجمالي الإنفاق', value: m.totalSpend.toLocaleString('ar-EG') + ' ج.م', color: 'text-pink-400', icon: 'fa-wallet' }
+        { label: 'المبيعات', value: totals.totalOrders.toLocaleString('ar-EG'), color: 'text-white', icon: 'fa-bag-shopping' },
+        { label: 'الإيرادات', value: formatCurrency(totals.totalRevenue), color: 'text-green-400', icon: 'fa-coins' },
+        { label: 'ROAS', value: totals.avgROAS.toFixed(2) + 'x', color: totals.avgROAS >= totals.breakEvenRoas ? 'text-green-400' : 'text-red-400', icon: 'fa-chart-line' },
+        { label: 'صافي الربح', value: (totals.netProfit >= 0 ? '+' : '') + formatCurrency(totals.netProfit), color: totals.netProfit >= 0 ? 'text-green-400' : 'text-red-400', icon: 'fa-sack-dollar' },
+        { label: 'المشاهدات', value: totals.totalImpressions.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-eye' },
+        { label: 'الوصول', value: totals.totalReach.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-users' },
+        { label: 'النقرات', value: totals.totalClicks.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-hand-pointer' },
+        { label: 'CPA', value: formatCurrency(totals.avgCPA), color: 'text-amber-400', icon: 'fa-tag' }
       ].map(x => `
         <div class="metric-card p-4 rounded-xl bg-black/40 border border-white/10 ${x.color}">
           <div class="flex items-center gap-2 mb-2 text-[10px] text-slate-400">
             <i class="fa-solid ${x.icon}"></i> ${x.label}
           </div>
-          <div class="text-lg font-bold font-sans ${x.color} anim-pop">${x.value}</div>
+          <div class="text-base font-bold font-sans ${x.color} anim-pop break-all">${x.value}</div>
         </div>
       `).join('');
 
       // Revenue Breakdown
-      const breakEvenLabel = `Break-Even ROAS: ${m.breakevenRoas.toFixed(2)}x`;
       document.getElementById('revenueBreakdown').innerHTML = `
-        <h3 class="font-bold text-white text-sm flex items-center gap-2 mb-3">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
           <i class="fa-solid fa-calculator text-pink-400"></i> تفصيل الإيرادات والتكاليف
         </h3>
         <div class="space-y-2 text-xs">
-          <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">الإيرادات الإجمالية</span><span class="text-green-400 font-bold font-sans">+${m.totalRevenue.toLocaleString('ar-EG')} ج.م</span></div>
-          <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">تكلفة البضاعة (COGS)</span><span class="text-red-400 font-bold font-sans">-${Math.round(m.totalOrders * state.business.price * (state.business.cogs/100)).toLocaleString('ar-EG')} ج.م</span></div>
-          <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">ميزانية الإعلانات</span><span class="text-red-400 font-bold font-sans">-${m.totalSpend.toLocaleString('ar-EG')} ج.م</span></div>
-          <div class="flex justify-between py-3 font-bold text-sm"><span class="text-white">صافي الربح</span><span class="${m.profit >= 0 ? 'text-green-400' : 'text-red-400'} font-sans">${(m.profit >= 0 ? '+' : '') + m.profit.toLocaleString('ar-EG')} ج.م</span></div>
+          <div class="flex justify-between py-2 border-b border-white/5">
+            <span class="text-slate-400">الإيرادات الإجمالية</span>
+            <span class="text-green-400 font-bold font-sans">+${formatCurrency(totals.totalRevenue)}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-white/5">
+            <span class="text-slate-400">تكلفة البضاعة (COGS)</span>
+            <span class="text-red-400 font-bold font-sans">-${formatCurrency(totals.totalCogs)}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-white/5">
+            <span class="text-slate-400">ميزانية الإعلانات</span>
+            <span class="text-red-400 font-bold font-sans">-${formatCurrency(totals.totalBudget)}</span>
+          </div>
+          ${totals.ltvRevenue > 0 ? `
+            <div class="flex justify-between py-2 border-b border-white/5">
+              <span class="text-slate-400">قيمة LTV الإضافية (Retention)</span>
+              <span class="text-green-400 font-bold font-sans">+${formatCurrency(totals.ltvRevenue)}</span>
+            </div>
+          ` : ''}
+          <div class="flex justify-between py-3 font-bold text-sm">
+            <span class="text-white">صافي الربح</span>
+            <span class="${totals.netProfit >= 0 ? 'text-green-400' : 'text-red-400'} font-sans">${(totals.netProfit >= 0 ? '+' : '') + formatCurrency(totals.netProfit)}</span>
+          </div>
         </div>
-        <div class="mt-3 p-3 rounded-lg bg-white/5 text-[10px] text-slate-400">
-          ${breakEvenLabel} — أي ROAS أقل من الرقم ده = خسارة صافية.
+        <div class="mt-3 p-3 rounded-lg bg-white/5 text-[10px] text-slate-400 flex justify-between">
+          <span>هامش الربح:</span>
+          <span class="font-bold ${totals.profitMargin >= 0 ? 'text-green-400' : 'text-red-400'}">${totals.profitMargin.toFixed(1)}%</span>
+        </div>
+        <div class="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 text-[10px] text-purple-200">
+          <i class="fa-solid fa-info-circle ml-1"></i>
+          Break-Even ROAS: <strong>${totals.breakEvenRoas.toFixed(2)}x</strong> — أي ROAS أقل من ده = خسارة صافية.
         </div>
       `;
 
-      // Platform Breakdown
+      // Funnel Visualization
+      const funnelData = [funnel.tofu, funnel.mofu, funnel.bofu];
+      const funnelColors = ['#7c3aed', '#d946ef', '#f97316'];
+      document.getElementById('funnelSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-filter text-purple-400"></i> رحلة العميل (TOFU → MOFU → BOFU)
+        </h3>
+        <div class="space-y-3">
+          ${funnelData.map((stage, i) => {
+            const width = 100 - (i * 20);
+            const budgetPct = stage.budgetShare ? (stage.budgetShare / totals.totalBudget * 100).toFixed(0) : 0;
+            return `
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-white font-bold">${stage.label}</span>
+                  <span class="text-slate-400">${stage.clicks.toLocaleString('ar-EG')} نقرة</span>
+                </div>
+                <div class="h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold mx-auto transition-all" 
+                     style="width: ${width}%; background: linear-gradient(90deg, ${funnelColors[i]}, ${funnelColors[i]}dd);">
+                  ${budgetPct}% من الميزانية
+                </div>
+                <p class="text-[10px] text-slate-400 text-center">${stage.desc}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // Cohort Section
+      document.getElementById('cohortSection').classList.remove('hidden');
+      setTimeout(() => {
+        renderCohortChart(cohort);
+      }, 100);
+
+      document.getElementById('cohortInsights').innerHTML = `
+        <div class="p-3 rounded-lg bg-black/30 border border-white/10">
+          <div class="text-[10px] text-slate-400 mb-1">LTV المتوقع</div>
+          <div class="text-base font-bold text-cyan-400 font-sans">${cohort.ltv.toLocaleString('ar-EG')} ج.م</div>
+        </div>
+        <div class="p-3 rounded-lg bg-black/30 border border-white/10">
+          <div class="text-[10px] text-slate-400 mb-1">CAC (تكلفة الاستحواذ)</div>
+          <div class="text-base font-bold text-amber-400 font-sans">${cohort.cac.toLocaleString('ar-EG')} ج.م</div>
+        </div>
+        <div class="p-3 rounded-lg bg-black/30 border border-white/10">
+          <div class="text-[10px] text-slate-400 mb-1">LTV:CAC Ratio</div>
+          <div class="text-base font-bold font-sans ${cohort.ltvCacRatio >= 3 ? 'text-green-400' : cohort.ltvCacRatio >= 2 ? 'text-cyan-400' : cohort.ltvCacRatio >= 1 ? 'text-amber-400' : 'text-red-400'}">${cohort.ltvCacRatio}x</div>
+        </div>
+        <div class="p-3 rounded-lg bg-black/30 border border-white/10">
+          <div class="text-[10px] text-slate-400 mb-1">معدل Churn الفعلي</div>
+          <div class="text-base font-bold text-white font-sans">${cohort.effectiveChurn}%</div>
+        </div>
+      `;
+
+      // Platform Performance
       document.getElementById('platformBreakdown').innerHTML = `
-        <h3 class="font-bold text-white text-sm flex items-center gap-2 mb-3">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
           <i class="fa-solid fa-layer-group text-cyan-400"></i> أداء كل منصة
         </h3>
         <div class="space-y-3">
-          ${m.platformResults.map(p => `
-            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10">
-              <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          ${platformResults.map(p => `
+            <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10">
+              <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <div class="flex items-center gap-2">
-                  <i class="fa-brands ${p.icon}" style="color:${p.color}"></i>
-                  <span class="font-bold text-white text-xs">${p.name}</span>
+                  <i class="fa-brands ${p.icon} text-lg" style="color:${p.color}"></i>
+                  <span class="font-bold text-white text-sm">${p.name}</span>
                 </div>
-                <span class="font-bold text-xs ${p.roas >= m.breakevenRoas ? 'text-green-400' : 'text-red-400'} font-sans">${p.roas.toFixed(2)}x ROAS</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-2 py-0.5 rounded-full ${p.frequencyWarning === 'high' ? 'bg-red-500/20 text-red-400' : p.frequencyWarning === 'medium' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}">
+                    Freq: ${p.frequency}x
+                  </span>
+                  <span class="font-bold text-sm ${p.isProfitable ? 'text-green-400' : 'text-red-400'} font-sans">${p.roas.toFixed(2)}x ROAS</span>
+                </div>
               </div>
-              <div class="grid grid-cols-4 gap-2 text-[10px] text-center">
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-[10px] text-center">
                 <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الإنفاق</div><div class="text-white font-bold font-sans">${Math.round(p.budget).toLocaleString('ar-EG')}</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">Impressions</div><div class="text-white font-bold font-sans">${(p.impressions/1000).toFixed(1)}K</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CTR</div><div class="text-white font-bold font-sans">${p.ctr}%</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CVR</div><div class="text-white font-bold font-sans">${p.cvr}%</div></div>
                 <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الطلبات</div><div class="text-white font-bold font-sans">${p.orders}</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CPA</div><div class="text-amber-400 font-bold font-sans">${Math.round(p.cpa)}</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الإيراد</div><div class="text-green-400 font-bold font-sans">${Math.round(p.revenue).toLocaleString('ar-EG')}</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CPA</div><div class="text-amber-400 font-bold font-sans">${Math.round(p.cpa).toLocaleString('ar-EG')}</div></div>
               </div>
             </div>
           `).join('')}
         </div>
       `;
 
-      // Feedback
-      const feedback = generateFeedback(m, score);
-      document.getElementById('feedbackSection').innerHTML = `
-        <h3 class="font-bold text-white text-sm flex items-center gap-2 mb-3">
-          <i class="fa-solid fa-clipboard-list text-amber-400"></i> التوصيات والملاحظات
+      // Attribution Comparison
+      const attributionModels = ['lastTouch', 'firstTouch', 'linear', 'timeDecay', 'position', 'dataDriven'];
+      const modelNames = {
+        lastTouch: 'Last-Touch',
+        firstTouch: 'First-Touch',
+        linear: 'Linear',
+        timeDecay: 'Time-Decay',
+        position: 'Position-Based',
+        dataDriven: 'Data-Driven'
+      };
+
+      document.getElementById('attributionSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-diagram-project text-amber-400"></i> مقارنة نماذج الـ Attribution
+        </h3>
+        <p class="text-[10px] text-slate-400">كل نموذج بيوزع الفضل بشكل مختلف — ده يفسر ليه تقارير المنصات بتختلف عن بعض.</p>
+        <div class="space-y-2">
+          ${attributionModels.map(m => {
+            const isRecommended = m === attribution.recommended;
+            const totalValue = Object.values(attribution.models[m]).reduce((a, b) => a + b, 0);
+            return `
+              <div class="p-3 rounded-xl border ${isRecommended ? 'bg-amber-500/10 border-amber-500/40' : 'bg-white/[0.02] border-white/10'}">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-white">${modelNames[m]}</span>
+                    ${isRecommended ? '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300 font-bold">موصى به</span>' : ''}
+                  </div>
+                  <span class="text-xs font-bold font-sans text-pink-400">${formatCurrency(totalValue)}</span>
+                </div>
+                <div class="space-y-1">
+                  ${platformResults.map(p => {
+                    const val = attribution.models[m][p.platform] || 0;
+                    const pct = totalValue > 0 ? (val / totalValue * 100) : 0;
+                    return `
+                      <div class="flex items-center gap-2 text-[10px]">
+                        <span class="w-20 text-slate-400 truncate">${p.name}</span>
+                        <div class="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                          <div class="h-full rounded-full" style="width: ${pct}%; background: ${p.color};"></div>
+                        </div>
+                        <span class="w-12 text-left font-sans text-slate-300">${pct.toFixed(0)}%</span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // Learning Phase
+      document.getElementById('learningPhaseSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-brain text-cyan-400"></i> مرحلة التعلم (Learning Phase)
+        </h3>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">مدة التعلم</div>
+              <div class="text-lg font-bold text-cyan-400 font-sans">${learningPhase.learningDays} يوم</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">نسبة من الحملة</div>
+              <div class="text-lg font-bold text-white font-sans">${learningPhase.learningPhasePercent}%</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">إيرادات خلال التعلم</div>
+              <div class="text-sm font-bold text-amber-400 font-sans">${formatCurrency(learningPhase.revenueDuringLearning)}</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">إيرادات بعد التعلم</div>
+              <div class="text-sm font-bold text-green-400 font-sans">${formatCurrency(learningPhase.revenueStable)}</div>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-[11px] text-cyan-200">
+            <i class="fa-solid fa-info-circle ml-1"></i> ${learningPhase.recommendation}
+          </div>
+        </div>
+      `;
+
+      // Ad Fatigue
+      document.getElementById('adFatigueSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-battery-quarter text-orange-400"></i> تحليل Ad Fatigue
+        </h3>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">تعب أسبوعي</div>
+              <div class="text-lg font-bold text-orange-400 font-sans">${adFatigue.weeklyFatigue}%</div>
+            </div>
+            <div class="p-3 rounded-xl bg-black/30">
+              <div class="text-slate-400">تراجع الأداء</div>
+              <div class="text-lg font-bold text-white font-sans">${adFatigue.degradation}%</div>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/10 border border-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/30 text-[11px]">
+            <i class="fa-solid fa-lightbulb ml-1"></i> ${adFatigue.recommendation}
+          </div>
+        </div>
+      `;
+
+      // Risks
+      document.getElementById('risksSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-red-400"></i> تحليل المخاطر
+        </h3>
+        <div class="p-4 rounded-xl ${risks.riskLevel === 'high' ? 'bg-red-500/10 border-red-500/40' : risks.riskLevel === 'medium' ? 'bg-amber-500/10 border-amber-500/40' : 'bg-green-500/10 border-green-500/40'} border">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-bold text-white">مستوى المخاطر الإجمالي</span>
+            <span class="text-lg font-bold font-sans ${risks.riskLevel === 'high' ? 'text-red-400' : risks.riskLevel === 'medium' ? 'text-amber-400' : 'text-green-400'}">${risks.totalRiskScore}/100</span>
+          </div>
+          <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+            <div class="h-full rounded-full ${risks.riskLevel === 'high' ? 'bg-red-500' : risks.riskLevel === 'medium' ? 'bg-amber-500' : 'bg-green-500'}" style="width: ${risks.totalRiskScore}%"></div>
+          </div>
+          <div class="text-[10px] text-slate-400 mt-2">${risks.riskLabel}</div>
+        </div>
+        <div class="space-y-2">
+          ${risks.risks.length === 0 ? '<div class="p-3 text-center text-xs text-slate-500">لا توجد مخاطر كبيرة — استراتيجية متوازنة ✅</div>' : ''}
+          ${risks.risks.map(r => `
+            <div class="p-3 rounded-xl border ${r.severity === 'high' ? 'bg-red-500/5 border-red-500/30' : r.severity === 'medium' ? 'bg-amber-500/5 border-amber-500/30' : 'bg-blue-500/5 border-blue-500/30'}">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid ${r.severity === 'high' ? 'fa-circle-exclamation text-red-400' : r.severity === 'medium' ? 'fa-triangle-exclamation text-amber-400' : 'fa-info-circle text-blue-400'} mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-white mb-1">${r.title}</div>
+                  <div class="text-[11px] text-slate-300 leading-relaxed">${r.desc}</div>
+                  <div class="text-[10px] text-green-400 mt-1.5"><i class="fa-solid fa-lightbulb"></i> ${r.mitigation}</div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Recommendations
+      document.getElementById('recommendationsSection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-clipboard-list text-amber-400"></i> التوصيات (${recommendations.length})
         </h3>
         <div class="space-y-2">
-          ${feedback.map(f => `
-            <div class="p-3 rounded-xl border ${f.type === 'positive' ? 'bg-green-500/10 border-green-500/30' : f.type === 'warning' ? 'bg-amber-500/10 border-amber-500/30' : 'bg-red-500/10 border-red-500/30'} flex items-start gap-3">
-              <i class="fa-solid ${f.type === 'positive' ? 'fa-circle-check text-green-400' : f.type === 'warning' ? 'fa-triangle-exclamation text-amber-400' : 'fa-circle-xmark text-red-400'} mt-0.5"></i>
-              <div class="flex-1">
-                <div class="text-xs font-bold text-white">${f.title}</div>
-                <div class="text-[11px] text-slate-300 mt-1 leading-relaxed">${f.desc}</div>
+          ${recommendations.map(r => {
+            const colors = { urgent: 'red', high: 'amber', medium: 'blue', low: 'slate' };
+            const c = colors[r.priority] || 'slate';
+            return `
+              <div class="p-3 rounded-xl bg-${c}-500/5 border border-${c}-500/30 flex items-start gap-3">
+                <span class="px-2 py-0.5 rounded-full bg-${c}-500/20 text-${c}-400 text-[9px] font-bold whitespace-nowrap">${r.priority}</span>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-white">${r.title}</div>
+                  <div class="text-[11px] text-slate-300 mt-0.5 leading-relaxed">${r.desc}</div>
+                </div>
               </div>
-            </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       `;
 
-      if (window.gtag) window.gtag('event', 'simulator_run', { score, roas: m.roas.toFixed(2) });
+      // Optimizations
+      document.getElementById('optimizationsSection').innerHTML = optimizations.length > 0 ? `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-rocket text-purple-400"></i> فرص التحسين (${optimizations.length})
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          ${optimizations.map(o => `
+            <div class="p-3 rounded-xl bg-green-500/5 border border-green-500/30">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[10px] text-green-400 font-bold"><i class="fa-solid fa-${o.impact === 'high' ? 'fire' : 'bolt'} ml-1"></i>${o.impact.toUpperCase()}</span>
+                <span class="text-[9px] text-slate-500">${o.area}</span>
+              </div>
+              <div class="text-xs font-bold text-white mb-1">${o.suggestion}</div>
+              <div class="text-[10px] text-slate-400">التحسن المتوقع: <strong class="text-green-400">${o.expectedGain}</strong></div>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      // Scroll to top
+      modal.scrollTop = 0;
+
+      if (window.gtag) window.gtag('event', 'simulator_run_full', { score: scores.adjustedOverall });
     }
 
-    function generateFeedback(m, score) {
-      const fb = [];
-      const s = state;
+    // ============================================================
+    // COHORT CHART
+    // ============================================================
+    function renderCohortChart(cohort) {
+      const ctx = document.getElementById('cohortChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (cohortChartInstance) cohortChartInstance.destroy();
 
-      // Positive
-      if (m.roas >= m.breakevenRoas * 1.5) fb.push({ type: 'positive', title: 'استراتيجية قوية جداً', desc: 'حققتي ROAS أعلى بكثير من نقطة التعادل — ده يدل على فهم عميق لاقتصاديات الوحدة.' });
-      if (s.creative.type === 'ugc' || s.creative.type === 'reels') fb.push({ type: 'positive', title: 'اختيار ذكي للكرياتيف', desc: 'UGC و Reels بيحققوا أعلى CTR وأقل CPM في السوق المصري.' });
-      if (s.audience.audienceType === 'retargeting') fb.push({ type: 'positive', title: 'إعادة الاستهداف ماية من الدهب', desc: 'الجمهور ده بيعمل تحويلات 3-5 أضعاف الجمهور البارد — لو المساحة تسمح، كمل توسع فيه.' });
-      if (s.optimization.testing !== 'none') fb.push({ type: 'positive', title: 'منهجية الاختبار ممتازة', desc: 'الـ A/B Testing بيوفرلك 15-20% من الميزانية على المدى الطويل.' });
-
-      // Warnings
-      if (s.audience.objective === 'awareness' && s.audience.objective !== 'sales') fb.push({ type: 'warning', title: 'الهدف مش متوافق مع قياس المبيعات', desc: 'اختيار "الوعي" بيقلل الـ CVR 60%. لو هدفك المبيعات، اختر "Sales" أو "Leads".' });
-      if (s.creative.offer === 'none') fb.push({ type: 'warning', title: 'بدون عرض = بدون دافع', desc: 'حتى خصم صغير (10%) بيعمل فرق ملحوظ في معدل التحويل.' });
-      if (s.creative.landing === 'bad' || s.creative.landing === 'average') fb.push({ type: 'warning', title: 'صفحة الهبوط ضعيفة', desc: 'تحسين صفحة الهبوط ممكن يحسن الأداء 40%. ركز على السرعة والوضوح.' });
-      if (s.optimization.scaling === 'aggressive') fb.push({ type: 'warning', title: 'التوسع الهجومي مخاطرة', desc: 'زيادة 50% أسبوعياً بتخرج من الـ Learning Phase بسرعة. جرب 20% للتوسع المستقر.' });
-      if (s.budget.platforms.length === 1) fb.push({ type: 'warning', title: 'منصة واحدة = مخاطرة', desc: 'الاعتماد على منصة واحدة بيخليك عرضة لتغيرات الخوارزمية. وزع على 2-3 منصات.' });
-
-      // Negative
-      if (m.profit < 0) fb.push({ type: 'negative', title: 'خسارة صافية', desc: `صافي الربح ${Math.round(m.profit).toLocaleString('ar-EG')} ج.م. لازم ترفع السعر أو تقلل COGS أو تحسن CVR عشان تصل للتعادل.` });
-      if (m.cpa > s.business.price) fb.push({ type: 'negative', title: 'تكلفة الشراء أعلى من سعر المنتج', desc: `الـ CPA الحالي (${Math.round(m.cpa)} ج.م) أعلى من سعر المنتج (${s.business.price} ج.م). ده مستحيل يكون مربح.` });
-      if (s.creative.hook === 'weak') fb.push({ type: 'negative', title: 'Hook ضعيف', desc: 'أول 3 ثواني بتحدد مصير الإعلان. حتى لو الكرياتيف حلو، الـ Hook الضعيف بيقلل الأداء 35%.' });
-
-      if (!fb.length) fb.push({ type: 'positive', title: 'استراتيجية متوازنة', desc: 'مفيش مشاكل جوهرية واضحة. جرب تعدل متغير واحد في كل محاكاة عشان تشوف الفرق.' });
-
-      return fb.slice(0, 6);
+      cohortChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: cohort.cohorts.map(c => c.monthLabel),
+          datasets: [
+            {
+              label: 'الإيرادات الشهرية (ج.م)',
+              data: cohort.cohorts.map(c => c.revenue),
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.1)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: 4,
+              pointBackgroundColor: '#06b6d4'
+            },
+            {
+              label: 'العملاء النشطين',
+              data: cohort.cohorts.map(c => c.activeCustomers),
+              borderColor: '#d946ef',
+              backgroundColor: 'rgba(217, 70, 239, 0.1)',
+              fill: false,
+              tension: 0.4,
+              borderWidth: 2,
+              yAxisID: 'y1',
+              pointRadius: 4,
+              pointBackgroundColor: '#d946ef'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#cbd5e1', font: { family: 'IBM Plex Sans Arabic', size: 11 } }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { position: 'right', ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y1: { position: 'left', ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
     }
+
+    // ============================================================
+    // PDF EXPORT
+    // ============================================================
+    window.downloadReportPDF = () => {
+      if (!lastResult) { alert('شغّل المحاكاة أولاً'); return; }
+      const btn = event.target.closest('button');
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري التحضير...';
+
+      const html = generateReportHTML(lastResult);
+      const container = document.getElementById('reportPdfContainer');
+      container.innerHTML = html;
+
+      const opt = {
+        margin: [5, 5, 5, 5],
+        filename: `Marketing_Report_${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(container).save().then(() => {
+          container.innerHTML = '';
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }).catch(err => {
+          console.error(err);
+          container.innerHTML = '';
+          btn.disabled = false;
+          btn.innerHTML = origText;
+          alert('تعذر تحميل الـ PDF');
+        });
+      } else {
+        alert('مكتبة PDF مش محملة');
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    };
 
     window.closeResults = () => {
       document.getElementById('resultsModal').classList.add('hidden');
@@ -1220,10 +1989,11 @@
     // RESET
     // ============================================================
     window.resetSimulator = () => {
-      if (!confirm('هل أنت متأكد من إعادة البدء؟ سيتم حذف كل الاختيارات.')) return;
+      if (!confirm('هل أنت متأكد؟ سيتم حذف كل الاختيارات والبدء من الصفر.')) return;
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      localStorage.removeItem('simulator_state');
+      localStorage.removeItem('sim_v2_state');
       currentStage = 0;
+      if (cohortChartInstance) { cohortChartInstance.destroy(); cohortChartInstance = null; }
       closeResults();
       renderStage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1234,7 +2004,6 @@
     // ============================================================
     loadState();
     renderStage();
-
   </script>
 </body>
 </html>

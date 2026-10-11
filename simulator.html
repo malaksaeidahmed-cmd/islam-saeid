@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>محاكي الاستراتيجيات التسويقية | إسلام سعيد</title>
-  <meta name="description" content="محاكي تفاعلي بمستوى عالمي لبناء وتنفيذ استراتيجية تسويق رقمي عبر 12 مرحلة، مع تقرير شامل وتحليل 8 محاور." />
+  <title>محاكي الاستراتيجيات التسويقية v3.0 | إسلام سعيد</title>
+  <meta name="description" content="محاكي استراتيجيات تسويقية بـ Monte Carlo Simulation — 10,000 محاكاة احتمالية لكل سيناريو." />
   <link rel="canonical" href="https://islamsaeid.me/simulator.html" />
   <meta property="og:title" content="محاكي الاستراتيجيات التسويقية | إسلام سعيد" />
-  <meta property="og:description" content="أداة تعليمية عالمية لبناء استراتيجية تسويق من الصفر." />
+  <meta property="og:description" content="10,000 محاكاة احتمالية لبناء استراتيجية تسويق عالمية." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://islamsaeid.me/logo.png" />
   <link rel="icon" type="image/png" href="logo.png" />
@@ -34,9 +34,11 @@
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(217, 70, 239, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(217, 70, 239, 0); } }
     @keyframes numberPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    @keyframes loading { from { background-position: -1000px 0; } to { background-position: 1000px 0; } }
     .anim-fade-up { animation: fadeInUp 0.5s ease forwards; }
     .anim-pop { animation: numberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .anim-shake { animation: shake 0.4s ease-in-out; }
     .glow-pulse { animation: pulseGlow 2s infinite; }
 
     .option-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
@@ -58,7 +60,22 @@
     .progress-bar { background: linear-gradient(90deg, #7c3aed, #d946ef, #f97316); }
     .chip-selected { background: linear-gradient(135deg, #d946ef, #7c3aed); color: white; border-color: transparent; }
 
-    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .prob-band { position: relative; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.03); overflow: hidden; }
+    .prob-band-fill { position: absolute; top: 0; bottom: 0; background: linear-gradient(90deg, rgba(239,68,68,0.4), rgba(245,158,11,0.4), rgba(34,197,94,0.4), rgba(6,182,212,0.4)); }
+    .prob-band-marker { position: absolute; top: 0; bottom: 0; width: 2px; background: white; box-shadow: 0 0 8px rgba(255,255,255,0.8); }
+
+    .stage-locked { opacity: 0.5; cursor: not-allowed; }
+    .validation-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+
+    .strategy-doc { font-family: 'IBM Plex Sans Arabic', sans-serif; direction: rtl; }
+    .strategy-doc h1 { color: #7c3aed; }
+    .strategy-doc h2 { color: #7c3aed; border-right: 4px solid #d946ef; padding-right: 12px; margin: 25px 0 15px; font-size: 18px; }
+    .strategy-doc table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 12px; }
+    .strategy-doc th { background: #7c3aed; color: white; padding: 10px; text-align: right; }
+    .strategy-doc td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }
+    .strategy-doc tr:nth-child(even) td { background: #f8fafc; }
   </style>
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen overflow-x-hidden">
@@ -76,7 +93,7 @@
         <img src="logo.png" alt="شعار إسلام سعيد" class="w-9 h-9 object-contain rounded-lg" onerror="this.style.display='none'" />
         <div>
           <div class="font-bold text-white text-sm">محاكي الاستراتيجيات</div>
-          <div class="text-[10px] text-purple-400 font-bold">Marketing Strategy Simulator · v2.0</div>
+          <div class="text-[10px] text-purple-400 font-bold">Monte Carlo Edition · v3.0 · 10,000 Simulations</div>
         </div>
       </a>
       <div class="flex items-center gap-3">
@@ -104,8 +121,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       <div class="lg:col-span-2 space-y-5">
+        <!-- Validation Error Box -->
+        <div id="validationBox" class="hidden p-4 rounded-2xl border flex items-start gap-3"></div>
+
+        <!-- Stage Content -->
         <div id="stageContent" class="space-y-5"></div>
 
+        <!-- Navigation -->
         <div id="stageNav" class="sticky bottom-4 z-30 p-4 rounded-2xl bg-[#0E0B1A]/95 backdrop-blur-lg border border-white/10 flex items-center justify-between gap-3">
           <button id="prevBtn" onclick="prevStage()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs disabled:opacity-40 disabled:cursor-not-allowed">
             <i class="fa-solid fa-arrow-right ml-1"></i> السابق
@@ -149,16 +171,18 @@
     <div class="min-h-screen p-4 sm:p-8">
       <div class="max-w-6xl mx-auto bg-[#0E0B1A] border border-white/10 rounded-3xl overflow-hidden">
         
-        <!-- Modal Header -->
         <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-600/20 via-pink-600/10 to-transparent border-b border-white/10">
           <div class="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Simulation Report</div>
-              <h2 class="text-2xl sm:text-3xl font-bold text-white">تقرير الأداء الشامل</h2>
+              <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Monte Carlo Simulation Report · 10,000 Iterations</div>
+              <h2 class="text-2xl sm:text-3xl font-bold text-white">تقرير الأداء الاحتمالي</h2>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
+              <button onclick="downloadStrategyPDF()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs">
+                <i class="fa-solid fa-file-lines ml-1"></i> تنزيل الاستراتيجية
+              </button>
               <button onclick="downloadReportPDF()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs">
-                <i class="fa-solid fa-file-pdf ml-1"></i> تنزيل PDF
+                <i class="fa-solid fa-file-pdf ml-1"></i> تنزيل التقرير
               </button>
               <button onclick="closeResults()" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center">
                 <i class="fa-solid fa-times"></i>
@@ -167,23 +191,36 @@
           </div>
         </div>
 
-        <!-- Score + Verdict -->
         <div class="p-6 sm:p-8 space-y-6">
+          <!-- Score -->
           <div id="scoreBox" class="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl bg-black/40 border border-white/10"></div>
 
           <!-- 8 Scores -->
           <div id="scoresGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
 
-          <!-- Key Metrics -->
+          <!-- Probability Visualizer -->
+          <div id="probabilitySection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4"></div>
+
+          <!-- Histogram Chart -->
+          <div class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-chart-area text-purple-400"></i> توزيع النتائج الاحتمالية (10,000 سيناريو)
+            </h3>
+            <div class="rounded-xl bg-black/30 p-4">
+              <canvas id="histogramChart" class="w-full max-h-72"></canvas>
+            </div>
+          </div>
+
+          <!-- Metrics Grid -->
           <div id="metricsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
 
           <!-- Revenue Breakdown -->
           <div id="revenueBreakdown" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
 
-          <!-- Funnel Visualization -->
+          <!-- Funnel -->
           <div id="funnelSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4"></div>
 
-          <!-- Cohort Chart -->
+          <!-- Cohort -->
           <div id="cohortSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-4">
             <h3 class="font-bold text-white text-sm flex items-center gap-2">
               <i class="fa-solid fa-users-viewfinder text-cyan-400"></i> تحليل Cohort (12 شهر)
@@ -194,13 +231,13 @@
             <div id="cohortInsights" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
           </div>
 
-          <!-- Platform Performance -->
+          <!-- Platform Breakdown -->
           <div id="platformBreakdown" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
 
           <!-- Attribution -->
           <div id="attributionSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
 
-          <!-- Learning Phase + Ad Fatigue -->
+          <!-- Learning + Fatigue -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div id="learningPhaseSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
             <div id="adFatigueSection" class="p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3"></div>
@@ -232,8 +269,30 @@
     </div>
   </div>
 
-  <!-- Report HTML Container for PDF -->
+  <!-- ============================================================ -->
+  <!-- LOADING OVERLAY -->
+  <!-- ============================================================ -->
+  <div id="simulatingOverlay" class="hidden fixed inset-0 z-[150] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="max-w-md w-full p-8 rounded-3xl bg-[#0E0B1A] border border-purple-500/30 text-center space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center mx-auto glow-pulse">
+        <i class="fa-solid fa-microchip text-white text-2xl"></i>
+      </div>
+      <div class="space-y-2">
+        <h3 class="text-white font-bold text-lg">جاري تشغيل 10,000 محاكاة</h3>
+        <p class="text-xs text-slate-400">Monte Carlo Simulation Engine</p>
+      </div>
+      <div class="space-y-2">
+        <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+          <div id="simulationProgressBar" class="h-full progress-bar rounded-full transition-all duration-200" style="width: 0%"></div>
+        </div>
+        <div id="simulationStatus" class="text-[10px] text-slate-500">جاري التهيئة...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF Container -->
   <div id="reportPdfContainer" class="fixed -left-[9999px] top-0"></div>
+  <div id="strategyPdfContainer" class="fixed -left-[9999px] top-0"></div>
 
   <script type="module">
     import {
@@ -244,13 +303,16 @@
       SEASONALITY, CATEGORIES, DEFAULT_STATE
     } from './js/simulator-data.js';
 
-    import { runSimulation, generateReportHTML } from './js/simulator-engine.js';
+    import { runSimulation, generateStrategyDocument } from './js/simulator-engine-v3.js';
 
     // ============================================================
     // STATE
     // ============================================================
     let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
     let currentStage = 0;
+    let lastResult = null;
+    let histogramChartInstance = null;
+    let cohortChartInstance = null;
 
     const STAGES = [
       { id: 'foundation', name: 'أساسيات البيزنس', icon: 'fa-briefcase', short: 'الأساسيات' },
@@ -270,15 +332,108 @@
     // ============================================================
     // PERSISTENCE
     // ============================================================
-    function saveState() { try { localStorage.setItem('sim_v2_state', JSON.stringify(state)); } catch (_) {} }
+    function saveState() { try { localStorage.setItem('sim_v3_state', JSON.stringify(state)); } catch (_) {} }
     function loadState() {
       try {
-        const raw = localStorage.getItem('sim_v2_state');
+        const raw = localStorage.getItem('sim_v3_state');
         if (raw) {
           const parsed = JSON.parse(raw);
-          state = { ...DEFAULT_STATE, ...parsed };
+          state = deepMerge(DEFAULT_STATE, parsed);
         }
       } catch (_) {}
+    }
+    function deepMerge(target, source) {
+      const out = { ...target };
+      for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          out[key] = deepMerge(target[key] || {}, source[key]);
+        } else if (source[key] !== undefined) {
+          out[key] = source[key];
+        }
+      }
+      return out;
+    }
+
+    // ============================================================
+    // VALIDATION — Real gate per stage
+    // ============================================================
+    function validateStage(stageIndex) {
+      const errors = [];
+      const s = state;
+
+      switch (stageIndex) {
+        case 0: // Foundation
+          if (!s.foundation.industry) errors.push('اختر القطاع / النشاط');
+          if (!s.foundation.businessStage) errors.push('اختر مرحلة البيزنس');
+          if (!s.foundation.pricingStrategy) errors.push('اختر استراتيجية التسعير');
+          if (!s.foundation.price || s.foundation.price <= 0) errors.push('أدخل سعر المنتج');
+          if (s.foundation.cogs === null || s.foundation.cogs === undefined || s.foundation.cogs < 0 || s.foundation.cogs > 95) errors.push('أدخل نسبة COGS صحيحة (0-95)');
+          if (!s.foundation.aov || s.foundation.aov <= 0) errors.push('أدخل متوسط قيمة الطلب (AOV)');
+          break;
+        case 1: // Market
+          if (!s.market.targetMarketSize) errors.push('اختر حجم السوق المستهدف');
+          if (!s.market.competitionLevel) errors.push('اختر مستوى المنافسة');
+          if (!s.market.marketMaturity) errors.push('اختر مرحلة نضج السوق');
+          if (!s.market.uniqueAdvantage) errors.push('اختر الميزة التنافسية');
+          break;
+        case 2: // Persona
+          if (!s.persona.journeyStage) errors.push('اختر مرحلة العميل في الرحلة');
+          if (!s.persona.gender) errors.push('اختر الجنس المستهدف');
+          if (!s.persona.ageRange.length) errors.push('اختر فئة عمرية واحدة على الأقل');
+          if (!s.persona.painPoints.length) errors.push('اختر نقطة ألم واحدة على الأقل');
+          break;
+        case 3: // Objective
+          if (!s.objective.primaryGoal) errors.push('اختر الهدف التسويقي الأساسي');
+          if (!s.objective.kpiTarget || s.objective.kpiTarget <= 0) errors.push('أدخل ROAS مستهدف');
+          if (!s.objective.timelineMonths || s.objective.timelineMonths < 1) errors.push('أدخل المدة المستهدفة بالأشهر');
+          break;
+        case 4: // Framework
+          if (!s.framework.primary) errors.push('اختر الإطار التسويقي الأساسي');
+          break;
+        case 5: // Channels
+          if (!s.channels.mix.length) errors.push('اختر نوع ميديا واحد على الأقل (Owned/Paid/Earned/Shared)');
+          if (!s.channels.platforms.length) errors.push('اختر منصة إعلانية واحدة على الأقل');
+          break;
+        case 6: // Budget
+          if (!s.budget.totalBudget || s.budget.totalBudget < 1000) errors.push('أدخل ميزانية 1,000 ج.م على الأقل');
+          if (!s.budget.duration || s.budget.duration < 7) errors.push('أدخل مدة 7 أيام على الأقل');
+          if (!s.budget.pacing) errors.push('اختر نمط الصرف (Pacing)');
+          if (!s.budget.seasonality) errors.push('اختر الموسمية');
+          // Check allocations sum
+          if (s.channels.platforms.length) {
+            const totalAlloc = Object.values(s.budget.allocations).reduce((a, b) => a + (b || 0), 0);
+            if (totalAlloc < s.budget.totalBudget * 0.9) {
+              errors.push(`التوزيع الحالي ${totalAlloc.toLocaleString('ar-EG')} ج.م — يحتاج 90% على الأقل من ${s.budget.totalBudget.toLocaleString('ar-EG')} ج.م`);
+            }
+          }
+          break;
+        case 7: // Creative
+          if (!s.creative.type) errors.push('اختر نوع الكرياتيف');
+          if (!s.creative.hook) errors.push('اختر قوة الـ Hook');
+          if (!s.creative.offer) errors.push('اختر قوة العرض');
+          if (!s.creative.messagingAngle) errors.push('اختر زاوية الرسالة');
+          if (!s.creative.variants || s.creative.variants < 1) errors.push('أدخل عدد variants (1 على الأقل)');
+          break;
+        case 8: // Funnel
+          if (!s.funnel.landingQuality) errors.push('اختر جودة صفحة الهبوط');
+          if (!s.funnel.funnelType) errors.push('اختر نوع الفانل');
+          break;
+        case 9: // Optimization
+          if (!s.optimization.bidding) errors.push('اختر استراتيجية المزايدة');
+          if (!s.optimization.event) errors.push('اختر حدث التحسين');
+          if (!s.optimization.testing) errors.push('اختر منهجية الاختبار');
+          break;
+        case 10: // Scaling
+          if (!s.scaling.strategy) errors.push('اختر استراتيجية التوسع');
+          if (!s.scaling.retention) errors.push('اختر استراتيجية الاحتفاظ');
+          break;
+        case 11: // Analytics
+          if (!s.analytics.attributionModel) errors.push('اختر نموذج الـ Attribution');
+          if (!s.analytics.trackingSetup) errors.push('اختر مستوى التتبع');
+          if (!s.analytics.reportingCadence) errors.push('اختر وتيرة التقارير');
+          break;
+      }
+      return errors;
     }
 
     // ============================================================
@@ -289,15 +444,17 @@
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-
     function formatCurrency(n) {
+      if (n === undefined || n === null || isNaN(n)) return '—';
       return Math.round(n).toLocaleString('ar-EG') + ' ج.م';
     }
-
+    function formatNumber(n) {
+      if (n === undefined || n === null || isNaN(n)) return '—';
+      return Math.round(n).toLocaleString('ar-EG');
+    }
     function optionCard(value, title, subtitle, icon, isSelected, onClick) {
       return `
-        <button onclick="${onClick}"
-          class="option-card w-full text-right p-4 rounded-2xl border ${isSelected ? 'selected' : 'border-white/10 bg-white/[0.02]'} flex items-start gap-3 relative">
+        <button onclick="${onClick}" class="option-card w-full text-right p-4 rounded-2xl border ${isSelected ? 'selected' : 'border-white/10 bg-white/[0.02]'} flex items-start gap-3 relative">
           <div class="w-10 h-10 rounded-xl ${isSelected ? 'bg-pink-500/20 text-pink-400' : 'bg-white/5 text-slate-400'} flex items-center justify-center flex-shrink-0">
             <i class="fa-solid ${icon || 'fa-circle'}"></i>
           </div>
@@ -318,13 +475,16 @@
       container.innerHTML = STAGES.map((s, i) => {
         const isDone = i < currentStage;
         const isActive = i === currentStage;
+        const isAccessible = i <= currentStage || validateStage(i - 1).length === 0;
         const cls = isActive
           ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent'
           : isDone
             ? 'bg-green-500/20 text-green-300 border-green-500/40'
-            : 'bg-white/5 text-slate-400 border-white/10';
+            : isAccessible
+              ? 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
+              : 'bg-white/5 text-slate-600 border-white/5';
         return `
-          <button onclick="goToStage(${i})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border whitespace-nowrap transition-all ${cls}">
+          <button onclick="${isAccessible ? `goToStage(${i})` : ''}" ${!isAccessible ? 'disabled' : ''} class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border whitespace-nowrap transition-all ${cls}">
             <i class="fa-solid ${isDone ? 'fa-check' : s.icon} text-[10px]"></i>
             <span>${s.short}</span>
           </button>
@@ -342,8 +502,6 @@
     // ============================================================
     function renderLiveSummary() {
       const s = state;
-
-      // Completion
       let filled = 0;
       const totalChecks = 30;
       if (s.foundation.industry) filled++;
@@ -363,6 +521,8 @@
       if (s.channels.platforms.length) filled++;
       if (s.budget.totalBudget) filled++;
       if (s.budget.duration) filled++;
+      if (s.budget.pacing) filled++;
+      if (s.budget.seasonality) filled++;
       if (s.creative.type) filled++;
       if (s.creative.hook) filled++;
       if (s.creative.offer) filled++;
@@ -376,6 +536,7 @@
       if (s.scaling.retention) filled++;
       if (s.analytics.attributionModel) filled++;
       if (s.analytics.trackingSetup) filled++;
+      if (s.analytics.reportingCadence) filled++;
 
       const pct = Math.round((filled / totalChecks) * 100);
       const badge = document.getElementById('completionBadge');
@@ -385,10 +546,8 @@
         : pct >= 50
           ? 'px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold'
           : 'px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold';
-
       document.getElementById('sidebarProgressBar').style.width = pct + '%';
 
-      // Summary Rows
       const rows = [
         { label: 'القطاع', value: s.foundation.industry ? INDUSTRIES[s.foundation.industry].name : '—' },
         { label: 'المرحلة', value: s.foundation.businessStage ? BUSINESS_STAGE[s.foundation.businessStage].name : '—' },
@@ -398,8 +557,7 @@
         { label: 'الميزانية', value: s.budget.totalBudget ? s.budget.totalBudget.toLocaleString('ar-EG') + ' ج.م' : '—' },
         { label: 'المدة', value: s.budget.duration ? s.budget.duration + ' يوم' : '—' },
         { label: 'الكرياتيف', value: s.creative.type ? CREATIVE_TYPES[s.creative.type].name : '—' },
-        { label: 'العرض', value: s.creative.offer ? OFFER_STRENGTH[s.creative.offer].name : '—' },
-        { label: 'الفانل', value: s.funnel.funnelType || '—' }
+        { label: 'العرض', value: s.creative.offer ? OFFER_STRENGTH[s.creative.offer].name : '—' }
       ];
 
       document.getElementById('liveSummary').innerHTML = rows.map(r => `
@@ -408,72 +566,10 @@
           <span class="text-white font-bold text-left truncate max-w-[60%]" title="${escapeHtml(r.value)}">${escapeHtml(r.value)}</span>
         </div>
       `).join('');
-
-      // Live Estimate
-      const estimateBox = document.getElementById('liveEstimate');
-      const canEstimate = s.foundation.industry && s.channels.platforms.length && s.budget.totalBudget && s.objective.primaryGoal;
-      if (canEstimate) {
-        try {
-          const testState = JSON.parse(JSON.stringify(state));
-          // Fill minimal defaults to allow calculation
-          if (!testState.foundation.businessStage) testState.foundation.businessStage = 'new';
-          if (!testState.market.competitionLevel) testState.market.competitionLevel = 'medium';
-          if (!testState.market.targetMarketSize) testState.market.targetMarketSize = 'national';
-          if (!testState.persona.journeyStage) testState.persona.journeyStage = 'problemAware';
-          if (!testState.framework.primary) testState.framework.primary = 'aida';
-          if (!testState.channels.mix.length) testState.channels.mix = ['paid'];
-          if (!testState.creative.type) testState.creative.type = 'static';
-          if (!testState.creative.hook) testState.creative.hook = 'average';
-          if (!testState.creative.offer) testState.creative.offer = 'none';
-          if (!testState.funnel.landingQuality) testState.funnel.landingQuality = 'average';
-          if (!testState.optimization.bidding) testState.optimization.bidding = 'lowestCost';
-          if (!testState.optimization.event) testState.optimization.event = 'purchase';
-          if (!testState.optimization.testing) testState.optimization.testing = 'none';
-          if (!testState.scaling.retention) testState.scaling.retention = 'none';
-          if (!testState.analytics.attributionModel) testState.analytics.attributionModel = 'linear';
-          if (!testState.analytics.trackingSetup) testState.analytics.trackingSetup = 'basic';
-
-          const result = runSimulation(testState);
-          if (result.success) {
-            const t = result.totals;
-            estimateBox.classList.remove('hidden');
-            estimateBox.innerHTML = `
-              <div class="flex items-center gap-2 text-[11px] font-bold text-purple-300">
-                <i class="fa-solid fa-bolt"></i> تقدير مبدئي
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-[10px]">
-                <div class="p-2 rounded-lg bg-black/30">
-                  <div class="text-slate-500">ROAS</div>
-                  <div class="text-white font-bold font-sans">${t.avgROAS.toFixed(2)}x</div>
-                </div>
-                <div class="p-2 rounded-lg bg-black/30">
-                  <div class="text-slate-500">صافي ربح</div>
-                  <div class="font-bold font-sans ${t.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}">${Math.round(t.netProfit).toLocaleString('ar-EG')}</div>
-                </div>
-                <div class="p-2 rounded-lg bg-black/30">
-                  <div class="text-slate-500">طلبات</div>
-                  <div class="text-white font-bold font-sans">${t.totalOrders.toLocaleString('ar-EG')}</div>
-                </div>
-                <div class="p-2 rounded-lg bg-black/30">
-                  <div class="text-slate-500">CPA</div>
-                  <div class="text-amber-400 font-bold font-sans">${Math.round(t.avgCPA).toLocaleString('ar-EG')}</div>
-                </div>
-              </div>
-            `;
-          } else {
-            estimateBox.classList.add('hidden');
-          }
-        } catch (err) {
-          console.warn('Live estimate error:', err);
-          estimateBox.classList.add('hidden');
-        }
-      } else {
-        estimateBox.classList.add('hidden');
-      }
     }
 
     // ============================================================
-    // STAGE RENDERERS
+    // STAGE RENDER
     // ============================================================
     function renderStage() {
       const stageId = STAGES[currentStage].id;
@@ -496,10 +592,11 @@
       renderProgress();
       renderLiveSummary();
       updateNavButtons();
+      clearValidationBox();
       setTimeout(() => bindDynamicInputs(), 50);
     }
 
-    // ---- Stage 1: Foundation ----
+    // ---- Stage 1 ----
     function renderFoundationStage() {
       const s = state.foundation;
       const industriesByCategory = {};
@@ -516,7 +613,7 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 1: أساسيات البيزنس</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">كل استراتيجية تبدأ من فهم البيزنس نفسه. اختر القطاع والمرحلة والسعر.</p>
+              <p class="text-xs text-slate-400 mt-1">كل استراتيجية تبدأ من فهم البيزنس نفسه.</p>
             </div>
           </div>
 
@@ -551,7 +648,7 @@
 
           <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">سعر المنتج/الخدمة (ج.م)</label>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">سعر المنتج / الخدمة (ج.م)</label>
               <input type="number" id="input_price" value="${s.price}" min="10" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
             </div>
             <div>
@@ -573,19 +670,11 @@
               )).join('')}
             </div>
           </div>
-
-          ${s.industry ? `
-            <div class="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30 text-[11px] text-purple-200 leading-relaxed">
-              <strong>💡 Insights للقطاع ${INDUSTRIES[s.industry].name}:</strong>
-              CPM ~${INDUSTRIES[s.industry].cpm} ج.م · CTR ~${INDUSTRIES[s.industry].ctr}% · CVR ~${INDUSTRIES[s.industry].cvr}% ·
-              Churn ~${Math.round(INDUSTRIES[s.industry].churnRate * 100)}% · LTV Multiplier: ${INDUSTRIES[s.industry].ltvMult}x
-            </div>
-          ` : ''}
         </div>
       `;
     }
 
-    // ---- Stage 2: Market ----
+    // ---- Stage 2 ----
     function renderMarketStage() {
       const s = state.market;
       return `
@@ -608,9 +697,7 @@
                 { id: 'national', name: 'وطني', note: 'كل مصر' },
                 { id: 'regional', name: 'إقليمي', note: 'MENA' },
                 { id: 'global', name: 'عالمي', note: 'عالمياً' }
-              ].map(m => optionCard(
-                m.id, m.name, m.note, 'fa-globe', s.targetMarketSize === m.id, `setMarket('targetMarketSize', '${m.id}')`
-              )).join('')}
+              ].map(m => optionCard(m.id, m.name, m.note, 'fa-globe', s.targetMarketSize === m.id, `setMarket('targetMarketSize', '${m.id}')`)).join('')}
             </div>
           </div>
 
@@ -621,9 +708,7 @@
                 { id: 'low', name: 'منخفضة', note: 'فرصة سانحة' },
                 { id: 'medium', name: 'متوسطة', note: 'توازن' },
                 { id: 'high', name: 'عالية', note: 'منافسة شديدة' }
-              ].map(m => optionCard(
-                m.id, m.name, m.note, 'fa-swords', s.competitionLevel === m.id, `setMarket('competitionLevel', '${m.id}')`
-              )).join('')}
+              ].map(m => optionCard(m.id, m.name, m.note, 'fa-swords', s.competitionLevel === m.id, `setMarket('competitionLevel', '${m.id}')`)).join('')}
             </div>
           </div>
 
@@ -635,9 +720,7 @@
                 { id: 'growing', name: 'نامي', note: 'الأفضل للدخول' },
                 { id: 'mature', name: 'ناضج', note: 'يحتاج تميز' },
                 { id: 'saturated', name: 'مشبع', note: 'أصعب مرحلة' }
-              ].map(m => optionCard(
-                m.id, m.name, m.note, 'fa-layer-group', s.marketMaturity === m.id, `setMarket('marketMaturity', '${m.id}')`
-              )).join('')}
+              ].map(m => optionCard(m.id, m.name, m.note, 'fa-layer-group', s.marketMaturity === m.id, `setMarket('marketMaturity', '${m.id}')`)).join('')}
             </div>
           </div>
 
@@ -651,29 +734,19 @@
                 { id: 'service', name: 'خدمة استثنائية', note: 'Customer Experience' },
                 { id: 'innovation', name: 'منتج مبتكر', note: 'أول من نوعه' },
                 { id: 'trust', name: 'ثقة وسمعة', note: 'Brand trust' }
-              ].map(u => optionCard(
-                u.id, u.name, u.note, 'fa-star', s.uniqueAdvantage === u.id, `setMarket('uniqueAdvantage', '${u.id}')`
-              )).join('')}
+              ].map(u => optionCard(u.id, u.name, u.note, 'fa-star', s.uniqueAdvantage === u.id, `setMarket('uniqueAdvantage', '${u.id}')`)).join('')}
             </div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 3: Persona ----
+    // ---- Stage 3 ----
     function renderPersonaStage() {
       const s = state.persona;
       const ages = ['18-24', '25-34', '35-44', '45-54', '55+'];
-      const painPoints = [
-        'السعر عالي', 'صعوبة الوصول', 'مش عارف يبدأ',
-        'خايف من الجودة', 'تجربة سابقة سيئة', 'مفيش ثقة',
-        'الوقت مش كافي', 'مفيش معلومة كافية'
-      ];
-      const buyingTriggers = [
-        'خصم كبير', 'توصيل مجاني', 'ضمان استرجاع',
-        'تقييمات إيجابية', 'ترشيح صديق', 'حاجة ملحة',
-        'مقارنة السعر', 'Impulse Purchase'
-      ];
+      const painPoints = ['السعر عالي', 'صعوبة الوصول', 'مش عارف يبدأ', 'خايف من الجودة', 'تجربة سابقة سيئة', 'مفيش ثقة', 'الوقت مش كافي', 'مفيش معلومة كافية'];
+      const buyingTriggers = ['خصم كبير', 'توصيل مجاني', 'ضمان استرجاع', 'تقييمات إيجابية', 'ترشيح صديق', 'حاجة ملحة', 'مقارنة السعر', 'Impulse Purchase'];
 
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
@@ -690,9 +763,7 @@
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">مرحلة العميل في الرحلة</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-              ${Object.entries(JOURNEY_STAGES).map(([key, j]) => optionCard(
-                key, j.name, j.desc, 'fa-route', s.journeyStage === key, `setPersona('journeyStage', '${key}')`
-              )).join('')}
+              ${Object.entries(JOURNEY_STAGES).map(([key, j]) => optionCard(key, j.name, j.desc, 'fa-route', s.journeyStage === key, `setPersona('journeyStage', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -745,7 +816,7 @@
       `;
     }
 
-    // ---- Stage 4: Objective ----
+    // ---- Stage 4 ----
     function renderObjectiveStage() {
       const s = state.objective;
       return `
@@ -756,18 +827,14 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 4: الهدف التسويقي</h2>
-              <p class="text-xs text-slate-400 mt-1">الهدف الخاطئ = فشل مؤكد. اختر هدفك بذكاء.</p>
+              <p class="text-xs text-slate-400 mt-1">الهدف الخاطئ = فشل مؤكد.</p>
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">الهدف الأساسي</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              ${Object.entries(OBJECTIVES).map(([key, o]) => optionCard(
-                key, o.name,
-                `KPI: ${o.kpi} · ${o.note}`,
-                o.icon, s.primaryGoal === key, `setObjective('primaryGoal', '${key}')`
-              )).join('')}
+              ${Object.entries(OBJECTIVES).map(([key, o]) => optionCard(key, o.name, `KPI: ${o.kpi} · ${o.note}`, o.icon, s.primaryGoal === key, `setObjective('primaryGoal', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -775,7 +842,6 @@
             <div>
               <label class="block text-xs font-bold text-slate-300 mb-1.5">ROAS المستهدف (Target)</label>
               <input type="number" id="input_kpiTarget" value="${s.kpiTarget}" step="0.1" min="0.5" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
-              <div class="text-[10px] text-slate-500 mt-1">سيكون هناك حساب تلقائي لـ Break-Even ROAS بناءً على COGS</div>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-300 mb-1.5">المدة المستهدفة (أشهر)</label>
@@ -786,7 +852,7 @@
       `;
     }
 
-    // ---- Stage 5: Framework ----
+    // ---- Stage 5 ----
     function renderFrameworkStage() {
       const s = state.framework;
       return `
@@ -804,11 +870,7 @@
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">الإطار الأساسي</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              ${Object.entries(FRAMEWORKS).map(([key, f]) => optionCard(
-                key, f.name,
-                `${f.fullName} · ${f.description}`,
-                f.icon, s.primary === key, `setFramework('primary', '${key}')`
-              )).join('')}
+              ${Object.entries(FRAMEWORKS).map(([key, f]) => optionCard(key, f.name, `${f.fullName} · ${f.description}`, f.icon, s.primary === key, `setFramework('primary', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -843,7 +905,7 @@
       `;
     }
 
-    // ---- Stage 6: Channels ----
+    // ---- Stage 6 ----
     function renderChannelsStage() {
       const s = state.channels;
       return `
@@ -861,21 +923,14 @@
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">نوع الميديا (PESO Model)</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              ${Object.entries(CHANNEL_TYPES).map(([key, c]) => optionCard(
-                key, c.name, `${c.note} · التكلفة: ${Math.round(c.costMult * 100)}% · التأثير: ${c.effectiveness}x`,
-                c.icon, s.mix.includes(key), `toggleChannelMix('${key}')`
-              )).join('')}
+              ${Object.entries(CHANNEL_TYPES).map(([key, c]) => optionCard(key, c.name, `${c.note} · التأثير: ${c.effectiveness}x`, c.icon, s.mix.includes(key), `toggleChannelMix('${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">المنصات الإعلانية</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-              ${Object.entries(PLATFORMS).map(([key, p]) => optionCard(
-                key, p.name,
-                `CPM ${p.cpmMult}x · CTR ${p.ctrMult}x · CVR ${p.cvrMult}x`,
-                p.icon, s.platforms.includes(key), `togglePlatform('${key}')`
-              )).join('')}
+              ${Object.entries(PLATFORMS).map(([key, p]) => optionCard(key, p.name, `CPM ${p.cpmMult}x · CTR ${p.ctrMult}x · CVR ${p.cvrMult}x`, p.icon, s.platforms.includes(key), `togglePlatform('${key}')`)).join('')}
             </div>
           </div>
 
@@ -889,27 +944,18 @@
               `).join('')}
             </div>
           </div>
-
-          ${s.platforms.length >= 2 ? `
-            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-[11px] text-green-200">
-              <i class="fa-solid fa-check-circle ml-1"></i>
-              ${s.platforms.length} منصات مختارة — ده يوفر تنويع مخاطر ويحسن الأداء العام.
-            </div>
-          ` : s.platforms.length === 1 ? `
-            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
-              <i class="fa-solid fa-triangle-exclamation ml-1"></i>
-              منصة واحدة = مخاطرة. يفضل إضافة منصة ثانية.
-            </div>
-          ` : ''}
         </div>
       `;
     }
 
-    // ---- Stage 7: Budget ----
+    // ---- Stage 7 ----
     function renderBudgetStage() {
       const s = state.budget;
-      const defaultAlloc = s.platforms.length ? Math.floor(s.totalBudget / s.platforms.length) : 0;
+      const defaultAlloc = s.platforms?.length ? Math.floor(s.totalBudget / s.platforms.length) : 0;
+      const platforms = state.channels.platforms;
       const totalAlloc = Object.values(s.allocations).reduce((a, b) => a + (b || 0), 0);
+      const remaining = s.totalBudget - totalAlloc;
+
       return `
         <div class="p-6 sm:p-8 rounded-3xl bg-[#0E0B1A] border border-white/10 space-y-6">
           <div class="flex items-start gap-4">
@@ -937,10 +983,14 @@
             </div>
           </div>
 
-          ${s.platforms.length ? `
+          ${platforms.length ? `
             <div class="space-y-3 pt-4 border-t border-white/10">
               <h3 class="font-bold text-white text-sm">توزيع الميزانية بين المنصات</h3>
-              ${s.platforms.map(pk => {
+              <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[11px] text-blue-200">
+                <i class="fa-solid fa-info-circle ml-1"></i>
+                اسحب المؤشر لتوزيع الميزانية. الحد الأدنى: 90% من الإجمالي.
+              </div>
+              ${platforms.map(pk => {
                 const p = PLATFORMS[pk];
                 const alloc = s.allocations[pk] || defaultAlloc;
                 const percent = s.totalBudget > 0 ? (alloc / s.totalBudget) * 100 : 0;
@@ -960,14 +1010,23 @@
                   </div>
                 `;
               }).join('')}
-              <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-[11px] flex items-center justify-between">
-                <span class="text-slate-300">المجموع الموزع:</span>
-                <span class="font-bold ${Math.abs(totalAlloc - s.totalBudget) < 1000 ? 'text-green-400' : 'text-amber-400'} font-sans">${totalAlloc.toLocaleString('ar-EG')} / ${s.totalBudget.toLocaleString('ar-EG')} ج.م</span>
+              <div class="p-4 rounded-xl ${Math.abs(remaining) < s.totalBudget * 0.1 ? 'bg-green-500/10 border-green-500/30' : 'bg-amber-500/10 border-amber-500/30'} border">
+                <div class="flex justify-between items-center text-xs mb-1">
+                  <span class="text-slate-300">الموزع:</span>
+                  <span class="font-bold font-sans text-white">${totalAlloc.toLocaleString('ar-EG')} ج.م</span>
+                </div>
+                <div class="flex justify-between items-center text-xs mb-1">
+                  <span class="text-slate-300">المتبقي:</span>
+                  <span class="font-bold font-sans ${remaining < 0 ? 'text-red-400' : 'text-white'}">${remaining.toLocaleString('ar-EG')} ج.م</span>
+                </div>
+                <div class="h-1.5 rounded-full bg-white/10 overflow-hidden mt-2">
+                  <div class="h-full ${Math.abs(remaining) < s.totalBudget * 0.1 ? 'bg-green-500' : 'bg-amber-500'}" style="width: ${Math.min(100, (totalAlloc / s.totalBudget) * 100)}%"></div>
+                </div>
               </div>
             </div>
           ` : `
             <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
-              <i class="fa-solid fa-circle-info ml-1"></i> اختر منصات أولاً في المرحلة السابقة.
+              <i class="fa-solid fa-circle-info ml-1"></i> اختر منصات أولاً في المرحلة 6.
             </div>
           `}
 
@@ -976,29 +1035,23 @@
             <div class="grid grid-cols-3 gap-2">
               ${[
                 { id: 'even', name: 'موزع بالتساوي', note: 'الآمن' },
-                { id: 'front-loaded', name: 'مقدم (كثيف بالبداية)', note: 'للإطلاق' },
-                { id: 'back-loaded', name: 'مؤخر (يبدأ خفيف)', note: 'للاختبار' }
-              ].map(p => optionCard(
-                p.id, p.name, p.note, 'fa-chart-bar', s.pacing === p.id, `setBudget('pacing', '${p.id}')`
-              )).join('')}
+                { id: 'front-loaded', name: 'مقدم', note: 'للإطلاق' },
+                { id: 'back-loaded', name: 'مؤخر', note: 'للاختبار' }
+              ].map(p => optionCard(p.id, p.name, p.note, 'fa-chart-bar', s.pacing === p.id, `setBudget('pacing', '${p.id}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">الموسمية</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${Object.entries(SEASONALITY).map(([key, season]) => optionCard(
-                key, season.name,
-                season.cpmMult > 1 ? `CPM +${Math.round((season.cpmMult - 1) * 100)}%` : '',
-                'fa-calendar', s.seasonality === key, `setBudget('seasonality', '${key}')`
-              )).join('')}
+              ${Object.entries(SEASONALITY).map(([key, season]) => optionCard(key, season.name, season.cpmMult > 1 ? `CPM +${Math.round((season.cpmMult - 1) * 100)}%` : '', 'fa-calendar', s.seasonality === key, `setBudget('seasonality', '${key}')`)).join('')}
             </div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 8: Creative ----
+    // ---- Stage 8 ----
     function renderCreativeStage() {
       const s = state.creative;
       const angles = [
@@ -1019,54 +1072,42 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 8: الكرياتيف والرسالة</h2>
-              <p class="text-xs text-slate-400 mt-1">الكرياتيف = 60% من نجاح الحملة. أهم مرحلة على الإطلاق.</p>
+              <p class="text-xs text-slate-400 mt-1">الكرياتيف = 60% من نجاح الحملة.</p>
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">نوع الكرياتيف</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${Object.entries(CREATIVE_TYPES).map(([key, c]) => optionCard(
-                key, c.name, `أداء: ${c.mult}x`,
-                c.icon, s.type === key, `setCreative('type', '${key}')`
-              )).join('')}
+              ${Object.entries(CREATIVE_TYPES).map(([key, c]) => optionCard(key, c.name, `أداء: ${c.mult}x`, c.icon, s.type === key, `setCreative('type', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">قوة الـ Hook</h3>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              ${Object.entries(HOOK_QUALITY).map(([key, h]) => optionCard(
-                key, h.name, h.note,
-                'fa-fire', s.hook === key, `setCreative('hook', '${key}')`
-              )).join('')}
+              ${Object.entries(HOOK_QUALITY).map(([key, h]) => optionCard(key, h.name, h.note, 'fa-fire', s.hook === key, `setCreative('hook', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">قوة العرض (Offer)</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${Object.entries(OFFER_STRENGTH).map(([key, o]) => optionCard(
-                key, o.name, '',
-                'fa-gift', s.offer === key, `setCreative('offer', '${key}')`
-              )).join('')}
+              ${Object.entries(OFFER_STRENGTH).map(([key, o]) => optionCard(key, o.name, '', 'fa-gift', s.offer === key, `setCreative('offer', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">زاوية الرسالة (Messaging Angle)</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${angles.map(a => optionCard(
-                a.id, a.name, a.note, 'fa-comment-dots', s.messagingAngle === a.id, `setCreative('messagingAngle', '${a.id}')`
-              )).join('')}
+              ${angles.map(a => optionCard(a.id, a.name, a.note, 'fa-comment-dots', s.messagingAngle === a.id, `setCreative('messagingAngle', '${a.id}')`)).join('')}
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
             <div>
-              <label class="block text-xs font-bold text-slate-300 mb-1.5">عدد Variants (نسخ مختلفة)</label>
+              <label class="block text-xs font-bold text-slate-300 mb-1.5">عدد Variants</label>
               <input type="number" id="input_variants" value="${s.variants}" min="1" max="20" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
-              <div class="text-[10px] text-slate-500 mt-1">4-6 variants يقلل التعب ويرفع الأداء</div>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-300 mb-1.5">جودة الإنتاج</label>
@@ -1084,7 +1125,7 @@
       `;
     }
 
-    // ---- Stage 9: Funnel ----
+    // ---- Stage 9 ----
     function renderFunnelStage() {
       const s = state.funnel;
       return `
@@ -1102,10 +1143,7 @@
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">جودة صفحة الهبوط</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              ${Object.entries(LANDING_QUALITY).map(([key, l]) => optionCard(
-                key, l.name, '',
-                'fa-desktop', s.landingQuality === key, `setFunnel('landingQuality', '${key}')`
-              )).join('')}
+              ${Object.entries(LANDING_QUALITY).map(([key, l]) => optionCard(key, l.name, '', 'fa-desktop', s.landingQuality === key, `setFunnel('landingQuality', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -1113,13 +1151,11 @@
             <h3 class="font-bold text-white text-sm">نوع الفانل</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               ${[
-                { id: 'direct', name: 'Direct (صفحة → شراء)', note: 'الأسرع' },
+                { id: 'direct', name: 'Direct', note: 'صفحة → شراء' },
                 { id: 'lead-magnet', name: 'Lead Magnet', note: 'PDF/Checklist' },
                 { id: 'webinar', name: 'Webinar', note: 'للـ B2B' },
                 { id: 'video-series', name: 'Video Series', note: 'VSL' }
-              ].map(f => optionCard(
-                f.id, f.name, f.note, 'fa-route', s.funnelType === f.id, `setFunnel('funnelType', '${f.id}')`
-              )).join('')}
+              ].map(f => optionCard(f.id, f.name, f.note, 'fa-route', s.funnelType === f.id, `setFunnel('funnelType', '${f.id}')`)).join('')}
             </div>
           </div>
 
@@ -1141,7 +1177,7 @@
                 <div class="flex items-center gap-3">
                   <i class="fa-solid fa-shopping-cart ${s.abandonedCart ? 'text-pink-400' : 'text-slate-400'} text-xl"></i>
                   <div>
-                    <div class="font-bold text-white text-sm">Abandoned Cart Recovery</div>
+                    <div class="font-bold text-white text-sm">Abandoned Cart</div>
                     <div class="text-[10px] text-slate-400">استعادة السلات المتروكة</div>
                   </div>
                   <i class="fa-solid fa-check-circle text-pink-400 ml-auto ${s.abandonedCart ? '' : 'opacity-0'}"></i>
@@ -1149,17 +1185,11 @@
               </button>
             </div>
           </div>
-
-          ${s.retargetingStrategy && s.abandonedCart ? `
-            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-[11px] text-green-200">
-              <i class="fa-solid fa-sparkles ml-1"></i> كومبو ممتاز! Retargeting + Abandoned Cart Recovery معروف عنهم تحسين 20-35% في المبيعات.
-            </div>
-          ` : ''}
         </div>
       `;
     }
 
-    // ---- Stage 10: Optimization ----
+    // ---- Stage 10 ----
     function renderOptimizationStage() {
       const s = state.optimization;
       return `
@@ -1170,50 +1200,40 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 10: المزايدة والتحسين</h2>
-              <p class="text-xs text-slate-400 mt-1">هنا بنتكلم بلغة الخوارزمية. اختيار صح = فرق 30%+ في الأداء.</p>
+              <p class="text-xs text-slate-400 mt-1">هنا بنتكلم بلغة الخوارزمية.</p>
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">استراتيجية المزايدة</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              ${Object.entries(BIDDING_STRATEGY).map(([key, b]) => optionCard(
-                key, b.name, `Learning: ${b.learningDays} أيام`,
-                'fa-gavel', s.bidding === key, `setOptimization('bidding', '${key}')`
-              )).join('')}
+              ${Object.entries(BIDDING_STRATEGY).map(([key, b]) => optionCard(key, b.name, `Learning: ${b.learningDays} أيام`, 'fa-gavel', s.bidding === key, `setOptimization('bidding', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">حدث التحسين</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              ${Object.entries(OPT_EVENTS).map(([key, e]) => optionCard(
-                key, e.name, `جودة التعلم: ${e.learningQuality}`,
-                'fa-bullseye', s.event === key, `setOptimization('event', '${key}')`
-              )).join('')}
+              ${Object.entries(OPT_EVENTS).map(([key, e]) => optionCard(key, e.name, `جودة: ${e.learningQuality}`, 'fa-bullseye', s.event === key, `setOptimization('event', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">منهجية الاختبار</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${Object.entries(TESTING).map(([key, t]) => optionCard(
-                key, t.name, '',
-                'fa-flask', s.testing === key, `setOptimization('testing', '${key}')`
-              )).join('')}
+              ${Object.entries(TESTING).map(([key, t]) => optionCard(key, t.name, '', 'fa-flask', s.testing === key, `setOptimization('testing', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="pt-4 border-t border-white/10">
-            <label class="block text-xs font-bold text-slate-300 mb-1.5">Frequency Cap (الحد الأقصى للتكرار)</label>
+            <label class="block text-xs font-bold text-slate-300 mb-1.5">Frequency Cap</label>
             <input type="number" id="input_frequencyCap" value="${s.frequencyCap}" min="1" max="10" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-pink-500" />
-            <div class="text-[10px] text-slate-500 mt-1">3-4 = توازن مثالي. أعلى من 5 = Ad Fatigue.</div>
           </div>
         </div>
       `;
     }
 
-    // ---- Stage 11: Scaling & Retention ----
+    // ---- Stage 11 ----
     function renderScalingStage() {
       const s = state.scaling;
       return `
@@ -1224,27 +1244,21 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 11: التوسع والاحتفاظ</h2>
-              <p class="text-xs text-slate-400 mt-1">التوسع الذكي + الاحتفاظ = نمو مستدام بدون خسارة الأداء.</p>
+              <p class="text-xs text-slate-400 mt-1">التوسع الذكي + الاحتفاظ = نمو مستدام.</p>
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">استراتيجية التوسع (Scaling)</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              ${Object.entries(SCALING).map(([key, sc]) => optionCard(
-                key, sc.name, `مخاطرة: ${sc.risk} · ${sc.note}`,
-                'fa-chart-line', s.strategy === key, `setScaling('strategy', '${key}')`
-              )).join('')}
+              ${Object.entries(SCALING).map(([key, sc]) => optionCard(key, sc.name, `مخاطرة: ${sc.risk} · ${sc.note}`, 'fa-chart-line', s.strategy === key, `setScaling('strategy', '${key}')`)).join('')}
             </div>
           </div>
 
           <div class="space-y-3 pt-4 border-t border-white/10">
             <h3 class="font-bold text-white text-sm">استراتيجية الاحتفاظ (Retention)</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              ${Object.entries(RETENTION).map(([key, r]) => optionCard(
-                key, r.name, `LTV Multiplier: ${r.ltvMult}x · ${r.note}`,
-                'fa-user-check', s.retention === key, `setScaling('retention', '${key}')`
-              )).join('')}
+              ${Object.entries(RETENTION).map(([key, r]) => optionCard(key, r.name, `LTV: ${r.ltvMult}x · ${r.note}`, 'fa-user-check', s.retention === key, `setScaling('retention', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -1274,7 +1288,7 @@
       `;
     }
 
-    // ---- Stage 12: Analytics ----
+    // ---- Stage 12 ----
     function renderAnalyticsStage() {
       const s = state.analytics;
       return `
@@ -1285,17 +1299,14 @@
             </div>
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-white">المرحلة 12: القياس والـ Attribution</h2>
-              <p class="text-xs text-slate-400 mt-1">"مش بتقيس، مش بتدير." دقة القياس تحدد جودة القرارات.</p>
+              <p class="text-xs text-slate-400 mt-1">"مش بتقيس، مش بتدير."</p>
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-white text-sm">نموذج الـ Attribution</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              ${Object.entries(ATTRIBUTION).map(([key, a]) => optionCard(
-                key, a.name, `${a.note} · Focus: ${a.bias}`,
-                'fa-diagram-project', s.attributionModel === key, `setAnalytics('attributionModel', '${key}')`
-              )).join('')}
+              ${Object.entries(ATTRIBUTION).map(([key, a]) => optionCard(key, a.name, `${a.note} · Focus: ${a.bias}`, 'fa-diagram-project', s.attributionModel === key, `setAnalytics('attributionModel', '${key}')`)).join('')}
             </div>
           </div>
 
@@ -1306,9 +1317,7 @@
                 { id: 'basic', name: 'أساسي', note: 'Pixel فقط' },
                 { id: 'advanced', name: 'متقدم', note: 'Pixel + Conversion API' },
                 { id: 'world-class', name: 'عالمي', note: 'Server-side + GTM' }
-              ].map(t => optionCard(
-                t.id, t.name, t.note, 'fa-satellite-dish', s.trackingSetup === t.id, `setAnalytics('trackingSetup', '${t.id}')`
-              )).join('')}
+              ].map(t => optionCard(t.id, t.name, t.note, 'fa-satellite-dish', s.trackingSetup === t.id, `setAnalytics('trackingSetup', '${t.id}')`)).join('')}
             </div>
           </div>
 
@@ -1319,19 +1328,17 @@
                 { id: 'daily', name: 'يومي', note: 'متقدم' },
                 { id: 'weekly', name: 'أسبوعي', note: 'قياسي' },
                 { id: 'monthly', name: 'شهري', note: 'استراتيجي' }
-              ].map(w => optionCard(
-                w.id, w.name, w.note, 'fa-calendar-check', s.reportingCadence === w.id, `setAnalytics('reportingCadence', '${w.id}')`
-              )).join('')}
+              ].map(w => optionCard(w.id, w.name, w.note, 'fa-calendar-check', s.reportingCadence === w.id, `setAnalytics('reportingCadence', '${w.id}')`)).join('')}
             </div>
           </div>
 
           <div class="pt-4 border-t border-white/10">
             <div class="p-6 rounded-2xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-pink-500/40 space-y-3 text-center glow-pulse">
-              <div class="text-3xl">🎯</div>
-              <div class="text-white font-bold text-lg">جاهز لتشغيل المحاكاة</div>
-              <p class="text-xs text-slate-300">كل المراحل اكتملت. اضغط الزر تحت لعرض التقرير الشامل.</p>
-              <button onclick="runSimulationClick()" class="mt-2 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg hover:opacity-95 transition-opacity">
-                <i class="fa-solid fa-play ml-1"></i> تشغيل المحاكاة الآن
+              <div class="text-3xl">⚡</div>
+              <div class="text-white font-bold text-lg">جاهز لتشغيل 10,000 محاكاة</div>
+              <p class="text-xs text-slate-300">هيتم تشغيل 10,000 سيناريو احتمالي بناءً على اختياراتك — النتيجة: توزيع احتمالي كامل، وليس رقم واحد.</p>
+              <button onclick="runSimulationClick()" class="mt-2 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg hover:opacity-95">
+                <i class="fa-solid fa-play ml-1"></i> تشغيل المحاكاة الكاملة
               </button>
             </div>
           </div>
@@ -1410,7 +1417,7 @@
     }
 
     // ============================================================
-    // DYNAMIC INPUT BINDING (for number/select inputs)
+    // DYNAMIC BINDINGS
     // ============================================================
     function bindDynamicInputs() {
       const bind = (id, callback) => {
@@ -1422,20 +1429,19 @@
         if (el) el.addEventListener('change', (e) => callback(e.target.value, e.target));
       };
 
-      bind('input_price', (v) => { state.foundation.price = +v; saveState(); renderLiveSummary(); });
-      bind('input_cogs', (v) => { state.foundation.cogs = +v; saveState(); renderLiveSummary(); });
-      bind('input_aov', (v) => { state.foundation.aov = +v; saveState(); renderLiveSummary(); });
+      bind('input_price', (v) => { state.foundation.price = +v; saveState(); });
+      bind('input_cogs', (v) => { state.foundation.cogs = +v; saveState(); });
+      bind('input_aov', (v) => { state.foundation.aov = +v; saveState(); });
       bind('input_kpiTarget', (v) => { state.objective.kpiTarget = +v; saveState(); });
       bind('input_timelineMonths', (v) => { state.objective.timelineMonths = +v; saveState(); });
       bind('input_totalBudget', (v) => { state.budget.totalBudget = +v; redistributeBudget(); saveState(); renderStage(); });
-      bind('input_duration', (v) => { state.budget.duration = +v; saveState(); renderLiveSummary(); });
-      bind('input_reservePercent', (v) => { state.budget.reservePercent = +v; saveState(); renderLiveSummary(); });
+      bind('input_duration', (v) => { state.budget.duration = +v; saveState(); });
+      bind('input_reservePercent', (v) => { state.budget.reservePercent = +v; saveState(); });
       bind('input_variants', (v) => { state.creative.variants = +v; saveState(); });
       bind('input_frequencyCap', (v) => { state.optimization.frequencyCap = +v; saveState(); });
       bindChange('input_productionQuality', (v) => { state.creative.productionQuality = v; saveState(); });
       bindChange('input_upsellStrategy', (v) => { state.scaling.upsellStrategy = v; saveState(); });
 
-      // Sliders
       document.querySelectorAll('.alloc-slider').forEach(slider => {
         slider.addEventListener('input', (e) => {
           const pk = e.target.dataset.alloc;
@@ -1446,7 +1452,6 @@
           if (valEl) valEl.textContent = val.toLocaleString('ar-EG') + ' ج.م';
           if (pctEl && state.budget.totalBudget > 0) pctEl.textContent = `(${Math.round((val / state.budget.totalBudget) * 100)}%)`;
           saveState();
-          renderLiveSummary();
         });
       });
     }
@@ -1455,40 +1460,144 @@
     // NAVIGATION
     // ============================================================
     window.goToStage = (i) => {
+      // Validation gate: can only go forward if current is complete
+      if (i > currentStage) {
+        const errors = validateStage(currentStage);
+        if (errors.length > 0) {
+          showValidationBox(errors);
+          return;
+        }
+      }
       currentStage = Math.max(0, Math.min(STAGES.length - 1, i));
       renderStage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-    window.nextStage = () => goToStage(currentStage + 1);
-    window.prevStage = () => goToStage(currentStage - 1);
+    window.nextStage = () => {
+      const errors = validateStage(currentStage);
+      if (errors.length > 0) {
+        showValidationBox(errors);
+        return;
+      }
+      if (currentStage < STAGES.length - 1) {
+        currentStage++;
+        renderStage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    window.prevStage = () => {
+      if (currentStage > 0) {
+        currentStage--;
+        renderStage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
 
     function updateNavButtons() {
       document.getElementById('prevBtn').disabled = currentStage === 0;
-      document.getElementById('nextBtn').disabled = currentStage === STAGES.length - 1;
+      const isLast = currentStage === STAGES.length - 1;
+      document.getElementById('nextBtn').disabled = isLast;
+      if (isLast) {
+        document.getElementById('nextBtn').style.display = 'none';
+      } else {
+        document.getElementById('nextBtn').style.display = '';
+      }
     }
+
+    // ============================================================
+    // VALIDATION BOX
+    // ============================================================
+    function showValidationBox(errors) {
+      const box = document.getElementById('validationBox');
+      box.className = 'p-4 rounded-2xl border flex items-start gap-3 validation-error anim-shake';
+      box.innerHTML = `
+        <i class="fa-solid fa-exclamation-triangle text-red-400 mt-0.5 text-lg"></i>
+        <div class="flex-1">
+          <div class="text-red-300 font-bold text-sm mb-2">لازم تكمل الحقول دي قبل ما تنتقل:</div>
+          <ul class="text-[11px] text-red-200 space-y-1">
+            ${errors.map(e => `<li>• ${escapeHtml(e)}</li>`).join('')}
+          </ul>
+        </div>
+        <button onclick="clearValidationBox()" class="text-red-400 hover:text-red-300">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      `;
+      box.classList.remove('hidden');
+      setTimeout(() => box.classList.remove('anim-shake'), 400);
+    }
+
+    function clearValidationBox() {
+      const box = document.getElementById('validationBox');
+      box.classList.add('hidden');
+      box.classList.remove('anim-shake');
+    }
+    window.clearValidationBox = clearValidationBox;
 
     // ============================================================
     // RUN SIMULATION
     // ============================================================
-    window.runSimulationClick = () => {
-      const result = runSimulation(state);
-      if (result.error) {
-        alert('الرجاء إكمال الاختيارات:\n' + result.error.join('\n'));
+    window.runSimulationClick = async () => {
+      // Final validation across all stages
+      const allErrors = [];
+      for (let i = 0; i < STAGES.length; i++) {
+        const errors = validateStage(i);
+        if (errors.length > 0) {
+          allErrors.push(`المرحلة ${i + 1} (${STAGES[i].name}):`);
+          errors.forEach(e => allErrors.push('  • ' + e));
+        }
+      }
+      if (allErrors.length > 0) {
+        alert('الرجاء إكمال الاختيارات:\n\n' + allErrors.join('\n'));
         return;
       }
-      showResults(result);
+
+      // Show simulating overlay
+      const overlay = document.getElementById('simulatingOverlay');
+      overlay.classList.remove('hidden');
+      const progressBar = document.getElementById('simulationProgressBar');
+      const statusEl = document.getElementById('simulationStatus');
+
+      const steps = [
+        'تهيئة محرك Monte Carlo...',
+        'توزيع CPM (Log-Normal)...',
+        'توزيع CTR و CVR...',
+        'توليد 10,000 سيناريو...',
+        'حساب الإيرادات والأرباح...',
+        'حساب Percentiles (P10/P50/P90)...',
+        'تحليل المخاطر...',
+        'توليد التقرير النهائي...'
+      ];
+
+      for (let i = 0; i < steps.length; i++) {
+        statusEl.textContent = steps[i];
+        progressBar.style.width = ((i + 1) / steps.length * 100) + '%';
+        await new Promise(r => setTimeout(r, 150));
+      }
+
+      // Run actual simulation
+      try {
+        const result = runSimulation(state);
+        overlay.classList.add('hidden');
+
+        if (result.error) {
+          alert('خطأ:\n' + result.error.join('\n'));
+          return;
+        }
+
+        lastResult = result;
+        showResults(result);
+      } catch (err) {
+        console.error(err);
+        overlay.classList.add('hidden');
+        alert('خطأ في المحاكاة: ' + (err.message || ''));
+      }
     };
 
-    let lastResult = null;
-    let cohortChartInstance = null;
-
     function showResults(result) {
-      lastResult = result;
       const modal = document.getElementById('resultsModal');
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
 
-      const { totals, scores, verdict, funnel, cohort, attribution, risks, recommendations, optimizations, platformResults, learningPhase, adFatigue } = result;
+      const { stats, totals, scores, verdict, funnel, cohort, attribution, risks, recommendations, optimizations, platformResults, learningPhase, adFatigue, breakEvenRoas } = result;
 
       // Score Box
       const scoreColor = verdict.color === 'green' ? '#22c55e' 
@@ -1520,8 +1629,8 @@
             <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
               <i class="fa-solid fa-bullseye ml-1"></i> ${result.metadata.objective}
             </span>
-            <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
-              <i class="fa-solid fa-layer-group ml-1"></i> ${result.metadata.platformCount} منصات
+            <span class="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300">
+              <i class="fa-solid fa-chart-area ml-1"></i> ${result.metadata.iterations.toLocaleString('ar-EG')} محاكاة
             </span>
           </div>
         </div>
@@ -1559,16 +1668,68 @@
         `;
       }).join('');
 
+      // Probability Section
+      const profitProb = stats.profit.profitProbability;
+      const probColor = profitProb >= 70 ? 'green' : profitProb >= 50 ? 'amber' : 'red';
+
+      document.getElementById('probabilitySection').innerHTML = `
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i class="fa-solid fa-dice text-purple-400"></i> احتمالية الربح — نتائج 10,000 سيناريو
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+            <div class="text-[10px] text-red-400 font-bold mb-1">P10 (المتشائم)</div>
+            <div class="text-xl font-bold text-white font-sans">${stats.roas.p10.toFixed(2)}x</div>
+            <div class="text-[10px] text-slate-400 mt-1">ROAS في أسوأ 10%</div>
+          </div>
+          <div class="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
+            <div class="text-[10px] text-purple-400 font-bold mb-1">P50 (الوسيط)</div>
+            <div class="text-2xl font-bold text-white font-sans">${stats.roas.p50.toFixed(2)}x</div>
+            <div class="text-[10px] text-slate-400 mt-1">ROAS الأكثر احتمالاً</div>
+          </div>
+          <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+            <div class="text-[10px] text-green-400 font-bold mb-1">P90 (المتفائل)</div>
+            <div class="text-xl font-bold text-white font-sans">${stats.roas.p90.toFixed(2)}x</div>
+            <div class="text-[10px] text-slate-400 mt-1">ROAS في أفضل 10%</div>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-${probColor}-500/10 border border-${probColor}-500/30">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-white font-bold text-sm">احتمالية الربح</span>
+            <span class="text-2xl font-bold font-sans text-${probColor}-400">${profitProb.toFixed(1)}%</span>
+          </div>
+          <div class="h-3 rounded-full bg-white/10 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-red-500 via-amber-500 to-green-500" style="width: ${profitProb}%"></div>
+          </div>
+          <div class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+            في ${Math.round(stats.profit.profitProbability * 100)} من كل 100 سيناريو، الاستراتيجية بتربح. 
+            ${profitProb >= 70 ? '🎯 نسبة ممتازة — ثقة عالية.' : profitProb >= 50 ? '⚡ نسبة مقبولة — تحتاج تحسين.' : '⚠️ نسبة خطرة — تحتاج إعادة نظر جوهرية.'}
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-black/30 border border-white/10">
+          <div class="text-[11px] text-slate-400 mb-2">نطاق الثقة 80% (P10 → P90):</div>
+          <div class="grid grid-cols-2 gap-2 text-[10px]">
+            <div><span class="text-slate-500">الإيرادات:</span> <span class="text-white font-bold font-sans">${formatNumber(stats.revenue.p10)} → ${formatNumber(stats.revenue.p90)}</span></div>
+            <div><span class="text-slate-500">صافي الربح:</span> <span class="font-bold font-sans ${stats.profit.p10 >= 0 ? 'text-green-400' : 'text-red-400'}">${formatNumber(stats.profit.p10)} → ${formatNumber(stats.profit.p90)}</span></div>
+            <div><span class="text-slate-500">الطلبات:</span> <span class="text-white font-bold font-sans">${formatNumber(stats.orders.p10)} → ${formatNumber(stats.orders.p90)}</span></div>
+            <div><span class="text-slate-500">CPA:</span> <span class="text-amber-400 font-bold font-sans">${formatNumber(stats.cpa.p10)} → ${formatNumber(stats.cpa.p90)}</span></div>
+          </div>
+        </div>
+      `;
+
+      // Histogram chart
+      setTimeout(() => renderHistogramChart(result), 100);
+
       // Key Metrics
       document.getElementById('metricsGrid').innerHTML = [
-        { label: 'المبيعات', value: totals.totalOrders.toLocaleString('ar-EG'), color: 'text-white', icon: 'fa-bag-shopping' },
-        { label: 'الإيرادات', value: formatCurrency(totals.totalRevenue), color: 'text-green-400', icon: 'fa-coins' },
-        { label: 'ROAS', value: totals.avgROAS.toFixed(2) + 'x', color: totals.avgROAS >= totals.breakEvenRoas ? 'text-green-400' : 'text-red-400', icon: 'fa-chart-line' },
-        { label: 'صافي الربح', value: (totals.netProfit >= 0 ? '+' : '') + formatCurrency(totals.netProfit), color: totals.netProfit >= 0 ? 'text-green-400' : 'text-red-400', icon: 'fa-sack-dollar' },
-        { label: 'المشاهدات', value: totals.totalImpressions.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-eye' },
-        { label: 'الوصول', value: totals.totalReach.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-users' },
-        { label: 'النقرات', value: totals.totalClicks.toLocaleString('ar-EG'), color: 'text-slate-200', icon: 'fa-hand-pointer' },
-        { label: 'CPA', value: formatCurrency(totals.avgCPA), color: 'text-amber-400', icon: 'fa-tag' }
+        { label: 'المبيعات (P50)', value: formatNumber(totals.totalOrders), color: 'text-white', icon: 'fa-bag-shopping' },
+        { label: 'الإيرادات (P50)', value: formatCurrency(totals.totalRevenue), color: 'text-green-400', icon: 'fa-coins' },
+        { label: 'ROAS (P50)', value: totals.avgROAS.toFixed(2) + 'x', color: totals.avgROAS >= breakEvenRoas ? 'text-green-400' : 'text-red-400', icon: 'fa-chart-line' },
+        { label: 'صافي الربح (P50)', value: (totals.netProfit >= 0 ? '+' : '') + formatCurrency(totals.netProfit), color: totals.netProfit >= 0 ? 'text-green-400' : 'text-red-400', icon: 'fa-sack-dollar' },
+        { label: 'المشاهدات (P50)', value: formatNumber(totals.totalImpressions), color: 'text-slate-200', icon: 'fa-eye' },
+        { label: 'الوصول (P50)', value: formatNumber(totals.totalReach), color: 'text-slate-200', icon: 'fa-users' },
+        { label: 'النقرات (P50)', value: formatNumber(totals.totalClicks), color: 'text-slate-200', icon: 'fa-hand-pointer' },
+        { label: 'CPA (P50)', value: formatCurrency(totals.avgCPA), color: 'text-amber-400', icon: 'fa-tag' }
       ].map(x => `
         <div class="metric-card p-4 rounded-xl bg-black/40 border border-white/10 ${x.color}">
           <div class="flex items-center gap-2 mb-2 text-[10px] text-slate-400">
@@ -1581,7 +1742,7 @@
       // Revenue Breakdown
       document.getElementById('revenueBreakdown').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-          <i class="fa-solid fa-calculator text-pink-400"></i> تفصيل الإيرادات والتكاليف
+          <i class="fa-solid fa-calculator text-pink-400"></i> تفصيل الإيرادات والتكاليف (P50)
         </h3>
         <div class="space-y-2 text-xs">
           <div class="flex justify-between py-2 border-b border-white/5">
@@ -1596,28 +1757,24 @@
             <span class="text-slate-400">ميزانية الإعلانات</span>
             <span class="text-red-400 font-bold font-sans">-${formatCurrency(totals.totalBudget)}</span>
           </div>
-          ${totals.ltvRevenue > 0 ? `
-            <div class="flex justify-between py-2 border-b border-white/5">
-              <span class="text-slate-400">قيمة LTV الإضافية (Retention)</span>
-              <span class="text-green-400 font-bold font-sans">+${formatCurrency(totals.ltvRevenue)}</span>
-            </div>
-          ` : ''}
           <div class="flex justify-between py-3 font-bold text-sm">
             <span class="text-white">صافي الربح</span>
             <span class="${totals.netProfit >= 0 ? 'text-green-400' : 'text-red-400'} font-sans">${(totals.netProfit >= 0 ? '+' : '') + formatCurrency(totals.netProfit)}</span>
           </div>
         </div>
-        <div class="mt-3 p-3 rounded-lg bg-white/5 text-[10px] text-slate-400 flex justify-between">
-          <span>هامش الربح:</span>
-          <span class="font-bold ${totals.profitMargin >= 0 ? 'text-green-400' : 'text-red-400'}">${totals.profitMargin.toFixed(1)}%</span>
-        </div>
-        <div class="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 text-[10px] text-purple-200">
-          <i class="fa-solid fa-info-circle ml-1"></i>
-          Break-Even ROAS: <strong>${totals.breakEvenRoas.toFixed(2)}x</strong> — أي ROAS أقل من ده = خسارة صافية.
+        <div class="grid grid-cols-2 gap-2 mt-3 text-[11px]">
+          <div class="p-2 rounded-lg bg-white/5 flex justify-between">
+            <span class="text-slate-400">هامش الربح</span>
+            <span class="font-bold ${totals.profitMargin >= 0 ? 'text-green-400' : 'text-red-400'}">${totals.profitMargin.toFixed(1)}%</span>
+          </div>
+          <div class="p-2 rounded-lg bg-white/5 flex justify-between">
+            <span class="text-slate-400">Break-Even ROAS</span>
+            <span class="font-bold text-amber-400">${breakEvenRoas.toFixed(2)}x</span>
+          </div>
         </div>
       `;
 
-      // Funnel Visualization
+      // Funnel
       const funnelData = [funnel.tofu, funnel.mofu, funnel.bofu];
       const funnelColors = ['#7c3aed', '#d946ef', '#f97316'];
       document.getElementById('funnelSection').innerHTML = `
@@ -1632,7 +1789,7 @@
               <div class="space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-white font-bold">${stage.label}</span>
-                  <span class="text-slate-400">${stage.clicks.toLocaleString('ar-EG')} نقرة</span>
+                  <span class="text-slate-400">${formatNumber(stage.clicks)} نقرة</span>
                 </div>
                 <div class="h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold mx-auto transition-all" 
                      style="width: ${width}%; background: linear-gradient(90deg, ${funnelColors[i]}, ${funnelColors[i]}dd);">
@@ -1645,27 +1802,23 @@
         </div>
       `;
 
-      // Cohort Section
-      document.getElementById('cohortSection').classList.remove('hidden');
-      setTimeout(() => {
-        renderCohortChart(cohort);
-      }, 100);
-
+      // Cohort
+      setTimeout(() => renderCohortChart(cohort), 100);
       document.getElementById('cohortInsights').innerHTML = `
         <div class="p-3 rounded-lg bg-black/30 border border-white/10">
           <div class="text-[10px] text-slate-400 mb-1">LTV المتوقع</div>
-          <div class="text-base font-bold text-cyan-400 font-sans">${cohort.ltv.toLocaleString('ar-EG')} ج.م</div>
+          <div class="text-base font-bold text-cyan-400 font-sans">${formatCurrency(cohort.ltv)}</div>
         </div>
         <div class="p-3 rounded-lg bg-black/30 border border-white/10">
-          <div class="text-[10px] text-slate-400 mb-1">CAC (تكلفة الاستحواذ)</div>
-          <div class="text-base font-bold text-amber-400 font-sans">${cohort.cac.toLocaleString('ar-EG')} ج.م</div>
+          <div class="text-[10px] text-slate-400 mb-1">CAC</div>
+          <div class="text-base font-bold text-amber-400 font-sans">${formatCurrency(cohort.cac)}</div>
         </div>
         <div class="p-3 rounded-lg bg-black/30 border border-white/10">
-          <div class="text-[10px] text-slate-400 mb-1">LTV:CAC Ratio</div>
+          <div class="text-[10px] text-slate-400 mb-1">LTV:CAC</div>
           <div class="text-base font-bold font-sans ${cohort.ltvCacRatio >= 3 ? 'text-green-400' : cohort.ltvCacRatio >= 2 ? 'text-cyan-400' : cohort.ltvCacRatio >= 1 ? 'text-amber-400' : 'text-red-400'}">${cohort.ltvCacRatio}x</div>
         </div>
         <div class="p-3 rounded-lg bg-black/30 border border-white/10">
-          <div class="text-[10px] text-slate-400 mb-1">معدل Churn الفعلي</div>
+          <div class="text-[10px] text-slate-400 mb-1">Churn الفعلي</div>
           <div class="text-base font-bold text-white font-sans">${cohort.effectiveChurn}%</div>
         </div>
       `;
@@ -1673,7 +1826,7 @@
       // Platform Performance
       document.getElementById('platformBreakdown').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-cyan-400"></i> أداء كل منصة
+          <i class="fa-solid fa-layer-group text-cyan-400"></i> أداء كل منصة (P50)
         </h3>
         <div class="space-y-3">
           ${platformResults.map(p => `
@@ -1684,41 +1837,37 @@
                   <span class="font-bold text-white text-sm">${p.name}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] px-2 py-0.5 rounded-full ${p.frequencyWarning === 'high' ? 'bg-red-500/20 text-red-400' : p.frequencyWarning === 'medium' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}">
-                    Freq: ${p.frequency}x
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-300">
+                    P10: ${p.roasBand.p10.toFixed(2)}x
                   </span>
-                  <span class="font-bold text-sm ${p.isProfitable ? 'text-green-400' : 'text-red-400'} font-sans">${p.roas.toFixed(2)}x ROAS</span>
+                  <span class="font-bold text-sm ${p.isProfitable ? 'text-green-400' : 'text-red-400'} font-sans">P50: ${p.roas.toFixed(2)}x</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">
+                    P90: ${p.roasBand.p90.toFixed(2)}x
+                  </span>
                 </div>
               </div>
-              <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-[10px] text-center">
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الإنفاق</div><div class="text-white font-bold font-sans">${Math.round(p.budget).toLocaleString('ar-EG')}</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">Impressions</div><div class="text-white font-bold font-sans">${(p.impressions/1000).toFixed(1)}K</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CTR</div><div class="text-white font-bold font-sans">${p.ctr}%</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CVR</div><div class="text-white font-bold font-sans">${p.cvr}%</div></div>
+              <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 text-[10px] text-center">
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الإنفاق</div><div class="text-white font-bold font-sans">${formatNumber(p.budget)}</div></div>
                 <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الطلبات</div><div class="text-white font-bold font-sans">${p.orders}</div></div>
-                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CPA</div><div class="text-amber-400 font-bold font-sans">${Math.round(p.cpa).toLocaleString('ar-EG')}</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">CPA</div><div class="text-amber-400 font-bold font-sans">${formatNumber(p.cpa)}</div></div>
+                <div class="p-2 rounded bg-black/30"><div class="text-slate-500">الإيراد</div><div class="text-green-400 font-bold font-sans">${formatNumber(p.revenue)}</div></div>
               </div>
             </div>
           `).join('')}
         </div>
       `;
 
-      // Attribution Comparison
+      // Attribution
       const attributionModels = ['lastTouch', 'firstTouch', 'linear', 'timeDecay', 'position', 'dataDriven'];
       const modelNames = {
-        lastTouch: 'Last-Touch',
-        firstTouch: 'First-Touch',
-        linear: 'Linear',
-        timeDecay: 'Time-Decay',
-        position: 'Position-Based',
-        dataDriven: 'Data-Driven'
+        lastTouch: 'Last-Touch', firstTouch: 'First-Touch', linear: 'Linear',
+        timeDecay: 'Time-Decay', position: 'Position-Based', dataDriven: 'Data-Driven'
       };
 
       document.getElementById('attributionSection').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
           <i class="fa-solid fa-diagram-project text-amber-400"></i> مقارنة نماذج الـ Attribution
         </h3>
-        <p class="text-[10px] text-slate-400">كل نموذج بيوزع الفضل بشكل مختلف — ده يفسر ليه تقارير المنصات بتختلف عن بعض.</p>
         <div class="space-y-2">
           ${attributionModels.map(m => {
             const isRecommended = m === attribution.recommended;
@@ -1753,55 +1902,42 @@
         </div>
       `;
 
-      // Learning Phase
+      // Learning + Fatigue
       document.getElementById('learningPhaseSection').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-          <i class="fa-solid fa-brain text-cyan-400"></i> مرحلة التعلم (Learning Phase)
+          <i class="fa-solid fa-brain text-cyan-400"></i> Learning Phase
         </h3>
-        <div class="space-y-3">
-          <div class="grid grid-cols-2 gap-2 text-[11px]">
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">مدة التعلم</div>
-              <div class="text-lg font-bold text-cyan-400 font-sans">${learningPhase.learningDays} يوم</div>
-            </div>
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">نسبة من الحملة</div>
-              <div class="text-lg font-bold text-white font-sans">${learningPhase.learningPhasePercent}%</div>
-            </div>
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">إيرادات خلال التعلم</div>
-              <div class="text-sm font-bold text-amber-400 font-sans">${formatCurrency(learningPhase.revenueDuringLearning)}</div>
-            </div>
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">إيرادات بعد التعلم</div>
-              <div class="text-sm font-bold text-green-400 font-sans">${formatCurrency(learningPhase.revenueStable)}</div>
-            </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="p-3 rounded-xl bg-black/30">
+            <div class="text-slate-400">مدة التعلم</div>
+            <div class="text-lg font-bold text-cyan-400 font-sans">${learningPhase.learningDays} يوم</div>
           </div>
-          <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-[11px] text-cyan-200">
-            <i class="fa-solid fa-info-circle ml-1"></i> ${learningPhase.recommendation}
+          <div class="p-3 rounded-xl bg-black/30">
+            <div class="text-slate-400">من الحملة</div>
+            <div class="text-lg font-bold text-white font-sans">${learningPhase.learningPhasePercent}%</div>
           </div>
+        </div>
+        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-[11px] text-cyan-200">
+          <i class="fa-solid fa-info-circle ml-1"></i> ${learningPhase.recommendation}
         </div>
       `;
 
-      // Ad Fatigue
       document.getElementById('adFatigueSection').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-          <i class="fa-solid fa-battery-quarter text-orange-400"></i> تحليل Ad Fatigue
+          <i class="fa-solid fa-battery-quarter text-orange-400"></i> Ad Fatigue
         </h3>
-        <div class="space-y-3">
-          <div class="grid grid-cols-2 gap-2 text-[11px]">
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">تعب أسبوعي</div>
-              <div class="text-lg font-bold text-orange-400 font-sans">${adFatigue.weeklyFatigue}%</div>
-            </div>
-            <div class="p-3 rounded-xl bg-black/30">
-              <div class="text-slate-400">تراجع الأداء</div>
-              <div class="text-lg font-bold text-white font-sans">${adFatigue.degradation}%</div>
-            </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="p-3 rounded-xl bg-black/30">
+            <div class="text-slate-400">تعب أسبوعي</div>
+            <div class="text-lg font-bold text-orange-400 font-sans">${adFatigue.weeklyFatigue}%</div>
           </div>
-          <div class="p-3 rounded-lg bg-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/10 border border-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/30 text-[11px]">
-            <i class="fa-solid fa-lightbulb ml-1"></i> ${adFatigue.recommendation}
+          <div class="p-3 rounded-xl bg-black/30">
+            <div class="text-slate-400">تراجع الأداء</div>
+            <div class="text-lg font-bold text-white font-sans">${adFatigue.degradation}%</div>
           </div>
+        </div>
+        <div class="p-3 rounded-lg bg-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/10 border border-${adFatigue.severity === 'high' ? 'red' : adFatigue.severity === 'medium' ? 'amber' : 'green'}-500/30 text-[11px]">
+          <i class="fa-solid fa-lightbulb ml-1"></i> ${adFatigue.recommendation}
         </div>
       `;
 
@@ -1818,10 +1954,9 @@
           <div class="h-2 rounded-full bg-white/10 overflow-hidden">
             <div class="h-full rounded-full ${risks.riskLevel === 'high' ? 'bg-red-500' : risks.riskLevel === 'medium' ? 'bg-amber-500' : 'bg-green-500'}" style="width: ${risks.totalRiskScore}%"></div>
           </div>
-          <div class="text-[10px] text-slate-400 mt-2">${risks.riskLabel}</div>
+          <div class="text-[10px] text-slate-400 mt-2">${risks.riskLabel} · احتمالية الربح: ${risks.profitProbability.toFixed(1)}%</div>
         </div>
-        <div class="space-y-2">
-          ${risks.risks.length === 0 ? '<div class="p-3 text-center text-xs text-slate-500">لا توجد مخاطر كبيرة — استراتيجية متوازنة ✅</div>' : ''}
+        <div class="space-y-2 mt-3">
           ${risks.risks.map(r => `
             <div class="p-3 rounded-xl border ${r.severity === 'high' ? 'bg-red-500/5 border-red-500/30' : r.severity === 'medium' ? 'bg-amber-500/5 border-amber-500/30' : 'bg-blue-500/5 border-blue-500/30'}">
               <div class="flex items-start gap-2">
@@ -1837,7 +1972,7 @@
         </div>
       `;
 
-      // Recommendations
+      // Recommendations + Optimizations
       document.getElementById('recommendationsSection').innerHTML = `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
           <i class="fa-solid fa-clipboard-list text-amber-400"></i> التوصيات (${recommendations.length})
@@ -1859,7 +1994,6 @@
         </div>
       `;
 
-      // Optimizations
       document.getElementById('optimizationsSection').innerHTML = optimizations.length > 0 ? `
         <h3 class="font-bold text-white text-sm flex items-center gap-2">
           <i class="fa-solid fa-rocket text-purple-400"></i> فرص التحسين (${optimizations.length})
@@ -1878,15 +2012,71 @@
         </div>
       ` : '';
 
-      // Scroll to top
       modal.scrollTop = 0;
 
-      if (window.gtag) window.gtag('event', 'simulator_run_full', { score: scores.adjustedOverall });
+      if (window.gtag) window.gtag('event', 'simulator_mc_run', { score: scores.adjustedOverall });
     }
 
     // ============================================================
-    // COHORT CHART
+    // CHARTS
     // ============================================================
+    function renderHistogramChart(result) {
+      const ctx = document.getElementById('histogramChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (histogramChartInstance) histogramChartInstance.destroy();
+
+      const revenueData = result.stats.revenue;
+      const buckets = 30;
+      const min = revenueData.p5;
+      const max = revenueData.p95;
+      const step = (max - min) / buckets;
+
+      // Simulated histogram (we don't have raw data, so reconstruct visual approximation)
+      const histogram = Array.from({ length: buckets }, (_, i) => {
+        const center = min + (i + 0.5) * step;
+        const distance = Math.abs(center - revenueData.p50) / (revenueData.std || 1);
+        const count = Math.round(10000 * Math.exp(-0.5 * distance * distance) / Math.sqrt(2 * Math.PI));
+        return { label: Math.round(center / 1000) + 'K', count };
+      });
+
+      histogramChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: histogram.map(h => h.label),
+          datasets: [
+            {
+              label: 'عدد السيناريوهات',
+              data: histogram.map(h => h.count),
+              backgroundColor: histogram.map((_, i) => {
+                const dist = Math.abs(i - buckets / 2) / (buckets / 2);
+                if (dist < 0.2) return 'rgba(34, 197, 94, 0.7)';
+                if (dist < 0.5) return 'rgba(245, 158, 11, 0.7)';
+                return 'rgba(239, 68, 68, 0.7)';
+              }),
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (items) => `إيراد: ${items[0].label} ج.م`,
+                label: (item) => `${item.parsed.y.toLocaleString('ar-EG')} سيناريو`
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } },
+            y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    }
+
     function renderCohortChart(cohort) {
       const ctx = document.getElementById('cohortChart');
       if (!ctx || typeof Chart === 'undefined') return;
@@ -1926,9 +2116,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              labels: { color: '#cbd5e1', font: { family: 'IBM Plex Sans Arabic', size: 11 } }
-            }
+            legend: { labels: { color: '#cbd5e1', font: { family: 'IBM Plex Sans Arabic', size: 11 } } }
           },
           scales: {
             x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
@@ -1949,7 +2137,7 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري التحضير...';
 
-      const html = generateReportHTML(lastResult);
+      const html = buildFullReportHTML(lastResult);
       const container = document.getElementById('reportPdfContainer');
       container.innerHTML = html;
 
@@ -1980,6 +2168,327 @@
       }
     };
 
+    window.downloadStrategyPDF = () => {
+      if (!lastResult) { alert('شغّل المحاكاة أولاً'); return; }
+      const btn = event.target.closest('button');
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري التحضير...';
+
+      const strategy = generateStrategyDocument(lastResult);
+      const html = buildStrategyHTML(strategy);
+      const container = document.getElementById('strategyPdfContainer');
+      container.innerHTML = html;
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Strategy_Document_${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(container).save().then(() => {
+          container.innerHTML = '';
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }).catch(err => {
+          console.error(err);
+          container.innerHTML = '';
+          btn.disabled = false;
+          btn.innerHTML = origText;
+          alert('تعذر التحميل');
+        });
+      } else {
+        alert('مكتبة PDF مش محملة');
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    };
+
+    function buildStrategyHTML(strategy) {
+      const s = strategy;
+      return `
+        <div class="strategy-doc" style="padding: 30px; max-width: 850px; margin: 0 auto; color: #0f172a; background: #fff; font-family: 'IBM Plex Sans Arabic', Tahoma, sans-serif;">
+          
+          <!-- Cover -->
+          <div style="text-align: center; padding: 40px 0; border-bottom: 4px solid #d946ef; margin-bottom: 30px;">
+            <div style="font-size: 12px; color: #d946ef; font-weight: bold; letter-spacing: 3px; margin-bottom: 12px;">STRATEGY DOCUMENT</div>
+            <h1 style="font-size: 32px; color: #7c3aed; margin: 0 0 12px;">${s.executiveSummary.title}</h1>
+            <p style="font-size: 14px; color: #64748b; margin: 8px 0;">${s.executiveSummary.framework} · ${s.executiveSummary.objective}</p>
+            <div style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: linear-gradient(135deg, #7c3aed, #d946ef); color: white; border-radius: 12px; font-weight: bold;">
+              التقييم العام: ${s.executiveSummary.grade}
+            </div>
+          </div>
+
+          <!-- Executive Summary -->
+          <h2>1. الملخص التنفيذي</h2>
+          <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; line-height: 1.9;">
+            <p style="margin: 0 0 10px;"><strong>الهدف الرئيسي:</strong> ${s.executiveSummary.objective}</p>
+            <p style="margin: 0 0 10px;"><strong>الإطار الاستراتيجي:</strong> ${s.executiveSummary.framework}</p>
+            <p style="margin: 0 0 10px;"><strong>ROAS المتوقع (الوسيط):</strong> ${s.executiveSummary.expectedROAS}</p>
+            <p style="margin: 0 0 10px;"><strong>صافي الربح المتوقع:</strong> ${s.executiveSummary.expectedProfit.toLocaleString('ar-EG')} ج.م</p>
+            <p style="margin: 0;"><strong>احتمالية الربح:</strong> ${s.executiveSummary.profitProbability} — بناءً على ${s.executiveSummary.confidence}</p>
+          </div>
+
+          <!-- Foundation -->
+          <h2>2. أساسيات البيزنس</h2>
+          <table>
+            <tr><th style="width: 40%;">البند</th><th>القيمة</th></tr>
+            <tr><td>القطاع</td><td>${s.foundation.industry} (${s.foundation.category})</td></tr>
+            <tr><td>مرحلة البيزنس</td><td>${s.foundation.businessStage}</td></tr>
+            <tr><td>استراتيجية التسعير</td><td>${s.foundation.pricingStrategy}</td></tr>
+            <tr><td>السعر</td><td>${s.foundation.price.toLocaleString('ar-EG')} ج.م</td></tr>
+            <tr><td>COGS</td><td>${s.foundation.cogs}%</td></tr>
+            <tr><td>AOV</td><td>${s.foundation.aov.toLocaleString('ar-EG')} ج.م</td></tr>
+          </table>
+
+          <!-- Market -->
+          <h2>3. تحليل السوق</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>حجم السوق</td><td>${s.market.size}</td></tr>
+            <tr><td>المنافسة</td><td>${s.market.competition}</td></tr>
+            <tr><td>مرحلة النضج</td><td>${s.market.maturity}</td></tr>
+            <tr><td>الميزة التنافسية</td><td>${s.market.uniqueAdvantage || '—'}</td></tr>
+          </table>
+          <h3 style="font-size: 14px; color: #7c3aed; margin-top: 15px;">مؤشرات السوق للقطاع</h3>
+          <table>
+            <tr><th>CPM</th><th>CTR</th><th>CVR</th><th>Churn</th><th>LTV Mult</th></tr>
+            <tr><td>${s.market.industryBenchmarks.cpm} ج.م</td><td>${s.market.industryBenchmarks.ctr}%</td><td>${s.market.industryBenchmarks.cvr}%</td><td>${Math.round(s.market.industryBenchmarks.churnRate * 100)}%</td><td>${s.market.industryBenchmarks.ltvMult}x</td></tr>
+          </table>
+
+          <!-- Audience -->
+          <h2>4. الجمهور المستهدف</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>المرحلة في الرحلة</td><td>${s.audience.journeyStage}</td></tr>
+            <tr><td>الفئة العمرية</td><td>${s.audience.ageRange.join(', ') || '—'}</td></tr>
+            <tr><td>الجنس</td><td>${s.audience.gender === 'all' ? 'الكل' : s.audience.gender === 'male' ? 'رجال' : 'نساء'}</td></tr>
+            <tr><td>نقاط الألم</td><td>${s.audience.painPoints.join(' · ') || '—'}</td></tr>
+            <tr><td>المحفزات الشرائية</td><td>${s.audience.buyingTriggers.join(' · ') || '—'}</td></tr>
+          </table>
+
+          <!-- Channels -->
+          <h2>5. القنوات الإعلانية</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>نوع الميديا</td><td>${s.channels.mediaMix.join(' · ')}</td></tr>
+            <tr><td>المنصات</td><td>${s.channels.platforms.join(' · ')}</td></tr>
+            <tr><td>Owned Media</td><td>${s.channels.ownedMedia.join(' · ') || '—'}</td></tr>
+          </table>
+
+          <!-- Media Plan -->
+          <h2>6. الخطة الإعلامية</h2>
+          <table>
+            <tr><th>المنصة</th><th>الميزانية</th><th>النسبة</th></tr>
+            ${s.mediaPlan.platformBudgets.map(p => `<tr><td>${p.platform}</td><td>${p.budget.toLocaleString('ar-EG')} ج.م</td><td>${p.allocation}</td></tr>`).join('')}
+          </table>
+          <p style="font-size: 12px; color: #64748b; margin-top: 10px;">
+            <strong>الميزانية الإجمالية:</strong> ${s.mediaPlan.totalBudget.toLocaleString('ar-EG')} ج.م · 
+            <strong>المدة:</strong> ${s.mediaPlan.duration} · 
+            <strong>الاحتياطي:</strong> ${s.mediaPlan.reserve} · 
+            <strong>الموسمية:</strong> ${s.mediaPlan.seasonality}
+          </p>
+
+          <!-- Creative -->
+          <h2>7. استراتيجية الكرياتيف</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>نوع الكرياتيف</td><td>${s.creative.type}</td></tr>
+            <tr><td>Hook</td><td>${s.creative.hook}</td></tr>
+            <tr><td>العرض</td><td>${s.creative.offer}</td></tr>
+            <tr><td>زاوية الرسالة</td><td>${s.creative.messagingAngle || '—'}</td></tr>
+            <tr><td>جودة الإنتاج</td><td>${s.creative.productionQuality}</td></tr>
+            <tr><td>عدد Variants</td><td>${s.creative.variantsCount}</td></tr>
+          </table>
+
+          <!-- Funnel -->
+          <h2>8. الفانل</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>نوع الفانل</td><td>${s.funnel.type}</td></tr>
+            <tr><td>جودة صفحة الهبوط</td><td>${s.funnel.landingQuality}</td></tr>
+            <tr><td>Retargeting</td><td>${s.funnel.retargeting ? '✅ مفعّل' : '❌ غير مفعّل'}</td></tr>
+            <tr><td>Abandoned Cart</td><td>${s.funnel.abandonedCart ? '✅ مفعّل' : '❌ غير مفعّل'}</td></tr>
+          </table>
+
+          <!-- Optimization -->
+          <h2>9. التحسين والمزايدة</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>استراتيجية المزايدة</td><td>${s.optimization.bidding}</td></tr>
+            <tr><td>حدث التحسين</td><td>${s.optimization.event}</td></tr>
+            <tr><td>منهجية الاختبار</td><td>${s.optimization.testing}</td></tr>
+            <tr><td>Frequency Cap</td><td>${s.optimization.frequencyCap}</td></tr>
+          </table>
+
+          <!-- Scaling -->
+          <h2>10. التوسع والاحتفاظ</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>استراتيجية التوسع</td><td>${s.scaling.strategy}</td></tr>
+            <tr><td>استراتيجية الاحتفاظ</td><td>${s.scaling.retention}</td></tr>
+            <tr><td>Referral Program</td><td>${s.scaling.referralProgram ? '✅ مفعّل' : '❌ غير مفعّل'}</td></tr>
+            <tr><td>Upsell</td><td>${s.scaling.upsellStrategy || '—'}</td></tr>
+          </table>
+
+          <!-- Analytics -->
+          <h2>11. القياس</h2>
+          <table>
+            <tr><th>البند</th><th>القيمة</th></tr>
+            <tr><td>Attribution Model</td><td>${s.analytics.attributionModel}</td></tr>
+            <tr><td>Tracking Setup</td><td>${s.analytics.trackingSetup}</td></tr>
+            <tr><td>Reporting Cadence</td><td>${s.analytics.reportingCadence}</td></tr>
+          </table>
+
+          <!-- Projections -->
+          <h2>12. التوقعات الاحتمالية (10,000 محاكاة)</h2>
+          <table>
+            <tr><th>المؤشر</th><th>P10 (المتشائم)</th><th>P50 (الوسيط)</th><th>P90 (المتفائل)</th></tr>
+            <tr><td>الإيرادات</td><td>${s.projections.revenue.p10.toLocaleString('ar-EG')} ج.م</td><td><strong>${s.projections.revenue.p50.toLocaleString('ar-EG')} ج.م</strong></td><td>${s.projections.revenue.p90.toLocaleString('ar-EG')} ج.م</td></tr>
+            <tr><td>الطلبات</td><td>${s.projections.orders.p10}</td><td><strong>${s.projections.orders.p50}</strong></td><td>${s.projections.orders.p90}</td></tr>
+            <tr><td>ROAS</td><td>${s.projections.roas.p10}x</td><td><strong>${s.projections.roas.p50}x</strong></td><td>${s.projections.roas.p90}x</td></tr>
+            <tr><td>صافي الربح</td><td>${s.projections.profit.p10.toLocaleString('ar-EG')} ج.م</td><td><strong>${s.projections.profit.p50.toLocaleString('ar-EG')} ج.م</strong></td><td>${s.projections.profit.p90.toLocaleString('ar-EG')} ج.م</td></tr>
+            <tr><td>CPA</td><td>${s.projections.cpa.p10} ج.م</td><td><strong>${s.projections.cpa.p50} ج.م</strong></td><td>${s.projections.cpa.p90} ج.م</td></tr>
+          </table>
+
+          <!-- Action Plan -->
+          <h2>13. خطة العمل (90 يوم)</h2>
+          <h3 style="font-size: 14px; color: #7c3aed;">الأسبوع 1-2</h3>
+          <ul style="font-size: 13px; padding-right: 20px; line-height: 1.8;">
+            ${s.actionPlan.week1_2.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+          <h3 style="font-size: 14px; color: #7c3aed;">الأسبوع 3-4</h3>
+          <ul style="font-size: 13px; padding-right: 20px; line-height: 1.8;">
+            ${s.actionPlan.week3_4.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+          <h3 style="font-size: 14px; color: #7c3aed;">الشهر الثاني</h3>
+          <ul style="font-size: 13px; padding-right: 20px; line-height: 1.8;">
+            ${s.actionPlan.month2.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+          <h3 style="font-size: 14px; color: #7c3aed;">الشهر الثالث</h3>
+          <ul style="font-size: 13px; padding-right: 20px; line-height: 1.8;">
+            ${s.actionPlan.month3.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+
+          <!-- Recommendations -->
+          <h2>14. التوصيات النهائية</h2>
+          ${s.recommendations.map(r => `
+            <div style="border-right: 3px solid ${r.priority === 'urgent' ? '#ef4444' : r.priority === 'high' ? '#f59e0b' : '#3b82f6'}; padding: 12px; margin-bottom: 10px; background: #f8fafc; border-radius: 6px;">
+              <div style="font-weight: bold; color: #0f172a; margin-bottom: 5px;">${r.title}</div>
+              <div style="font-size: 12px; color: #64748b;">${r.desc}</div>
+            </div>
+          `).join('')}
+
+          <!-- Footer -->
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
+            تم إنشاء هذا المستند بواسطة محاكي الاستراتيجيات v3.0 · Monte Carlo Edition<br>
+            إسلام سعيد · Senior Media Buyer & Growth Strategist · islamsaeid.me
+          </div>
+        </div>
+      `;
+    }
+
+    function buildFullReportHTML(result) {
+      const { metadata, totals, platformResults, stats, scores, verdict, risks, recommendations, optimizations } = result;
+      const formatCurrency = (n) => `${Math.round(n).toLocaleString('ar-EG')} ج.م`;
+
+      return `
+        <div dir="rtl" style="font-family: 'IBM Plex Sans Arabic', Tahoma, sans-serif; padding: 30px; max-width: 900px; margin: 0 auto; color: #0f172a; background: #fff;">
+          
+          <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #d946ef;">
+            <h1 style="font-size: 28px; margin: 0; color: #7c3aed;">تقرير المحاكاة الاحتمالية</h1>
+            <p style="margin: 8px 0 0; font-size: 14px; color: #64748b;">
+              ${metadata.industry} · ${metadata.objective} · ${metadata.iterations.toLocaleString('ar-EG')} محاكاة
+            </p>
+            <p style="margin: 6px 0 0; font-size: 12px; color: #94a3b8;">
+              ${new Date(metadata.generatedAt).toLocaleString('ar-EG')}
+            </p>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%); padding: 30px; border-radius: 20px; color: white; text-align: center; margin-bottom: 30px;">
+            <div style="font-size: 64px; font-weight: bold; margin-bottom: 8px;">${verdict.grade}</div>
+            <div style="font-size: 40px; font-weight: bold; font-family: monospace; margin-bottom: 10px;">${scores.adjustedOverall}/100</div>
+            <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${verdict.text}</div>
+            <div style="font-size: 13px; opacity: 0.9;">${verdict.summary}</div>
+          </div>
+
+          <h2 style="font-size: 20px; color: #7c3aed; border-right: 4px solid #d946ef; padding-right: 12px; margin: 30px 0 20px;">التوقعات الاحتمالية (Percentiles)</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 30px;">
+            <tr style="background: #7c3aed; color: white;">
+              <th style="padding: 10px; text-align: right;">المؤشر</th>
+              <th style="padding: 10px; text-align: right;">P10</th>
+              <th style="padding: 10px; text-align: right;">P50 (الأكثر احتمالاً)</th>
+              <th style="padding: 10px; text-align: right;">P90</th>
+            </tr>
+            <tr><td style="padding: 8px;">الإيرادات</td><td style="padding: 8px;">${formatCurrency(stats.revenue.p10)}</td><td style="padding: 8px; font-weight: bold; color: #22c55e;">${formatCurrency(stats.revenue.p50)}</td><td style="padding: 8px;">${formatCurrency(stats.revenue.p90)}</td></tr>
+            <tr style="background: #f8fafc;"><td style="padding: 8px;">الطلبات</td><td style="padding: 8px;">${Math.round(stats.orders.p10)}</td><td style="padding: 8px; font-weight: bold;">${Math.round(stats.orders.p50)}</td><td style="padding: 8px;">${Math.round(stats.orders.p90)}</td></tr>
+            <tr><td style="padding: 8px;">ROAS</td><td style="padding: 8px;">${stats.roas.p10.toFixed(2)}x</td><td style="padding: 8px; font-weight: bold; color: #22c55e;">${stats.roas.p50.toFixed(2)}x</td><td style="padding: 8px;">${stats.roas.p90.toFixed(2)}x</td></tr>
+            <tr style="background: #f8fafc;"><td style="padding: 8px;">صافي الربح</td><td style="padding: 8px;">${formatCurrency(stats.profit.p10)}</td><td style="padding: 8px; font-weight: bold; color: ${stats.profit.p50 >= 0 ? '#22c55e' : '#ef4444'};">${formatCurrency(stats.profit.p50)}</td><td style="padding: 8px;">${formatCurrency(stats.profit.p90)}</td></tr>
+            <tr><td style="padding: 8px;">CPA</td><td style="padding: 8px;">${formatCurrency(stats.cpa.p10)}</td><td style="padding: 8px; font-weight: bold;">${formatCurrency(stats.cpa.p50)}</td><td style="padding: 8px;">${formatCurrency(stats.cpa.p90)}</td></tr>
+          </table>
+
+          <div style="background: ${stats.profit.profitProbability >= 60 ? '#f0fdf4' : stats.profit.profitProbability >= 40 ? '#fffbeb' : '#fef2f2'}; border-right: 4px solid ${stats.profit.profitProbability >= 60 ? '#22c55e' : stats.profit.profitProbability >= 40 ? '#f59e0b' : '#ef4444'}; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>احتمالية الربح: ${stats.profit.profitProbability.toFixed(1)}%</strong> — في ${Math.round(stats.profit.profitProbability * 100)} من كل 100 سيناريو، الاستراتيجية بتربح.
+          </div>
+
+          <h2 style="font-size: 20px; color: #7c3aed; border-right: 4px solid #d946ef; padding-right: 12px; margin: 30px 0 20px;">التقييم (8 محاور)</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 30px;">
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">جودة الاستراتيجية</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.strategyQuality}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">الاستهداف</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.targeting}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">الكرياتيف</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.creativeQuality}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">كفاءة الميزانية</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.budgetEfficiency}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">الفانل</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.funnelIntegrity}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">الاستدامة</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.sustainability}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">القياس</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.measurement}/100</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">الربحية</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${scores.profitability}/100</td></tr>
+          </table>
+
+          <h2 style="font-size: 20px; color: #7c3aed; border-right: 4px solid #d946ef; padding-right: 12px; margin: 30px 0 20px;">أداء المنصات (P50)</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 30px;">
+            <tr style="background: #7c3aed; color: white;">
+              <th style="padding: 8px;">المنصة</th>
+              <th style="padding: 8px;">الميزانية</th>
+              <th style="padding: 8px;">الطلبات</th>
+              <th style="padding: 8px;">ROAS P50</th>
+              <th style="padding: 8px;">CPA</th>
+            </tr>
+            ${platformResults.map(p => `
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px;">${p.name}</td>
+                <td style="padding: 8px;">${formatCurrency(p.budget)}</td>
+                <td style="padding: 8px;">${p.orders}</td>
+                <td style="padding: 8px; font-weight: bold;">${p.roas.toFixed(2)}x</td>
+                <td style="padding: 8px;">${formatCurrency(p.cpa)}</td>
+              </tr>
+            `).join('')}
+          </table>
+
+          <h2 style="font-size: 20px; color: #7c3aed; border-right: 4px solid #d946ef; padding-right: 12px; margin: 30px 0 20px;">المخاطر والتوصيات</h2>
+          ${risks.risks.map(r => `
+            <div style="border-right: 3px solid #f59e0b; padding: 12px; margin-bottom: 10px; background: #fffbeb; border-radius: 6px;">
+              <div style="font-weight: bold; color: #b45309; margin-bottom: 5px;">⚠️ ${r.title}</div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 5px;">${r.desc}</div>
+              <div style="font-size: 11px; color: #22c55e; font-weight: bold;">الحل: ${r.mitigation}</div>
+            </div>
+          `).join('')}
+
+          ${recommendations.map(r => `
+            <div style="padding: 10px; margin-bottom: 8px; background: #f0f9ff; border-radius: 6px; border-right: 3px solid #3b82f6;">
+              <div style="font-weight: bold; font-size: 13px; margin-bottom: 3px;">${r.title}</div>
+              <div style="font-size: 11px; color: #475569;">${r.desc}</div>
+            </div>
+          `).join('')}
+
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
+            تقرير Monte Carlo Simulation · إسلام سعيد · islamsaeid.me
+          </div>
+        </div>
+      `;
+    }
+
     window.closeResults = () => {
       document.getElementById('resultsModal').classList.add('hidden');
       document.body.style.overflow = '';
@@ -1991,8 +2500,9 @@
     window.resetSimulator = () => {
       if (!confirm('هل أنت متأكد؟ سيتم حذف كل الاختيارات والبدء من الصفر.')) return;
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      localStorage.removeItem('sim_v2_state');
+      localStorage.removeItem('sim_v3_state');
       currentStage = 0;
+      if (histogramChartInstance) { histogramChartInstance.destroy(); histogramChartInstance = null; }
       if (cohortChartInstance) { cohortChartInstance.destroy(); cohortChartInstance = null; }
       closeResults();
       renderStage();

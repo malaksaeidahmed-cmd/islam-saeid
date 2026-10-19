@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الدرس | أكاديمية إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07060E; }
+    .markdown-body h1 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 1rem; }
+    .markdown-body h2 { font-size: 1.4rem; font-weight: 700; color: #d946ef; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .markdown-body p { font-size: 0.95rem; line-height: 1.9; color: #cbd5e1; margin-bottom: 1rem; }
+    .markdown-body ul { list-style-type: disc; padding-right: 1.5rem; margin-bottom: 1rem; color: #cbd5e1; font-size: 0.95rem; }
+    .markdown-body li { margin-bottom: 0.5rem; }
+    .markdown-body strong { color: #fff; font-weight: bold; }
+    .markdown-body code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #f472b6; }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen">
+
+  <header class="glass-header border-b border-white/5 py-4 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-5 flex justify-between items-center">
+      <a href="academy.html" class="text-slate-400 hover:text-white text-sm">
+        <i class="fa-solid fa-arrow-right ml-1"></i> العودة للأكاديمية
+      </a>
+      <div id="lessonTitleHeader" class="text-xs font-bold text-white hidden sm:block"></div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-5 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+    
+    <!-- Sidebar (Lessons List) -->
+    <aside class="lg:col-span-1 space-y-2 hidden lg:block">
+      <h3 class="font-bold text-white text-sm mb-4">محتوى المسار</h3>
+      <div id="lessonsList" class="space-y-1"></div>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="lg:col-span-3">
+      <div id="loading" class="text-center py-20 text-slate-400">
+        <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i> جاري التحميل...
+      </div>
+      
+      <div id="contentBox" class="hidden">
+        <div class="mb-6 flex items-center justify-between flex-wrap gap-2">
+          <h1 class="text-2xl font-bold text-white" id="lessonTitle"></h1>
+          <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-400" id="lessonDuration"></span>
+        </div>
+        
+        <div class="p-6 md:p-8 rounded-3xl glass-card markdown-body" id="lessonContent"></div>
+
+        <div class="mt-8 flex justify-between items-center pt-6 border-t border-white/10" id="navButtons">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { requireStudentAuth } from './js/auth/firebase-auth.js';
+    import { getUserProfile } from './js/auth/user-profile.js';
+    import { COURSES, getCourseById, getLessonById, getNextLesson } from './js/academy/courses-data.js';
+    import { LESSONS } from './js/academy/lessons-data.js';
+    import { completeLesson } from './js/academy/learning-engine.js';
+
+    const user = await requireStudentAuth();
+    const profile = await getUserProfile(user.uid);
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get('course');
+    const lessonIdFromUrl = urlParams.get('id');
+
+    if (!courseId && !lessonIdFromUrl) window.location.href = 'academy.html';
+
+    const course = getCourseById(courseId);
+    if (!course) window.location.href = 'academy.html';
+
+    // تحديد الدرس الحالي
+    let currentLessonId = lessonIdFromUrl;
+    if (!currentLessonId) {
+      // لو مفيش درس محدد، نفتح أول درس
+      currentLessonId = course.lessons[0].id;
+    }
+
+    const lessonMeta = getLessonById(currentLessonId);
+    const lessonData = LESSONS[currentLessonId];
+
+    if (!lessonMeta || !lessonData) {
+      document.getElementById('loading').innerHTML = 'الدرس غير موجود.';
+    } else {
+      renderLesson(lessonMeta, lessonData, course);
+    }
+
+    function renderLesson(meta, data, course) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('contentBox').classList.remove('hidden');
+      document.getElementById('lessonTitleHeader').textContent = course.title;
+
+      document.getElementById('lessonTitle').textContent = meta.title;
+      document.getElementById('lessonDuration').innerHTML = `<i class="fa-regular fa-clock ml-1"></i> ${meta.duration} دقيقة`;
+
+      // تحويل المارك داون لـ HTML
+      document.getElementById('lessonContent').innerHTML = marked.parse(data.content);
+
+      // Sidebar Lessons List
+      document.getElementById('lessonsList').innerHTML = course.lessons.map(l => {
+        const isActive = l.id === currentLessonId;
+        return `
+          <a href="course.html?course=${course.id}&id=${l.id}" class="block px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors ${isActive ? 'bg-pink-600/20 text-pink-400 border-r-2 border-pink-500' : 'text-slate-400 hover:bg-white/5 hover:text-white'}">
+            ${l.title}
+          </a>
+        `;
+      }).join('');
+
+      // Navigation Buttons (Next/Complete)
+      const nextLesson = getNextLesson(currentLessonId);
+      const navContainer = document.getElementById('navButtons');
+      
+      // Check if it's a quiz lesson
+      const isQuiz = data.type === 'quiz';
+
+      let actionBtnHtml = '';
+      if (isQuiz) {
+        actionBtnHtml = `<a href="quiz.html?course=${course.id}&id=${data.quizId}" class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg hover:opacity-90 transition-opacity">ابدأ الاختبار <i class="fa-solid fa-arrow-left mr-1"></i></a>`;
+      } else {
+        actionBtnHtml = `<button onclick="markComplete()" id="completeBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition-opacity">تحديد كمكتمل <i class="fa-solid fa-check mr-1"></i></button>`;
+      }
+
+      navContainer.innerHTML = `
+        <div>${getPreviousBtn(currentLessonId, course.id)}</div>
+        <div>${actionBtnHtml}</div>
+        <div>${nextLesson ? `<a href="course.html?course=${course.id}&id=${nextLesson.id}" class="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold text-xs">التالي <i class="fa-solid fa-arrow-left ml-1"></i></a>` : ''}</div>
+      `;
+
+      window.markComplete = async () => {
+        const btn = document.getElementById('completeBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+
+        await completeLesson(user.uid, currentLessonId, course.id);
+        
+        btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> تم الإكمال';
+        btn.classList.replace('from-green-600', 'from-slate-700');
+        btn.classList.replace('to-emerald-600', 'to-slate-800');
+        
+        if (nextLesson) {
+          setTimeout(() => {
+            window.location.href = `course.html?course=${course.id}&id=${nextLesson.id}`;
+          }, 1000);
+        }
+      };
+    }
+
+    function getPreviousBtn(currentId, courseId) {
+      const idx = course.lessons.findIndex(l => l.id === currentId);
+      if (idx > 0) {
+        const prev = course.lessons[idx - 1];
+        return `<a href="course.html?course=${courseId}&id=${prev.id}" class="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs"><i class="fa-solid fa-arrow-right ml-1"></i> السابق</a>`;
+      }
+      return '<div></div>';
+    }
+  </script>
+</body>
+</html>

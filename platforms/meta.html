@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta Ads Manager | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/platforms/meta-ads-manager.css" />
+</head>
+<body class="meta-body">
+
+  <!-- Header -->
+  <header class="meta-header">
+    <div class="flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right"></i></a>
+      <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+        <i class="fa-brands fa-facebook-f"></i>
+      </div>
+      <div class="font-bold text-sm">Meta Ads Manager</div>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-xs text-slate-400 hidden sm:block">الحساب الإعلاني: <strong class="text-white">Islam Saeed - Academy</strong></span>
+      <img src="../logo.png" class="w-8 h-8 rounded-full border border-white/20" />
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="meta-sidebar hidden md:block">
+      <div class="meta-nav-item"><i class="fa-solid fa-chart-pie w-5"></i> لوحة التحكم</div>
+      <div class="meta-nav-item active"><i class="fa-solid fa-bullhorn w-5"></i> الحملات</div>
+      <div class="meta-nav-item"><i class="fa-solid fa-users w-5"></i> الجماهير</div>
+      <div class="meta-nav-item"><i class="fa-solid fa-images w-5"></i> مكتبة الوسائط</div>
+      <div class="meta-nav-item"><i class="fa-solid fa-code w-5"></i> البيكسل (Pixel)</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="meta-main-content flex-1 w-full">
+      
+      <!-- Stepper -->
+      <div class="meta-stepper">
+        <div class="meta-step active" id="stepIndicator1">
+          <div class="meta-step-number">1</div>
+          <div class="text-xs font-bold hidden sm:block">الحملة</div>
+        </div>
+        <div class="flex-1 h-px bg-white/10 mx-2"></div>
+        <div class="meta-step" id="stepIndicator2">
+          <div class="meta-step-number">2</div>
+          <div class="text-xs font-bold hidden sm:block">المجموعة الإعلانية</div>
+        </div>
+        <div class="flex-1 h-px bg-white/10 mx-2"></div>
+        <div class="meta-step" id="stepIndicator3">
+          <div class="meta-step-number">3</div>
+          <div class="text-xs font-bold hidden sm:block">الإعلان</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Wizard Forms -->
+        <div class="lg:col-span-2 space-y-4">
+          
+          <!-- ERROR BOX -->
+          <div id="errorBox" class="hidden p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold"></div>
+
+          <!-- STEP 1: CAMPAIGN -->
+          <div id="step1" class="space-y-4">
+            <div class="meta-card">
+              <h2 class="text-lg font-bold mb-4">1. هدف الحملة (Campaign Objective)</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="p-3 border border-[#CED0D4] rounded-lg cursor-pointer flex items-center gap-3 hover:bg-white/5" onclick="selectObjective('SALES')">
+                  <input type="radio" name="objective" class="w-4 h-4 accent-blue-600" />
+                  <span class="text-sm font-semibold">مبيعات (Sales)</span>
+                </label>
+                <label class="p-3 border border-[#CED0D4] rounded-lg cursor-pointer flex items-center gap-3 hover:bg-white/5" onclick="selectObjective('LEADS')">
+                  <input type="radio" name="objective" class="w-4 h-4 accent-blue-600" />
+                  <span class="text-sm font-semibold">عملاء محتملين (Leads)</span>
+                </label>
+                <label class="p-3 border border-[#CED0D4] rounded-lg cursor-pointer flex items-center gap-3 hover:bg-white/5" onclick="selectObjective('TRAFFIC')">
+                  <input type="radio" name="objective" class="w-4 h-4 accent-blue-600" />
+                  <span class="text-sm font-semibold">زيارات (Traffic)</span>
+                </label>
+                <label class="p-3 border border-[#CED0D4] rounded-lg cursor-pointer flex items-center gap-3 hover:bg-white/5" onclick="selectObjective('AWARENESS')">
+                  <input type="radio" name="objective" class="w-4 h-4 accent-blue-600" />
+                  <span class="text-sm font-semibold">وعي (Awareness)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="meta-card space-y-4">
+              <h2 class="text-lg font-bold">2. تفاصيل الحملة</h2>
+              <div>
+                <label class="block text-xs font-bold mb-1">اسم الحملة</label>
+                <input type="text" id="campaignName" class="meta-input" placeholder="مثال: حملة مبيعات الصيف 2025" oninput="updateCampaignName(this.value)" />
+              </div>
+
+              <div class="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <input type="checkbox" id="cboToggle" checked class="w-4 h-4 accent-blue-600" onchange="toggleCBO(this.checked)" />
+                <div>
+                  <div class="text-xs font-bold text-blue-400">Advantage Campaign Budget (CBO)</div>
+                  <div class="text-[10px] text-slate-400">تفعيل هذه الميزة يسمح لـ Meta بتوزيع الميزانية تلقائياً على أفضل المجموعات.</div>
+                </div>
+              </div>
+
+              <div id="campaignBudgetBox">
+                <label class="block text-xs font-bold mb-1">الميزانية اليومية للحملة (ج.م)</label>
+                <input type="number" id="campaignBudget" class="meta-input" placeholder="1000" oninput="updateCampaignBudget(this.value)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: AD SET -->
+          <div id="step2" class="hidden space-y-4">
+            <div class="meta-card space-y-4">
+              <h2 class="text-lg font-bold">المجموعة الإعلانية (Ad Set)</h2>
+              
+              <div>
+                <label class="block text-xs font-bold mb-1">اسم المجموعة</label>
+                <input type="text" id="adSetName" class="meta-input" placeholder="مثال: القاهرة - 25-40 سنة" oninput="updateAdSetName(this.value)" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1">الجمهور (Audience)</label>
+                <select id="adSetAudience" class="meta-input" onchange="updateAdSetAudience(this.value)">
+                  <option value="broad">استهداف واسع (Broad)</option>
+                  <option value="interests">اهتمامات (Interests)</option>
+                  <option value="lookalike">جمهور مشابه (Lookalike)</option>
+                  <option value="retargeting">إعادة استهداف (Retargeting)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1">أماكن الظهور (Placements)</label>
+                <select id="adSetPlacements" class="meta-input" onchange="updateAdSetPlacements(this.value)">
+                  <option value="advantage">Advantage+ (تلقائي - موصى به)</option>
+                  <option value="feed">فيد فقط</option>
+                  <option value="stories">ستوري وريلز فقط</option>
+                </select>
+              </div>
+
+              <div id="adSetBudgetBox">
+                <label class="block text-xs font-bold mb-1">الميزانية اليومية للمجموعة (ج.م)</label>
+                <input type="number" id="adSetBudget" class="meta-input" placeholder="500" oninput="updateAdSetBudget(this.value)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: AD -->
+          <div id="step3" class="hidden space-y-4">
+            <div class="meta-card space-y-4">
+              <h2 class="text-lg font-bold">تصميم الإعلان (Ad)</h2>
+              
+              <div>
+                <label class="block text-xs font-bold mb-1">اسم الإعلان (داخلي)</label>
+                <input type="text" id="adName" class="meta-input" placeholder="مثال: فيديو - قبل وبعد" oninput="updateAdName(this.value)" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1">النص الأساسي (Primary Text)</label>
+                <textarea id="adPrimaryText" class="meta-input h-24" placeholder="اكتب النص الذي سيظهر أعلى الإعلان..." oninput="updateAdText(this.value)"></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold mb-1">العنوان (Headline)</label>
+                  <input type="text" id="adHeadline" class="meta-input" placeholder="خصم 50% لفترة محدودة" oninput="updateAdHeadline(this.value)" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">زر الحث (CTA)</label>
+                  <select id="adCTA" class="meta-input" onchange="updateAdCTA(this.value)">
+                    <option value="SHOP_NOW">تسوق الآن (Shop Now)</option>
+                    <option value="LEARN_MORE">اعرف المزيد (Learn More)</option>
+                    <option value="SIGN_UP">سجل الآن (Sign Up)</option>
+                    <option value="CONTACT_US">تواصل معنا (Contact Us)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="flex justify-between items-center pt-4">
+            <button id="prevBtn" onclick="handlePrev()" class="meta-btn-secondary hidden">السابق</button>
+            <div class="flex-1"></div>
+            <button id="nextBtn" onclick="handleNext()" class="meta-btn-primary">التالي</button>
+            <button id="launchBtn" onclick="handleLaunch()" class="meta-btn-primary hidden" style="background: #22c55e;">إطلاق الحملة <i class="fa-solid fa-rocket mr-1"></i></button>
+          </div>
+
+        </div>
+
+        <!-- Ad Preview Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="sticky top-24">
+            <h3 class="text-xs font-bold text-slate-400 mb-2">معاينة الإعلان</h3>
+            <div class="meta-ad-preview">
+              <div class="meta-ad-preview-header">
+                <div class="meta-ad-preview-avatar"></div>
+                <div>
+                  <div class="text-xs font-bold" id="previewPageName">Islam Saeed Academy</div>
+                  <div class="text-[10px] text-slate-500">إعلان ممول · <i class="fa-solid fa-earth-americas"></i></div>
+                </div>
+              </div>
+              <div class="meta-ad-preview-body text-xs" id="previewPrimaryText">
+                نص الإعلان سيظهر هنا...
+              </div>
+              <div class="meta-ad-preview-image">
+                <i class="fa-solid fa-image text-4xl"></i>
+              </div>
+              <div class="meta-ad-preview-footer">
+                <div class="text-[10px] truncate pr-2">
+                  <div class="text-slate-500 uppercase text-[9px]">islamsaeid.me</div>
+                  <div class="font-bold truncate" id="previewHeadline">عنوان الإعلان</div>
+                </div>
+                <button class="bg-[#F0F2F5] text-[#1C2B33] border border-[#CED0D4] text-[10px] font-bold px-3 py-1.5 rounded-md" id="previewCTA">تسوق الآن</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { 
+      metaState, setMetaState, nextStep, prevStep, validateStep, launchMetaCampaign 
+    } from '../js/platforms/meta-ads-sim.js';
+
+    // --- UI Handlers ---
+    window.selectObjective = (obj) => {
+      setMetaState('campaign', 'objective', obj);
+    };
+
+    window.updateCampaignName = (val) => {
+      setMetaState('campaign', 'name', val);
+    };
+
+    window.toggleCBO = (isChecked) => {
+      setMetaState('campaign', 'cbo', isChecked);
+      document.getElementById('campaignBudgetBox').classList.toggle('hidden', !isChecked);
+      document.getElementById('adSetBudgetBox').classList.toggle('hidden', isChecked);
+    };
+
+    window.updateCampaignBudget = (val) => {
+      setMetaState('campaign', 'budget', parseFloat(val) || 0);
+    };
+
+    window.updateAdSetName = (val) => setMetaState('adSet', 'name', val);
+    window.updateAdSetAudience = (val) => setMetaState('adSet', 'audience', val);
+    window.updateAdSetPlacements = (val) => setMetaState('adSet', 'placements', val);
+    window.updateAdSetBudget = (val) => setMetaState('adSet', 'budget', parseFloat(val) || 0);
+
+    window.updateAdName = (val) => setMetaState('ad', 'name', val);
+    window.updateAdText = (val) => {
+      setMetaState('ad', 'primaryText', val);
+      document.getElementById('previewPrimaryText').textContent = val || 'نص الإعلان سيظهر هنا...';
+    };
+    window.updateAdHeadline = (val) => {
+      setMetaState('ad', 'headline', val);
+      document.getElementById('previewHeadline').textContent = val || 'عنوان الإعلان';
+    };
+    window.updateAdCTA = (val) => {
+      setMetaState('ad', 'cta', val);
+      const ctaTexts = { SHOP_NOW: 'تسوق الآن', LEARN_MORE: 'اعرف المزيد', SIGN_UP: 'سجل الآن', CONTACT_US: 'تواصل معنا' };
+      document.getElementById('previewCTA').textContent = ctaTexts[val] || 'تسوق الآن';
+    };
+
+    // --- Navigation Logic ---
+    window.handleNext = () => {
+      const result = nextStep();
+      if (!result.success) {
+        showError(result.error);
+        return;
+      }
+      hideError();
+      updateWizardUI();
+    };
+
+    window.handlePrev = () => {
+      if (prevStep()) updateWizardUI();
+    };
+
+    window.handleLaunch = () => {
+      const error = validateStep(3);
+      if (error) { showError(error); return; }
+      
+      // Save to DB/LocalStorage
+      launchMetaCampaign();
+      
+      // Redirect to Execution Engine
+      document.getElementById('launchBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري النشر...';
+      setTimeout(() => {
+        window.location.href = '../execute.html';
+      }, 1000);
+    };
+
+    // --- UI Updater ---
+    function updateWizardUI() {
+      const step = metaState.currentStep;
+      
+      // Hide all steps
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.add('hidden');
+      
+      // Show current step
+      document.getElementById(`step${step}`).classList.remove('hidden');
+
+      // Update Stepper Indicators
+      for(let i=1; i<=3; i++) {
+        const el = document.getElementById(`stepIndicator${i}`);
+        if (i < step) {
+          el.className = 'meta-step completed';
+        } else if (i === step) {
+          el.className = 'meta-step active';
+        } else {
+          el.className = 'meta-step';
+        }
+      }
+
+      // Update Nav Buttons
+      document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
+      document.getElementById('nextBtn').classList.toggle('hidden', step === 3);
+      document.getElementById('launchBtn').classList.toggle('hidden', step !== 3);
+
+      if (step === 3) {
+        document.getElementById('nextBtn').classList.add('hidden');
+        document.getElementById('launchBtn').classList.remove('hidden');
+      }
+    }
+
+    function showError(msg) {
+      const box = document.getElementById('errorBox');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideError() {
+      document.getElementById('errorBox').classList.add('hidden');
+    }
+
+    // --- Init ---
+    updateWizardUI();
+  </script>
+</body>
+</html>

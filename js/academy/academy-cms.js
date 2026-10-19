@@ -7,7 +7,7 @@ import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc,
   updateDoc, deleteDoc, query, where, onSnapshot, limit
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { firebaseConfig } from '../firebase-config.js';
+import { firebaseConfig } from '../../firebase-config.js';
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getFirestore(app);

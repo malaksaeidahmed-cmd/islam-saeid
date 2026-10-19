@@ -1,0 +1,228 @@
+/* ============================================================
+   Meta Ads Manager Clone — Styles
+   ============================================================ */
+
+:root {
+  --meta-blue: #0866FF;
+  --meta-blue-hover: #0757D5;
+  --meta-bg: #F0F2F5;
+  --meta-panel: #FFFFFF;
+  --meta-border: #CED0D4;
+  --meta-text-primary: #1C2B33;
+  --meta-text-secondary: #606770;
+}
+
+.dark {
+  --meta-bg: #07060E;
+  --meta-panel: #0E0B1A;
+  --meta-border: rgba(255, 255, 255, 0.1);
+  --meta-text-primary: #E2E8F0;
+  --meta-text-secondary: #94A3B8;
+}
+
+body.meta-body {
+  background-color: var(--meta-bg);
+  color: var(--meta-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.meta-header {
+  background: var(--meta-panel);
+  border-bottom: 1px solid var(--meta-border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.meta-btn-primary {
+  background: var(--meta-blue);
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition: all 0.2s;
+}
+
+.meta-btn-primary:hover {
+  background: var(--meta-blue-hover);
+}
+
+.meta-btn-secondary {
+  background: transparent;
+  color: var(--meta-text-primary);
+  border: 1px solid var(--meta-border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.meta-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.meta-sidebar {
+  width: 260px;
+  background: var(--meta-panel);
+  border-left: 1px solid var(--meta-border);
+  height: calc(100vh - 56px);
+  position: fixed;
+  top: 56px;
+  right: 0;
+  padding: 16px 8px;
+  overflow-y: auto;
+}
+
+.meta-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--meta-text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.meta-nav-item:hover, .meta-nav-item.active {
+  background: rgba(8, 102, 255, 0.1);
+  color: var(--meta-blue);
+}
+
+.meta-main-content {
+  margin-right: 260px;
+  padding: 24px;
+  min-height: calc(100vh - 56px);
+}
+
+.meta-card {
+  background: var(--meta-panel);
+  border: 1px solid var(--meta-border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.meta-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--meta-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--meta-text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.meta-input:focus {
+  outline: none;
+  border-color: var(--meta-blue);
+}
+
+/* Wizard Stepper */
+.meta-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  background: var(--meta-panel);
+  padding: 16px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--meta-border);
+}
+
+.meta-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.5;
+}
+
+.meta-step.active {
+  opacity: 1;
+}
+
+.meta-step.completed {
+  opacity: 1;
+  color: var(--meta-blue);
+}
+
+.meta-step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.meta-step.active .meta-step-number {
+  background: var(--meta-blue);
+  color: white;
+}
+
+.meta-step.completed .meta-step-number {
+  background: var(--meta-blue);
+  color: white;
+}
+
+/* Ad Preview */
+.meta-ad-preview {
+  background: var(--meta-panel);
+  border: 1px solid var(--meta-border);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 300px;
+}
+
+.meta-ad-preview-header {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-ad-preview-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.meta-ad-preview-image {
+  width: 100%;
+  height: 200px;
+  background: #2a2a35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.meta-ad-preview-body {
+  padding: 12px;
+  border-bottom: 1px solid var(--meta-border);
+}
+
+.meta-ad-preview-footer {
+  background: #F0F2F5;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--meta-text-primary);
+}
+
+.dark .meta-ad-preview-footer {
+  background: rgba(255,255,255,0.05);
+}

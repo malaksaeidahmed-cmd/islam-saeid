@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول | أكاديمية إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: radial-gradient(circle at top right, #16112b 0%, #07060E 60%); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .floating { animation: float 4s ease-in-out infinite; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .shake { animation: shake 0.4s ease-in-out; }
+    input:focus { box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.15); }
+  </style>
+</head>
+<body class="font-['IBM_Plex_Sans_Arabic'] min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+  <!-- Background Orbs -->
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-pink-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="relative w-full max-w-md">
+    
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <a href="index.html" class="inline-flex items-center gap-3 group">
+        <img src="logo.png" alt="إسلام سعيد" class="w-14 h-14 object-contain rounded-2xl border border-white/10 group-hover:scale-105 transition-transform" onerror="this.style.display='none'" />
+      </a>
+      <h1 class="text-white font-bold text-xl mt-4">مرحباً بعودتك 👋</h1>
+      <p class="text-slate-400 text-xs mt-1">سجل دخولك لمتابعة رحلتك التعليمية</p>
+    </div>
+
+    <!-- Card -->
+    <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A]/80 backdrop-blur-xl shadow-2xl space-y-5">
+
+      <form id="loginForm" class="space-y-4 text-xs" novalidate>
+
+        <!-- Email -->
+        <div>
+          <label for="emailInput" class="block font-semibold text-slate-300 mb-1.5">
+            البريد الإلكتروني
+          </label>
+          <div class="relative">
+            <i class="fa-solid fa-envelope absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none"></i>
+            <input type="email" id="emailInput" required autocomplete="email" placeholder="you@example.com" dir="ltr"
+              class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pr-10 text-white text-left text-sm focus:outline-none focus:border-pink-500 transition-colors" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="passwordInput" class="block font-semibold text-slate-300">كلمة المرور</label>
+            <button type="button" id="forgotPasswordBtn" class="text-pink-400 hover:text-pink-300 text-[10px] font-bold">
+              نسيت كلمة المرور؟
+            </button>
+          </div>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none"></i>
+            <input type="password" id="passwordInput" required autocomplete="current-password" placeholder="••••••••"
+              class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pr-10 pl-12 text-white text-sm focus:outline-none focus:border-pink-500 transition-colors" />
+            <button type="button" id="togglePasswordBtn" aria-label="إظهار/إخفاء كلمة المرور"
+              class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+              <i id="togglePasswordIcon" class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember -->
+        <label class="flex items-center gap-2 cursor-pointer select-none">
+          <input type="checkbox" id="rememberMeInput"
+            class="w-4 h-4 rounded border-white/20 bg-black/50 accent-pink-600 cursor-pointer" />
+          <span class="text-slate-300 text-[11px]">تذكرني</span>
+        </label>
+
+        <!-- Error Box -->
+        <div id="errorBox" class="hidden p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-center font-semibold leading-relaxed text-[11px]">
+          <i class="fa-solid fa-circle-exclamation ml-1"></i>
+          <span id="errorText"></span>
+        </div>
+
+        <!-- Success Box -->
+        <div id="successBox" class="hidden p-3 rounded-lg bg-green-500/15 border border-green-500/30 text-green-300 text-center font-semibold leading-relaxed text-[11px]">
+          <i class="fa-solid fa-circle-check ml-1"></i>
+          <span id="successText"></span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" id="submitBtn"
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:opacity-95 transition-opacity">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span id="submitBtnText">دخول</span>
+        </button>
+
+        <p class="text-center text-[10px] text-slate-500 pt-1">
+          <i class="fa-solid fa-shield-halved text-green-400/70"></i>
+          محمي بواسطة Firebase Authentication
+        </p>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-3">
+        <div class="flex-1 h-px bg-white/10"></div>
+        <span class="text-[10px] text-slate-500">أو</span>
+        <div class="flex-1 h-px bg-white/10"></div>
+      </div>
+
+      <!-- Register Link -->
+      <a href="register.html" class="block w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-center text-white text-sm font-bold transition-colors">
+        <i class="fa-solid fa-user-plus ml-1"></i>
+        إنشاء حساب جديد
+      </a>
+
+      <!-- Back to Site -->
+      <div class="text-center pt-2 border-t border-white/5">
+        <a href="index.html" class="text-slate-400 hover:text-white text-[11px] transition-colors">
+          <i class="fa-solid fa-arrow-right ml-1"></i>
+          العودة للموقع الرئيسي
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Stats strip -->
+    <div class="grid grid-cols-3 gap-2 mt-6 text-center">
+      <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+        <div class="text-pink-400 font-bold text-lg font-sans">37+</div>
+        <div class="text-[9px] text-slate-500">درس</div>
+      </div>
+      <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+        <div class="text-purple-400 font-bold text-lg font-sans">5</div>
+        <div class="text-[9px] text-slate-500">منصات</div>
+      </div>
+      <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+        <div class="text-orange-400 font-bold text-lg font-sans">∞</div>
+        <div class="text-[9px] text-slate-500">محاكاة</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { loginStudent, redirectIfLoggedIn, sendResetEmail } from './js/auth/firebase-auth.js';
+    import { getUserProfile, createUserProfile } from './js/auth/user-profile.js';
+    import { showToast } from './js/shared/ui-components.js';
+
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const rememberMeInput = document.getElementById('rememberMeInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnText = document.getElementById('submitBtnText');
+    const errorBox = document.getElementById('errorBox');
+    const errorText = document.getElementById('errorText');
+    const successBox = document.getElementById('successBox');
+    const successText = document.getElementById('successText');
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+
+    // Check redirect param
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectTo = urlParams.get('redirect') || 'academy.html';
+
+    // Already logged in? → redirect
+    redirectIfLoggedIn(redirectTo);
+
+    // Password visibility toggle
+    togglePasswordBtn?.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePasswordIcon.className = isPassword ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
+    });
+
+    // Forgot password
+    forgotPasswordBtn?.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        showError('ادخل البريد الإلكتروني أولاً');
+        emailInput.focus();
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('البريد الإلكتروني غير صحيح');
+        emailInput.focus();
+        return;
+      }
+
+      hideMessages();
+      forgotPasswordBtn.disabled = true;
+      const originalText = forgotPasswordBtn.textContent;
+      forgotPasswordBtn.textContent = 'جاري الإرسال...';
+
+      try {
+        await sendResetEmail(email);
+        showSuccess(`تم إرسال رابط إعادة التعيين إلى ${email}`);
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        forgotPasswordBtn.disabled = false;
+        forgotPasswordBtn.textContent = originalText;
+      }
+    });
+
+    // Form submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const rememberMe = rememberMeInput.checked;
+
+      // Validation
+      if (!email) { showError('ادخل البريد الإلكتروني'); emailInput.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('البريد الإلكتروني غير صحيح'); emailInput.focus(); return; }
+      if (!password) { showError('ادخل كلمة المرور'); passwordInput.focus(); return; }
+
+      // Disable UI
+      submitBtn.disabled = true;
+      const originalText = submitBtnText.textContent;
+      submitBtnText.textContent = 'جاري التحقق...';
+      submitBtn.querySelector('i').className = 'fa-solid fa-spinner fa-spin';
+
+      try {
+        const { user } = await loginStudent({ email, password, rememberMe });
+
+        // Check profile exists
+        let profile = await getUserProfile(user.uid);
+        if (!profile) {
+          // Create profile for pre-existing auth user
+          await createUserProfile(user.uid, {
+            email: user.email,
+            displayName: user.displayName || email.split('@')[0]
+          });
+          profile = await getUserProfile(user.uid);
+        }
+
+        showSuccess(`مرحباً ${profile.displayName || user.email} 👋`);
+
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, 600);
+
+      } catch (error) {
+        console.error(error);
+        showError(error.message);
+        submitBtn.disabled = false;
+        submitBtnText.textContent = originalText;
+        submitBtn.querySelector('i').className = 'fa-solid fa-right-to-bracket';
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 400);
+      }
+    });
+
+    // Helpers
+    function showError(message) {
+      errorText.textContent = message;
+      errorBox.classList.remove('hidden');
+      successBox.classList.add('hidden');
+    }
+
+    function showSuccess(message) {
+      successText.textContent = message;
+      successBox.classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    }
+
+    function hideMessages() {
+      errorBox.classList.add('hidden');
+      successBox.classList.add('hidden');
+    }
+
+    [emailInput, passwordInput].forEach(input => {
+      input?.addEventListener('input', hideMessages);
+    });
+  </script>
+</body>
+</html>

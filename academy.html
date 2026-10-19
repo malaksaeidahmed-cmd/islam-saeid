@@ -25,7 +25,7 @@
       </a>
       
       <!-- User Profile Widget -->
-      <div id="userWidget" class="flex items-center gap-4">
+      <div id="userWidget" class="flex items-center gap-4 opacity-50 pointer-events-none">
         <div class="text-left hidden sm:block">
           <div id="userName" class="text-sm font-bold text-white">جاري التحميل...</div>
           <div id="userLevel" class="text-[10px] text-pink-400">Level 1</div>
@@ -36,7 +36,7 @@
              <div class="h-full bg-green-400 w-0 transition-all" id="xpBarFill"></div>
           </div>
         </div>
-        <button onclick="logout()" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
+        <button onclick="logout()" class="text-slate-400 hover:text-red-400 pointer-events-auto"><i class="fa-solid fa-power-off"></i></button>
       </div>
     </div>
   </header>
@@ -44,6 +44,12 @@
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-5 py-10 space-y-10">
     
+    <!-- Error Box -->
+    <div id="globalError" class="hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold text-center">
+      <i class="fa-solid fa-triangle-exclamation ml-2"></i>
+      <span id="globalErrorText">حدث خطأ غير متوقع.</span>
+    </div>
+
     <!-- Welcome Hero -->
     <section class="p-8 rounded-3xl bg-gradient-to-br from-[#16112b] to-[#07060E] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
       <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl"></div>
@@ -80,35 +86,60 @@
 
   <script type="module">
     import { requireStudentAuth, logoutStudent } from './js/auth/firebase-auth.js';
-    import { subscribeUserProfile, subscribeUserProgress, getProgressToNextLevel } from './js/auth/user-profile.js';
+    import { subscribeUserProfile, subscribeUserProgress, getProgressToNextLevel, createUserProfile, getUserProfile } from './js/auth/user-profile.js';
     import { COURSES, getCourseProgress, isCourseUnlocked } from './js/academy/courses-data.js';
 
     let currentUser = null;
     let userProfile = null;
     let userProgress = null;
 
-    // Auth Guard
-    const user = await requireStudentAuth();
-    currentUser = user;
+    async function init() {
+      try {
+        // Auth Guard
+        const user = await requireStudentAuth();
+        currentUser = user;
 
-    // Realtime Listeners
-    subscribeUserProfile(user.uid, (profile) => {
-      if (!profile) return;
-      userProfile = profile;
-      updateProfileUI();
-    });
+        // Safety Check: Ensure profile exists
+        const existingProfile = await getUserProfile(user.uid);
+        if (!existingProfile) {
+          console.log("Creating missing profile...");
+          await createUserProfile(user.uid, {
+            email: user.email,
+            displayName: user.displayName || user.email.split('@')[0]
+          });
+        }
 
-    subscribeUserProgress(user.uid, (progress) => {
-      if (!progress) return;
-      userProgress = progress;
-      updateStatsUI();
-      renderCourses();
-    });
+        // Realtime Listeners
+        subscribeUserProfile(user.uid, (profile) => {
+          if (profile) {
+            userProfile = profile;
+            updateProfileUI();
+          }
+        });
+
+        subscribeUserProgress(user.uid, (progress) => {
+          if (progress) {
+            userProgress = progress;
+            updateStatsUI();
+            renderCourses();
+          }
+        });
+
+        document.getElementById('userWidget').classList.remove('opacity-50', 'pointer-events-none');
+
+      } catch (error) {
+        console.error("Init Error:", error);
+        // Show error on page instead of infinite loading
+        document.getElementById('globalErrorText').textContent = 'حدث خطأ في تحميل البيانات: ' + error.message;
+        document.getElementById('globalError').classList.remove('hidden');
+        document.getElementById('userName').textContent = 'خطأ';
+      }
+    }
 
     function updateProfileUI() {
       if (!userProfile) return;
-      document.getElementById('userName').textContent = userProfile.displayName;
-      document.getElementById('userInitial').textContent = userProfile.displayName.charAt(0).toUpperCase();
+      document.getElementById('userName').textContent = userProfile.displayName || 'طالب';
+      document.getElementById('userInitial').textContent = (userProfile.displayName || 'S').charAt(0).toUpperCase();
       
       const levelInfo = getProgressToNextLevel(userProfile.xp || 0);
       document.getElementById('userLevel').textContent = `Lvl ${levelInfo.currentLevel.level} • ${levelInfo.currentLevel.name}`;
@@ -155,7 +186,7 @@
             ${!isUnlocked ? `
               <div class="absolute inset-0 bg-black/60 z-20 flex flex-col items-center justify-center backdrop-blur-sm">
                 <i class="fa-solid fa-lock text-3xl text-slate-500 mb-2"></i>
-                <span class="text-xs text-slate-400">أكمل المسار السابق لفتح هذا المسار</span>
+                <span class="text-xs text-slate-400 text-center px-4">أكمل المسار السابق لفتح هذا المسار</span>
               </div>
             ` : ''}
             
@@ -199,6 +230,8 @@
       await logoutStudent();
       window.location.href = 'auth.html';
     };
+
+    init();
   </script>
 </body>
 </html>

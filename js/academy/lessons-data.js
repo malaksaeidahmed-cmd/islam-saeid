@@ -452,6 +452,509 @@ export const LESSONS = {
     type: 'quiz', duration: 20, quizId: 'quiz_media_buying'
   }
 };
+  // ============================================================
+  // COURSE 3: ADVANCED STRATEGY (المسار الثالث)
+  // ============================================================
+  ad1: {
+    id: 'ad1', courseId: 'advanced', title: 'الأطر التسويقية (AIDA · AARRR · JTBD)',
+    type: 'theory', duration: 22,
+    content: `
+# الأطر التسويقية (Marketing Frameworks)
+الاستراتيجي المحترف مش بيشتغل بالبركة، بيشتغل بإطار (Framework) بيضمن إنه مغطي كل حاجة.
+
+## 1. إطار AIDA
+- **Attention (انتباه):** تمسك عين العميل (Hook قوي).
+- **Interest (اهتمام):** تعرضله حاجة تخصه (مشكلة بيعاني منها).
+- **Desire (رغبة):** توريه إيه اللي هيكسبه (الفوائد).
+- **Action (فعل):** تطلب منه ياخد خطوة (CTA واضح).
+
+## 2. إطار AARRR (Pirate Metrics)
+مناسب جداً للـ Startups والـ Apps:
+- **Acquisition (استحواذ):** إزاي بتجيب عميل؟
+- **Activation (تفعيل):** العميل بيعمل أول تجربة ناجحة إمتى؟
+- **Retention (احتفاظ):** إزاي بتخليه يفضل يستخدمك؟
+- **Referral (إحالة):** إزاي بتخليه يجيب غيره؟
+- **Revenue (إيراد):** إزاي بتكسب منه؟
+
+## 3. إطار JTBD (Jobs To Be Done)
+- العميل مش بيشتري "منتج"، هو بيشتري "حل لمشكلة".
+- **مثال:** محدش بيشتري "دريل"، هو بيشتري "خرم في الحيطة".
+    `,
+    keyTakeaways: [
+      'AIDA بيركز على رحلة المشاعر من الانتباه للشراء.',
+      'AARRR ممتاز لقياس دورة حياة العميل في التطبيقات.',
+      'JTBD بيركز على "المهمة" اللي العميل عايز يخلصها.'
+    ]
+  },
+  ad2: {
+    id: 'ad2', courseId: 'advanced', title: 'نماذج الـ Attribution الستة',
+    type: 'theory', duration: 20,
+    content: `
+# نماذج الـ Attribution
+لما العميل بيشوف 5 إعلانات ويشتري، مين فيهم اللي "ياخد" الفضل في البيع؟ هنا بييجي دور الـ Attribution.
+
+## 1. Last-Touch (آخر لمسة)
+- الفضل كله للإعلان الأخير اللي العميل ضغط عليه.
+- **العيب:** بيظلم الإعلانات اللي بنت الوعي في الأول.
+
+## 2. First-Touch (أول لمسة)
+- الفضل كله لأول إعلان العميل شافه.
+- **العيب:** بيظلم إعلانات الـ Retargeting اللي قفلت البيع.
+
+## 3. Linear (الخطي)
+- الفضل بيتوزع بالتساوي على كل الإعلانات.
+
+## 4. Time-Decay (تلاشي الوقت)
+- الإعلانات الأقرب للشراء بياخدوا وزن أكبر (عشان هي الأكثر تأثيراً).
+
+## 5. Position-Based (U-Shape)
+- 40% لأول إعلان، 40% لآخر إعلان، و20% تتوزع على الباقي.
+
+## 6. Data-Driven (المبني على البيانات)
+- المنصة (زي Google أو Meta) بتستخدم الـ AI عشان تحدد مين الأكثر تأثيراً.
+    `,
+    keyTakeaways: [
+      'Last-Touch هو الافتراضي في معظم المنصات، لكنه مش الأدق.',
+      'استخدم Data-Driven لو متاح، أو Position-Based.',
+      'فهم الـ Attribution بيساعدك توزع ميزانيتك صح.'
+    ]
+  },
+  ad3: {
+    id: 'ad3', courseId: 'advanced', title: 'LTV & Cohort Analysis',
+    type: 'theory', duration: 22,
+    content: `
+# LTV & Cohort Analysis
+لو بتشتغل E-commerce أو SaaS، العميل مش بيشتري مرة واحدة. لازم تعرف قيمته على المدى الطويل.
+
+## يعني إيه Cohort؟
+- الـ Cohort هو مجموعة عملاء اتسجلوا أو اشتروا في نفس الفترة (مثلاً: عملاء شهر يناير).
+- بنقيس: من الـ 100 عميل اللي اشتروا في يناير، كام واحد فيهم لسه بيشتري في فبراير، مارس، إلخ؟
+
+## يعني إيه LTV (Lifetime Value)؟
+- إجمالي الأرباح اللي العميل بيجيبها طول فترة تعامله معاك.
+- **المعادلة التقريبية:** (متوسط قيمة الطلب × عدد مرات الشراء في السنة) × عدد سنوات بقاء العميل.
+
+## إزاي بنستخدمهم؟
+- **القاعدة الذهبية:** نسبة LTV : CAC لازم تكون 3:1 على الأقل.
+- لو الـ LTV أقل من الـ CAC، إنت بتخسر في كل عميل بتجيبه.
+    `,
+    keyTakeaways: [
+      'الـ Cohort بيوريك سلوك العملاء بمرور الوقت.',
+      'الـ LTV بيحدد أقصى مبلغ ممكن تدفعه لجلب عميل.',
+      'نسبة LTV:CAC لازم تكون 3:1 على الأقل.'
+    ]
+  },
+  ad4: {
+    id: 'ad4', courseId: 'advanced', title: 'Multi-touch Attribution',
+    type: 'theory', duration: 20,
+    content: `
+# Multi-touch Attribution
+هو إنك تدي "فضل" أو "قيمة" لكل نقطة تواصل (Touchpoint) العميل مر بيها قبل الشراء.
+
+## ليه مهم؟
+- في الماضي كنا بنعتمد على إعلان واحد (زي Google Search). 
+- دلوقتي العميل بيشوف TikTok، بعدين Instagram، بعدين يبحث في Google، بعدين يرجع يضغط على Retargeting.
+- لو حسبت الفضل لـ Google بس، هتظلم السوشيال ميديا.
+
+## أدوات القياس
+- **Google Analytics 4 (GA4):** فيه تقارير متقدمة للـ Attribution.
+- **Triple Whale / Northbeam:** أدوات متخصصة للـ E-commerce.
+- **UTM Parameters:** لازم تستخدمها في كل إعلان عشان تفرق بين الترافيك.
+    `,
+    keyTakeaways: [
+      'العميل بيمر بأكتر من قناة قبل ما يشتري.',
+      'لازم تدي كل قناة حقها في الميزانية.',
+      'استخدم UTM Parameters لمعرفة مصدر كل عميل.'
+    ]
+  },
+  ad5: {
+    id: 'ad5', courseId: 'advanced', title: 'Growth Loops & Flywheel',
+    type: 'theory', duration: 20,
+    content: `
+# Growth Loops & Flywheel
+بدل ما تفكر في النمو كخط مستقيم (Funnel)، فكر فيه كدايرة (Loop).
+
+## الفرق بين Funnel و Loop
+- **Funnel:** تجيب عميل، يشتري، يخلص (خط مستقيم).
+- **Loop:** تجيب عميل، يشتري، يجيب عميل تاني، وده يجيب تالت (دايرة بتكبر لوحدها).
+
+## أمثلة على Growth Loops
+1. **Referral Loop:** العميل بياخد خصم لو جاب صاحبه.
+2. **UGC Loop:** العملاء بينشروا فيديوهات للمنتج، إنت بتعيد استخدامها كإعلانات.
+3. **SEO Loop:** بتكتب محتوى، بيتصدر جوجل، بيجيب ترافيك، الترافيك بيولد بيانات، بتستخدمها تحسن المحتوى.
+
+## الـ Flywheel
+- هو نفس فكرة الـ Loop، بس بيشمل كل أقسام الشركة (تسويق، مبيعات، خدمة عملاء).
+    `,
+    keyTakeaways: [
+      'الـ Loop بيخلي النمو يشتغل تلقائياً.',
+      'الـ Referral و الـ UGC هما أفضل أمثلة للـ Loops.',
+      'فكر إزاي كل عميل جديد يجيب عميل تاني.'
+    ]
+  },
+  ad6: {
+    id: 'ad6', courseId: 'advanced', title: 'Marketing Mix Modeling',
+    type: 'theory', duration: 18,
+    content: `
+# Marketing Mix Modeling (MMM)
+الـ MMM هو أسلوب إحصائي (بيستخدم AI و Machine Learning) عشان تعرف تأثير كل قناة تسويقية على مبيعاتك.
+
+## ليه محتاجينه؟
+- عشان تعرف توزع ميزانيتك إزاي بين (TV, Radio, Facebook, Google, TikTok).
+- عشان تعرف إمتى تأثير الإعلانات بيقل (Diminishing Returns).
+
+## إمتى تستخدمه؟
+- لما تكون بتصرف ميزانيات ضخمة (أكتر من مليون دولار في السنة).
+- لما الإعلانات الرقمية متشبعة، ومحتاج تدخل قنوات تانية (زي الإعلانات التليفزيونية أو البانرات).
+
+## مش محتاج تبقى خبير رياضيات
+- في أدوات جاهزة زي (Google Meridian, Meta Robyn) بتعمل الموديل ده تلقائياً.
+    `,
+    keyTakeaways: [
+      'MMM بيستخدم بيانات تاريخية عشان يتوقع تأثير كل قناة.',
+      'مهم للشركات الكبيرة اللي بتصرف ميزانيات ضخمة.',
+      'بيساعدك تعرف القنوات اللي بتجيب مبيعات حتى لو مش بتقيسها ديجيتال.'
+    ]
+  },
+  ad7: {
+    id: 'ad7', courseId: 'advanced', title: 'Risk Management في الحملات',
+    type: 'theory', duration: 18,
+    content: `
+# Risk Management في الحملات
+أي حملة إعلانية فيها مخاطر. المحترف بيعرف يقلل المخاطر دي قبل ما تحصل.
+
+## 1. المخاطر الأمنية
+- **حظر الحساب (Account Ban):** بيحصل بسبب مخالفة السياسات أو شكاوى.
+- **الحل:** اقرأ سياسات المنصة، استخدم Business Manager، واحتفظ بـ Backup Ad Accounts.
+
+## 2. المخاطر المالية
+- **حرق الميزانية (Budget Burn):** لو الإعلان أداؤه سيء والميزانية مفتوحة.
+- **الحل:** حط Daily Spending Limits، وراقب كل يوم.
+
+## 3. المخاطر التقنية
+- **توقف البيكسل (Pixel Fail):** البيكسل بيبوظ ومبيتتبعش المبيعات صح.
+- **الحل:** استخدم Conversions API (CAPI) كبديل أو مع البيكسل.
+
+## 4. المخاطر السوقية
+- **إعلانات المنافسين:** منافس بيكسر السوق بأسعاره أو بيقلد كرياتيفك.
+- **الحل:** راقب إعلاناتهم باستمرار (Ad Library)، وابني علامة تجارية قوية.
+    `,
+    keyTakeaways: [
+      'دايماً اعمل Backup لحسابك الإعلاني.',
+      'حط Spending Limits عشان تحمي ميزانيتك.',
+      'راقب البيكسل والـ Conversions API باستمرار.'
+    ]
+  },
+  ad8: {
+    id: 'ad8', courseId: 'advanced', title: 'الاختبار الشامل — الاستراتيجيات',
+    type: 'quiz', duration: 20, quizId: 'quiz_advanced'
+  },
+
+  // ============================================================
+  // COURSE 4: PLATFORM MASTERY (المسار الرابع)
+  // ============================================================
+  pm1: {
+    id: 'pm1', courseId: 'platform-mastery', title: 'Meta Ads — Campaign Level',
+    type: 'theory', duration: 20,
+    content: `
+# Meta Ads — Campaign Level
+هنا بتحدد الهدف الأساسي للحملة. اختيار الهدف الصح هو 50% من النجاح.
+
+## الأهداف (Objectives)
+1. **Awareness (وعي):** للبراندنج (Brand Awareness, Reach).
+2. **Traffic (زيارات):** لو عايز ناس تدخل الموقع أو الـ App.
+3. **Engagement (تفاعل):** لو عايز لايكات، كومنتات، أو رسائل (Messenger/WhatsApp).
+4. **Leads (عملاء محتملين):** لو بتجمع بيانات (Forms, Instant Forms).
+5. **App Promotion (ترويج تطبيق):** لتحميل التطبيقات.
+6. **Sales (مبيعات):** للـ E-commerce (Purchase, Add to Cart).
+
+## CBO (Advantage Campaign Budget)
+- في Meta دلوقتي، الهدف الأساسي هو CBO. بتحدد ميزانية الحملة، وميتا بتوزعها.
+    `,
+    keyTakeaways: [
+      'Sales للـ E-commerce، Leads لجمع البيانات، Traffic للزيارات.',
+      'الهدف الخاطئ = نتائج خاطئة.',
+      'Meta بتفضل CBO في معظم الحملات الحالية.'
+    ]
+  },
+  pm2: {
+    id: 'pm2', courseId: 'platform-mastery', title: 'Meta Ads — Ad Set Level',
+    type: 'theory', duration: 22,
+    content: `
+# Meta Ads — Ad Set Level
+هنا بتحدد مين هتشوف الإعلان (الجمهور).
+
+## 1. Audience (الجمهور)
+- **Core:** (العمر، الجنس، الاهتمامات، السلوكيات).
+- **Custom:** (زوار الموقع، قائمة إيميلات، متفاعلين).
+- **Lookalike:** (شبه عملائك).
+
+## 2. Placements (أماكن الظهور)
+- **Advantage+ Placements:** ميتا بتختار أفضل مكان تلقائياً (بننصح بيها دايماً).
+- **Manual:** فيسبوك، إنستجرام، ستوريز، ريلز، ماسنجر.
+
+## 3. Optimization & Delivery
+- **Optimization Event:** الحدث اللي ميتا بتحاول تزوّده (زي Purchase أو AddToCart).
+- **Bid Strategy:** (Lowest Cost, Cost Cap, ROAS Goal).
+- **Frequency Cap:** أقصى عدد مرات العميل يشوف الإعلان.
+    `,
+    keyTakeaways: [
+      'Advantage+ Placements بتوفر وقت ومجهود وبتدي نتايج أحسن.',
+      'الـ Optimization Event لازم يكون متاح في البيكسل.',
+      'Cost Cap مفيد جداً لو عارف Max CAC بتاعك.'
+    ]
+  },
+  pm3: {
+    id: 'pm3', courseId: 'platform-mastery', title: 'Meta Ads — Ad Level',
+    type: 'theory', duration: 20,
+    content: `
+# Meta Ads — Ad Level
+هنا بتصمم الإعلان نفسه (الكرياتيف).
+
+## مكونات الإعلان
+1. **Creative (الصورة أو الفيديو):** لازم يكون بأحجام مختلفة (1:1 للفيد، 4:5 للإنستجرام، 9:16 للستوري والريلز).
+2. **Primary Text (النص الأساسي):** أول سطرين هما اللي بيظهروا، فخليهم Hook قوي.
+3. **Headline (العنوان):** 5-7 كلمات، يكون فيه فايدة واضحة.
+4. **Description (الوصف):** اختياري، بيظهر تحت العنوان.
+5. **Call to Action (CTA):** (Shop Now, Learn More, Sign Up).
+6. **Destination URL:** لينك صفحة الهبوط.
+
+## Dynamic Creative (الكرياتيف الديناميكي)
+- بتوفر للمنصة 5 صور و 5 نصوص، وميتا بتجربهم وتطلع أفضل تركيبة.
+    `,
+    keyTakeaways: [
+      'متحطش كل ميزانيتك في كرياتيف واحد، جرب 3-5 على الأقل.',
+      'الـ Primary Text لازم يبدأ بـ Hook قوي.',
+      'استخدم Dynamic Creative لو معاك بيانات كتير.'
+    ]
+  },
+  pm4: {
+    id: 'pm4', courseId: 'platform-mastery', title: 'Meta Ads — التحسين والتوسع',
+    type: 'theory', duration: 20,
+    content: `
+# Meta Ads — التحسين والتوسع
+بعد ما الحملة تشتغل، إزاي تخليها أحسن وأكبر؟
+
+## 1. القراءة الصحيحة للبيانات
+- **CTR منخفض (أقل من 1%):** المشكلة في الكرياتيف أو الجمهور.
+- **CTR عالي و CVR منخفض:** المشكلة في صفحة الهبوط.
+- **CPM عالي:** المنافسة عالية، أو الجمهور صغير جداً.
+
+## 2. إزاي تعمل Scale بأمان؟
+- **Vertical Scaling:** زود الميزانية 20-30% كل 3 أيام.
+- **Horizontal Scaling:** اعمل حملة جديدة بجمهور Lookalike جديد (1% -> 3% -> 5%).
+- **Creative Scaling:** ضيف كرياتيف جديد كل أسبوع عشان تتغلب على الـ Ad Fatigue.
+
+## 3. متى تقفل الإعلان؟
+- لو صرف 3 أضعاف الـ CPA المستهدف ومجابش ولا تحويل.
+- لو الـ Frequency عدى 4 ومعدل التحويل بيقل.
+    `,
+    keyTakeaways: [
+      'CTR بيقيس الكرياتيف، CVR بيقيس صفحة الهبوط.',
+      'زود الميزانية بالتدريج (20-30%).',
+      'غيّر الكرياتيف كل أسبوع عشان متحرقش الجمهور.'
+    ]
+  },
+  pm5: {
+    id: 'pm5', courseId: 'platform-mastery', title: 'TikTok Ads — Campaign & Ad Group',
+    type: 'theory', duration: 22,
+    content: `
+# TikTok Ads — Campaign & Ad Group
+تيك توك منصة مختلفة. الجمهور مش بيحب الإعلانات المصقولة، بيحب المحتوى الأصلي (Native).
+
+## 1. Campaign Level (الحملة)
+- **Objectives:** (Reach, Traffic, App Installs, Video Views, Lead Gen, Conversions).
+- **Budget:** تيك توك بتفضل (Lifetime Budget) أو (Daily Budget).
+
+## 2. Ad Group Level (المجموعة)
+- **Placement:** تيك توك، أو Pangle (شبكة إعلانات تيك توك).
+- **Targeting:** العمر، الجنس، الموقع، الاهتمامات.
+- **Bidding:** (CPM, CPC, oCPM).
+- **Pacing:** (Standard أو Accelerated).
+
+## أهم ما يميز تيك توك
+- **الـ Creative هو الملك:** الإعلانات اللي شبه الفيديوهات العادية (UGC) هي اللي بتنجح.
+- **Safe Zones:** لازم تسيب مساحة فوق وتحت للـ Captions والأزرار عشان متغطيهاش.
+    `,
+    keyTakeaways: [
+      'تيك توك بيكره الإعلانات المصقولة، بيحب الـ Native Content.',
+      'استخدم فيديوهات UGC (زي اللي بيصورها المؤثرين).',
+      'خلي بالك من الـ Safe Zones في الفيديو.'
+    ]
+  },
+  pm6: {
+    id: 'pm6', courseId: 'platform-mastery', title: 'TikTok Ads — Creative Best Practices',
+    type: 'theory', duration: 20,
+    content: `
+# TikTok Ads — Creative Best Practices
+فيديو تيك توك الناجح بيعتمد على أول 3 ثواني، وبعدها القصة.
+
+## 1. الـ Hook (أول 3 ثواني)
+- **ابدأ بالنتيجة:** "خسيت 10 كيلو في شهر".
+- **استخدم صوت الترند:** الصوت الترند بيشد الانتباه.
+- **حركة سريعة:** متخليش المشهد ثابت.
+
+## 2. شكل الفيديو
+- **رأسي (9:16):** مليان الشاشة بالكامل.
+- **إضاءة طبيعية:** التصوير بالموبايل أحسن من الاستوديو.
+- **Voiceover:** تعليق صوتي حماسي أو هادي.
+
+## 3. الـ CTA (النداء للفعل)
+- **Native CTA:** "اللينك في البايو"، "اكتب (أنا) في الكومنتات".
+- **Overlay:** نص على الشاشة بيوضح العرض.
+
+## 4. مدة الفيديو
+- **15-30 ثانية:** هي المدة المثالية.
+- **للمنتجات المعقدة:** ممكن توصل لـ 60 ثانية.
+    `,
+    keyTakeaways: [
+      'أول 3 ثواني هي كل حاجة في تيك توك.',
+      'الفيديو الرأسي 9:16 ضروري.',
+      'استخدم الـ Voiceover والـ Text Overlay.'
+    ]
+  },
+  pm7: {
+    id: 'pm7', courseId: 'platform-mastery', title: 'TikTok Ads — Bidding & Optimization',
+    type: 'theory', duration: 18,
+    content: `
+# TikTok Ads — Bidding & Optimization
+تيك توك ليها نظام مزايدة (Bidding System) خاص.
+
+## 1. أنواع المزايدة
+- **CPM (Cost Per Mille):** بتدفع لكل 1000 ظهور (للوعي).
+- **CPC (Cost Per Click):** بتدفع لكل نقرة (للزيارات).
+- **oCPM (Optimized CPM):** بتدفع لكل 1000 ظهور، بس الخوارزمية بتحسن عشان تجيب تحويلات (الأفضل للـ Sales).
+- **CPV (Cost Per View):** بتدفع لكل مشاهدة 3 ثواني.
+
+## 2. Optimization Goal (هدف التحسين)
+- (Clicks, Conversions, Reach, Video Views).
+- دايمًا اختار **Conversions** لو بتشتغل على مبيعات.
+
+## 3. Budget Pacing
+- **Standard (افتراضي):** الميزانية بتتوزع على اليوم.
+- **Accelerated:** بتصرف الميزانية بسرعة في أول اليوم (مش بننصح بيها إلا في حالات خاصة).
+    `,
+    keyTakeaways: [
+      'oCPM هو الأفضل للمبيعات والتحويلات.',
+      'اختار Conversions كهدف تحسين لو بتشتغل على مبيعات.',
+      'سيب الـ Pacing على Standard دايماً.'
+    ]
+  },
+  pm8: {
+    id: 'pm8', courseId: 'platform-mastery', title: 'TikTok Ads — Scaling',
+    type: 'theory', duration: 20,
+    content: `
+# TikTok Ads — Scaling
+التوسع في تيك توك مختلف عن ميتا. الخوارزمية حساسة جداً.
+
+## 1. Horizontal Scaling (الأفضل في تيك توك)
+- اعمل Ad Groups جديدة بجماهير مختلفة (Cohorts).
+- جرب كرياتيف مختلف لكل Ad Group.
+
+## 2. Vertical Scaling
+- زود الميزانية 20-30% كل 2-3 أيام.
+- متزودهاش أكتر من كده عشان متدخلش في مرحلة تعلم جديدة (Learning Phase).
+
+## 3. Creative Testing
+- تيك توك محتاجة كرياتيف جديد كل 4-7 أيام.
+- اعمل "Spark Ads" (إعلانات منشورات من الحساب الشخصي) عشان تبان Native.
+
+## 4. Smart+ (سابقاً Automated Creative Optimization)
+- بتوفر للمنصة كذا كرياتيف وميتا تختار أفضل واحد.
+    `,
+    keyTakeaways: [
+      'تيك توك محتاجة كرياتيف جديد كل 4-7 أيام.',
+      'Spark Ads هي الأفضل عشان تبان Native.',
+      'التوسع الأفقي (Ad Groups جديدة) أأمن من الرأسي.'
+    ]
+  },
+  pm9: {
+    id: 'pm9', courseId: 'platform-mastery', title: 'Google Ads — Search Campaigns',
+    type: 'theory', duration: 22,
+    content: `
+# Google Ads — Search Campaigns
+جوجل مختلف عن السوشيال ميديا. إنت هنا بتستهدف "النية" (Intent). العميل بيدور على حاجة معينة.
+
+## 1. الكلمات المفتاحية (Keywords)
+- **Broad Match:** كلمات واسعة، بتجيب زوار كتير بس ممكن ميكونوش مهتمين.
+- **Phrase Match:** كلمات محددة، توازن بين الوصول والدقة.
+- **Exact Match:** الكلمة بالظبط، أدق نوع بس أقل وصول.
+
+## 2. الإعلان (Responsive Search Ads)
+- بتكتب 15 عنوان (Headlines) و 4 وصف (Descriptions)، وجوجل بتخلطهم وتعرض الأنسب.
+
+## 3. Quality Score (جودة الإعلان)
+- من 1 لـ 10.
+- **العوامل:** نسبة النقر (CTR)، جودة صفحة الهبوط، ملاءمة الإعلان للكلمة.
+- كل ما الـ Quality Score أعلى، كل ما الـ CPC يقل.
+
+## 4. Negative Keywords (الكلمات السلبية)
+- كلمات بتقول لجوجل "متظهرش إعلاني لو حد كتب دي". (زي: مجاني، وظائف، تحميل).
+    `,
+    keyTakeaways: [
+      'جوجل بيستهدف "النية" مش الاهتمامات.',
+      'Exact Match أدق، Broad أوسع.',
+      'Quality Score عالي = تكلفة أقل.'
+    ]
+  },
+  pm10: {
+    id: 'pm10', courseId: 'platform-mastery', title: 'Google Ads — Display & Video',
+    type: 'theory', duration: 20,
+    content: `
+# Google Ads — Display & Video
+لو المنتج بتاعك بصري، أو عايز تبني وعي واسع، ده نوع الحملات اللي محتاجه.
+
+## 1. Display Campaigns (الشبكة الإعلانية)
+- بتظهر إعلاناتك (بانرات) على ملايين المواقع والتطبيقات اللي بتتعامل مع جوجل.
+- **مميزات:** وصول ضخم، CPM رخيص جداً.
+- **عيوب:** نسبة النقر (CTR) ضعيفة، وممكن تظهر في مواقع وهمية (لازم تستخدم Placement Exclusions).
+
+## 2. Video Campaigns (يوتيوب)
+- إعلانات فيديو قبل أو أثناء فيديوهات يوتيوب.
+- **أنواعها:**
+  - **In-Stream Skippable:** ممكن المستخدم يتخطاها بعد 5 ثواني.
+  - **Bumper Ads:** 6 ثواني مش قابلة للتخطي.
+  - **In-Feed:** بتظهر في نتائج البحث على يوتيوب.
+
+## 3. استهداف الجماهير
+- **Affinity Audiences:** اهتمامات واسعة.
+- **In-Market Audiences:** ناس بتدور تشتري حالياً.
+    `,
+    keyTakeaways: [
+      'Display رخيص جداً للوصول بس CTR ضعيف.',
+      'يوتيوب ممتاز للـ Video Views والوعي.',
+      'In-Market Audiences هي الأقرب للشراء في جوجل.'
+    ]
+  },
+  pm11: {
+    id: 'pm11', courseId: 'platform-mastery', title: 'Google Ads — Shopping & PMax',
+    type: 'theory', duration: 20,
+    content: `
+# Google Ads — Shopping & PMax
+دي أقوى أنواع الحملات للـ E-commerce.
+
+## 1. Shopping Campaigns (حملات التسوق)
+- بتعرض صور المنتجات، السعر، واسم المتجر مباشرة في نتائج بحث جوجل.
+- **محتاجة:** Google Merchant Center (فيد المنتجات).
+- **ميزتها:** العميل بيدوس على المنتج اللي عاجبه، مش على إعلان.
+
+## 2. Performance Max (PMax)
+- هو نوع جديد بيجمع كل حملات جوجل (Search, Display, YouTube, Gmail, Maps) في حملة واحدة.
+- **إزاي بتشتغل؟** إنت بتوفر (أصول): صور، فيديوهات، نصوص. وجوجل بتستخدم الـ AI عشان تجيب تحويلات من كل القنوات.
+- **ميزتها:** بتوصل لكل الناس في جوجل بأقل مجهود.
+- **عيبها:** تحكمك ضعيف (Black Box).
+    `,
+    keyTakeaways: [
+      'Shopping محتاجة Merchant Center.',
+      'PMax هي حملة "كل حاجة في واحد" للـ E-commerce.',
+      'PMax بتعتمد على الـ AI، فالأصول بتاعتك لازم تكون قوية.'
+    ]
+  },
+  pm12: {
+    id: 'pm12', courseId: 'platform-mastery', title: 'الاختبار الشامل — إتقان المنصات',
+    type: 'quiz', duration: 25, quizId: 'quiz_platform'
+  }
+};
 
 // تصدير دالة للحصول على درس
 export function getLessonData(lessonId) {

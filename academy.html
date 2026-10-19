@@ -16,7 +16,6 @@
 </head>
 <body class="text-slate-200 min-h-screen pb-20">
 
-  <!-- Header -->
   <header class="glass-header border-b border-white/5 py-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-5 flex justify-between items-center">
       <a href="index.html" class="flex items-center gap-3">
@@ -24,206 +23,98 @@
         <span class="font-bold text-white hidden sm:block">أكاديمية إسلام سعيد</span>
       </a>
       
-      <!-- User Profile Widget -->
-      <div id="userWidget" class="flex items-center gap-4 opacity-50 pointer-events-none">
+      <div class="flex items-center gap-4">
         <div class="text-left hidden sm:block">
           <div id="userName" class="text-sm font-bold text-white">جاري التحميل...</div>
           <div id="userLevel" class="text-[10px] text-pink-400">Level 1</div>
         </div>
         <div class="relative w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold border-2 border-white/10">
           <span id="userInitial">S</span>
-          <div id="userXPBar" class="absolute -bottom-2 w-full h-1 bg-black rounded-full overflow-hidden">
-             <div class="h-full bg-green-400 w-0 transition-all" id="xpBarFill"></div>
-          </div>
         </div>
-        <button onclick="logout()" class="text-slate-400 hover:text-red-400 pointer-events-auto"><i class="fa-solid fa-power-off"></i></button>
+        <button onclick="logout()" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-5 py-10 space-y-10">
-    
-    <!-- Error Box -->
-    <div id="globalError" class="hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold text-center">
-      <i class="fa-solid fa-triangle-exclamation ml-2"></i>
-      <span id="globalErrorText">حدث خطأ غير متوقع.</span>
-    </div>
-
-    <!-- Welcome Hero -->
     <section class="p-8 rounded-3xl bg-gradient-to-br from-[#16112b] to-[#07060E] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl"></div>
       <div class="relative z-10 space-y-2 text-center md:text-right">
         <h1 class="text-2xl sm:text-3xl font-bold text-white">جاهز تبدأ رحلة الاحتراف؟ 🚀</h1>
         <p class="text-sm text-slate-400 max-w-lg">أكمل المسارات التعليمية، طبق في المحاكي، واحصل على شهادات معتمدة.</p>
       </div>
-      <div class="flex gap-4 relative z-10">
-        <a href="simulator.html" class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-sm font-bold transition-all">
-          <i class="fa-solid fa-gamepad ml-1"></i> المحاكي
-        </a>
-        <button class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white text-sm font-bold shadow-lg cursor-not-allowed opacity-50">
-          <i class="fa-solid fa-award ml-1"></i> شهاداتي
-        </button>
-      </div>
     </section>
 
-    <!-- Stats Grid -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="statsGrid">
-      <!-- Filled by JS -->
-    </section>
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="statsGrid"></section>
 
-    <!-- Learning Paths -->
     <section>
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-map-signs text-pink-400 ml-2"></i> مسارات التعلم</h2>
       </div>
-      
-      <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        <!-- Filled by JS -->
-      </div>
+      <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"></div>
     </section>
   </main>
 
   <script type="module">
     import { requireStudentAuth, logoutStudent } from './js/auth/firebase-auth.js';
-    import { subscribeUserProfile, subscribeUserProgress, getProgressToNextLevel, createUserProfile, getUserProfile } from './js/auth/user-profile.js';
+    import { getUserProfile, createUserProfile } from './js/auth/user-profile.js';
     import { COURSES, getCourseProgress, isCourseUnlocked } from './js/academy/courses-data.js';
 
-    let currentUser = null;
-    let userProfile = null;
-    let userProgress = null;
-
-    async function init() {
+    async function boot() {
       try {
-        // Auth Guard
+        // 1. التأكد من تسجيل الدخول
         const user = await requireStudentAuth();
-        currentUser = user;
 
-        // Safety Check: Ensure profile exists
-        const existingProfile = await getUserProfile(user.uid);
-        if (!existingProfile) {
+        // 2. جلب البروفايل (البيانات)
+        let profile = await getUserProfile(user.uid);
+
+        // 3. لو مفيش بروفايل (حساب قديم)، نعمله
+        if (!profile) {
           console.log("Creating missing profile...");
-          await createUserProfile(user.uid, {
-            email: user.email,
-            displayName: user.displayName || user.email.split('@')[0]
+          await createUserProfile(user.uid, { 
+            email: user.email, 
+            displayName: user.displayName || 'طالب جديد' 
           });
+          profile = await getUserProfile(user.uid);
         }
 
-        // Realtime Listeners
-        subscribeUserProfile(user.uid, (profile) => {
-          if (profile) {
-            userProfile = profile;
-            updateProfileUI();
-          }
-        });
-
-        subscribeUserProgress(user.uid, (progress) => {
-          if (progress) {
-            userProgress = progress;
-            updateStatsUI();
-            renderCourses();
-          }
-        });
-
-        document.getElementById('userWidget').classList.remove('opacity-50', 'pointer-events-none');
+        // 4. عرض البيانات في الشاشة
+        if (profile) {
+          document.getElementById('userName').textContent = profile.displayName;
+          document.getElementById('userInitial').textContent = profile.displayName.charAt(0).toUpperCase();
+          renderUI(profile);
+        }
 
       } catch (error) {
-        console.error("Init Error:", error);
-        // Show error on page instead of infinite loading
-        document.getElementById('globalErrorText').textContent = 'حدث خطأ في تحميل البيانات: ' + error.message;
-        document.getElementById('globalError').classList.remove('hidden');
-        document.getElementById('userName').textContent = 'خطأ';
+        // لو حصل أي خطأ، هيظهر Alert أحمر
+        alert("حدث خطأ: " + error.message);
+        console.error(error);
+        document.getElementById('userName').textContent = 'خطأ!';
       }
     }
 
-    function updateProfileUI() {
-      if (!userProfile) return;
-      document.getElementById('userName').textContent = userProfile.displayName || 'طالب';
-      document.getElementById('userInitial').textContent = (userProfile.displayName || 'S').charAt(0).toUpperCase();
-      
-      const levelInfo = getProgressToNextLevel(userProfile.xp || 0);
-      document.getElementById('userLevel').textContent = `Lvl ${levelInfo.currentLevel.level} • ${levelInfo.currentLevel.name}`;
-      
-      const barFill = document.getElementById('xpBarFill');
-      if (barFill) barFill.style.width = `${levelInfo.percent}%`;
-    }
-
-    function updateStatsUI() {
-      if (!userProgress || !userProfile) return;
-      
-      const stats = [
-        { label: 'الدروس المكتملة', value: userProgress.lessonsCompleted?.length || 0, icon: 'fa-book-open', color: 'text-blue-400' },
-        { label: 'الاختبارات الناجحة', value: userProgress.quizzesPassed?.length || 0, icon: 'fa-check-double', color: 'text-green-400' },
-        { label: 'الشارات', value: userProgress.badges?.length || 0, icon: 'fa-medal', color: 'text-amber-400' },
-        { label: 'إجمالي النقاط (XP)', value: userProfile.xp || 0, icon: 'fa-star', color: 'text-pink-400' }
-      ];
-
-      document.getElementById('statsGrid').innerHTML = stats.map(s => `
+    function renderUI(profile) {
+      // إحصائيات ثابتة للتجربة
+      document.getElementById('statsGrid').innerHTML = `
         <div class="p-5 rounded-2xl glass-card flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${s.color}">
-            <i class="fa-solid ${s.icon}"></i>
+          <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-pink-400"><i class="fa-solid fa-star"></i></div>
+          <div><div class="text-2xl font-bold text-white font-sans">${profile.xp || 0}</div><div class="text-[11px] text-slate-400">إجمالي النقاط</div></div>
+        </div>
+      `;
+
+      // عرض المسارات الأربعة
+      const container = document.getElementById('coursesGrid');
+      container.innerHTML = COURSES.map(course => `
+        <div class="p-6 rounded-3xl glass-card hover:border-pink-500/30 transition-all">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4" style="background: ${course.color}20; color: ${course.color};">
+            <i class="fa-solid ${course.icon}"></i>
           </div>
-          <div>
-            <div class="text-2xl font-bold text-white font-sans">${s.value}</div>
-            <div class="text-[11px] text-slate-400">${s.label}</div>
-          </div>
+          <h3 class="text-lg font-bold text-white mb-2">${course.title}</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">${course.description}</p>
+          <a href="course.html?course=${course.id}" class="block text-center w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-bold transition-colors">
+            ابدأ المسار
+          </a>
         </div>
       `).join('');
-    }
-
-    function renderCourses() {
-      if (!userProgress) return;
-      
-      const container = document.getElementById('coursesGrid');
-      const completedLessons = userProgress.lessonsCompleted || [];
-
-      container.innerHTML = COURSES.map(course => {
-        const progress = getCourseProgress(course.id, completedLessons);
-        const isUnlocked = isCourseUnlocked(course.id, userProgress);
-        
-        return `
-          <div class="relative p-6 rounded-3xl glass-card ${isUnlocked ? 'hover:border-pink-500/30' : 'opacity-70 grayscale-[50%]'} transition-all overflow-hidden group">
-            ${!isUnlocked ? `
-              <div class="absolute inset-0 bg-black/60 z-20 flex flex-col items-center justify-center backdrop-blur-sm">
-                <i class="fa-solid fa-lock text-3xl text-slate-500 mb-2"></i>
-                <span class="text-xs text-slate-400 text-center px-4">أكمل المسار السابق لفتح هذا المسار</span>
-              </div>
-            ` : ''}
-            
-            <div class="flex justify-between items-start mb-4">
-              <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background: ${course.color}20; color: ${course.color};">
-                <i class="fa-solid ${course.icon}"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] text-slate-300 border border-white/10">
-                ${course.level === 'beginner' ? 'مبتدئ' : course.level === 'intermediate' ? 'متوسط' : 'متقدم'}
-              </span>
-            </div>
-            
-            <h3 class="text-lg font-bold text-white mb-2">${course.title}</h3>
-            <p class="text-xs text-slate-400 leading-relaxed mb-6 h-10 line-clamp-2">${course.description}</p>
-            
-            <div class="space-y-2 mb-6">
-              <div class="flex justify-between text-[10px] font-bold">
-                <span class="text-slate-400">التقدم</span>
-                <span class="${progress.percent === 100 ? 'text-green-400' : 'text-pink-400'}">${progress.percent}%</span>
-              </div>
-              <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <div class="h-full rounded-full transition-all duration-1000" style="width: ${progress.percent}%; background: ${progress.percent === 100 ? '#22c55e' : course.color};"></div>
-              </div>
-            </div>
-            
-            <div class="flex items-center justify-between pt-4 border-t border-white/5">
-              <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                <span><i class="fa-regular fa-clock ml-1"></i>${course.duration}</span>
-                <span><i class="fa-solid fa-book ml-1"></i>${course.lessons.length} دروس</span>
-              </div>
-              <a href="course.html?course=${course.id}" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-bold transition-colors">
-                ${progress.completed > 0 ? 'استكمال' : 'ابدأ'} <i class="fa-solid fa-arrow-left mr-1"></i>
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
     window.logout = async () => {
@@ -231,7 +122,7 @@
       window.location.href = 'auth.html';
     };
 
-    init();
+    boot();
   </script>
 </body>
 </html>

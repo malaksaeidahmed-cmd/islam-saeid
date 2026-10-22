@@ -12,38 +12,33 @@
   <div class="max-w-2xl mx-auto space-y-6">
     <div class="text-center space-y-2">
       <h1 class="text-3xl font-bold text-white">📚 Seed Lessons</h1>
-      <p class="text-slate-400 text-sm">صفحة ترفع الدروس الـ 26 لـ Firestore. استخدمها مرة واحدة بس.</p>
+      <p class="text-slate-400 text-sm">صفحة ترفع الدروس لـ Firestore. (تم تجهيز أول 3 دروس للتجربة)</p>
     </div>
 
-    <!-- Status -->
     <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
-      <div id="status" class="text-sm text-slate-400 text-center">جاري التحقق من الصلاحيات...</div>
+      <div id="status" class="text-sm text-slate-400 text-center">
+        <i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري التحقق من الصلاحيات...
+      </div>
       
       <button id="seedBtn" disabled 
-        class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold disabled:opacity-50">
-        🚀 ارفع كل الدروس لـ Firestore
+        class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold disabled:opacity-50 transition-all">
+        🚀 ارفع الدروس لـ Firestore
       </button>
 
       <div id="progress" class="hidden space-y-2">
         <div class="h-2 rounded-full bg-white/10 overflow-hidden">
           <div id="progressBar" class="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all" style="width: 0%"></div>
         </div>
-        <div id="progressText" class="text-xs text-slate-400 text-center">0 / 26</div>
+        <div id="progressText" class="text-xs text-slate-400 text-center">0 / 0</div>
       </div>
 
       <div id="log" class="hidden p-4 rounded-lg bg-black/50 border border-white/10 text-xs font-mono max-h-64 overflow-y-auto space-y-1"></div>
     </div>
-
-    <!-- Info -->
-    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 leading-relaxed">
-      <strong>⚠️ تحذير:</strong> الصفحة دي محتاجة تكون مسجل دخول كأدمن (islam). لو مش مسجل، سجل الأول من <a href="login.html" class="underline">login.html</a> ثم ارجع هنا.
-    </div>
   </div>
 
   <script type="module">
-    import { CloudCMS } from './js/firebase-cms.js';
-    import { getCurrentUser } from './js/auth.js';
-    import { getFirestore, collection, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { onAuthChange } from './js/auth.js';
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { firebaseConfig } from './firebase-config.js';
 
@@ -57,6 +52,121 @@
     const progressText = document.getElementById('progressText');
     const logEl = document.getElementById('log');
 
+    // ==================== بيانات الدروس ====================
+    const LESSONS = [
+      {
+        id: 'm1_l1',
+        courseId: 'm1',
+        moduleNumber: 1,
+        lessonNumber: 1,
+        title: 'اقتصاديات الوحدة والتموضع',
+        type: 'theory',
+        duration: 45,
+        track: 'both',
+        content: `
+          <h2>لماذا يفشل المسوق المنعزل عن الأرقام المالية؟</h2>
+          <p>النجاح الإعلامي لا يُقاس بمؤشرات المنصات السطحية؛ الحملة قد تظهر ناجحة برقم 4x ROAS بينما الشركة تنزف مالياً في الواقع.</p>
+          <h3>عقلية المسوق الاستراتيجي vs التقليدي</h3>
+          <table class="w-full text-right border-collapse mt-4 mb-6">
+            <thead><tr class="bg-pink-500/20 text-white"><th class="p-2 border border-white/10">المسوق الاستراتيجي</th><th class="p-2 border border-white/10">المسوق التقليدي</th></tr></thead>
+            <tbody>
+              <tr><td class="p-2 border border-white/10">ينطلق من القوائم المالية، صافي الربح الحقيقي لكل وحدة</td><td class="p-2 border border-white/10">يركز على CPC، معدل التحويل الظاهري</td></tr>
+              <tr><td class="p-2 border border-white/10">النتيجة: قرارات تحمي التحفقات النقدية</td><td class="p-2 border border-white/10">النتيجة: توجيه ميزانيات لمنتجات هوامشها لا تغطي التشغيل</td></tr>
+            </tbody>
+          </table>
+          <h3>تكلفة اكتساب العميل (CAC)</h3>
+          <p class="bg-blue-500/10 p-3 rounded-lg border border-blue-500/30 font-mono text-center">CAC = (تكاليف التسويق + المبيعات + الأدوات) / عدد العملاء الجدد</p>
+          <h3>القيمة الدائمة (LTV)</h3>
+          <p class="bg-green-500/10 p-3 rounded-lg border border-green-500/30 font-mono text-center">LTV = AOV × Purchase Frequency × Lifespan × Gross Margin %</p>
+          <h3>معيار LTV : CAC الذهبي</h3>
+          <ul class="space-y-2 mb-6">
+            <li>🔴 <strong>أقل من 1:1:</strong> نزيف مالي (إفلاس حتمي).</li>
+            <li>🟡 <strong>1:2:</strong> هامش خطر.</li>
+            <li>🟢 <strong>3:1:</strong> التوازن المثالي.</li>
+          </ul>
+          <h3>نقطة التعادل الإعلانية (Break-Even ROAS)</h3>
+          <p class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 font-mono text-center">Break-Even ROAS = 1 / (Gross Margin %)</p>
+        `,
+        practicalTask: { title: 'حساب اقتصاديات وحدة لمشروعك', description: 'استخدم الأرقام الحقيقية لمشروعك', fields: [{ id: 'price', label: 'سعر البيع', type: 'number' }, { id: 'cogs', label: 'التكلفة', type: 'number' }] },
+        quizId: 'quiz_m1_l1',
+        aiPrompts: ['اشرحلي LTV بمثال', 'إزاي أحسب Max CAC؟'],
+        keyTakeaways: ['ROAS المنصة مش كل حاجة', 'LTV:CAC لازم 3:1'],
+        isPublished: true,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      },
+      {
+        id: 'm1_l2',
+        courseId: 'm1',
+        moduleNumber: 1,
+        lessonNumber: 2,
+        title: 'أبحاث السوق وإطار JTBD',
+        type: 'theory',
+        duration: 50,
+        track: 'both',
+        content: `
+          <h2>من التخمين إلى التثقيف النفسي</h2>
+          <p>الناس لا يشترون منتجاتك وخدماتك؛ بل "يستأجرونها" لينتقلوا من واقع حالي محيط إلى واقع مستقبلي أفضل.</p>
+          <h3>لماذا تفشل الـ Persona التقليدية؟</h3>
+          <p>البيانات الديموغرافية السطحية لا تجيب لماذا يشترى العميل في لحظة معينة، المفتاح هو سيكولوجية المهمة التي يريد إنجازها.</p>
+          <h3>الأبعاد الثلاثة للمهمة</h3>
+          <ul>
+            <li><strong>الوظيفي (Functional):</strong> الحاجة المباشرة (حماية القدم أثناء الجري).</li>
+            <li><strong>العاطفي (Emotional):</strong> شعور العميل تجاه نفسه (استعادة النشاط).</li>
+            <li><strong>الاجتماعي (Social):</strong> كيف يراه المحيطون به (الظهور بمظهر رياضي).</li>
+          </ul>
+          <h3>قوى التقدم الأربع (4 Forces)</h3>
+          <ul>
+            <li>✅ <strong>Push (دفع للأمام):</strong> ألم الوضع الحالي.</li>
+            <li>✅ <strong>Pull (جذب للأمام):</strong> جاذبية الحل الجديد.</li>
+            <li>❌ <strong>Anxiety (قلق للخلف):</strong> الخوف من التجربة والمجهول.</li>
+            <li>❌ <strong>Habit (عادة للخلف):</strong> التكاسل عن التغيير.</li>
+          </ul>
+          <p class="bg-purple-500/10 p-3 rounded-lg border border-purple-500/30">وظيفة المحتوى والإعلان: تضخيم (Push & Pull) وتحييد وإلغاء (Anxiety & Habit).</p>
+        `,
+        practicalTask: { title: 'بناء ملف أبحاث السوق الميداني', description: 'استخرج أكبر 3 آلام ومخاوف من تعليقات المنافسين', fields: [] },
+        quizId: 'quiz_m1_l2',
+        aiPrompts: ['إزاي أطبق JTBD في بحث السوق؟', 'إزاي أحول المخاوف (Anxiety) لكوبي إعلاني؟'],
+        keyTakeaways: ['الناس تشتري الحل لمشكلة', 'لازم تفكك القلق والعادة'],
+        isPublished: true,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      },
+      {
+        id: 'm1_l3',
+        courseId: 'm1',
+        moduleNumber: 1,
+        lessonNumber: 3,
+        title: 'هندسة التموضع و USP',
+        type: 'theory',
+        duration: 45,
+        track: 'both',
+        content: `
+          <h2>من "الأفضل" إلى "المختلف"</h2>
+          <p>الأفضلية مسألة نسبية يحددها العميل بمعنوية، أما التمايز فيدركه العقل في أجزاء من الثانية ويجعل المنافسين غير ذي صلة.</p>
+          <h3>Being Better vs Being Different</h3>
+          <p>محاولة إثبات أنك "أفضل" تخضع لشكوك العميل وتحرق الأسعار. التمايز يخلق مساحة حصرية في العقل.</p>
+          <h3>الاستراتيجيات الأربع للتموضع</h3>
+          <ol>
+            <li><strong>التموضع المعاكس (Counter-Positioning):</strong> ضد عيوب قائد السوق (مثل Dollar Shave Club ضد Gillette).</li>
+            <li><strong>التخصص العمودي (Micro-Niche):</strong> "وكالة تسويق حصراً لعيادات الأسنان".</li>
+            <li><strong>إعادة تعريف الفئة (Category Creation):</strong> ابتكار تصنيف جديد.</li>
+            <li><strong>إنهاء الاحتكاك (Frictionless Disruptor):</strong> تقديم الجودة بنصف الوقت وأسهل إجراءات.</li>
+          </ol>
+          <h3>معادلة الـ USP عالي التحويل</h3>
+          <p class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30">جمهور محدد + هدف مالي ملموس + إزالة الألم الأكبر + إطار زمني قاطع.</p>
+          <p class="text-sm text-slate-400">مثال: "نساعد المبتدئين في الميديا باينج على إطلاق أول حملة رابحة وتجاوز نقطة التعادل خلال 30 يوماً، دون تعقيد برمجي".</p>
+        `,
+        practicalTask: { title: 'بناء وثيقة التموضع للنشاط', description: 'اكتب جملة الـ USP الخاصة بك بناءً على المعادلة', fields: [] },
+        quizId: 'quiz_m1_l3',
+        aiPrompts: ['اكتبلي 3 جمل USP لمشروعي', 'إيه الفرق بين Being Better و Being Different؟'],
+        keyTakeaways: ['التمايز أقوى من الأفضلية', 'الـ USP لازم يكون محدد وقاطع'],
+        isPublished: true,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    ];
+
     function log(msg, type = 'info') {
       logEl.classList.remove('hidden');
       const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-300';
@@ -67,68 +177,24 @@
       logEl.scrollTop = logEl.scrollHeight;
     }
 
-    // ==================== البيانات ====================
-    // هتحط هنا كل الـ 26 درس في مصفوفة واحدة
-    const LESSONS = [
-      // الدرس 1 (مثال كامل - هتكرره لـ 26)
-      {
-        id: 'm1_l1',
-        courseId: 'm1',
-        moduleNumber: 1,
-        lessonNumber: 1,
-        title: 'اقتصاديات الوحدة والتموضع',
-        type: 'theory',
-        duration: 45,
-        track: 'both',
-        content: `<h2>لماذا يفشل المسوق المنعزل عن الأرقام المالية؟</h2><p>النجاح الإعلامي لا يُقاس بمؤشرات المنصات السطحية...</p>`,
-        practicalTask: {
-          title: 'حساب اقتصاديات وحدة لمشروعك',
-          description: 'استخدم الأرقام الحقيقية لمشروعك',
-          fields: [
-            { id: 'price', label: 'سعر بيع المنتج (ج.م)', type: 'number' },
-            { id: 'cogs', label: 'تكلفة البضاعة (ج.م)', type: 'number' }
-          ]
-        },
-        quizId: 'quiz_m1_l1',
-        aiPrompts: [
-          'اشرحلي يعني إيه LTV بمثال',
-          'إزاي أحسب Max CAC؟'
-        ],
-        keyTakeaways: [
-          'ROAS المنصة مش كل حاجة',
-          'LTV:CAC لازم 3:1'
-        ]
-      },
-      // درس 2
-      // { id: 'm1_l2', ... },
-      // درس 3
-      // { id: 'm1_l3', ... },
-      // ... وهكذا لحد 26
-    ];
-
-    // ==================== Check Auth ====================
-    async function checkAuth() {
-      const user = getCurrentUser();
+    // ==================== Auth Check ====================
+    onAuthChange((user, profile) => {
       if (!user) {
-        statusEl.innerHTML = '<span class="text-red-400">❌ مش مسجل دخول. اذهب لـ login.html</span>';
-        return false;
+        statusEl.innerHTML = `<span class="text-red-400">❌ مش مسجل دخول.<br><a href="admin/login.html" class="inline-block mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold">روح لصفحة الدخول من هنا</a></span>`;
+        seedBtn.disabled = true;
+        return;
       }
 
-      // تحقق لو أدمن
-      try {
-        const adminSnap = await getDoc(doc(db, 'admins', user.uid));
-        if (!adminSnap.exists()) {
-          statusEl.innerHTML = `<span class="text-red-400">❌ ${user.email} مش أدمن. تواصل مع إسلام.</span>`;
-          return false;
-        }
+      // لو إحنا في admin/login بيرجع profile، لو مفيش يبقى مش أدمن
+      if (profile && (profile.role === 'super_admin' || profile.role === 'sub_admin')) {
         statusEl.innerHTML = `<span class="text-green-400">✅ مسجل كأدمن: ${user.email}</span>`;
         seedBtn.disabled = false;
-        return true;
-      } catch (err) {
-        statusEl.innerHTML = `<span class="text-red-400">❌ خطأ: ${err.message}</span>`;
-        return false;
+        seedBtn.textContent = `🚀 ارفع ${LESSONS.length} دروس لـ Firestore`;
+      } else {
+        statusEl.innerHTML = `<span class="text-red-400">❌ الحساب (${user.email}) مش مسجل في جدول الأدمنز.</span>`;
+        seedBtn.disabled = true;
       }
-    }
+    });
 
     // ==================== Seed Function ====================
     async function seedLessons() {
@@ -148,12 +214,7 @@
         progressText.textContent = `${i + 1} / ${LESSONS.length}`;
 
         try {
-          await setDoc(doc(db, 'lessons', lesson.id), {
-            ...lesson,
-            isPublished: true,
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-          });
+          await setDoc(doc(db, 'lessons', lesson.id), lesson);
           log(`✅ ${lesson.id} — ${lesson.title}`, 'success');
           success++;
         } catch (err) {
@@ -166,8 +227,7 @@
       log(`✅ نجح: ${success} / ❌ فشل: ${failed}`, success > 0 ? 'success' : 'error');
       
       if (failed === 0) {
-        log('🎉 كل الدروس اترفعت بنجاح!', 'success');
-        log('افتح academy.html عشان تشوفها', 'info');
+        log('🎉 الدروس اترفعت بنجاح! افتح academy.html', 'success');
       }
 
       statusEl.innerHTML = `<span class="${failed === 0 ? 'text-green-400' : 'text-amber-400'}">${failed === 0 ? '✅ اكتمل!' : '⚠️ اكتمل مع أخطاء'} — ${success} نجح، ${failed} فشل</span>`;
@@ -176,9 +236,6 @@
     }
 
     seedBtn.addEventListener('click', seedLessons);
-
-    // Start
-    checkAuth();
   </script>
 </body>
 </html>

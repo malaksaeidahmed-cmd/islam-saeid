@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>موافقات الطلاب | لوحة التحكم</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen p-6">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+    
+    <header class="flex justify-between items-center pb-4 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <img src="../logo.png" class="w-8 h-8 rounded-lg" />
+        <h1 class="text-xl font-bold text-white">إدارة طلبات الانضمام</h1>
+      </div>
+      <a href="dashboard.html" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right ml-1"></i> العودة للداشبورد</a>
+    </header>
+
+    <div id="loading" class="text-center py-10 text-slate-400 text-sm">
+      <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>جاري تحميل الطلبات...
+    </div>
+
+    <div id="requestsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden"></div>
+
+    <div id="emptyState" class="hidden text-center py-20 text-slate-500">
+      <i class="fa-solid fa-check-circle text-4xl mb-3 text-green-500"></i>
+      <p>لا توجد طلبات معلقة حالياً. كل شيء تمام!</p>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { onAuthChange } from '../js/auth.js';
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { firebaseConfig } from '../firebase-config.js';
+
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const grid = document.getElementById('requestsGrid');
+    const loading = document.getElementById('loading');
+    const emptyState = document.getElementById('emptyState');
+
+    onAuthChange((user, profile) => {
+      if (!user || !profile || (profile.role !== 'super_admin' && profile.role !== 'sub_admin')) {
+        window.location.href = 'login.html';
+        return;
+      }
+      loadRequests(user.uid);
+    });
+
+    function loadRequests(adminUid) {
+      // جلب الطلبات المعلقة فقط
+      const q = query(collection(db, 'user_requests'), where('status', '==', 'pending'));
+
+      onSnapshot(q, (snap) => {
+        loading.classList.add('hidden');
+        grid.innerHTML = '';
+
+        if (snap.empty) {
+          grid.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        grid.classList.remove('hidden');
+
+        snap.docs.forEach(d => {
+          const data = d.data();
+          const id = d.id;
+
+          const card = document.createElement('div');
+          card.className = 'p-5 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-3';
+          card.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="text-white font-bold text-sm">${data.fullName}</div>
+                <div class="text-[10px] text-slate-400" dir="ltr">${data.email}</div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold">Pending</span>
+            </div>
+
+            <div class="space-y-1 text-xs text-slate-300">
+              <div><i class="fa-solid fa-phone text-slate-500 w-4 ml-1"></i> ${data.phone}</div>
+              <div><i class="fa-solid fa-briefcase text-slate-500 w-4 ml-1"></i> ${data.role || '—'} ${data.company ? `@ ${data.company}` : ''}</div>
+              <div><i class="fa-solid fa-chart-line text-slate-500 w-4 ml-1"></i> الخبرة: ${data.experience}</div>
+              <div><i class="fa-solid fa-wallet text-slate-500 w-4 ml-1"></i> الميزانية: ${data.budget}</div>
+              <div class="pt-2 border-t border-white/5 mt-2 text-[11px] text-slate-400 italic">"${data.motivation || 'لا يوجد'}"</div>
+            </div>
+
+            <div class="flex gap-2 pt-3">
+              <button onclick="approve('${id}', '${data.uid}', '${adminUid}')" class="flex-1 py-2 rounded-lg bg-green-500/20 text-green-400 hover:bg-green-500/30 text-xs font-bold transition-all">
+                <i class="fa-solid fa-check ml-1"></i> موافقة
+              </button>
+              <button onclick="reject('${id}', '${data.uid}')" class="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 text-xs font-bold transition-all">
+                <i class="fa-solid fa-times ml-1"></i> رفض
+              </button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      });
+    }
+
+    window.approve = async (reqId, userId, adminId) => {
+      if (!confirm('هل أنت متأكد من الموافقة على هذا الطالب؟')) return;
+      try {
+        await updateDoc(doc(db, 'user_requests', reqId), { status: 'approved', reviewedBy: adminId, reviewedAt: Date.now() });
+        await updateDoc(doc(db, 'users', userId), { status: 'approved' });
+        alert('✅ تم تفعيل الحساب بنجاح.');
+      } catch (err) {
+        alert('خطأ: ' + err.message);
+      }
+    };
+
+    window.reject = async (reqId, userId) => {
+      const reason = prompt('سبب الرفض (اختياري):');
+      if (reason === null) return; // User cancelled
+      try {
+        await updateDoc(doc(db, 'user_requests', reqId), { status: 'rejected', rejectionReason: reason, reviewedAt: Date.now() });
+        await updateDoc(doc(db, 'users', userId), { status: 'rejected' });
+        alert('تم رفض الطلب.');
+      } catch (err) {
+        alert('خطأ: ' + err.message);
+      }
+    };
+  </script>
+</body>
+</html>

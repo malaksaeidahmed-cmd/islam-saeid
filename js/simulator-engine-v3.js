@@ -1,12 +1,6 @@
 // ============================================================
 // Simulator Engine v3.0 — Monte Carlo + Probability Distributions
 // ============================================================
-// Architecture:
-// 1. Each input metric has a real probability distribution
-// 2. Run 10,000 iterations per simulation
-// 3. Output: P10, P25, P50, P75, P90 + Confidence Intervals
-// 4. Based on real MENA/Egypt market benchmarks
-// ============================================================
 
 import {
   INDUSTRIES, PLATFORMS, OBJECTIVES, FRAMEWORKS, CHANNEL_TYPES,
@@ -26,7 +20,6 @@ class RNG {
   constructor(seed = Date.now()) {
     this.seed = seed;
   }
-  // Mulberry32 PRNG
   next() {
     this.seed |= 0;
     this.seed = (this.seed + 0x6D2B79F5) | 0;
@@ -34,22 +27,18 @@ class RNG {
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   }
-  // Box-Muller for normal distribution
   normal(mean = 0, std = 1) {
     const u1 = this.next();
     const u2 = this.next();
     const z = Math.sqrt(-2 * Math.log(u1 || 1e-9)) * Math.cos(2 * Math.PI * u2);
     return mean + z * std;
   }
-  // Log-normal (for CTR/CVR — positive, skewed)
   logNormal(median, sigma = 0.4) {
     const mu = Math.log(median);
     const z = this.normal(0, 1);
     return Math.exp(mu + sigma * z);
   }
-  // Gamma (for orders/aggregations)
   gamma(shape, scale) {
-    // Marsaglia-Tsang method
     if (shape < 1) {
       const u = this.next();
       return this.gamma(shape + 1, scale) * Math.pow(u, 1 / shape);
@@ -68,13 +57,11 @@ class RNG {
       if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v * scale;
     }
   }
-  // Beta (for rates constrained to [0,1])
   beta(a, b) {
     const x = this.gamma(a, 1);
     const y = this.gamma(b, 1);
     return x / (x + y);
   }
-  // Triangular (for bounded ranges with a mode)
   triangular(min, mode, max) {
     const u = this.next();
     const F = (mode - min) / (max - min);
@@ -83,7 +70,6 @@ class RNG {
     }
     return max - Math.sqrt((1 - u) * (max - min) * (max - mode));
   }
-  // Pert (modified beta — best for expert estimates)
   pert(min, mode, max, lambda = 4) {
     const range = max - min;
     if (range === 0) return min;
@@ -123,61 +109,44 @@ function computeStats(arr) {
   const p95 = percentile(sorted, 95);
   const min = sorted[0];
   const max = sorted[n - 1];
-  // Probability of profit > 0
   const profitCount = sorted.filter(v => v > 0).length;
   const profitProbability = (profitCount / n) * 100;
   return { mean, std, p5, p10, p25, p50, p75, p90, p95, min, max, profitProbability };
 }
 
 // ============================================================
-// DISTRIBUTION SAMPLING — based on real market variance
+// DISTRIBUTION SAMPLING
 // ============================================================
 function sampleCPM(rng, baseCPM, marketVariance = 0.20) {
-  // CPM follows log-normal (positive, right-skewed)
-  // σ = 0.20 → ~20% coefficient of variation
   return rng.logNormal(baseCPM, marketVariance);
 }
 
 function sampleCTR(rng, baseCTR, creativeQuality = 1.0) {
-  // CTR varies more (0.30-0.50 CV depending on quality)
   const cv = 0.35 / Math.sqrt(creativeQuality);
   const median = baseCTR;
   return rng.logNormal(median, cv);
 }
 
 function sampleCVR(rng, baseCVR, qualityMult = 1.0) {
-  // CVR has the widest variance in real campaigns
   const cv = 0.45 / Math.sqrt(qualityMult);
   const median = baseCVR;
   return rng.logNormal(median, cv);
 }
 
 function sampleAOV(rng, baseAOV) {
-  // AOV has moderate variance (0.25 CV)
   return rng.logNormal(baseAOV, 0.25);
-}
-
-function sampleOrdersMean(rng, budget, cpm, ctr, cvr, aov) {
-  // Deterministic mean estimate
-  if (!cpm || !ctr || !cvr) return 0;
-  const impressions = (budget / cpm) * 1000;
-  const clicks = impressions * (ctr / 100);
-  const lpv = clicks * 0.85;
-  const orders = lpv * (cvr / 100);
-  return orders;
 }
 
 // ============================================================
 // SIMULATION INPUTS NORMALIZER
 // ============================================================
 function normalizeInputs(state) {
-  const ind = INDUSTRIES[state.foundation.industry];
-  const stage = BUSINESS_STAGE[state.foundation.businessStage];
-  const objective = OBJECTIVES[state.objective.primaryGoal];
+  const ind = INDUSTRIES[state.foundation.industry] || INDUSTRIES.fashion;
+  const stage = BUSINESS_STAGE[state.foundation.businessStage] || BUSINESS_STAGE.new;
+  const objective = OBJECTIVES[state.objective.primaryGoal] || OBJECTIVES.sales;
   const primaryFw = state.framework.primary ? FRAMEWORKS[state.framework.primary] : null;
   const secondaryFw = state.framework.secondary ? FRAMEWORKS[state.framework.secondary] : null;
 
-  // Compute multiplicative adjustments (deterministic)
   let frameworkMult = 1.0;
   if (primaryFw) frameworkMult *= primaryFw.effectiveness;
   if (secondaryFw) frameworkMult *= (1 + (secondaryFw.effectiveness - 1) * 0.5);
@@ -185,21 +154,20 @@ function normalizeInputs(state) {
   const stageMult = stage.mult;
   const objectiveCvrMult = objective.cvrMult;
 
-  const creativeTypeMult = state.creative.type ? CREATIVE_TYPES[state.creative.type].mult : 1.0;
-  const hookMult = state.creative.hook ? HOOK_QUALITY[state.creative.hook].mult : 1.0;
-  const offerMult = state.creative.offer ? OFFER_STRENGTH[state.creative.offer].mult : 1.0;
-  const landingMult = state.funnel.landingQuality ? LANDING_QUALITY[state.funnel.landingQuality].mult : 1.0;
+  const creativeTypeMult = state.creative.type && CREATIVE_TYPES[state.creative.type] ? CREATIVE_TYPES[state.creative.type].mult : 1.0;
+  const hookMult = state.creative.hook && HOOK_QUALITY[state.creative.hook] ? HOOK_QUALITY[state.creative.hook].mult : 1.0;
+  const offerMult = state.creative.offer && OFFER_STRENGTH[state.creative.offer] ? OFFER_STRENGTH[state.creative.offer].mult : 1.0;
+  const landingMult = state.funnel.landingQuality && LANDING_QUALITY[state.funnel.landingQuality] ? LANDING_QUALITY[state.funnel.landingQuality].mult : 1.0;
   const retargetingMult = state.funnel.retargetingStrategy ? 1.15 : 1.0;
   const cartMult = state.funnel.abandonedCart ? 1.08 : 1.0;
-  const testingMult = state.optimization.testing ? TESTING[state.optimization.testing].mult : 1.0;
-  const biddingMult = state.optimization.bidding ? BIDDING_STRATEGY[state.optimization.bidding].mult : 1.0;
-  const eventMult = state.optimization.event ? OPT_EVENTS[state.optimization.event].cvrMult : 1.0;
+  const testingMult = state.optimization.testing && TESTING[state.optimization.testing] ? TESTING[state.optimization.testing].mult : 1.0;
+  const biddingMult = state.optimization.bidding && BIDDING_STRATEGY[state.optimization.bidding] ? BIDDING_STRATEGY[state.optimization.bidding].mult : 1.0;
+  const eventMult = state.optimization.event && OPT_EVENTS[state.optimization.event] ? OPT_EVENTS[state.optimization.event].cvrMult : 1.0;
   const trackingMap = { basic: 0.90, advanced: 1.0, 'world-class': 1.15 };
-  const trackingMult = state.analytics.trackingSetup ? trackingMap[state.analytics.trackingSetup] : 1.0;
+  const trackingMult = state.analytics.trackingSetup ? (trackingMap[state.analytics.trackingSetup] || 1.0) : 1.0;
   const attributionMap = { lastTouch: 0.95, firstTouch: 1.05, linear: 1.0, timeDecay: 1.05, position: 1.05, dataDriven: 1.15 };
-  const attributionMult = state.analytics.attributionModel ? attributionMap[state.analytics.attributionModel] : 1.0;
+  const attributionMult = state.analytics.attributionModel ? (attributionMap[state.analytics.attributionModel] || 1.0) : 1.0;
 
-  // Channel synergy
   let channelSynergy = 1.0;
   const mix = state.channels.mix || [];
   if (mix.includes('paid') && mix.includes('owned')) channelSynergy *= 1.15;
@@ -208,12 +176,10 @@ function normalizeInputs(state) {
   if (mix.length === 4) channelSynergy *= 1.20;
   if (mix.length === 1 && mix[0] === 'paid') channelSynergy *= 0.95;
 
-  // Seasonality
   const season = state.budget.seasonality === 'normal' || !state.budget.seasonality
     ? getCurrentSeason()
     : { key: state.budget.seasonality, ...SEASONALITY[state.budget.seasonality] };
 
-  // Compound multipliers
   const cvrCompound = 
     frameworkMult * stageMult * objectiveCvrMult *
     creativeTypeMult * hookMult * offerMult * landingMult *
@@ -244,40 +210,20 @@ export function runSimulation(state) {
   const totalBudget = state.budget.totalBudget;
   const reserveRatio = state.budget.reservePercent / 100;
   const deployableBudget = totalBudget * (1 - reserveRatio);
-  const avgBudget = deployableBudget / platforms.length;
+  const avgBudget = deployableBudget / Math.max(1, platforms.length);
 
-  // Seed RNG with deterministic hash of state (reproducible results)
   const stateHash = hashState(state);
   const rng = new RNG(stateHash);
 
-  // Per-platform iteration containers
   const perPlatformIterations = {};
   platforms.forEach(pk => {
-    perPlatformIterations[pk] = {
-      revenue: [],
-      orders: [],
-      impressions: [],
-      clicks: [],
-      cpa: [],
-      roas: [],
-      profit: []
-    };
+    perPlatformIterations[pk] = { revenue: [], orders: [], impressions: [], clicks: [], cpa: [], roas: [], profit: [] };
   });
 
-  // Aggregated iteration containers
   const totalIterations = {
-    revenue: [],
-    orders: [],
-    impressions: [],
-    clicks: [],
-    cpa: [],
-    roas: [],
-    profit: [],
-    cogsCost: [],
-    budgetUsed: []
+    revenue: [], orders: [], impressions: [], clicks: [], cpa: [], roas: [], profit: [], cogsCost: [], budgetUsed: []
   };
 
-  // Run 10,000 iterations
   for (let iter = 0; iter < ITERATIONS; iter++) {
     let iterRevenue = 0;
     let iterOrders = 0;
@@ -286,12 +232,10 @@ export function runSimulation(state) {
     let iterCogs = 0;
     let iterSpend = 0;
 
-    // Platform-specific sampling
     platforms.forEach(pk => {
-      const p = PLATFORMS[pk];
+      const p = PLATFORMS[pk] || PLATFORMS.meta;
       const budget = state.budget.allocations[pk] || avgBudget;
 
-      // Sample each metric from its distribution
       const baseCPM = normalized.industry.cpm * p.cpmMult * normalized.season.cpmMult;
       const sampledCPM = sampleCPM(rng, baseCPM, 0.22);
 
@@ -304,14 +248,12 @@ export function runSimulation(state) {
       const baseAOV = normalized.industry.aov * (state.scaling.upsellStrategy ? 1.15 : 1.0);
       const sampledAOV = sampleAOV(rng, baseAOV);
 
-      // Compute this iteration's outcome
       const impressions = sampledCPM > 0 ? (budget / sampledCPM) * 1000 : 0;
       const clicks = impressions * (sampledCTR / 100);
       const lpv = clicks * 0.85;
       const orders = lpv * (sampledCVR / 100);
       const revenue = orders * sampledAOV;
 
-      // Additional variance on orders (Poisson-like count variance)
       const poissonVariance = orders > 0 ? rng.normal(1, 1 / Math.sqrt(orders + 1)) : 1;
       const adjustedOrders = Math.max(0, orders * poissonVariance);
       const adjustedRevenue = adjustedOrders * sampledAOV;
@@ -325,7 +267,6 @@ export function runSimulation(state) {
       iterCogs += cogsCost;
       iterSpend += budget;
 
-      // Store per-platform
       perPlatformIterations[pk].revenue.push(adjustedRevenue);
       perPlatformIterations[pk].orders.push(adjustedOrders);
       perPlatformIterations[pk].impressions.push(impressions);
@@ -348,7 +289,6 @@ export function runSimulation(state) {
     totalIterations.profit.push(iterProfit);
   }
 
-  // Compute statistics
   const stats = {
     revenue: computeStats(totalIterations.revenue),
     orders: computeStats(totalIterations.orders),
@@ -360,7 +300,6 @@ export function runSimulation(state) {
     cogsCost: computeStats(totalIterations.cogsCost)
   };
 
-  // Compute per-platform stats
   const platformStats = {};
   platforms.forEach(pk => {
     platformStats[pk] = {
@@ -372,18 +311,15 @@ export function runSimulation(state) {
     };
   });
 
-  // Business metrics
   const price = state.foundation.price;
   const cogsRatio = state.foundation.cogs / 100;
   const grossMargin = price * (1 - cogsRatio);
   const breakEvenRoas = grossMargin > 0 ? price / grossMargin : 0;
 
-  // Retention impact
   let adjustedStats = stats;
   if (state.scaling.retention && state.scaling.retention !== 'none') {
-    const retentionMult = RETENTION[state.scaling.retention].ltvMult;
-    const ltvAdjustment = (retentionMult - 1) * 0.5; // 50% of theoretical captured in 90 days
-
+    const retentionMult = RETENTION[state.scaling.retention] ? RETENTION[state.scaling.retention].ltvMult : 1;
+    const ltvAdjustment = (retentionMult - 1) * 0.5;
     const adjustedRevenue = stats.revenue.p50 * (1 + ltvAdjustment);
     const adjustedProfit = stats.profit.p50 + (adjustedRevenue - stats.revenue.p50);
 
@@ -395,13 +331,13 @@ export function runSimulation(state) {
     };
   }
 
-  // Prepare final output
   const result = {
     success: true,
     metadata: {
       industry: normalized.industry.name,
       industryCategory: normalized.industry.category,
-      businessStage: normalized.businessStage || BUSINESS_STAGE[state.foundation.businessStage].name,
+      // ✅ إصلاح: استخدام BUSINESS_STAGE مباشرة
+      businessStage: BUSINESS_STAGE[state.foundation.businessStage]?.name || 'غير محدد',
       objective: normalized.objective.name,
       framework: state.framework.primary ? FRAMEWORKS[state.framework.primary].name : 'بدون',
       platformCount: platforms.length,
@@ -421,7 +357,6 @@ export function runSimulation(state) {
     verdict: computeVerdict(stats, breakEvenRoas),
     recommendations: generateRecommendations(state, stats, normalized),
     optimizations: findOptimizations(state, stats),
-    // Legacy compatibility (used by existing HTML)
     platformResults: buildLegacyPlatformResults(platforms, platformStats, state, avgBudget),
     funnel: computeFunnel(state, stats),
     cohort: computeCohort(state, stats, normalized),
@@ -433,9 +368,6 @@ export function runSimulation(state) {
   return result;
 }
 
-// ============================================================
-// HELPER: Deterministic hash of state (for reproducible RNG)
-// ============================================================
 function hashState(state) {
   const str = JSON.stringify(state);
   let hash = 0;
@@ -447,9 +379,6 @@ function hashState(state) {
   return Math.abs(hash);
 }
 
-// ============================================================
-// VALIDATION
-// ============================================================
 function validateState(state) {
   const errors = [];
   if (!state.foundation.industry) errors.push('• اختر القطاع في المرحلة 1');
@@ -484,20 +413,21 @@ function validateState(state) {
   return { valid: errors.length === 0, errors };
 }
 
-// ============================================================
-// SUMMARY TOTALS (uses median = most likely scenario)
-// ============================================================
 function buildSummaryTotals(stats, state, totalBudget, reserveRatio) {
   const deployableBudget = totalBudget * (1 - reserveRatio);
   const price = state.foundation.price;
   const cogsRatio = state.foundation.cogs / 100;
   const grossMargin = price * (1 - cogsRatio);
+  
+  // ✅ إصلاح: جلب الـ avgFrequency من بيانات القطاع
+  const industryData = INDUSTRIES[state.foundation.industry] || INDUSTRIES.fashion;
+  const avgFreq = industryData.avgFrequency || 2.5;
 
   return {
     totalBudget,
     deployableBudget,
     totalImpressions: Math.round(stats.impressions.p50),
-    totalReach: Math.round(stats.impressions.p50 / (state.foundation.averageFrequency || 2.5)),
+    totalReach: Math.round(stats.impressions.p50 / avgFreq),
     totalClicks: Math.round(stats.clicks.p50),
     totalLandingViews: Math.round(stats.clicks.p50 * 0.85),
     totalOrders: Math.round(stats.orders.p50),
@@ -517,12 +447,13 @@ function buildSummaryTotals(stats, state, totalBudget, reserveRatio) {
   };
 }
 
-// ============================================================
-// LEGACY COMPATIBILITY — build platformResults array
-// ============================================================
 function buildLegacyPlatformResults(platforms, platformStats, state, avgBudget) {
+  // ✅ إصلاح: جلب الـ avgFrequency من بيانات القطاع
+  const industryData = INDUSTRIES[state.foundation.industry] || INDUSTRIES.fashion;
+  const avgFreq = industryData.avgFrequency || 2.5;
+
   return platforms.map(pk => {
-    const p = PLATFORMS[pk];
+    const p = PLATFORMS[pk] || PLATFORMS.meta;
     const ps = platformStats[pk];
     const budget = state.budget.allocations[pk] || avgBudget;
     const revenue = ps.revenue.p50;
@@ -537,8 +468,8 @@ function buildLegacyPlatformResults(platforms, platformStats, state, avgBudget) 
       color: p.color,
       budget: Math.round(budget),
       impressions: Math.round(platformStats[pk].revenue.p50 > 0 ? (budget / 65) * 1000 : 0),
-      reach: Math.round((budget / 65) * 1000 / 2.5),
-      frequency: 2.5,
+      reach: Math.round(((budget / 65) * 1000) / avgFreq),
+      frequency: avgFreq,
       frequencyWarning: 'low',
       clicks: 0,
       ctr: 0,
@@ -554,7 +485,6 @@ function buildLegacyPlatformResults(platforms, platformStats, state, avgBudget) 
       profitableRoas: 0,
       isProfitable: roas > 1.5,
       contribution: Math.round(ps.profit.p50),
-      // NEW: probability bands
       revenueBand: {
         p10: Math.round(ps.revenue.p10),
         p50: Math.round(ps.revenue.p50),
@@ -569,110 +499,51 @@ function buildLegacyPlatformResults(platforms, platformStats, state, avgBudget) 
   });
 }
 
-// ============================================================
-// RISKS (enhanced with probability)
-// ============================================================
 function computeRisks(state, normalized, stats) {
   const risks = [];
   let totalRiskScore = 0;
 
-  // Competition
   if (state.market.competitionLevel === 'high') {
-    risks.push({
-      severity: 'high',
-      category: 'المنافسة',
-      title: 'منافسة شرسة في السوق',
-      desc: 'CPM أعلى وCVR أقل بسبب المنافسة. تحتاج تميز واضح.',
-      mitigation: 'ركز على زاوية تسويقية فريدة + استهدف جماهير ضيقة عالية النية.'
-    });
+    risks.push({ severity: 'high', category: 'المنافسة', title: 'منافسة شرسة في السوق', desc: 'CPM أعلى وCVR أقل بسبب المنافسة. تحتاج تميز واضح.', mitigation: 'ركز على زاوية تسويقية فريدة + استهدف جماهير ضيقة عالية النية.' });
     totalRiskScore += 25;
   } else if (state.market.competitionLevel === 'medium') {
     totalRiskScore += 12;
   }
 
-  // Budget
   if (state.budget.totalBudget < 10000) {
-    risks.push({
-      severity: 'high',
-      category: 'الميزانية',
-      title: 'ميزانية منخفضة جداً',
-      desc: 'أقل من 10,000 ج.م — صعب تدريب الخوارزمية والوصول لـ Learning Phase كامل.',
-      mitigation: 'ارفع الميزانية لـ 20,000 ج.م على الأقل، أو ابدأ بمنصة واحدة فقط.'
-    });
+    risks.push({ severity: 'high', category: 'الميزانية', title: 'ميزانية منخفضة جداً', desc: 'أقل من 10,000 ج.م — صعب تدريب الخوارزمية والوصول لـ Learning Phase كامل.', mitigation: 'ارفع الميزانية لـ 20,000 ج.م على الأقل، أو ابدأ بمنصة واحدة فقط.' });
     totalRiskScore += 20;
   } else if (state.budget.totalBudget < 30000) {
     totalRiskScore += 8;
   }
 
-  // Platform dependency
   if (state.channels.platforms.length === 1) {
-    risks.push({
-      severity: 'medium',
-      category: 'التنويع',
-      title: 'اعتماد على منصة واحدة',
-      desc: 'لو المنصة حصل فيها تغيير (خوارزمية أو سياسة) — هتتأثر بشدة.',
-      mitigation: 'جرب تستثمر 20-30% على منصة تانية بعد ما تثبت الأولى.'
-    });
+    risks.push({ severity: 'medium', category: 'التنويع', title: 'اعتماد على منصة واحدة', desc: 'لو المنصة حصل فيها تغيير — هتتأثر بشدة.', mitigation: 'جرب تستثمر 20-30% على منصة تانية بعد ما تثبت الأولى.' });
     totalRiskScore += 15;
   }
 
-  // Seasonality
   if (normalized.season.cpmMult > 1.25) {
-    risks.push({
-      severity: 'medium',
-      category: 'الموسمية',
-      title: `موسم ${normalized.season.name} — CPM أعلى`,
-      desc: `CPM في ${normalized.season.name} بيعلى ${Math.round((normalized.season.cpmMult - 1) * 100)}%.`,
-      mitigation: 'خصص ميزانية احتياطية 15-20% + ركز على عروض قوية للتميز.'
-    });
+    risks.push({ severity: 'medium', category: 'الموسمية', title: `موسم ${normalized.season.name} — CPM أعلى`, desc: `CPM في ${normalized.season.name} بيعلى ${Math.round((normalized.season.cpmMult - 1) * 100)}%.`, mitigation: 'خصص ميزانية احتياطية 15-20% + ركز على عروض قوية للتميز.' });
     totalRiskScore += 10;
   }
 
-  // Creative fatigue
   if (state.creative.variants < 3) {
-    risks.push({
-      severity: 'medium',
-      category: 'الكرياتيف',
-      title: 'عدد variants قليل',
-      desc: `${state.creative.variants} variant بس — الإعلانات هتتعب بسرعة.`,
-      mitigation: 'جهز 4-6 variants مختلفة (زوايا وعروض مختلفة).'
-    });
+    risks.push({ severity: 'medium', category: 'الكرياتيف', title: 'عدد variants قليل', desc: `${state.creative.variants} variant بس — الإعلانات هتتعب بسرعة.`, mitigation: 'جهز 4-6 variants مختلفة.' });
     totalRiskScore += 10;
   }
 
-  // Tracking
   if (state.analytics.trackingSetup === 'basic') {
-    risks.push({
-      severity: 'medium',
-      category: 'القياس',
-      title: 'تتبع أساسي',
-      desc: 'بدون Conversion API — البيانات ناقصة والخوارزمية مش بتتعلم صح.',
-      mitigation: 'فعّل Meta Conversion API + Google Tag Manager + Server-side tracking.'
-    });
+    risks.push({ severity: 'medium', category: 'القياس', title: 'تتبع أساسي', desc: 'بدون Conversion API — البيانات ناقصة والخوارزمية مش بتتعلم صح.', mitigation: 'فعّل Meta Conversion API + Google Tag Manager + Server-side tracking.' });
     totalRiskScore += 10;
   }
 
-  // Landing
   if (state.funnel.landingQuality === 'bad' || state.funnel.landingQuality === 'veryBad') {
-    risks.push({
-      severity: 'high',
-      category: 'صفحة الهبوط',
-      title: 'صفحة هبوط ضعيفة',
-      desc: 'أكبر سبب لخسارة الحملات — بتقلل CVR بـ 35-60%.',
-      mitigation: 'استثمر في التحسين: سرعة التحميل، وضوح العرض، CTA قوي.'
-    });
+    risks.push({ severity: 'high', category: 'صفحة الهبوط', title: 'صفحة هبوط ضعيفة', desc: 'أكبر سبب لخسارة الحملات — بتقلل CVR بـ 35-60%.', mitigation: 'استثمر في التحسين: سرعة التحميل، وضوح العرض، CTA قوي.' });
     totalRiskScore += 25;
   }
 
-  // Probability-based risk: chance of losing money
   if (stats.profit.profitProbability < 30) {
-    risks.push({
-      severity: 'high',
-      category: 'الاحتمالات',
-      title: `احتمالية خسارة ${100 - stats.profit.profitProbability.toFixed(1)}%`,
-      desc: `في 10,000 محاكاة — ${(100 - stats.profit.profitProbability).toFixed(1)}% من السيناريوهات خسرت.`,
-      mitigation: 'حسّن الـ CVR أو العرض أو استهدف أعلى AOV.'
-    });
+    risks.push({ severity: 'high', category: 'الاحتمالات', title: `احتمالية خسارة ${100 - stats.profit.profitProbability.toFixed(1)}%`, desc: `في 10,000 محاكاة — ${(100 - stats.profit.profitProbability).toFixed(1)}% من السيناريوهات خسرت.`, mitigation: 'حسّن الـ CVR أو العرض أو استهدف أعلى AOV.' });
     totalRiskScore += 20;
   }
 
@@ -686,9 +557,6 @@ function computeRisks(state, normalized, stats) {
   };
 }
 
-// ============================================================
-// SCORES
-// ============================================================
 function computeScores(state, stats, normalized) {
   const overall = computeWeightedScore(state, stats);
   return {
@@ -803,9 +671,6 @@ function computeProfitabilityScore(state, stats) {
   return Math.min(100, Math.round(score));
 }
 
-// ============================================================
-// VERDICT
-// ============================================================
 function computeVerdict(stats, breakEvenRoas) {
   const medianRoas = stats.roas.p50;
   const medianProfit = stats.profit.p50;
@@ -832,9 +697,6 @@ function computeVerdict(stats, breakEvenRoas) {
   };
 }
 
-// ============================================================
-// FUNNEL, COHORT, ATTRIBUTION (compact versions)
-// ============================================================
 function computeFunnel(state, stats) {
   const totalBudget = state.budget.totalBudget;
   const dist = {
@@ -847,13 +709,14 @@ function computeFunnel(state, stats) {
   }[state.objective.primaryGoal] || { tofu: 0.5, mofu: 0.5, bofu: 0.5 };
 
   const sum = dist.tofu + dist.mofu + dist.bofu;
+  const avgFreq = (INDUSTRIES[state.foundation.industry] || INDUSTRIES.fashion).avgFrequency || 2.5;
 
   return {
     tofu: {
       label: 'TOFU — الوعي والاكتشاف',
       desc: 'الجمهور البارد',
       impressions: Math.round(stats.impressions.p50),
-      reach: Math.round(stats.impressions.p50 / 2.5),
+      reach: Math.round(stats.impressions.p50 / avgFreq),
       clicks: Math.round(stats.clicks.p50 * dist.tofu),
       budgetShare: (totalBudget * dist.tofu / sum)
     },
@@ -861,7 +724,7 @@ function computeFunnel(state, stats) {
       label: 'MOFU — التفكير والمقارنة',
       desc: 'الجمهور المهتم',
       impressions: Math.round(stats.impressions.p50 * 0.4),
-      reach: Math.round(stats.impressions.p50 * 0.3),
+      reach: Math.round(stats.impressions.p50 * 0.3 / avgFreq),
       clicks: Math.round(stats.clicks.p50 * dist.mofu * (state.funnel.retargetingStrategy ? 1.4 : 1.0)),
       budgetShare: (totalBudget * dist.mofu / sum)
     },
@@ -869,7 +732,7 @@ function computeFunnel(state, stats) {
       label: 'BOFU — القرار والشراء',
       desc: 'الجاهز للشراء',
       impressions: Math.round(stats.impressions.p50 * 0.15),
-      reach: Math.round(stats.impressions.p50 * 0.1),
+      reach: Math.round(stats.impressions.p50 * 0.1 / avgFreq),
       clicks: Math.round(stats.clicks.p50 * dist.bofu * (state.funnel.retargetingStrategy ? 1.4 : 1.0)),
       orders: Math.round(stats.orders.p50),
       budgetShare: (totalBudget * dist.bofu / sum)
@@ -880,7 +743,7 @@ function computeFunnel(state, stats) {
 function computeCohort(state, stats, normalized) {
   const churnRate = normalized.industry.churnRate || 0.30;
   const retentionMult = state.scaling.retention && state.scaling.retention !== 'none'
-    ? RETENTION[state.scaling.retention].ltvMult
+    ? (RETENTION[state.scaling.retention]?.ltvMult || 1)
     : 1.0;
   const effectiveChurn = churnRate / retentionMult;
 
@@ -956,7 +819,7 @@ function computeAttribution(state, platformStats, platforms) {
 function computeLearningPhase(state, stats) {
   const platformCount = state.channels.platforms.length;
   const avgBudgetPerDay = state.budget.totalBudget / Math.max(1, state.budget.duration);
-  const baseDays = state.optimization.bidding ? BIDDING_STRATEGY[state.optimization.bidding].learningDays : 7;
+  const baseDays = state.optimization.bidding && BIDDING_STRATEGY[state.optimization.bidding] ? BIDDING_STRATEGY[state.optimization.bidding].learningDays : 7;
   const budgetFactor = avgBudgetPerDay > 1000 ? 0.8 : avgBudgetPerDay > 500 ? 1.0 : 1.3;
   const adjustedDays = Math.round(baseDays * Math.min(3, platformCount) * budgetFactor);
 
@@ -1006,64 +869,33 @@ function computeAdFatigue(state, normalized) {
   };
 }
 
-// ============================================================
-// RECOMMENDATIONS
-// ============================================================
 function generateRecommendations(state, stats, normalized) {
   const recs = [];
 
   if (stats.profit.p50 < 0) {
-    recs.push({
-      priority: 'urgent',
-      title: '🚨 الاستراتيجية خاسرة في السيناريو الوسيط',
-      desc: `صافي الربح المتوقع ${Math.round(stats.profit.p50).toLocaleString('ar-EG')} ج.م. الحل: رفع السعر أو تقليل COGS أو تحسين CVR.`
-    });
+    recs.push({ priority: 'urgent', title: '🚨 الاستراتيجية خاسرة في السيناريو الوسيط', desc: `صافي الربح المتوقع ${Math.round(stats.profit.p50).toLocaleString('ar-EG')} ج.م. الحل: رفع السعر أو تقليل COGS أو تحسين CVR.` });
   } else if (stats.profit.profitProbability < 50) {
-    recs.push({
-      priority: 'high',
-      title: '⚠️ احتمالية الربح أقل من 50%',
-      desc: `فقط ${stats.profit.profitProbability.toFixed(1)}% من السيناريوهات ربحت. تحتاج تحسين مخاطر الاستراتيجية.`
-    });
+    recs.push({ priority: 'high', title: '⚠️ احتمالية الربح أقل من 50%', desc: `فقط ${stats.profit.profitProbability.toFixed(1)}% من السيناريوهات ربحت. تحتاج تحسين مخاطر الاستراتيجية.` });
   }
 
   if (stats.roas.p10 < normalized.industry.cvr) {
-    recs.push({
-      priority: 'high',
-      title: '📉 سيناريو الأسوأ (P10) ضعيف',
-      desc: `حتى في أفضل الحالات المتشائمة، ROAS = ${stats.roas.p10.toFixed(2)}x. ارفع الأمان.`
-    });
+    recs.push({ priority: 'high', title: '📉 سيناريو الأسوأ (P10) ضعيف', desc: `حتى في أفضل الحالات المتشائمة، ROAS = ${stats.roas.p10.toFixed(2)}x. ارفع الأمان.` });
   }
 
   if (state.channels.platforms.length > 2 && state.budget.totalBudget < 30000) {
-    recs.push({
-      priority: 'high',
-      title: '💰 ميزانية مبعثرة',
-      desc: 'كل منصة محتاجة ميزانية للتعلم. ابدأ بمنصة واحدة ثم أضف الثانية.'
-    });
+    recs.push({ priority: 'high', title: '💰 ميزانية مبعثرة', desc: 'كل منصة محتاجة ميزانية للتعلم. ابدأ بمنصة واحدة ثم أضف الثانية.' });
   }
 
   if (state.creative.variants < 4) {
-    recs.push({
-      priority: 'medium',
-      title: '🎨 زود Variants',
-      desc: '4-6 variants مختلفة بتقلل التعب وتحسن الأداء 20-30%.'
-    });
+    recs.push({ priority: 'medium', title: '🎨 زود Variants', desc: '4-6 variants مختلفة بتقلل التعب وتحسن الأداء 20-30%.' });
   }
 
   if (!state.scaling.retention || state.scaling.retention === 'none') {
-    recs.push({
-      priority: 'medium',
-      title: '🔄 أضف Retention Strategy',
-      desc: 'الاحتفاظ أرخص 5x من جلب عميل جديد. LTV هيرفع ربحيتك 30%+.'
-    });
+    recs.push({ priority: 'medium', title: '🔄 أضف Retention Strategy', desc: 'الاحتفاظ أرخص 5x من جلب عميل جديد. LTV هيرفع ربحيتك 30%+.' });
   }
 
   if (!state.funnel.retargetingStrategy) {
-    recs.push({
-      priority: 'high',
-      title: '🎯 أضف Retargeting',
-      desc: 'زوار الموقع + السلات المتروكة = 20-35% من المبيعات.'
-    });
+    recs.push({ priority: 'high', title: '🎯 أضف Retargeting', desc: 'زوار الموقع + السلات المتروكة = 20-35% من المبيعات.' });
   }
 
   const order = { urgent: 0, high: 1, medium: 2, low: 3 };
@@ -1072,44 +904,24 @@ function generateRecommendations(state, stats, normalized) {
 
 function findOptimizations(state, stats) {
   const opts = [];
-
-  if (state.creative.type === 'static') {
-    opts.push({ impact: 'high', area: 'Creative', current: 'Static Images', suggestion: 'جرب UGC أو Reels', expectedGain: '+30-45% في CTR/CVR' });
-  }
-  if (state.creative.hook === 'weak' || state.creative.hook === 'average') {
-    opts.push({ impact: 'high', area: 'Hook', current: HOOK_QUALITY[state.creative.hook].name, suggestion: 'استخدم Hook قوي', expectedGain: '+25-40%' });
-  }
-  if (!state.creative.offer || state.creative.offer === 'none') {
-    opts.push({ impact: 'high', area: 'Offer', current: 'بدون عرض', suggestion: 'أضف خصم 15-20% أو Bundle', expectedGain: '+15-25% في CVR' });
-  }
-  if (state.funnel.landingQuality === 'average' || state.funnel.landingQuality === 'good') {
-    opts.push({ impact: 'high', area: 'Landing Page', current: LANDING_QUALITY[state.funnel.landingQuality].name, suggestion: 'استثمر في صفحة عالمية', expectedGain: '+25-45% في CVR' });
-  }
-  if (state.analytics.trackingSetup === 'basic') {
-    opts.push({ impact: 'medium', area: 'Tracking', current: 'Basic', suggestion: 'فعّل Conversion API', expectedGain: '+10-15% في دقة البيانات' });
-  }
-  if (!state.funnel.retargetingStrategy) {
-    opts.push({ impact: 'high', area: 'Funnel', current: 'بدون Retargeting', suggestion: 'أضف Retargeting', expectedGain: '+20-35% في المبيعات' });
-  }
-  if (!state.scaling.retention || state.scaling.retention === 'none') {
-    opts.push({ impact: 'high', area: 'Retention', current: 'بدون استراتيجية', suggestion: 'Email + Loyalty Program', expectedGain: '+30-60% في LTV' });
-  }
-
+  if (state.creative.type === 'static') opts.push({ impact: 'high', area: 'Creative', current: 'Static Images', suggestion: 'جرب UGC أو Reels', expectedGain: '+30-45% في CTR/CVR' });
+  if (state.creative.hook === 'weak' || state.creative.hook === 'average') opts.push({ impact: 'high', area: 'Hook', current: HOOK_QUALITY[state.creative.hook]?.name || '—', suggestion: 'استخدم Hook قوي', expectedGain: '+25-40%' });
+  if (!state.creative.offer || state.creative.offer === 'none') opts.push({ impact: 'high', area: 'Offer', current: 'بدون عرض', suggestion: 'أضف خصم 15-20% أو Bundle', expectedGain: '+15-25% في CVR' });
+  if (state.funnel.landingQuality === 'average' || state.funnel.landingQuality === 'good') opts.push({ impact: 'high', area: 'Landing Page', current: LANDING_QUALITY[state.funnel.landingQuality]?.name || '—', suggestion: 'استثمر في صفحة عالمية', expectedGain: '+25-45% في CVR' });
+  if (state.analytics.trackingSetup === 'basic') opts.push({ impact: 'medium', area: 'Tracking', current: 'Basic', suggestion: 'فعّل Conversion API', expectedGain: '+10-15% في دقة البيانات' });
+  if (!state.funnel.retargetingStrategy) opts.push({ impact: 'high', area: 'Funnel', current: 'بدون Retargeting', suggestion: 'أضف Retargeting', expectedGain: '+20-35% في المبيعات' });
+  if (!state.scaling.retention || state.scaling.retention === 'none') opts.push({ impact: 'high', area: 'Retention', current: 'بدون استراتيجية', suggestion: 'Email + Loyalty Program', expectedGain: '+30-60% في LTV' });
   return opts;
 }
 
-// ============================================================
-// STRATEGY DOCUMENT GENERATOR
-// ============================================================
 export function generateStrategyDocument(result) {
   const { inputs, metadata, stats, totals, verdict, scores, funnel, cohort, risks, recommendations, optimizations, platformResults } = result;
 
-  const ind = INDUSTRIES[inputs.foundation.industry];
-  const objective = OBJECTIVES[inputs.objective.primaryGoal];
+  const ind = INDUSTRIES[inputs.foundation.industry] || INDUSTRIES.fashion;
+  const objective = OBJECTIVES[inputs.objective.primaryGoal] || OBJECTIVES.sales;
   const framework = inputs.framework.primary ? FRAMEWORKS[inputs.framework.primary] : null;
 
   return {
-    // Executive Summary
     executiveSummary: {
       title: `استراتيجية تسويق رقمي لـ ${ind.name}`,
       objective: objective.name,
@@ -1121,19 +933,15 @@ export function generateStrategyDocument(result) {
       confidence: 'بناءً على 10,000 محاكاة احتمالية',
       keyInsight: verdict.summary
     },
-
-    // Business Foundation
     foundation: {
       industry: ind.name,
       category: ind.category,
-      businessStage: BUSINESS_STAGE[inputs.foundation.businessStage].name,
-      pricingStrategy: inputs.foundation.pricingStrategy ? PRICING_STRATEGY[inputs.foundation.pricingStrategy].name : 'غير محدد',
+      businessStage: BUSINESS_STAGE[inputs.foundation.businessStage]?.name || '—',
+      pricingStrategy: inputs.foundation.pricingStrategy && PRICING_STRATEGY[inputs.foundation.pricingStrategy] ? PRICING_STRATEGY[inputs.foundation.pricingStrategy].name : 'غير محدد',
       price: inputs.foundation.price,
       cogs: inputs.foundation.cogs,
       aov: inputs.foundation.aov
     },
-
-    // Market Analysis
     market: {
       size: inputs.market.targetMarketSize,
       competition: inputs.market.competitionLevel,
@@ -1147,24 +955,18 @@ export function generateStrategyDocument(result) {
         ltvMult: ind.ltvMult
       }
     },
-
-    // Target Audience
     audience: {
-      journeyStage: JOURNEY_STAGES[inputs.persona.journeyStage].name,
+      journeyStage: JOURNEY_STAGES[inputs.persona.journeyStage]?.name || '—',
       ageRange: inputs.persona.ageRange,
       gender: inputs.persona.gender,
       painPoints: inputs.persona.painPoints,
       buyingTriggers: inputs.persona.buyingTriggers
     },
-
-    // Channel Mix
     channels: {
       mediaMix: inputs.channels.mix,
-      platforms: inputs.channels.platforms.map(p => PLATFORMS[p].name),
+      platforms: inputs.channels.platforms.map(p => PLATFORMS[p]?.name || p),
       ownedMedia: inputs.channels.ownedMedia
     },
-
-    // Media Plan
     mediaPlan: {
       totalBudget: inputs.budget.totalBudget,
       duration: inputs.budget.duration + ' يوم',
@@ -1177,49 +979,37 @@ export function generateStrategyDocument(result) {
         allocation: ((p.budget / inputs.budget.totalBudget) * 100).toFixed(1) + '%'
       }))
     },
-
-    // Creative Strategy
     creative: {
-      type: CREATIVE_TYPES[inputs.creative.type].name,
-      hook: HOOK_QUALITY[inputs.creative.hook].name,
-      offer: OFFER_STRENGTH[inputs.creative.offer].name,
+      type: inputs.creative.type && CREATIVE_TYPES[inputs.creative.type] ? CREATIVE_TYPES[inputs.creative.type].name : '—',
+      hook: inputs.creative.hook && HOOK_QUALITY[inputs.creative.hook] ? HOOK_QUALITY[inputs.creative.hook].name : '—',
+      offer: inputs.creative.offer && OFFER_STRENGTH[inputs.creative.offer] ? OFFER_STRENGTH[inputs.creative.offer].name : '—',
       messagingAngle: inputs.creative.messagingAngle,
       productionQuality: inputs.creative.productionQuality,
       variantsCount: inputs.creative.variants
     },
-
-    // Funnel Strategy
     funnel: {
       type: inputs.funnel.funnelType,
-      landingQuality: LANDING_QUALITY[inputs.funnel.landingQuality].name,
+      landingQuality: inputs.funnel.landingQuality && LANDING_QUALITY[inputs.funnel.landingQuality] ? LANDING_QUALITY[inputs.funnel.landingQuality].name : '—',
       retargeting: inputs.funnel.retargetingStrategy,
       abandonedCart: inputs.funnel.abandonedCart
     },
-
-    // Optimization Plan
     optimization: {
-      bidding: BIDDING_STRATEGY[inputs.optimization.bidding].name,
-      event: OPT_EVENTS[inputs.optimization.event].name,
-      testing: TESTING[inputs.optimization.testing].name,
+      bidding: inputs.optimization.bidding && BIDDING_STRATEGY[inputs.optimization.bidding] ? BIDDING_STRATEGY[inputs.optimization.bidding].name : '—',
+      event: inputs.optimization.event && OPT_EVENTS[inputs.optimization.event] ? OPT_EVENTS[inputs.optimization.event].name : '—',
+      testing: inputs.optimization.testing && TESTING[inputs.optimization.testing] ? TESTING[inputs.optimization.testing].name : '—',
       frequencyCap: inputs.optimization.frequencyCap
     },
-
-    // Scaling & Retention
     scaling: {
-      strategy: SCALING[inputs.scaling.strategy].name,
-      retention: RETENTION[inputs.scaling.retention].name,
+      strategy: inputs.scaling.strategy && SCALING[inputs.scaling.strategy] ? SCALING[inputs.scaling.strategy].name : '—',
+      retention: inputs.scaling.retention && RETENTION[inputs.scaling.retention] ? RETENTION[inputs.scaling.retention].name : '—',
       referralProgram: inputs.scaling.referralProgram,
       upsellStrategy: inputs.scaling.upsellStrategy
     },
-
-    // Analytics
     analytics: {
-      attributionModel: ATTRIBUTION[inputs.analytics.attributionModel].name,
+      attributionModel: inputs.analytics.attributionModel && ATTRIBUTION[inputs.analytics.attributionModel] ? ATTRIBUTION[inputs.analytics.attributionModel].name : '—',
       trackingSetup: inputs.analytics.trackingSetup,
       reportingCadence: inputs.analytics.reportingCadence
     },
-
-    // Projected Results
     projections: {
       revenue: {
         p10: Math.round(stats.revenue.p10),
@@ -1247,17 +1037,9 @@ export function generateStrategyDocument(result) {
         p90: Math.round(stats.cpa.p90)
       }
     },
-
-    // Risk Assessment
     risks: risks.risks,
-
-    // Recommendations
     recommendations,
-
-    // Optimizations
     optimizations,
-
-    // Action Plan (90 days)
     actionPlan: generate90DayPlan(inputs, result)
   };
 }

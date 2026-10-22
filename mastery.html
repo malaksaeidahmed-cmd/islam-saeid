@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مركز الإنجازات | أكاديمية إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Cairo:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen pb-20">
+
+  <header class="glass-header border-b border-white/5 py-4 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-5 flex justify-between items-center">
+      <a href="academy.html" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-arrow-right ml-1"></i> الأكاديمية</a>
+      <div class="font-bold text-white">مركز الإنجازات</div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-5 py-10 space-y-8">
+    
+    <section class="text-center space-y-2 mb-10">
+      <h1 class="text-3xl font-bold text-white">ملفك الشخصي 🏆</h1>
+      <p class="text-sm text-slate-400">جمع الشارات، أكمل المسارات، واستخرج شهاداتك المعتمدة.</p>
+    </section>
+
+    <!-- Certificates Section -->
+    <section class="p-6 rounded-3xl bg-[#0E0B1A] border border-white/10">
+      <h2 class="text-xl font-bold text-white mb-4"><i class="fa-solid fa-award text-amber-400 ml-2"></i> شهاداتك</h2>
+      <div id="certificatesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 text-center space-y-3">
+          <i class="fa-solid fa-lock text-4xl text-slate-500"></i>
+          <div class="text-white font-bold">شهادة الأساسيات</div>
+          <p class="text-xs text-slate-400">أكمل مسار "أساسيات التسويق الرقمي" لفتح هذه الشهادة.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Badges Section -->
+    <section class="p-6 rounded-3xl bg-[#0E0B1A] border border-white/10">
+      <h2 class="text-xl font-bold text-white mb-4"><i class="fa-solid fa-medal text-pink-400 ml-2"></i> الشارات (Badges)</h2>
+      <div id="badgesGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        <!-- JS Fills this -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Hidden Certificate Template for PDF -->
+  <div id="certTemplate" class="hidden" style="width: 800px; height: 600px; background: #fff; position: relative; font-family: 'Cairo', sans-serif; padding: 40px; text-align: center; color: #000;">
+    <div style="border: 10px solid #d946ef; height: 100%; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <img src="logo.png" style="width: 80px; margin: 0 auto;" />
+        <h1 style="font-size: 40px; font-weight: 900; color: #7c3aed; margin-top: 20px;">شهادة إتمام</h1>
+        <p style="font-size: 20px; color: #64748b; margin-top: 10px;">تشهد أكاديمية إسلام سعيد بأن</p>
+        <h2 id="certName" style="font-size: 36px; font-weight: 700; color: #0f172a; margin: 20px 0; border-bottom: 2px solid #e2e8f0; display: inline-block; padding-bottom: 10px;">اسم الطالب</h2>
+        <p style="font-size: 20px; color: #64748b;">قد أتم بنجاح متطلبات مسار</p>
+        <h3 id="certCourse" style="font-size: 28px; font-weight: 700; color: #d946ef; margin-top: 10px;">اسم المسار</h3>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;">
+        <div style="text-align: right;">
+          <div style="font-size: 14px; color: #64748b;">تاريخ الإصدار</div>
+          <div id="certDate" style="font-size: 16px; font-weight: bold;">2025/01/01</div>
+        </div>
+        <div style="text-align: left;">
+          <div style="font-size: 24px; font-weight: bold; font-family: 'Cairo';">إسلام سعيد</div>
+          <div style="font-size: 14px; color: #64748b; border-top: 1px solid #000; padding-top: 5px; margin-top: 5px;">المؤسس والمدير</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireStudentAuth } from './js/auth/firebase-auth.js';
+    import { getUserProfile } from './js/auth/user-profile.js';
+    import { BADGES } from './js/academy/badge-system.js';
+
+    async function init() {
+      const user = await requireStudentAuth();
+      const profile = await getUserProfile(user.uid);
+      if (!profile) return;
+
+      // Render Badges (Show all, highlight unlocked)
+      const unlockedBadges = JSON.parse(localStorage.getItem('user_badges')) || []; // Mock for now, should come from DB
+      
+      document.getElementById('badgesGrid').innerHTML = BADGES.slice(0, 12).map(badge => {
+        const isUnlocked = unlockedBadges.includes(badge.id);
+        return `
+          <div class="p-3 rounded-xl border ${isUnlocked ? 'bg-pink-500/10 border-pink-500/30' : 'bg-black/30 border-white/5 opacity-50 grayscale'} text-center flex flex-col items-center justify-center gap-2">
+            <div class="text-3xl">${badge.icon}</div>
+            <div class="text-[10px] font-bold text-white">${badge.name}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Certificates
+      const completedCourses = JSON.parse(localStorage.getItem('completed_courses')) || [];
+      
+      if (completedCourses.length > 0) {
+        document.getElementById('certificatesList').innerHTML = completedCourses.map(course => `
+          <div class="p-6 rounded-2xl bg-green-500/10 border border-green-500/30 text-center space-y-3">
+            <i class="fa-solid fa-certificate text-4xl text-green-400"></i>
+            <div class="text-white font-bold">شهادة إتمام ${course}</div>
+            <button onclick="downloadCertificate('${profile.displayName}', '${course}')" class="px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold mt-2 hover:bg-green-700">تحميل الشهادة PDF</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    window.downloadCertificate = (name, course) => {
+      document.getElementById('certName').textContent = name;
+      document.getElementById('certCourse').textContent = course;
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar-EG');
+      
+      const element = document.getElementById('certTemplate');
+      element.classList.remove('hidden');
+
+      html2pdf().set({
+        margin: 0,
+        filename: `Certificate_${name}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'px', format: [800, 600], orientation: 'landscape' }
+      }).from(element).save().then(() => {
+        element.classList.add('hidden');
+      });
+    };
+
+    init();
+  </script>
+</body>
+</html>

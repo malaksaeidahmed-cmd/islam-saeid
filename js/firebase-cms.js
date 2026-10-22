@@ -3,12 +3,12 @@ import {
   getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc,
   increment, getDoc, setDoc, query, where, getDocs, orderBy, limit
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { firebaseConfig } from '../firebase-config.js';
+// ✅ مصدر واحد للحقيقة
+import { firebaseConfig, SUPER_ADMIN_UID } from '../firebase-config.js';
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const SUPER_ADMIN_UID = "aaxgWgX4WpZaj6IayzFMZiyvq9h2";
 const MAX_REVISIONS_PER_POST = 5;
 
 async function initDefaults() {
@@ -36,9 +36,6 @@ async function initDefaults() {
 
 initDefaults();
 
-// ============================================================
-// Helper: trim revisions to max N (delete oldest)
-// ============================================================
 async function trimRevisions(postId) {
   try {
     const q = query(
@@ -48,19 +45,17 @@ async function trimRevisions(postId) {
     );
     const snap = await getDocs(q);
     if (snap.size <= MAX_REVISIONS_PER_POST) return;
-
     const toDelete = snap.docs.slice(MAX_REVISIONS_PER_POST);
     for (const d of toDelete) {
       try { await deleteDoc(doc(db, "blog_revisions", d.id)); } catch (_) {}
     }
-    console.log(`[Revisions] Trimmed ${toDelete.length} old revision(s) for post ${postId}`);
   } catch (err) {
     console.warn('trimRevisions error:', err);
   }
 }
 
 export const CloudCMS = {
-
+  // ==================== Users/Admins ====================
   subscribeUsers(callback) {
     return onSnapshot(collection(db, "admins"), (snapshot) => {
       const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -68,9 +63,7 @@ export const CloudCMS = {
     });
   },
 
-  // ============================================================
-  // Portfolio
-  // ============================================================
+  // ==================== Portfolio ====================
   subscribePortfolio(callback) {
     return onSnapshot(collection(db, "portfolio"), (snapshot) => {
       const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
@@ -105,13 +98,26 @@ export const CloudCMS = {
     return null;
   },
 
+  async getPortfolioItemBySlug(slug) {
+    if (!slug) return null;
+    try {
+      const q = query(collection(db, "portfolio"), where("slug", "==", slug));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const first = snap.docs[0];
+      try { await updateDoc(doc(db, "portfolio", first.id), { views: increment(1) }); } catch (_) {}
+      return { id: first.id, ...first.data() };
+    } catch (error) {
+      console.error('getPortfolioItemBySlug error:', error);
+      return null;
+    }
+  },
+
   async likePortfolioItem(id) {
     await updateDoc(doc(db, "portfolio", id), { likes: increment(1) });
   },
 
-  // ============================================================
-  // Blog — Subscribe (with scheduled filter)
-  // ============================================================
+  // ==================== Blog ====================
   subscribeBlog(callback, includeScheduled = false) {
     return onSnapshot(collection(db, "blog"), (snapshot) => {
       let items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
@@ -155,10 +161,9 @@ export const CloudCMS = {
       const q = query(collection(db, "blog"), where("slug", "==", slug));
       const snap = await getDocs(q);
       if (snap.empty) return null;
-      const firstDoc = snap.docs[0];
-      const itemRef = doc(db, "blog", firstDoc.id);
-      try { await updateDoc(itemRef, { views: increment(1) }); } catch (_) {}
-      return { id: firstDoc.id, ...firstDoc.data() };
+      const first = snap.docs[0];
+      try { await updateDoc(doc(db, "blog", first.id), { views: increment(1) }); } catch (_) {}
+      return { id: first.id, ...first.data() };
     } catch (error) {
       console.error('getBlogPostBySlug error:', error);
       return null;
@@ -169,13 +174,10 @@ export const CloudCMS = {
     await updateDoc(doc(db, "blog", id), { likes: increment(1) });
   },
 
-  // ============================================================
-  // Revisions — نسخ سابقة من المقالات
-  // ============================================================
+  // ==================== Revisions ====================
   async saveRevision(postId, postData, meta = {}) {
     if (!postId || !postData) return null;
     try {
-      // Snapshot the current post state
       const revisionPayload = {
         postId,
         title: postData.title || '',
@@ -195,18 +197,13 @@ export const CloudCMS = {
         readingTime: postData.readingTime || 1,
         author: postData.author || 'إسلام سعيد',
         authorBio: postData.authorBio || '',
-        // Metadata about who/what created this revision
         savedAt: Date.now(),
         savedBy: meta.savedBy || 'unknown',
         savedByEmail: meta.savedByEmail || '',
-        reason: meta.reason || 'update' // update, restore, manual
+        reason: meta.reason || 'update'
       };
-
       const docRef = await addDoc(collection(db, "blog_revisions"), revisionPayload);
-
-      // Trim to max N
       await trimRevisions(postId);
-
       return docRef.id;
     } catch (error) {
       console.error('saveRevision error:', error);
@@ -216,10 +213,7 @@ export const CloudCMS = {
 
   subscribeRevisions(postId, callback) {
     if (!postId) { callback([]); return () => {}; }
-    const q = query(
-      collection(db, "blog_revisions"),
-      where("postId", "==", postId)
-    );
+    const q = query(collection(db, "blog_revisions"), where("postId", "==", postId));
     return onSnapshot(q, (snapshot) => {
       const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
         .sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
@@ -230,10 +224,7 @@ export const CloudCMS = {
   async getRevisions(postId) {
     if (!postId) return [];
     try {
-      const q = query(
-        collection(db, "blog_revisions"),
-        where("postId", "==", postId)
-      );
+      const q = query(collection(db, "blog_revisions"), where("postId", "==", postId));
       const snap = await getDocs(q);
       return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
         .sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
@@ -245,20 +236,13 @@ export const CloudCMS = {
 
   async deleteRevision(revisionId) {
     if (!revisionId) return;
-    try {
-      await deleteDoc(doc(db, "blog_revisions", revisionId));
-    } catch (error) {
-      console.error('deleteRevision error:', error);
-      throw error;
-    }
+    try { await deleteDoc(doc(db, "blog_revisions", revisionId)); }
+    catch (error) { console.error('deleteRevision error:', error); throw error; }
   },
 
-  // ============================================================
-  // Scheduled Posts
-  // ============================================================
+  // ==================== Scheduled ====================
   async scheduleBlogPost(id, scheduledAt) {
-    if (!id) throw new Error('Post ID required');
-    if (!scheduledAt) throw new Error('Scheduled time required');
+    if (!id || !scheduledAt) throw new Error('Missing data');
     await updateDoc(doc(db, "blog", id), {
       status: 'scheduled',
       scheduledAt: new Date(scheduledAt).toISOString(),
@@ -269,25 +253,17 @@ export const CloudCMS = {
   async unscheduleBlogPost(id) {
     if (!id) throw new Error('Post ID required');
     await updateDoc(doc(db, "blog", id), {
-      status: 'published',
-      scheduledAt: null,
-      updatedAt: Date.now()
+      status: 'published', scheduledAt: null, updatedAt: Date.now()
     });
   },
 
-  // ============================================================
-  // Drafts
-  // ============================================================
+  // ==================== Drafts ====================
   async saveDraft(draftId, data) {
     try {
       const draftRef = draftId
         ? doc(db, 'blog_drafts', draftId)
         : doc(collection(db, 'blog_drafts'));
-      const payload = {
-        ...data,
-        status: 'draft',
-        updatedAt: Date.now()
-      };
+      const payload = { ...data, status: 'draft', updatedAt: Date.now() };
       if (!draftId) {
         payload.createdAt = Date.now();
       } else {
@@ -300,32 +276,21 @@ export const CloudCMS = {
       }
       await setDoc(draftRef, payload, { merge: true });
       return draftRef.id;
-    } catch (error) {
-      console.error('saveDraft error:', error);
-      throw error;
-    }
+    } catch (error) { console.error('saveDraft error:', error); throw error; }
   },
 
   async getDraft(draftId) {
     if (!draftId) return null;
     try {
       const snap = await getDoc(doc(db, 'blog_drafts', draftId));
-      if (snap.exists()) return { id: snap.id, ...snap.data() };
-      return null;
-    } catch (error) {
-      console.error('getDraft error:', error);
-      return null;
-    }
+      return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+    } catch (error) { return null; }
   },
 
   async deleteDraft(draftId) {
     if (!draftId) return;
-    try {
-      await deleteDoc(doc(db, 'blog_drafts', draftId));
-    } catch (error) {
-      console.error('deleteDraft error:', error);
-      throw error;
-    }
+    try { await deleteDoc(doc(db, 'blog_drafts', draftId)); }
+    catch (error) { console.error('deleteDraft error:', error); throw error; }
   },
 
   subscribeDrafts(callback) {
@@ -336,9 +301,7 @@ export const CloudCMS = {
     });
   },
 
-  // ============================================================
-  // Comments
-  // ============================================================
+  // ==================== Comments ====================
   subscribeComments(postId, callback) {
     const q = query(collection(db, "comments"), where("postId", "==", postId), where("approved", "==", true));
     return onSnapshot(q, (snapshot) => {
@@ -370,9 +333,7 @@ export const CloudCMS = {
     return await deleteDoc(doc(db, "comments", id));
   },
 
-  // ============================================================
-  // System
-  // ============================================================
+  // ==================== System ====================
   async toggleBootcampStatus(status) {
     await updateDoc(doc(db, "analytics", "main"), { bootcampOpen: status });
   },
@@ -408,7 +369,6 @@ export const CloudCMS = {
       const analyticsRef = doc(db, "analytics", "main");
       if (type === "PDF Download") await updateDoc(analyticsRef, { pdfDownloads: increment(1) });
       if (type === "Bootcamp Lead") await updateDoc(analyticsRef, { leads: increment(1) });
-
       await addDoc(collection(db, "event_logs"), {
         type, details,
         timestamp: Date.now(),

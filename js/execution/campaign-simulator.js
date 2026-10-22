@@ -2,44 +2,49 @@
 // Campaign Simulator — محاكي الأداء اليومي للحملة
 // ============================================================
 
-import { INDUSTRIES, PLATFORMS, CREATIVE_TYPES, HOOK_QUALITY, OFFER_STRENGTH, LANDING_QUALITY } from '../simulator/simulator-data.js';
+// ✅ مسار الاستيراد الصحيح (كان ../simulator/ وهي غلط)
+import {
+  INDUSTRIES, PLATFORMS, CREATIVE_TYPES,
+  HOOK_QUALITY, OFFER_STRENGTH, LANDING_QUALITY
+} from '../simulator-data.js';
 
 export function simulateNextDay(campaign, dayNumber) {
   const strategy = campaign.strategy;
   const platform = campaign.platform;
-  
-  // 1. حساب المتغيرات الأساسية (Base Metrics)
+
+  // 1. البيانات الأساسية
   const industry = INDUSTRIES[strategy.foundation.industry] || INDUSTRIES.fashion;
   const platformData = PLATFORMS[platform] || PLATFORMS.meta;
-  
+
   const baseCPM = industry.cpm * platformData.cpmMult;
   const baseCTR = industry.ctr * platformData.ctrMult;
   const baseCVR = industry.cvr * platformData.cvrMult;
 
-  // 2. تأثير الـ Learning Phase (أول 3-7 أيام الأداء بيكون متقلب وأقل كفاءة)
+  // 2. تأثير Learning Phase (أول 3-7 أيام أداء أقل)
   const isLearning = dayNumber <= 3;
-  const learningPenalty = isLearning ? (0.6 + (dayNumber * 0.1)) : 1; // يبدأ من 60% كفاءة ويوصل 100%
+  const learningPenalty = isLearning ? (0.6 + (dayNumber * 0.1)) : 1;
 
-  // 3. تأثير إرهاق الإعلانات (Ad Fatigue) مع الوقت
-  const fatigueFactor = Math.max(0.5, 1 - ((dayNumber - 1) * 0.03)); // بيقل 3% كل يوم
+  // 3. تأثير Ad Fatigue مع الوقت
+  const fatigueFactor = Math.max(0.5, 1 - ((dayNumber - 1) * 0.03));
 
-  // 4. تأثيرات إضافية (الكرياتيف، العرض، صفحة الهبوط)
+  // 4. مضاعفات إضافية (كرياتيف، صفحة هبوط، عرض)
   const creativeMultiplier = getCreativeMultiplier(strategy.creative);
   const landingMultiplier = getLandingMultiplier(strategy.funnel.landingQuality);
+  const offerMultiplier = getOfferMultiplier(strategy.creative.offer);
 
-  // 5. حساب الأرقام الفعلية لليوم ده (مع شوية عشوائية للواقعية)
-  const variance = 0.9 + (Math.random() * 0.2); // +/- 10%
-  
+  // 5. الحساب مع تباين طبيعي
+  const variance = 0.9 + (Math.random() * 0.2);
   const dailyBudget = campaign.dailyBudget || (campaign.totalBudget / campaign.duration);
-  
+
   const cpm = baseCPM * (isLearning ? 1.2 : 1) * variance;
   const impressions = Math.floor((dailyBudget / cpm) * 1000);
-  const reach = Math.floor(impressions * 0.7); // الوصول عادة أقل من الظهور
+  // ✅ استخدام avgFrequency الصحيح
+  const reach = Math.floor(impressions / (industry.avgFrequency || 2.5));
 
   const ctr = (baseCTR / 100) * learningPenalty * fatigueFactor * creativeMultiplier * variance;
   const clicks = Math.floor(impressions * ctr);
 
-  const cvr = (baseCVR / 100) * learningPenalty * landingMultiplier * getOfferMultiplier(strategy.creative.offer) * variance;
+  const cvr = (baseCVR / 100) * learningPenalty * landingMultiplier * offerMultiplier * variance;
   const orders = Math.floor(clicks * cvr);
 
   const aov = strategy.foundation.aov || industry.aov;
@@ -48,16 +53,13 @@ export function simulateNextDay(campaign, dayNumber) {
   const roas = spend > 0 ? (revenue / spend) : 0;
   const cpa = orders > 0 ? (spend / orders) : 0;
 
-  // 6. إذا كان فيه تخفيض ميزانية أو إيقاف
-  if (campaign.status === 'paused') {
-    return { impressions: 0, clicks: 0, orders: 0, spend: 0, revenue: 0, roas: 0, cpa: 0, cpm: 0, ctr: 0, cvr: 0, reach: 0 };
+  if (campaign.status === 'paused' || campaign.status === 'completed') {
+    return { dayNumber, impressions: 0, clicks: 0, orders: 0, spend: 0, revenue: 0, roas: 0, cpa: 0, cpm: 0, ctr: 0, cvr: 0, reach: 0 };
   }
 
   return {
     dayNumber,
-    impressions,
-    reach,
-    clicks,
+    impressions, reach, clicks,
     ctr: parseFloat((ctr * 100).toFixed(2)),
     orders,
     cvr: parseFloat((cvr * 100).toFixed(2)),
@@ -73,7 +75,6 @@ function getCreativeMultiplier(creative) {
   let mult = 1;
   if (creative.type && CREATIVE_TYPES[creative.type]) mult *= CREATIVE_TYPES[creative.type].mult;
   if (creative.hook && HOOK_QUALITY[creative.hook]) mult *= HOOK_QUALITY[creative.hook].mult;
-  // وجود variants كتير بيحسن الأداء
   if (creative.variants >= 3) mult *= 1.15;
   return mult;
 }

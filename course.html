@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark">
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>الدرس | أكاديمية إسلام سعيد</title>
   <link rel="icon" type="image/png" href="logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07060E; }
-    .markdown-body h1 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 1rem; }
-    .markdown-body h2 { font-size: 1.4rem; font-weight: 700; color: #d946ef; margin-top: 2rem; margin-bottom: 0.75rem; }
-    .markdown-body p { font-size: 0.95rem; line-height: 1.9; color: #cbd5e1; margin-bottom: 1rem; }
-    .markdown-body ul { list-style-type: disc; padding-right: 1.5rem; margin-bottom: 1rem; color: #cbd5e1; font-size: 0.95rem; }
-    .markdown-body li { margin-bottom: 0.5rem; }
-    .markdown-body strong { color: #fff; font-weight: bold; }
-    .markdown-body code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #f472b6; }
+    .article-content { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.95rem; line-height: 1.95; color: #cbd5e1; overflow-wrap: anywhere; }
+    .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(217,70,239,0.3); }
+    .article-content h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 1.5rem 0 0.5rem; }
+    .article-content p { margin-bottom: 1rem; }
+    .article-content ul, .article-content ol { padding-right: 1.5rem; margin-bottom: 1rem; }
+    .article-content li { margin-bottom: 0.5rem; list-style-type: disc; }
   </style>
 </head>
 <body class="text-slate-200 min-h-screen">
@@ -46,17 +44,35 @@
         <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i> جاري التحميل...
       </div>
       
-      <div id="contentBox" class="hidden">
-        <div class="mb-6 flex items-center justify-between flex-wrap gap-2">
+      <div id="contentBox" class="hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
           <h1 class="text-2xl font-bold text-white" id="lessonTitle"></h1>
           <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-400" id="lessonDuration"></span>
         </div>
         
-        <div class="p-6 md:p-8 rounded-3xl glass-card markdown-body" id="lessonContent"></div>
+        <!-- المحتوى النظري -->
+        <div class="p-6 md:p-8 rounded-3xl glass-card article-content" id="lessonContent"></div>
 
-        <div class="mt-8 flex justify-between items-center pt-6 border-t border-white/10" id="navButtons">
-          <!-- Filled by JS -->
+        <!-- المهمة التطبيقية -->
+        <div id="practicalSection" class="hidden p-6 md:p-8 rounded-3xl bg-blue-500/5 border border-blue-500/20 space-y-4">
+          <div class="flex items-center gap-2 text-blue-400 font-bold text-sm">
+            <i class="fa-solid fa-laptop-code"></i> المهمة التطبيقية
+          </div>
+          <h3 class="text-white font-bold text-lg" id="practicalTitle"></h3>
+          <p class="text-sm text-slate-300" id="practicalDesc"></p>
+          <div id="practicalFields" class="space-y-3"></div>
         </div>
+
+        <!-- AI Prompts -->
+        <div id="aiSection" class="hidden p-6 md:p-8 rounded-3xl bg-purple-500/5 border border-purple-500/20 space-y-4">
+          <div class="flex items-center gap-2 text-purple-400 font-bold text-sm">
+            <i class="fa-solid fa-robot"></i> المساعد الذكي (اسألني!)
+          </div>
+          <div id="aiPromptsList" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-8 flex justify-between items-center pt-6 border-t border-white/10" id="navButtons"></div>
       </div>
     </div>
 
@@ -64,107 +80,116 @@
 
   <script type="module">
     import { requireStudentAuth } from './js/auth/firebase-auth.js';
-    import { getUserProfile } from './js/auth/user-profile.js';
-    import { COURSES, getCourseById, getLessonById, getNextLesson } from './js/academy/courses-data.js';
-    import { LESSONS } from './js/academy/lessons-data.js';
+    import { AcademyCMS } from './js/academy/academy-cms.js';
+    import { COURSES, getCourseById, getLessonById } from './js/academy/courses-data.js';
     import { completeLesson } from './js/academy/learning-engine.js';
 
-    const user = await requireStudentAuth();
-    const profile = await getUserProfile(user.uid);
-    
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('course');
-    const lessonIdFromUrl = urlParams.get('id');
+    const lessonId = urlParams.get('id');
 
-    if (!courseId && !lessonIdFromUrl) window.location.href = 'academy.html';
+    if (!lessonId) window.location.href = 'academy.html';
 
-    const course = getCourseById(courseId);
-    if (!course) window.location.href = 'academy.html';
+    async function init() {
+      try {
+        const user = await requireStudentAuth();
+        
+        // 1. جلب الدرس من Firebase
+        const lesson = await AcademyCMS.getLesson(lessonId);
+        
+        if (!lesson) {
+          document.getElementById('loading').innerHTML = 'الدرس غير موجود.';
+          return;
+        }
 
-    // تحديد الدرس الحالي
-    let currentLessonId = lessonIdFromUrl;
-    if (!currentLessonId) {
-      // لو مفيش درس محدد، نفتح أول درس
-      currentLessonId = course.lessons[0].id;
+        // 2. عرض الدرس
+        renderLesson(lesson, courseId, user);
+        renderSidebar(courseId, lessonId);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loading').innerHTML = 'حدث خطأ في تحميل الدرس. تأكد من تسجيل الدخول.';
+      }
     }
 
-    const lessonMeta = getLessonById(currentLessonId);
-    const lessonData = LESSONS[currentLessonId];
-
-    if (!lessonMeta || !lessonData) {
-      document.getElementById('loading').innerHTML = 'الدرس غير موجود.';
-    } else {
-      renderLesson(lessonMeta, lessonData, course);
-    }
-
-    function renderLesson(meta, data, course) {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('contentBox').classList.remove('hidden');
-      document.getElementById('lessonTitleHeader').textContent = course.title;
-
-      document.getElementById('lessonTitle').textContent = meta.title;
-      document.getElementById('lessonDuration').innerHTML = `<i class="fa-regular fa-clock ml-1"></i> ${meta.duration} دقيقة`;
-
-      // تحويل المارك داون لـ HTML
-      document.getElementById('lessonContent').innerHTML = marked.parse(data.content);
-
-      // Sidebar Lessons List
+    function renderSidebar(courseId, activeId) {
+      const course = getCourseById(courseId);
+      if (!course) return;
       document.getElementById('lessonsList').innerHTML = course.lessons.map(l => {
-        const isActive = l.id === currentLessonId;
+        const isActive = l.id === activeId;
         return `
           <a href="course.html?course=${course.id}&id=${l.id}" class="block px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors ${isActive ? 'bg-pink-600/20 text-pink-400 border-r-2 border-pink-500' : 'text-slate-400 hover:bg-white/5 hover:text-white'}">
             ${l.title}
           </a>
         `;
       }).join('');
+    }
 
-      // Navigation Buttons (Next/Complete)
-      const nextLesson = getNextLesson(currentLessonId);
-      const navContainer = document.getElementById('navButtons');
-      
-      // Check if it's a quiz lesson
-      const isQuiz = data.type === 'quiz';
+    function renderLesson(lesson, courseId, user) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('contentBox').classList.remove('hidden');
 
-      let actionBtnHtml = '';
-      if (isQuiz) {
-        actionBtnHtml = `<a href="quiz.html?course=${course.id}&id=${data.quizId}" class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg hover:opacity-90 transition-opacity">ابدأ الاختبار <i class="fa-solid fa-arrow-left mr-1"></i></a>`;
-      } else {
-        actionBtnHtml = `<button onclick="markComplete()" id="completeBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition-opacity">تحديد كمكتمل <i class="fa-solid fa-check mr-1"></i></button>`;
+      document.getElementById('lessonTitle').textContent = lesson.title;
+      document.getElementById('lessonDuration').innerHTML = `<i class="fa-regular fa-clock ml-1"></i> ${lesson.duration} دقيقة`;
+      document.getElementById('lessonTitleHeader').textContent = getCourseById(courseId)?.title || '';
+
+      // 1. المحتوى
+      document.getElementById('lessonContent').innerHTML = lesson.content || '';
+
+      // 2. المهمة التطبيقية
+      if (lesson.practicalTask) {
+        document.getElementById('practicalSection').classList.remove('hidden');
+        document.getElementById('practicalTitle').textContent = lesson.practicalTask.title;
+        document.getElementById('practicalDesc').textContent = lesson.practicalTask.description;
+        // (ممكن نضيف حقول الإدخال هنا لاحقاً)
       }
 
+      // 3. AI Prompts
+      if (lesson.aiPrompts && lesson.aiPrompts.length) {
+        document.getElementById('aiSection').classList.remove('hidden');
+        document.getElementById('aiPromptsList').innerHTML = lesson.aiPrompts.map(p => `
+          <button onclick="alert('سيتم ربط المساعد الذكي قريباً جداً!')" class="px-3 py-1.5 rounded-full bg-purple-500/20 text-purple-300 text-[11px] hover:bg-purple-500/30 transition-all">
+            ${p}
+          </button>
+        `).join('');
+      }
+
+      // 4. أزرار التنقل
+      const nextLesson = getNextLesson(lessonId);
+      const navContainer = document.getElementById('navButtons');
+      
+      let actionBtn = lesson.type === 'quiz'
+        ? `<a href="quiz.html?course=${courseId}&id=${lesson.quizId}" class="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold text-sm">ابدأ الاختبار</a>`
+        : `<button onclick="markComplete()" id="completeBtn" class="px-6 py-3 rounded-xl bg-green-600 text-white font-bold text-sm">تحديد كمكتمل</button>`;
+
       navContainer.innerHTML = `
-        <div>${getPreviousBtn(currentLessonId, course.id)}</div>
-        <div>${actionBtnHtml}</div>
-        <div>${nextLesson ? `<a href="course.html?course=${course.id}&id=${nextLesson.id}" class="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold text-xs">التالي <i class="fa-solid fa-arrow-left ml-1"></i></a>` : ''}</div>
+        <div><a href="academy.html" class="px-5 py-2.5 rounded-lg bg-white/5 text-slate-300 font-bold text-xs"><i class="fa-solid fa-arrow-right ml-1"></i> السابق</a></div>
+        <div>${actionBtn}</div>
+        <div>${nextLesson ? `<a href="course.html?course=${courseId}&id=${nextLesson.id}" class="px-5 py-2.5 rounded-lg bg-white/5 text-white font-bold text-xs">التالي <i class="fa-solid fa-arrow-left ml-1"></i></a>` : ''}</div>
       `;
 
       window.markComplete = async () => {
         const btn = document.getElementById('completeBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-
-        await completeLesson(user.uid, currentLessonId, course.id);
-        
-        btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> تم الإكمال';
-        btn.classList.replace('from-green-600', 'from-slate-700');
-        btn.classList.replace('to-emerald-600', 'to-slate-800');
-        
-        if (nextLesson) {
-          setTimeout(() => {
-            window.location.href = `course.html?course=${course.id}&id=${nextLesson.id}`;
-          }, 1000);
-        }
+        btn.textContent = 'جاري الحفظ...';
+        await completeLesson(user.uid, lessonId, courseId);
+        btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> تم';
+        btn.classList.replace('bg-green-600', 'bg-slate-700');
+        if (nextLesson) setTimeout(() => window.location.href = `course.html?course=${courseId}&id=${nextLesson.id}`, 1000);
       };
     }
 
-    function getPreviousBtn(currentId, courseId) {
+    // دالة مساعدة
+    function getNextLesson(currentId) {
+      const current = getLessonById(currentId);
+      if (!current) return null;
+      const course = getCourseById(current.courseId);
       const idx = course.lessons.findIndex(l => l.id === currentId);
-      if (idx > 0) {
-        const prev = course.lessons[idx - 1];
-        return `<a href="course.html?course=${courseId}&id=${prev.id}" class="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs"><i class="fa-solid fa-arrow-right ml-1"></i> السابق</a>`;
-      }
-      return '<div></div>';
+      if (idx === -1 || idx === course.lessons.length - 1) return null;
+      return course.lessons[idx + 1];
     }
+
+    init();
   </script>
 </body>
 </html>

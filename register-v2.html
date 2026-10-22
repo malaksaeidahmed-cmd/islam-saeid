@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>انضم للأكاديمية | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: radial-gradient(circle at top right, #16112b 0%, #07060E 60%); }
+    .step-indicator.active { background: #d946ef; color: white; }
+    .step-indicator.completed { background: #22c55e; color: white; }
+  </style>
+</head>
+<body class="font-['IBM_Plex_Sans_Arabic'] min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-pink-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="relative w-full max-w-xl my-8">
+    
+    <div class="text-center mb-8">
+      <img src="logo.png" alt="إسلام سعيد" class="w-16 h-16 object-contain rounded-2xl border border-white/10 mx-auto mb-4" onerror="this.style.display='none'" />
+      <h1 class="text-white font-bold text-2xl">طلب الانضمام للأكاديمية</h1>
+      <p class="text-slate-400 text-xs mt-2">املأ البيانات بدقة، سيتم مراجعة طلبك وتفعيل حسابك خلال 24 ساعة.</p>
+    </div>
+
+    <div class="p-8 rounded-3xl border border-white/10 bg-[#0E0B1A]/90 backdrop-blur-xl shadow-2xl">
+      
+      <form id="advancedRegisterForm" class="space-y-5 text-xs" novalidate>
+
+        <!-- Section 1: Basic Info -->
+        <div class="space-y-4">
+          <h3 class="text-white font-bold text-sm border-b border-white/10 pb-2">المعلومات الأساسية</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1.5">الاسم الكامل *</label>
+              <input type="text" id="regName" required placeholder="اسمك الثلاثي" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1.5">رقم الواتساب *</label>
+              <input type="tel" id="regPhone" required placeholder="01xxxxxxxxx" dir="ltr" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-left focus:outline-none focus:border-pink-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">البريد الإلكتروني *</label>
+            <input type="email" id="regEmail" required placeholder="you@example.com" dir="ltr" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-left focus:outline-none focus:border-pink-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">كلمة المرور *</label>
+            <input type="password" id="regPassword" required placeholder="8 أحرف على الأقل" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" />
+          </div>
+        </div>
+
+        <!-- Section 2: Professional Info -->
+        <div class="space-y-4 pt-4">
+          <h3 class="text-white font-bold text-sm border-b border-white/10 pb-2">المعلومات المهنية</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1.5">مستوى الخبرة *</label>
+              <select id="regExperience" required class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500">
+                <option value="none">بدون خبرة (طالب)</option>
+                <option value="1year">أقل من سنة</option>
+                <option value="1-3">من 1 إلى 3 سنوات</option>
+                <option value="3plus">أكثر من 3 سنوات</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1.5">وظيفتك الحالية</label>
+              <input type="text" id="regRole" placeholder="مثال: Media Buyer, صاحب متجر" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">اسم الشركة / المشروع</label>
+            <input type="text" id="regCompany" placeholder="اختياري" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">حجم الميزانية الإعلانية الشهرية</label>
+            <select id="regBudget" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500">
+              <option value="0">لا أنفق حالياً</option>
+              <option value="under20k">أقل من 20,000 ج.م</option>
+              <option value="20k-100k">من 20,000 إلى 100,000 ج.م</option>
+              <option value="over100k">أكثر من 100,000 ج.م</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Section 3: Goal & Invite -->
+        <div class="space-y-4 pt-4">
+          <h3 class="text-white font-bold text-sm border-b border-white/10 pb-2">الهدف وكود الدعوة</h3>
+          
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">إيه هدفك من الانضمام؟ *</label>
+            <select id="regGoal" required class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500">
+              <option value="academic">أكاديمي (أتعلم وأفهم التسويق)</option>
+              <option value="business">أعمال (أطبق في شغلي/مشروعي)</option>
+              <option value="both">الاتنين مع بعض</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">كود الدعوة (إن وجد)</label>
+            <input type="text" id="regInviteCode" placeholder="مثال: ISLAM-2026-VIP" dir="ltr" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" />
+            <p class="text-[10px] text-slate-500 mt-1">لو معاك كود دعوة صالح، سيتم تفعيل حسابك فوراً.</p>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1.5">ليه عايز تنضم؟ (سطرين بالكتير)</label>
+            <textarea id="regMotivation" rows="2" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-pink-500" placeholder="إيه اللي مخليك مهتم بالأكاديمية؟"></textarea>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div id="regError" class="hidden p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-center font-semibold"></div>
+
+        <!-- Terms -->
+        <label class="flex items-start gap-2 cursor-pointer pt-2">
+          <input type="checkbox" id="regTerms" required class="mt-0.5 w-4 h-4 rounded border-white/20 bg-black/50 accent-pink-600 cursor-pointer" />
+          <span class="text-slate-300 text-[11px] leading-relaxed">أوافق على <a href="#" class="text-pink-400 underline">الشروط والأحكام</a> وسياسة الخصوصية، وألتزم بعدم مشاركة أو تصوير المحتوى.</span>
+        </label>
+
+        <!-- Submit -->
+        <button type="submit" id="regSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold shadow-lg text-sm disabled:opacity-60 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span id="regSubmitText">إرسال طلب الانضمام</span>
+        </button>
+
+      </form>
+
+      <div class="pt-6 mt-6 border-t border-white/10 text-center text-xs">
+        <span class="text-slate-400">عندك حساب بالفعل؟</span>
+        <a href="admin/login.html" class="text-pink-400 font-bold hover:underline">تسجيل الدخول</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { registerStudent } from './js/auth/firebase-auth.js';
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById('advancedRegisterForm');
+    const submitBtn = document.getElementById('regSubmitBtn');
+    const submitText = document.getElementById('regSubmitText');
+    const errorBox = document.getElementById('regError');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitText.textContent = 'جاري إرسال الطلب...';
+
+      const name = document.getElementById('regName').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const experience = document.getElementById('regExperience').value;
+      const role = document.getElementById('regRole').value.trim();
+      const company = document.getElementById('regCompany').value.trim();
+      const budget = document.getElementById('regBudget').value;
+      const goal = document.getElementById('regGoal').value;
+      const inviteCode = document.getElementById('regInviteCode').value.trim();
+      const motivation = document.getElementById('regMotivation').value.trim();
+      const terms = document.getElementById('regTerms').checked;
+
+      if (!terms) {
+        showError('يجب الموافقة على الشروط.');
+        resetBtn();
+        return;
+      }
+
+      try {
+        // 1. إنشاء الحساب في Firebase Auth
+        const { user } = await registerStudent({ email, password, displayName: name });
+
+        // 2. التحقق من كود الدعوة (لو موجود)
+        let status = 'pending';
+        let inviteData = null;
+
+        if (inviteCode) {
+          const invRef = doc(db, 'invite_codes', inviteCode);
+          const invSnap = await getDoc(invRef);
+          if (invSnap.exists()) {
+            inviteData = invSnap.data();
+            if (inviteData.usedCount < inviteData.maxUses && (!inviteData.expiresAt || Date.now() < inviteData.expiresAt)) {
+              status = 'approved'; // كود دعوة صالح = تفعيل فوري
+              await updateDoc(invRef, { usedCount: increment(1) });
+            } else {
+              showError('كود الدعوة غير صالح أو منتهي.');
+              resetBtn();
+              return;
+            }
+          } else {
+            showError('كود الدعوة غير موجود.');
+            resetBtn();
+            return;
+          }
+        }
+
+        // 3. حفظ بيانات الطالب في users
+        await setDoc(doc(db, 'users', user.uid), {
+          email, displayName: name, phone, experience, role, company, budget, goal, motivation,
+          status: status,
+          role: 'student',
+          createdAt: Date.now()
+        });
+
+        // 4. حفظ الطلب في user_requests (لو محتاج موافقة)
+        if (status === 'pending') {
+          await setDoc(doc(db, 'user_requests', user.uid), {
+            uid: user.uid,
+            fullName: name, email, phone, experience, role, company, budget, goal, motivation,
+            inviteCode: inviteCode || null,
+            status: 'pending',
+            createdAt: Date.now()
+          });
+        }
+
+        // 5. توجيه المستخدم
+        if (status === 'approved') {
+          submitText.textContent = '✅ تم التفعيل! جاري التحويل...';
+          setTimeout(() => window.location.href = 'academy.html', 1500);
+        } else {
+          submitText.textContent = '✅ تم إرسال الطلب بنجاح';
+          setTimeout(() => {
+            alert('طلبك تحت المراجعة. سيتم تفعيل حسابك خلال 24 ساعة.');
+            window.location.href = 'auth.html'; // صفحة تانية تقوله استنى
+          }, 1000);
+        }
+
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'حدث خطأ أثناء التسجيل');
+        resetBtn();
+      }
+    });
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.remove('hidden');
+    }
+
+    function resetBtn() {
+      submitBtn.disabled = false;
+      submitText.textContent = 'إرسال طلب الانضمام';
+    }
+  </script>
+</body>
+</html>

@@ -3,35 +3,10 @@
 // ============================================================
 
 export const metaState = {
-  campaign: {
-    objective: null,
-    name: '',
-    cbo: true,
-    budget: 0
-  },
-  adSet: {
-    name: '',
-    audience: 'broad',
-    placements: 'advantage',
-    budget: 0,
-    optimization: 'purchase'
-  },
-  ad: {
-    name: '',
-    primaryText: '',
-    headline: '',
-    cta: 'SHOP_NOW',
-    imageUrl: 'placeholder'
-  },
+  campaign: { objective: null, name: '', cbo: true, budget: 0 },
+  adSet: { name: '', audience: 'broad', placements: 'advantage', budget: 0, optimization: 'purchase' },
+  ad: { name: '', primaryText: '', headline: '', cta: 'SHOP_NOW', imageUrl: 'placeholder' },
   currentStep: 1
-};
-
-const OBJECTIVES = {
-  SALES: 'مبيعات (Sales)',
-  LEADS: 'عملاء محتملين (Leads)',
-  TRAFFIC: 'زيارات (Traffic)',
-  ENGAGEMENT: 'تفاعل (Engagement)',
-  AWARENESS: 'وعي (Awareness)'
 };
 
 export function setMetaState(section, key, value) {
@@ -48,20 +23,19 @@ export function validateStep(step) {
   }
   if (step === 2) {
     if (!metaState.adSet.name.trim()) return 'يرجى إدخال اسم المجموعة الإعلانية.';
-    if (metaState.adSet.budget < 50) return 'ميزانية المجموعة يجب أن تكون 50 ج.م على الأقل.';
+    if (!metaState.campaign.cbo && metaState.adSet.budget < 50) return 'ميزانية المجموعة يجب أن تكون 50 ج.م على الأقل.';
   }
   if (step === 3) {
     if (!metaState.ad.name.trim()) return 'يرجى إدخال اسم الإعلان.';
-    if (!metaState.ad.primaryText.trim()) return 'يرجى إدخال النص الأساسي (Primary Text).';
-    if (!metaState.ad.headline.trim()) return 'يرجى إدخال العنوان (Headline).';
+    if (!metaState.ad.primaryText.trim()) return 'يرجى إدخال النص الأساسي.';
+    if (!metaState.ad.headline.trim()) return 'يرجى إدخال العنوان.';
   }
-  return null; // Valid
+  return null;
 }
 
 export function nextStep() {
   const error = validateStep(metaState.currentStep);
   if (error) return { success: false, error };
-
   if (metaState.currentStep < 3) {
     metaState.currentStep++;
     return { success: true };
@@ -77,30 +51,35 @@ export function prevStep() {
   return false;
 }
 
-// حفظ الحملة وإرسالها لمحرك التنفيذ
 export function launchMetaCampaign() {
+  // ✅ استخدم الاستراتيجية الموجودة، متستبدلهاش!
+  let existingStrategy;
+  try {
+    const raw = localStorage.getItem('sim_v3_state');
+    existingStrategy = raw ? JSON.parse(raw) : null;
+  } catch (_) {
+    existingStrategy = null;
+  }
+
+  const fallbackStrategy = {
+    foundation: { industry: 'fashion', aov: 1000, cogs: 30 },
+    objective: { kpiTarget: 3.0 },
+    creative: { type: 'video', hook: 'strong', offer: 'none', variants: 3 },
+    funnel: { landingQuality: 'average' }
+  };
+
   const finalCampaign = {
     platform: 'meta',
-    strategy: {
-      // Mock strategy data, would be pulled from actual simulator in a full app
-      foundation: { industry: 'fashion', aov: 1000, cogs: 30 },
-      objective: { kpiTarget: 3.0 },
-      creative: { type: 'video', hook: 'strong', offer: 'none', variants: 3 },
-      funnel: { landingQuality: 'average' }
-    },
+    strategy: existingStrategy || fallbackStrategy,
     campaignData: metaState.campaign,
     adSets: [metaState.adSet],
     ads: [metaState.ad],
     status: 'active',
     dailyBudget: metaState.campaign.cbo ? metaState.campaign.budget : metaState.adSet.budget,
-    duration: 30 // Default
+    duration: 30
   };
 
-  // حفظ في localStorage عشان صفحة execute.html تقرأها
   localStorage.setItem('executable_meta_campaign', JSON.stringify(finalCampaign));
-  
-  // حفظ في localStorage عشان لو حب يرجع يعدل
-  localStorage.setItem('sim_v3_state', JSON.stringify(finalCampaign.strategy));
-
+  // ⚠️ ممنوع نكتب في sim_v3_state تاني — ده بتاع المحاكي
   return true;
 }

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Ads Manager | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Roboto', 'IBM Plex Sans Arabic', sans-serif; background: #F8F9FA; color: #202124; }
+    .google-header { background: white; border-bottom: 1px solid #DADCE0; }
+    .google-card { background: white; border: 1px solid #DADCE0; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .google-input { width: 100%; background: white; border: 1px solid #DADCE0; border-radius: 4px; padding: 10px; color: #202124; font-size: 14px; }
+    .google-input:focus { outline: none; border-color: #1A73E8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+    .google-btn { background: #1A73E8; color: white; font-weight: 500; border-radius: 4px; padding: 10px 24px; transition: 0.2s; }
+    .google-btn:hover { background: #1557B0; }
+    .google-btn-outline { background: white; border: 1px solid #DADCE0; color: #1A73E8; }
+    .google-btn-outline:hover { background: #F8F9FA; }
+
+    /* Google Search Preview */
+    .google-search-preview { background: white; padding: 20px; border-radius: 8px; border: 1px solid #DADCE0; font-family: Arial, sans-serif; }
+    .g-preview-sponsored { font-size: 14px; font-weight: bold; color: #202124; margin-bottom: 2px; }
+    .g-preview-url { font-size: 14px; color: #202124; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+    .g-preview-title { font-size: 20px; color: #1A0DAB; cursor: pointer; margin-bottom: 4px; }
+    .g-preview-title:hover { text-decoration: underline; }
+    .g-preview-desc { font-size: 14px; color: #4D5156; line-height: 1.5; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <header class="google-header py-3 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-5 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href="../index.html" class="text-gray-500 hover:text-black"><i class="fa-solid fa-arrow-right"></i></a>
+        <span class="font-bold text-xl tracking-tight"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span> Ads</span>
+      </div>
+      <div class="text-xs text-gray-500">Account: <strong>Islam Saeed Academy</strong></div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-5 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Forms -->
+      <div class="lg:col-span-2 space-y-4">
+        <div id="errorBox" class="hidden p-3 rounded bg-red-100 border border-red-400 text-red-700 text-xs font-bold"></div>
+
+        <div class="flex gap-2 mb-4">
+          <div class="flex-1 h-1 bg-[#1A73E8] rounded-full" id="ind1"></div>
+          <div class="flex-1 h-1 bg-gray-200 rounded-full" id="ind2"></div>
+        </div>
+
+        <!-- STEP 1: Campaign -->
+        <div id="g_step1" class="space-y-4">
+          <div class="google-card p-6">
+            <h2 class="text-lg font-bold mb-4 border-b border-gray-200 pb-2">1. إعداد الحملة (Campaign)</h2>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <label class="p-3 border border-gray-300 rounded cursor-pointer hover:bg-gray-50 flex items-center gap-2" onclick="setG('campaign','type','SEARCH')">
+                <input type="radio" name="g_type" checked /> <span class="text-sm font-bold">شبكة البحث (Search)</span>
+              </label>
+              <label class="p-3 border border-gray-300 rounded cursor-pointer hover:bg-gray-50 flex items-center gap-2" onclick="setG('campaign','type','DISPLAY')">
+                <input type="radio" name="g_type" /> <span class="text-sm font-bold">الشبكة الإعلانية (Display)</span>
+              </label>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">اسم الحملة</label>
+                <input type="text" id="g_campaignName" class="google-input" placeholder="Google_Search_Sales" oninput="setG('campaign','name',this.value)" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">الميزانية اليومية (ج.م)</label>
+                <input type="number" id="g_campaignBudget" class="google-input" placeholder="500" oninput="setG('campaign','budget',parseFloat(this.value)||0)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Ad Group (Keywords) -->
+        <div id="g_step2" class="hidden space-y-4">
+          <div class="google-card p-6">
+            <h2 class="text-lg font-bold mb-4 border-b border-gray-200 pb-2">2. المجموعة الإعلانية (Ad Group)</h2>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">اسم المجموعة</label>
+                <input type="text" id="g_adGroupName" class="google-input" placeholder="Search_Keywords_Fashion" oninput="setG('adGroup','name',this.value)" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">الكلمات المفتاحية (Keywords) - افصل بفاصلة</label>
+                <textarea id="g_keywords" class="google-input h-20" placeholder="ملابس رجالي, قمصان, عروض ملابس" oninput="setG('adGroup','keywords',this.value)"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">نوع مطابقة الكلمات (Match Type)</label>
+                <select class="google-input" onchange="setG('adGroup','matchType',this.value)">
+                  <option value="BROAD">Broad (واسع)</option>
+                  <option value="PHRASE">Phrase (عبارة)</option>
+                  <option value="EXACT">Exact (مطابق تماماً)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Ad -->
+        <div id="g_step3" class="hidden space-y-4">
+          <div class="google-card p-6">
+            <h2 class="text-lg font-bold mb-4 border-b border-gray-200 pb-2">3. تصميم الإعلان (Responsive Search Ad)</h2>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">العناوين (Headlines) - سطر لكل عنوان</label>
+                <textarea id="g_headlines" class="google-input h-24" placeholder="خصم 50% على الملابس&#10;توصيل مجاني للقاهرة&#10;تسوق الآن أفضل الماركات" oninput="setG('ad','headlines',this.value); updateGooglePreview();"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">الأوصاف (Descriptions)</label>
+                <textarea id="g_descriptions" class="google-input h-20" placeholder="اكتشف أحدث صيحات الموضة بأسعار لا تقاوم.&#10;شحن سريع خلال 48 ساعة." oninput="setG('ad','descriptions',this.value); updateGooglePreview();"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center pt-4">
+          <button id="g_prevBtn" onclick="handleGPrev()" class="google-btn google-btn-outline hidden">السابق</button>
+          <div class="flex-1"></div>
+          <button id="g_nextBtn" onclick="handleGNext()" class="google-btn">التالي</button>
+          <button id="g_launchBtn" onclick="handleGLaunch()" class="google-btn hidden" style="background:#34A853;">إطلاق الحملة <i class="fa-solid fa-rocket mr-1"></i></button>
+        </div>
+
+      </div>
+
+      <!-- Google Search Preview -->
+      <div class="lg:col-span-1">
+        <div class="sticky top-24">
+          <h3 class="text-xs font-bold text-gray-500 mb-2 text-center">معاينة نتيجة البحث (Google Search)</h3>
+          <div class="google-search-preview">
+            <div class="g-preview-sponsored">Sponsored</div>
+            <div class="g-preview-url">
+              <i class="fa-solid fa-globe text-gray-500 text-xs"></i> www.islamsaeid.me
+            </div>
+            <div class="g-preview-title" id="prev_gHeadline">عنوان الإعلان هنا</div>
+            <div class="g-preview-desc" id="prev_gDesc">هنا يظهر الوصف الخاص بالإعلان. تعرف على أفضل العروض والخصومات الحصرية.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { googleState, setGoogleState, validateGoogleStep, nextGoogleStep, prevGoogleStep, launchGoogleCampaign } from '../js/platforms/google-ads-sim.js';
+
+    window.setG = (section, key, val) => setGoogleState(section, key, val);
+
+    window.updateGooglePreview = () => {
+      const headlines = googleState.ad.headlines.split('\n').filter(h => h.trim());
+      const descriptions = googleState.ad.descriptions.split('\n').filter(d => d.trim());
+      
+      if (headlines.length > 0) document.getElementById('prev_gHeadline').textContent = headlines[0];
+      if (descriptions.length > 0) document.getElementById('prev_gDesc').textContent = descriptions[0];
+    };
+
+    window.handleGNext = () => {
+      const res = nextGoogleStep();
+      if (!res.success) { showGError(res.error); return; }
+      hideGError();
+      updateGUI();
+    };
+
+    window.handleGPrev = () => {
+      if (prevGoogleStep()) updateGUI();
+    };
+
+    window.handleGLaunch = () => {
+      const err = validateGoogleStep(3);
+      if (err) { showGError(err); return; }
+      
+      launchGoogleCampaign();
+      document.getElementById('g_launchBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري النشر...';
+      setTimeout(() => { window.location.href = '../execute.html'; }, 1000);
+    };
+
+    function updateGUI() {
+      const step = googleState.currentStep;
+      document.getElementById('g_step1').classList.add('hidden');
+      document.getElementById('g_step2').classList.add('hidden');
+      document.getElementById('g_step3').classList.add('hidden');
+      document.getElementById(`g_step${step}`).classList.remove('hidden');
+
+      document.getElementById('ind1').style.background = step >= 1 ? '#1A73E8' : '#E5E7EB';
+      document.getElementById('ind2').style.background = step >= 2 ? '#1A73E8' : '#E5E7EB';
+
+      document.getElementById('g_prevBtn').classList.toggle('hidden', step === 1);
+      document.getElementById('g_nextBtn').classList.toggle('hidden', step === 3);
+      document.getElementById('g_launchBtn').classList.toggle('hidden', step !== 3);
+    }
+
+    function showGError(msg) {
+      const box = document.getElementById('errorBox');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+    }
+    function hideGError() { document.getElementById('errorBox').classList.add('hidden'); }
+
+    updateGUI();
+  </script>
+</body>
+</html>

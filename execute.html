@@ -21,7 +21,7 @@
       </div>
       <div class="flex items-center gap-3">
         <span id="headerPlatform" class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">جاري التحميل...</span>
-        <a href="index.html" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right ml-1"></i> الرئيسية</a>
+        <a href="academy.html" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right ml-1"></i> الأكاديمية</a>
       </div>
     </div>
   </header>
@@ -33,16 +33,18 @@
       <i class="fa-solid fa-satellite-dish text-4xl text-slate-500"></i>
       <h2 class="text-xl font-bold text-white">لا توجد حملات نشطة</h2>
       <p class="text-sm text-slate-400">اذهب لصفحة المنصات وأنشئ حملتك الأولى للبدء.</p>
-      <div class="flex justify-center gap-3 mt-4">
-        <a href="platforms/meta.html" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold">Meta</a>
+      <div class="flex justify-center flex-wrap gap-3 mt-4">
+        <a href="platforms/meta.html" class="px-4 py-2 rounded-lg bg-[#0866FF] text-white text-xs font-bold">Meta</a>
         <a href="platforms/tiktok.html" class="px-4 py-2 rounded-lg bg-black border border-white/20 text-white text-xs font-bold">TikTok</a>
         <a href="platforms/google.html" class="px-4 py-2 rounded-lg bg-white text-black text-xs font-bold">Google</a>
+        <a href="platforms/linkedin.html" class="px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-xs font-bold">LinkedIn</a>
+        <a href="platforms/snapchat.html" class="px-4 py-2 rounded-lg bg-[#FFFC00] text-black text-xs font-bold">Snapchat</a>
       </div>
     </div>
 
     <!-- Dashboard View -->
     <div id="dashboardView" class="hidden space-y-6">
-      <div class="flex items-center justify-between p-4 rounded-2xl bg-[#0E0B1A] border border-white/10">
+      <div class="flex flex-wrap gap-3 items-center justify-between p-4 rounded-2xl bg-[#0E0B1A] border border-white/10">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold font-sans text-xl" id="currentDayBox">1</div>
           <div>
@@ -50,9 +52,14 @@
             <div class="text-[10px] text-slate-400" id="campaignStatusText">نشط (Active)</div>
           </div>
         </div>
-        <button onclick="simulateDay()" id="nextDayBtn" class="px-6 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs shadow-md">
-          اليوم التالي <i class="fa-solid fa-arrow-left mr-1"></i>
-        </button>
+        <div class="flex gap-2">
+          <button onclick="simulateDay()" id="nextDayBtn" class="px-6 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs shadow-md">
+            اليوم التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+          </button>
+          <button onclick="completeCampaign()" id="completeBtn" class="hidden px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-xs shadow-md">
+            <i class="fa-solid fa-check-double ml-1"></i> إنهاء الحملة
+          </button>
+        </div>
       </div>
 
       <div id="alertsContainer" class="space-y-2"></div>
@@ -102,14 +109,19 @@
     let dailyLogs = [];
     let chartInstance = null;
 
-    // Search for any platform campaign
+    // البحث عن أي حملة نشطة
     const platforms = ['meta', 'tiktok', 'google', 'linkedin', 'snapchat'];
     for (let p of platforms) {
-      const data = localStorage.getItem(`executable_${p}_campaign`) || localStorage.getItem('executable_campaign');
+      const data = localStorage.getItem(`executable_${p}_campaign`);
       if (data) {
         campaign = JSON.parse(data);
         break;
       }
+    }
+    // Fallback for legacy
+    if (!campaign) {
+      const legacy = localStorage.getItem('executable_campaign');
+      if (legacy) campaign = JSON.parse(legacy);
     }
 
     if (!campaign) {
@@ -117,7 +129,7 @@
     } else {
       document.getElementById('dashboardView').classList.remove('hidden');
       document.getElementById('headerPlatform').textContent = `المنصة: ${campaign.platform.toUpperCase()}`;
-      document.getElementById('totalDaysText').textContent = campaign.duration;
+      document.getElementById('totalDaysText').textContent = campaign.duration || 30;
       initChart();
     }
 
@@ -161,6 +173,54 @@
           <div><div class="text-xs font-bold">${a.title}</div><div class="text-[11px] opacity-80">${a.desc}</div></div>
         </div>
       `).join('');
+
+      // إذا وصلنا لنهاية الحملة
+      if (campaign.currentDay >= campaign.duration) {
+        document.getElementById('nextDayBtn').classList.add('hidden');
+        document.getElementById('completeBtn').classList.remove('hidden');
+        document.getElementById('campaignStatusText').textContent = 'مكتملة (Completed)';
+        document.getElementById('campaignStatusText').className = 'text-[10px] text-green-400';
+      }
+    };
+
+    window.completeCampaign = async () => {
+      if (!campaign) return;
+      
+      const totals = dailyLogs.reduce((a, c) => ({
+        spend: a.spend + c.spend,
+        revenue: a.revenue + c.revenue,
+        orders: a.orders + c.orders
+      }), { spend: 0, revenue: 0, orders: 0 });
+      
+      const avgROAS = totals.spend > 0 ? totals.revenue / totals.spend : 0;
+
+      const btn = document.getElementById('completeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري الحفظ...';
+
+      try {
+        const { getCurrentUser } = await import('./js/auth/firebase-auth.js');
+        const { recordCampaignLaunch, recordSimulationRun } = await import('./js/auth/user-profile.js');
+        const user = getCurrentUser();
+
+        if (user) {
+          await recordCampaignLaunch(user.uid);
+          await recordSimulationRun(user.uid, avgROAS);
+        }
+
+        alert(`✅ تم إنهاء الحملة بنجاح!\n\nROAS النهائي: ${avgROAS.toFixed(2)}x\nصافي الإنفاق: ${totals.spend.toLocaleString('ar-EG')} ج.م\nإجمالي الإيرادات: ${totals.revenue.toLocaleString('ar-EG')} ج.م\n\nهيتم تحويلك للأكاديمية لحفظ النقاط.`);
+
+        // مسح الحملة
+        platforms.forEach(p => localStorage.removeItem(`executable_${p}_campaign`));
+        localStorage.removeItem('executable_campaign');
+
+        window.location.href = 'academy.html';
+      } catch (err) {
+        console.error(err);
+        alert('تعذر حفظ النتائج: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check-double ml-1"></i> إنهاء الحملة';
+      }
     };
 
     function initChart() {
@@ -168,8 +228,8 @@
       chartInstance = new Chart(ctx, {
         type: 'line',
         data: { labels: [], datasets: [
-          { label: 'الإنفاق', data: [], borderColor: '#f59e0b', tension: 0.3 },
-          { label: 'الإيرادات', data: [], borderColor: '#22c55e', tension: 0.3 }
+          { label: 'الإنفاق', data: [], borderColor: '#f59e0b', tension: 0.3, fill: false },
+          { label: 'الإيرادات', data: [], borderColor: '#22c55e', tension: 0.3, fill: false }
         ]},
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
       });

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seed Lessons — One-Time Upload</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07060E; color: #fff; }</style>
+</head>
+<body class="min-h-screen p-8">
+
+  <div class="max-w-2xl mx-auto space-y-6">
+    <div class="text-center space-y-2">
+      <h1 class="text-3xl font-bold text-white">📚 Seed Lessons</h1>
+      <p class="text-slate-400 text-sm">صفحة ترفع الدروس الـ 26 لـ Firestore. استخدمها مرة واحدة بس.</p>
+    </div>
+
+    <!-- Status -->
+    <div class="p-6 rounded-2xl bg-[#0E0B1A] border border-white/10 space-y-4">
+      <div id="status" class="text-sm text-slate-400 text-center">جاري التحقق من الصلاحيات...</div>
+      
+      <button id="seedBtn" disabled 
+        class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold disabled:opacity-50">
+        🚀 ارفع كل الدروس لـ Firestore
+      </button>
+
+      <div id="progress" class="hidden space-y-2">
+        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all" style="width: 0%"></div>
+        </div>
+        <div id="progressText" class="text-xs text-slate-400 text-center">0 / 26</div>
+      </div>
+
+      <div id="log" class="hidden p-4 rounded-lg bg-black/50 border border-white/10 text-xs font-mono max-h-64 overflow-y-auto space-y-1"></div>
+    </div>
+
+    <!-- Info -->
+    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 leading-relaxed">
+      <strong>⚠️ تحذير:</strong> الصفحة دي محتاجة تكون مسجل دخول كأدمن (islam). لو مش مسجل، سجل الأول من <a href="login.html" class="underline">login.html</a> ثم ارجع هنا.
+    </div>
+  </div>
+
+  <script type="module">
+    import { CloudCMS } from './js/firebase-cms.js';
+    import { getCurrentUser } from './js/auth.js';
+    import { getFirestore, collection, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const statusEl = document.getElementById('status');
+    const seedBtn = document.getElementById('seedBtn');
+    const progressEl = document.getElementById('progress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const logEl = document.getElementById('log');
+
+    function log(msg, type = 'info') {
+      logEl.classList.remove('hidden');
+      const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-300';
+      const line = document.createElement('div');
+      line.className = color;
+      line.textContent = `[${new Date().toLocaleTimeString('ar-EG')}] ${msg}`;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // ==================== البيانات ====================
+    // هتحط هنا كل الـ 26 درس في مصفوفة واحدة
+    const LESSONS = [
+      // الدرس 1 (مثال كامل - هتكرره لـ 26)
+      {
+        id: 'm1_l1',
+        courseId: 'm1',
+        moduleNumber: 1,
+        lessonNumber: 1,
+        title: 'اقتصاديات الوحدة والتموضع',
+        type: 'theory',
+        duration: 45,
+        track: 'both',
+        content: `<h2>لماذا يفشل المسوق المنعزل عن الأرقام المالية؟</h2><p>النجاح الإعلامي لا يُقاس بمؤشرات المنصات السطحية...</p>`,
+        practicalTask: {
+          title: 'حساب اقتصاديات وحدة لمشروعك',
+          description: 'استخدم الأرقام الحقيقية لمشروعك',
+          fields: [
+            { id: 'price', label: 'سعر بيع المنتج (ج.م)', type: 'number' },
+            { id: 'cogs', label: 'تكلفة البضاعة (ج.م)', type: 'number' }
+          ]
+        },
+        quizId: 'quiz_m1_l1',
+        aiPrompts: [
+          'اشرحلي يعني إيه LTV بمثال',
+          'إزاي أحسب Max CAC؟'
+        ],
+        keyTakeaways: [
+          'ROAS المنصة مش كل حاجة',
+          'LTV:CAC لازم 3:1'
+        ]
+      },
+      // درس 2
+      // { id: 'm1_l2', ... },
+      // درس 3
+      // { id: 'm1_l3', ... },
+      // ... وهكذا لحد 26
+    ];
+
+    // ==================== Check Auth ====================
+    async function checkAuth() {
+      const user = getCurrentUser();
+      if (!user) {
+        statusEl.innerHTML = '<span class="text-red-400">❌ مش مسجل دخول. اذهب لـ login.html</span>';
+        return false;
+      }
+
+      // تحقق لو أدمن
+      try {
+        const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+        if (!adminSnap.exists()) {
+          statusEl.innerHTML = `<span class="text-red-400">❌ ${user.email} مش أدمن. تواصل مع إسلام.</span>`;
+          return false;
+        }
+        statusEl.innerHTML = `<span class="text-green-400">✅ مسجل كأدمن: ${user.email}</span>`;
+        seedBtn.disabled = false;
+        return true;
+      } catch (err) {
+        statusEl.innerHTML = `<span class="text-red-400">❌ خطأ: ${err.message}</span>`;
+        return false;
+      }
+    }
+
+    // ==================== Seed Function ====================
+    async function seedLessons() {
+      if (!confirm(`هل أنت متأكد؟ هترفع ${LESSONS.length} درس لـ Firestore.`)) return;
+
+      seedBtn.disabled = true;
+      progressEl.classList.remove('hidden');
+      logEl.innerHTML = '';
+      
+      let success = 0;
+      let failed = 0;
+
+      for (let i = 0; i < LESSONS.length; i++) {
+        const lesson = LESSONS[i];
+        const pct = Math.round(((i + 1) / LESSONS.length) * 100);
+        progressBar.style.width = pct + '%';
+        progressText.textContent = `${i + 1} / ${LESSONS.length}`;
+
+        try {
+          await setDoc(doc(db, 'lessons', lesson.id), {
+            ...lesson,
+            isPublished: true,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          });
+          log(`✅ ${lesson.id} — ${lesson.title}`, 'success');
+          success++;
+        } catch (err) {
+          log(`❌ ${lesson.id} — ${err.message}`, 'error');
+          failed++;
+        }
+      }
+
+      log('━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+      log(`✅ نجح: ${success} / ❌ فشل: ${failed}`, success > 0 ? 'success' : 'error');
+      
+      if (failed === 0) {
+        log('🎉 كل الدروس اترفعت بنجاح!', 'success');
+        log('افتح academy.html عشان تشوفها', 'info');
+      }
+
+      statusEl.innerHTML = `<span class="${failed === 0 ? 'text-green-400' : 'text-amber-400'}">${failed === 0 ? '✅ اكتمل!' : '⚠️ اكتمل مع أخطاء'} — ${success} نجح، ${failed} فشل</span>`;
+      seedBtn.disabled = false;
+      seedBtn.textContent = '🔄 إعادة الرفع (للتحديث)';
+    }
+
+    seedBtn.addEventListener('click', seedLessons);
+
+    // Start
+    checkAuth();
+  </script>
+</body>
+</html>

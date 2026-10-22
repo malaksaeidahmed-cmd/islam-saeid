@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkedIn Ads | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #F3F2EF; color: #000; }
+    .li-card { background: #fff; border: 1px solid #E0E0E0; border-radius: 8px; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+    .li-input { width: 100%; border: 1px solid #000; border-radius: 4px; padding: 10px; font-size: 14px; }
+    .li-input:focus { outline: none; border-color: #0A66C2; box-shadow: 0 0 0 1px #0A66C2; }
+    .li-btn { background: #0A66C2; color: #fff; font-weight: bold; border-radius: 20px; padding: 10px 20px; }
+    .li-btn:hover { background: #004182; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex justify-between items-center bg-[#0A66C2] text-white p-3 rounded-t-lg">
+      <span class="font-bold">LinkedIn Campaign Manager</span>
+      <a href="../index.html" class="text-sm"><i class="fa-solid fa-arrow-right"></i> العودة</a>
+    </div>
+
+    <div class="li-card p-6 space-y-4">
+      <h2 class="text-xl font-bold">حملة جديدة</h2>
+      <div>
+        <label class="block text-sm font-bold mb-1">اسم الحملة</label>
+        <input type="text" id="li_campaignName" class="li-input" placeholder="B2B_LeadGen_2025" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold mb-1">الجمهور المستهدف (Job Title)</label>
+        <input type="text" id="li_targeting" class="li-input" placeholder="Marketing Manager, CEO" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold mb-1">الميزانية اليومية (ج.م)</label>
+        <input type="number" id="li_budget" class="li-input" placeholder="500" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold mb-1">نص الإعلان</label>
+        <textarea id="li_adText" class="li-input h-20" placeholder="هل تبحث عن حلول تسويقية لنمو شركتك؟..."></textarea>
+      </div>
+      <button onclick="launchLinkedIn()" class="li-btn w-full">إطلاق الحملة</button>
+    </div>
+  </div>
+
+  <script>
+    function launchLinkedIn() {
+      const name = document.getElementById('li_campaignName').value;
+      const budget = document.getElementById('li_budget').value;
+      if(!name || !budget) return alert('يرجى ملء البيانات');
+      
+      const campaign = {
+        platform: 'linkedin',
+        strategy: JSON.parse(localStorage.getItem('sim_v3_state')) || {},
+        campaignData: { name: name },
+        dailyBudget: Number(budget),
+        duration: 30,
+        status: 'active'
+      };
+      localStorage.setItem('executable_campaign', JSON.stringify(campaign));
+      window.location.href = '../execute.html';
+    }
+  </script>
+</body>
+</html>

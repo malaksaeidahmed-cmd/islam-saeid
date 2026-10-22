@@ -58,7 +58,8 @@
         duration: 30,
         status: 'active'
       };
-      localStorage.setItem('executable_campaign', JSON.stringify(campaign));
+      // ✅ مفتاح الحفظ الصحيح
+      localStorage.setItem('executable_snapchat_campaign', JSON.stringify(campaign));
       window.location.href = '../execute.html';
     }
   </script>

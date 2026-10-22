@@ -3,62 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تنفيذ الحملة | محاكي إسلام سعيد</title>
+  <title>غرفة العمليات | إسلام سعيد</title>
   <link rel="icon" type="image/png" href="logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="bg-[#07060E] text-slate-200 font-['IBM_Plex_Sans_Arabic'] min-h-screen pb-20">
 
-  <!-- Header -->
   <header class="glass-header border-b border-white/5 py-4 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-5 flex justify-between items-center">
-      <a href="index.html" class="flex items-center gap-3">
+      <div class="flex items-center gap-3">
         <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain" />
         <span class="font-bold text-white hidden sm:block">غرفة العمليات (Campaign Manager)</span>
-      </a>
+      </div>
       <div class="flex items-center gap-3">
-        <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
-          المنصة: <strong class="text-white uppercase" id="headerPlatform">Meta</strong>
-        </span>
-        <a href="simulator.html" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right ml-1"></i> المحاكي</a>
+        <span id="headerPlatform" class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">جاري التحميل...</span>
+        <a href="index.html" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right ml-1"></i> الرئيسية</a>
       </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto px-5 py-8 space-y-6">
-
-    <!-- Pre-Launch Setup -->
-    <div id="setupView" class="hidden p-8 rounded-3xl glass-card text-center space-y-6 max-w-2xl mx-auto mt-10">
-      <div class="w-20 h-20 mx-auto rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center text-3xl">
-        <i class="fa-solid fa-rocket"></i>
+    
+    <!-- No Campaign Found -->
+    <div id="noCampaignView" class="hidden p-10 rounded-3xl glass-card text-center space-y-6 max-w-2xl mx-auto mt-10">
+      <i class="fa-solid fa-satellite-dish text-4xl text-slate-500"></i>
+      <h2 class="text-xl font-bold text-white">لا توجد حملات نشطة</h2>
+      <p class="text-sm text-slate-400">اذهب لصفحة المنصات وأنشئ حملتك الأولى للبدء.</p>
+      <div class="flex justify-center gap-3 mt-4">
+        <a href="platforms/meta.html" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold">Meta</a>
+        <a href="platforms/tiktok.html" class="px-4 py-2 rounded-lg bg-black border border-white/20 text-white text-xs font-bold">TikTok</a>
+        <a href="platforms/google.html" class="px-4 py-2 rounded-lg bg-white text-black text-xs font-bold">Google</a>
       </div>
-      <div>
-        <h1 class="text-2xl font-bold text-white mb-2">جاهز لإطلاق الحملة؟</h1>
-        <p class="text-sm text-slate-400">بناءً على استراتيجيتك، هنبدأ محاكاة تنفيذ الحملة لمدة <strong id="setupDuration">30</strong> يوم. هتقدر تاخد قرارات تحسين كل يوم.</p>
-      </div>
-      <div class="flex items-center justify-center gap-4">
-        <div class="text-right">
-          <label class="block text-xs text-slate-400 mb-1">الميزانية اليومية (ج.م)</label>
-          <input type="number" id="setupDailyBudget" value="1000" class="bg-black/50 border border-white/10 rounded-xl p-3 text-white text-sm w-32 focus:outline-none focus:border-pink-500" />
-        </div>
-        <div class="text-right">
-          <label class="block text-xs text-slate-400 mb-1">مدة الحملة (أيام)</label>
-          <input type="number" id="setupDays" value="30" class="bg-black/50 border border-white/10 rounded-xl p-3 text-white text-sm w-32 focus:outline-none focus:border-pink-500" />
-        </div>
-      </div>
-      <button onclick="startCampaign()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition-opacity">
-        <i class="fa-solid fa-play ml-1"></i> إطلاق الحملة (Day 1)
-      </button>
     </div>
 
     <!-- Dashboard View -->
     <div id="dashboardView" class="hidden space-y-6">
-      
-      <!-- Top Bar (Day & Controls) -->
       <div class="flex items-center justify-between p-4 rounded-2xl bg-[#0E0B1A] border border-white/10">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold font-sans text-xl" id="currentDayBox">1</div>
@@ -67,20 +50,13 @@
             <div class="text-[10px] text-slate-400" id="campaignStatusText">نشط (Active)</div>
           </div>
         </div>
-        <div class="flex gap-2">
-          <button onclick="togglePause()" id="pauseBtn" class="px-4 py-2 rounded-lg bg-amber-500/20 text-amber-400 font-bold text-xs hover:bg-amber-500/30 transition-colors">
-            <i class="fa-solid fa-pause"></i> إيقاف مؤقت
-          </button>
-          <button onclick="simulateDay()" id="nextDayBtn" class="px-6 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs shadow-md hover:opacity-90 transition-opacity">
-            اليوم التالي <i class="fa-solid fa-arrow-left mr-1"></i>
-          </button>
-        </div>
+        <button onclick="simulateDay()" id="nextDayBtn" class="px-6 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs shadow-md">
+          اليوم التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+        </button>
       </div>
 
-      <!-- Alerts Container -->
       <div id="alertsContainer" class="space-y-2"></div>
 
-      <!-- KPIs Grid -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="p-4 rounded-2xl bg-[#0E0B1A] border border-white/10">
           <div class="text-[10px] text-slate-400 mb-1">الإنفاق (Spend)</div>
@@ -100,33 +76,21 @@
         </div>
       </div>
 
-      <!-- Chart -->
       <div class="p-6 rounded-3xl bg-[#0E0B1A] border border-white/10">
-        <h3 class="text-sm font-bold text-white mb-4">أداء الحملة (Spend vs Revenue)</h3>
         <canvas id="campaignChart" class="w-full max-h-64"></canvas>
       </div>
 
-      <!-- Daily Log Table -->
       <div class="p-6 rounded-3xl bg-[#0E0B1A] border border-white/10 overflow-x-auto">
-        <h3 class="text-sm font-bold text-white mb-4">سجل الأداء اليومي</h3>
         <table class="w-full text-right text-xs">
           <thead class="text-slate-400 border-b border-white/10">
             <tr>
-              <th class="pb-3 px-2">اليوم</th>
-              <th class="pb-3 px-2">الإنفاق</th>
-              <th class="pb-3 px-2">الإيرادات</th>
-              <th class="pb-3 px-2">ROAS</th>
-              <th class="pb-3 px-2">CPA</th>
-              <th class="pb-3 px-2">الطلبات</th>
-              <th class="pb-3 px-2">CTR</th>
+              <th class="pb-3 px-2">اليوم</th><th class="pb-3 px-2">الإنفاق</th><th class="pb-3 px-2">الإيرادات</th>
+              <th class="pb-3 px-2">ROAS</th><th class="pb-3 px-2">CPA</th><th class="pb-3 px-2">الطلبات</th>
             </tr>
           </thead>
-          <tbody id="logTableBody" class="divide-y divide-white/5">
-            <!-- JS fills this -->
-          </tbody>
+          <tbody id="logTableBody" class="divide-y divide-white/5"></tbody>
         </table>
       </div>
-
     </div>
   </main>
 
@@ -134,190 +98,80 @@
     import { simulateNextDay } from './js/execution/campaign-simulator.js';
     import { generateDailyAlerts } from './js/execution/optimization-engine.js';
 
-    // --- State ---
     let campaign = null;
     let dailyLogs = [];
     let chartInstance = null;
 
-    // --- Default Strategy (Fallback) ---
-    const defaultStrategy = {
-      foundation: { industry: 'fashion', aov: 1000, cogs: 30 },
-      objective: { kpiTarget: 3.0 },
-      creative: { type: 'video', hook: 'strong', offer: 'none', variants: 3 },
-      funnel: { landingQuality: 'average' }
-    };
+    // Search for any platform campaign
+    const platforms = ['meta', 'tiktok', 'google', 'linkedin', 'snapchat'];
+    for (let p of platforms) {
+      const data = localStorage.getItem(`executable_${p}_campaign`) || localStorage.getItem('executable_campaign');
+      if (data) {
+        campaign = JSON.parse(data);
+        break;
+      }
+    }
 
-    // Load Strategy from LocalStorage (from simulator)
-    const savedState = localStorage.getItem('sim_v3_state');
-    const strategyData = savedState ? JSON.parse(savedState) : defaultStrategy;
-
-    // Set up view
-    document.getElementById('headerPlatform').textContent = 'Meta'; // Mock for now
-    
-    // --- Init Campaign ---
-    window.startCampaign = () => {
-      const dailyBudget = parseFloat(document.getElementById('setupDailyBudget').value);
-      const duration = parseInt(document.getElementById('setupDays').value);
-
-      campaign = {
-        platform: 'meta',
-        strategy: strategyData,
-        dailyBudget: dailyBudget,
-        totalBudget: dailyBudget * duration,
-        duration: duration,
-        currentDay: 0,
-        status: 'active'
-      };
-
-      document.getElementById('setupView').classList.add('hidden');
+    if (!campaign) {
+      document.getElementById('noCampaignView').classList.remove('hidden');
+    } else {
       document.getElementById('dashboardView').classList.remove('hidden');
-      document.getElementById('totalDaysText').textContent = duration;
-
+      document.getElementById('headerPlatform').textContent = `المنصة: ${campaign.platform.toUpperCase()}`;
+      document.getElementById('totalDaysText').textContent = campaign.duration;
       initChart();
-      // Simulate Day 1 automatically
-      simulateDay();
-    };
+    }
 
-    // --- Simulate Day ---
     window.simulateDay = () => {
-      if (!campaign || campaign.currentDay >= campaign.duration || campaign.status === 'completed') return;
-
-      campaign.currentDay++;
+      if (!campaign || campaign.currentDay >= campaign.duration) return;
+      
+      campaign.currentDay = (campaign.currentDay || 0) + 1;
       const dailyData = simulateNextDay(campaign, campaign.currentDay);
       
-      // Update totals
-      const previousTotals = dailyLogs.reduce((acc, curr) => ({
-        spend: acc.spend + curr.spend,
-        revenue: acc.revenue + curr.revenue,
-        orders: acc.orders + curr.orders
-      }), { spend: 0, revenue: 0, orders: 0 });
-
-      const newTotals = {
-        spend: previousTotals.spend + dailyData.spend,
-        revenue: previousTotals.revenue + dailyData.revenue,
-        orders: previousTotals.orders + dailyData.orders,
-        roas: previousTotals.revenue + dailyData.revenue > 0 
-              ? ((previousTotals.revenue + dailyData.revenue) / (previousTotals.spend + dailyData.spend)) 
-              : 0
-      };
+      const prev = dailyLogs.reduce((a, c) => ({ spend: a.spend + c.spend, revenue: a.revenue + c.revenue, orders: a.orders + c.orders }), { spend: 0, revenue: 0, orders: 0 });
+      const newTotals = { spend: prev.spend + dailyData.spend, revenue: prev.revenue + dailyData.revenue, orders: prev.orders + dailyData.orders };
+      newTotals.roas = newTotals.spend > 0 ? (newTotals.revenue / newTotals.spend) : 0;
 
       dailyLogs.push(dailyData);
       
-      // Update UI
-      updateUI(dailyData, newTotals);
-      
-      // Generate Alerts
-      const alerts = generateDailyAlerts(campaign, dailyData, newTotals);
-      renderAlerts(alerts);
-
-      // Check if campaign finished
-      if (campaign.currentDay >= campaign.duration) {
-        campaign.status = 'completed';
-        document.getElementById('nextDayBtn').disabled = true;
-        document.getElementById('nextDayBtn').innerHTML = 'اكتملت الحملة';
-        document.getElementById('campaignStatusText').textContent = 'مكتملة (Completed)';
-        document.getElementById('campaignStatusText').classList.replace('text-slate-400', 'text-green-400');
-      }
-    };
-
-    window.togglePause = () => {
-      if (!campaign) return;
-      const btn = document.getElementById('pauseBtn');
-      if (campaign.status === 'active') {
-        campaign.status = 'paused';
-        btn.innerHTML = '<i class="fa-solid fa-play"></i> استئناف';
-        btn.classList.replace('bg-amber-500/20', 'bg-green-500/20');
-        btn.classList.replace('text-amber-400', 'text-green-400');
-        document.getElementById('campaignStatusText').textContent = 'متوقف مؤقتاً (Paused)';
-        document.getElementById('nextDayBtn').disabled = true;
-      } else {
-        campaign.status = 'active';
-        btn.innerHTML = '<i class="fa-solid fa-pause"></i> إيقاف مؤقت';
-        btn.classList.replace('bg-green-500/20', 'bg-amber-500/20');
-        btn.classList.replace('text-green-400', 'text-amber-400');
-        document.getElementById('campaignStatusText').textContent = 'نشط (Active)';
-        document.getElementById('nextDayBtn').disabled = false;
-      }
-    };
-
-    // --- UI Update Functions ---
-    function updateUI(today, totals) {
-      // Top Bar
       document.getElementById('currentDayBox').textContent = campaign.currentDay;
       document.getElementById('currentDayText').textContent = campaign.currentDay;
+      document.getElementById('kpiSpend').textContent = newTotals.spend.toLocaleString('ar-EG') + ' ج.م';
+      document.getElementById('kpiRevenue').textContent = newTotals.revenue.toLocaleString('ar-EG') + ' ج.م';
+      document.getElementById('kpiRoas').textContent = newTotals.roas.toFixed(2) + 'x';
+      document.getElementById('kpiOrders').textContent = newTotals.orders;
 
-      // KPIs (Show Totals)
-      document.getElementById('kpiSpend').textContent = totals.spend.toLocaleString('ar-EG') + ' ج.م';
-      document.getElementById('kpiRevenue').textContent = totals.revenue.toLocaleString('ar-EG') + ' ج.م';
-      document.getElementById('kpiRoas').textContent = totals.roas.toFixed(2) + 'x';
-      document.getElementById('kpiOrders').textContent = totals.orders;
-
-      // Chart
       updateChart();
-
-      // Table
+      
       const tbody = document.getElementById('logTableBody');
       const row = document.createElement('tr');
-      row.className = 'hover:bg-white/5 transition-colors';
       row.innerHTML = `
-        <td class="py-3 px-2 font-bold text-white">${today.dayNumber}</td>
-        <td class="py-3 px-2 font-sans">${today.spend.toLocaleString('ar-EG')}</td>
-        <td class="py-3 px-2 font-sans text-green-400">${today.revenue.toLocaleString('ar-EG')}</td>
-        <td class="py-3 px-2 font-sans ${today.roas >= 1 ? 'text-green-400' : 'text-red-400'}">${today.roas.toFixed(2)}x</td>
-        <td class="py-3 px-2 font-sans">${today.orders > 0 ? today.cpa.toFixed(0) : '-'}</td>
-        <td class="py-3 px-2 font-sans text-white">${today.orders}</td>
-        <td class="py-3 px-2 font-sans">${today.ctr}%</td>
+        <td class="py-3 px-2 font-bold text-white">${dailyData.dayNumber}</td>
+        <td class="py-3 px-2 font-sans">${dailyData.spend.toLocaleString('ar-EG')}</td>
+        <td class="py-3 px-2 font-sans text-green-400">${dailyData.revenue.toLocaleString('ar-EG')}</td>
+        <td class="py-3 px-2 font-sans ${dailyData.roas >= 1 ? 'text-green-400' : 'text-red-400'}">${dailyData.roas.toFixed(2)}x</td>
+        <td class="py-3 px-2 font-sans">${dailyData.orders > 0 ? dailyData.cpa.toFixed(0) : '-'}</td>
+        <td class="py-3 px-2 font-sans text-white">${dailyData.orders}</td>
       `;
-      tbody.prepend(row); // Add to top
-    }
+      tbody.prepend(row);
 
-    function renderAlerts(alerts) {
-      const container = document.getElementById('alertsContainer');
-      if (!alerts.length) {
-        container.innerHTML = '';
-        return;
-      }
+      const alerts = generateDailyAlerts(campaign, dailyData, newTotals);
+      document.getElementById('alertsContainer').innerHTML = alerts.map(a => `
+        <div class="p-3 rounded-xl border ${a.type==='danger'?'bg-red-500/10 border-red-500/30 text-red-400':a.type==='success'?'bg-green-500/10 border-green-500/30 text-green-400':'bg-blue-500/10 border-blue-500/30 text-blue-400'} flex items-start gap-3">
+          <i class="fa-solid ${a.icon} mt-0.5"></i>
+          <div><div class="text-xs font-bold">${a.title}</div><div class="text-[11px] opacity-80">${a.desc}</div></div>
+        </div>
+      `).join('');
+    };
 
-      container.innerHTML = alerts.map(a => {
-        const colors = {
-          info: 'bg-blue-500/10 border-blue-500/30 text-blue-400',
-          warning: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-          danger: 'bg-red-500/10 border-red-500/30 text-red-400',
-          success: 'bg-green-500/10 border-green-500/30 text-green-400'
-        };
-        return `
-          <div class="p-3 rounded-xl border ${colors[a.type]} flex items-start gap-3">
-            <div class="mt-0.5"><i class="fa-solid ${a.icon}"></i></div>
-            <div>
-              <div class="text-xs font-bold">${a.title}</div>
-              <div class="text-[11px] opacity-80">${a.desc}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // --- Chart.js Integration ---
     function initChart() {
       const ctx = document.getElementById('campaignChart').getContext('2d');
       chartInstance = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: [],
-          datasets: [
-            { label: 'الإنفاق', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: true },
-            { label: 'الإيرادات', data: [], borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', tension: 0.3, fill: true }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#cbd5e1', font: { family: 'IBM Plex Sans Arabic' } } } },
-          scales: {
-            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
-          }
-        }
+        data: { labels: [], datasets: [
+          { label: 'الإنفاق', data: [], borderColor: '#f59e0b', tension: 0.3 },
+          { label: 'الإيرادات', data: [], borderColor: '#22c55e', tension: 0.3 }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
       });
     }
 

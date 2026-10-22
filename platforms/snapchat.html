@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snapchat Ads | إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #FFFC00; color: #000; }
+    .snap-card { background: #fff; border-radius: 12px; border: 2px solid #000; }
+    .snap-input { width: 100%; border: 2px solid #000; border-radius: 8px; padding: 10px; font-size: 14px; font-weight: bold; }
+    .snap-btn { background: #00BFFF; color: #fff; font-weight: bold; border-radius: 20px; padding: 10px 20px; border: 2px solid #000; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <div class="snap-card p-6 space-y-4 shadow-[4px_4px_0px_#000]">
+      <h2 class="text-xl font-black mb-4">Snapchat Ads Manager</h2>
+      
+      <div>
+        <label class="block text-sm font-bold mb-1">اسم الحملة</label>
+        <input type="text" id="sc_name" class="snap-input" placeholder="SC_SwipeUp_Sales" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold mb-1">الميزانية اليومية (ج.م)</label>
+        <input type="number" id="sc_budget" class="snap-input" placeholder="300" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold mb-1">الهدف</label>
+        <select id="sc_objective" class="snap-input">
+          <option value="SWIPES">Swipe Ups</option>
+          <option value="INSTALLS">App Installs</option>
+          <option value="VIEWS">Video Views</option>
+        </select>
+      </div>
+      
+      <button onclick="launchSnapchat()" class="snap-btn w-full mt-4">إطلاق الحملة</button>
+      <div class="text-center mt-4">
+        <a href="../index.html" class="text-xs underline">العودة للرئيسية</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function launchSnapchat() {
+      const name = document.getElementById('sc_name').value;
+      const budget = document.getElementById('sc_budget').value;
+      if(!name || !budget) return alert('يرجى ملء البيانات');
+      
+      const campaign = {
+        platform: 'snapchat',
+        strategy: JSON.parse(localStorage.getItem('sim_v3_state')) || {},
+        campaignData: { name: name },
+        dailyBudget: Number(budget),
+        duration: 30,
+        status: 'active'
+      };
+      localStorage.setItem('executable_campaign', JSON.stringify(campaign));
+      window.location.href = '../execute.html';
+    }
+  </script>
+</body>
+</html>

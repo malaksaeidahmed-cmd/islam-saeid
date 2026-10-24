@@ -2,121 +2,97 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ============ Helpers ============
     function isAdmin() {
-      return request.auth != null 
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
-    }
-    function isOwner(uid) {
-      return request.auth != null && request.auth.uid == uid;
-    }
-    function isApproved() {
-      return request.auth != null 
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // ============ ACADEMY v2 ============
-    
-    // المستخدمين
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ===== USERS =====
     match /users/{uid} {
-      allow read: if isAdmin() || isOwner(uid);
-      allow create: if request.auth != null && request.auth.uid == uid;
-      allow update: if isAdmin() || isOwner(uid);
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isAdmin();
+      allow update: if isOwner(uid) || isAdmin();
       allow delete: if isAdmin();
     }
 
-    // طلبات الانضمام (تحتاج موافقة الأدمن)
-    match /user_requests/{docId} {
-      allow read: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if isAdmin();
+    // ===== INVITE TOKENS =====
+    match /invite_tokens/{token} {
+      // public read to validate token
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
-    // أكواد الدعوة
-    match /invite_codes/{code} {
-      allow read: if true; // للتحقق أثناء التسجيل
+    // ===== UNITS =====
+    match /units/{unitId} {
+      allow read: if isSignedIn();
       allow write: if isAdmin();
     }
 
-    // الاشتراكات (الشق المدفوع)
-    match /subscriptions/{docId} {
-      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-
-    // المحاور والدروس (القراءة للطلاب الموافق عليهم فقط)
-    match /modules/{docId} {
-      allow read: if true; 
-      allow write: if isAdmin();
-    }
-    match /lessons/{docId} {
-      allow read: if isApproved() || isAdmin(); 
+    // ===== LESSONS =====
+    match /lessons/{lessonId} {
+      allow read: if isSignedIn();
       allow write: if isAdmin();
     }
 
-    // حماية المحتوى
-    match /content_protection/{uid} {
-      allow read: if isAdmin() || isOwner(uid);
-      allow create: if isOwner(uid);
-      allow update: if isOwner(uid) || isAdmin();
+    // ===== PRACTICAL EXAMS =====
+    match /practical_exams/{examId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
 
-    // تقدم الطالب
-    match /user_progress/{uid} {
+    // ===== UNIT EXAMS =====
+    match /unit_exams/{examId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ===== STUDENT PROGRESS =====
+    match /student_progress/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow write: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
     }
 
-    match /quizzes/{docId} {
-      allow read: if isApproved() || isAdmin();
-      allow write: if isAdmin();
-    }
-    match /quiz_attempts/{docId} {
-      allow read: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin());
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if isAdmin();
+    // ===== STUDENT ACTIVITY =====
+    match /student_activity/{activityId} {
+      allow read: if isAdmin() || 
+        (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn();
     }
 
-    match /strategies/{docId} {
-      allow read, write: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin());
-    }
-    match /campaigns/{docId} {
-      allow read, write: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin());
-    }
-    match /campaign_daily/{docId} {
-      allow read, write: if request.auth != null && (resource.data.uid == request.auth.uid || isAdmin());
-    }
-    match /certificates/{docId} {
-      allow read: if true;
+    // ===== CERTIFICATES =====
+    match /certificates/{certId} {
+      allow read: if isSignedIn() && 
+        (resource.data.uid == request.auth.uid || isAdmin());
       allow write: if isAdmin();
     }
-    match /events_log/{docId} {
+
+    // ===== ADMIN LOGS =====
+    match /admin_logs/{logId} {
       allow read: if isAdmin();
-      allow create: if request.auth != null;
+      allow write: if isAdmin();
     }
 
-    // ============ الموقع العام والأدمن ============
-    match /admins/{docId} {
-      allow read: if true;
-      allow write: if isAdmin() || (request.auth != null && request.auth.uid == docId);
+    // ===== CAMPAIGNS =====
+    match /campaigns/{campaignId} {
+      allow read: if isSignedIn() && 
+        (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && 
+        resource.data.uid == request.auth.uid;
     }
-    match /analytics/main {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /portfolio/{docId} { allow read, write: if true; }
-    match /blog/{docId} { allow read, write: if true; }
-    match /blog_drafts/{docId} { allow read, write: if true; }
-    match /blog_revisions/{docId} { allow read, write: if true; }
-    match /media_library/{docId} { allow read, write: if true; }
-    match /newsletter_subscribers/{docId} { allow read, write: if true; }
-    match /comments/{docId} { allow read, write: if true; }
-    match /event_logs/{docId} { allow read, write: if true; }
-    match /system/{docId} { allow read, write: if true; }
 
+    // ===== ADMIN CAN DO ANYTHING =====
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if isAdmin();
     }
   }
 }

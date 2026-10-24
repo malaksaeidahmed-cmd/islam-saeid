@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meta Ads Manager | إسلام سعيد</title>
   <link rel="icon" type="image/png" href="../logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="../css/platforms/meta-ads-manager.css" />
+  <link rel="stylesheet" href="../css/platforms/meta.css" />
 </head>
 <body class="meta-body">
 
@@ -227,7 +227,7 @@
   <script type="module">
     import { 
       metaState, setMetaState, nextStep, prevStep, validateStep, launchMetaCampaign 
-    } from '../js/platforms/meta-ads-sim.js';
+    } from '../js/platforms/meta-sim.js';
 
     // --- UI Handlers ---
     window.selectObjective = (obj) => {
@@ -287,13 +287,11 @@
       const error = validateStep(3);
       if (error) { showError(error); return; }
       
-      // Save to DB/LocalStorage
       launchMetaCampaign();
       
-      // Redirect to Execution Engine
       document.getElementById('launchBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري النشر...';
       setTimeout(() => {
-        window.location.href = '../execute.html';
+        window.location.href = '../execute.html'; // أو أي صفحة محاكاة تانية
       }, 1000);
     };
 
@@ -301,35 +299,21 @@
     function updateWizardUI() {
       const step = metaState.currentStep;
       
-      // Hide all steps
       document.getElementById('step1').classList.add('hidden');
       document.getElementById('step2').classList.add('hidden');
       document.getElementById('step3').classList.add('hidden');
-      
-      // Show current step
       document.getElementById(`step${step}`).classList.remove('hidden');
 
-      // Update Stepper Indicators
       for(let i=1; i<=3; i++) {
         const el = document.getElementById(`stepIndicator${i}`);
-        if (i < step) {
-          el.className = 'meta-step completed';
-        } else if (i === step) {
-          el.className = 'meta-step active';
-        } else {
-          el.className = 'meta-step';
-        }
+        if (i < step) el.className = 'meta-step completed';
+        else if (i === step) el.className = 'meta-step active';
+        else el.className = 'meta-step';
       }
 
-      // Update Nav Buttons
       document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
       document.getElementById('nextBtn').classList.toggle('hidden', step === 3);
       document.getElementById('launchBtn').classList.toggle('hidden', step !== 3);
-
-      if (step === 3) {
-        document.getElementById('nextBtn').classList.add('hidden');
-        document.getElementById('launchBtn').classList.remove('hidden');
-      }
     }
 
     function showError(msg) {
@@ -343,7 +327,6 @@
       document.getElementById('errorBox').classList.add('hidden');
     }
 
-    // --- Init ---
     updateWizardUI();
   </script>
 </body>

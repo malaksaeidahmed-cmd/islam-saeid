@@ -3,12 +3,12 @@
 // ============================================================
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, updateDoc, arrayUnion, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// ضفنا Timestamp هنا
+import { getFirestore, doc, updateDoc, arrayUnion, serverTimestamp, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { evaluateEssay } from '../ai/ai-evaluator.js';
 import { getExamData } from './exams-data.js';
-import { firebaseConfig } from '../../firebase-config.js'; // المسار الصح
+import { firebaseConfig } from '../../firebase-config.js';
 
-// تعريف Firebase بشكل آمن
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -57,13 +57,13 @@ export async function submitExam(uid, examId, userAnswers) {
     unitId: exam.unitId,
     score: percentage,
     passed: passed,
-    submittedAt: serverTimestamp(),
+    submittedAt: Timestamp.now(), // ✅ التعديل هنا: استخدام Timestamp.now()
     essayResults: essayResults
   };
 
   await updateDoc(doc(db, 'student_progress', uid), {
     unitExamResults: arrayUnion(resultData),
-    updatedAt: serverTimestamp()
+    updatedAt: serverTimestamp() // ده عادي في المستوى الأول
   });
 
   // 4. إضافة نقاط الخبرة (XP)

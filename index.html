@@ -4,24 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>إسلام سعيد | تشريح الحملة الرابحة</title>
-  <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني. إدارة ميزانيات كبرى وتحقيق عوائد استثمارية قياسية (حتى 30x ROAS)." />
+  <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني." />
   <link rel="icon" type="image/png" href="logo.png" />
-  
-  <!-- Fonts -->
+
+  <!-- Preload Critical Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  
-  <!-- Icons & CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- GSAP & Animation Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.0.6/tsparticles.slim.bundle.min.js"></script>
 
   <style>
     :root {
@@ -29,107 +22,110 @@
       --ink: #f4efe6;
       --accent: #D946EF;
       --gold: #d9b36c;
-      --muted: #8a8494;
     }
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     
     body {
       background-color: var(--bg);
       color: var(--ink);
       font-family: "IBM Plex Sans Arabic", sans-serif;
       overflow-x: hidden;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
     }
+    h1, h2, h3 { font-family: "Amiri", serif; font-weight: 700; line-height: 1.15; }
+    .font-sans { font-variant-numeric: tabular-nums; font-family: system-ui, -apple-system, sans-serif; }
 
-    h1, h2, h3 {
-      font-family: "Amiri", serif;
-      font-weight: 700;
-      line-height: 1.15;
-    }
-
-    /* Progress Bar */
+    /* Progress */
     #progress-bar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 4px;
+      position: fixed; top: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--gold), var(--accent));
-      width: 100%;
-      transform: scaleX(0);
-      transform-origin: right center;
-      z-index: 10000;
+      width: 100%; transform: scaleX(0); transform-origin: right center;
+      z-index: 10000; will-change: transform;
     }
 
-    /* Particles Background */
-    #tsparticles {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
+    /* Particles - CSS Only (خفيف جداً) */
+    .particles-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(217, 70, 239, 0.4), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(217, 179, 108, 0.4), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(217, 70, 239, 0.3), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(217, 179, 108, 0.3), transparent),
+        radial-gradient(2px 2px at 90% 40%, rgba(217, 70, 239, 0.3), transparent),
+        radial-gradient(1px 1px at 30% 80%, rgba(217, 179, 108, 0.3), transparent);
+      background-size: 200% 200%;
+      animation: floatParticles 20s ease-in-out infinite;
+      will-change: background-position;
+    }
+    @keyframes floatParticles {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
     }
 
-    /* Scenes */
-    .scene {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    
-    .pin-scene {
-      height: 100vh;
-    }
+    .scene { position: relative; z-index: 10; width: 100%; }
+    .pin-scene { min-height: 100vh; }
 
+    /* Glass panels - محسّنة */
     .glass-panel {
-      background: rgba(14, 11, 26, 0.6);
-      backdrop-filter: blur(12px);
+      background: rgba(14, 11, 26, 0.85);
       border: 1px solid rgba(217, 70, 239, 0.2);
       border-radius: 24px;
     }
+    @media (min-width: 768px) {
+      .glass-panel { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    }
 
-    /* Text Highlights */
     .text-gold { color: var(--gold); }
     .text-accent { color: var(--accent); }
     .bg-accent { background-color: var(--accent); }
     .bg-gold { background-color: var(--gold); }
-    
-    .stroke-text {
-      -webkit-text-stroke: 1px rgba(217, 70, 239, 0.5);
-      color: transparent;
+
+    /* Pinned container */
+    #master-pin { position: relative; height: 100vh; overflow: hidden; }
+
+    /* Scene panels - استخدام autoAlpha بدل opacity */
+    .scene-panel {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 1.5rem;
+      visibility: hidden; opacity: 0;
+      will-change: opacity, visibility;
+      contain: layout style;
+    }
+    .scene-panel.active { visibility: visible; opacity: 1; }
+
+    /* Case study horizontal */
+    .horizontal-track { display: flex; gap: 1.5rem; padding: 0 5vw; width: max-content; will-change: transform; }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .particles-bg { animation: none; }
     }
 
-    /* Word Stagger Wrapper */
-    .word-wrapper { display: inline-block; overflow: hidden; vertical-align: bottom; }
-    .word-inner { display: inline-block; will-change: transform; }
-
-    /* Scene 7: Horizontal Scroll Container */
-    .horizontal-scroll-container {
-      display: flex;
-      gap: 2rem;
-      padding: 0 5vw;
-      width: max-content;
+    /* Mobile optimizations */
+    @media (max-width: 767px) {
+      .particles-bg { opacity: 0.5; }
+      .glass-panel { background: rgba(14, 11, 26, 0.95); }
+      h1 { font-size: 2.5rem; }
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    /* Content visibility for below-fold */
+    .below-fold { content-visibility: auto; contain-intrinsic-size: 500px; }
   </style>
 </head>
 <body>
 
-  <!-- Progress Bar -->
   <div id="progress-bar"></div>
+  <div class="particles-bg"></div>
 
-  <!-- Particles Background -->
-  <div id="tsparticles"></div>
-
-  <!-- Navigation (Glass) -->
-  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/80 backdrop-blur-md border-b border-white/5">
+  <!-- Nav -->
+  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/90 border-b border-white/5">
     <div class="flex items-center gap-3">
       <img src="logo.png" class="w-10 h-10 object-contain rounded-lg border border-white/10" alt="Islam Saeed" />
       <div>
@@ -138,568 +134,457 @@
       </div>
     </div>
     <div class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
-      <a href="#scene-economics" class="hover:text-white transition-colors">اقتصاديات الوحدة</a>
       <a href="#scene-calculator" class="hover:text-white transition-colors">الحاسبة</a>
       <a href="#scene-cta" class="hover:text-gold transition-colors">المعسكر</a>
       <a href="academy.html" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all">الأكاديمية</a>
-      <a href="https://wa.me/201021252183" target="_blank" class="px-4 py-2 rounded-xl bg-accent text-white hover:opacity-90 transition-all">تواصل معي</a>
+      <a href="https://wa.me/201021252183" target="_blank" class="px-4 py-2 rounded-xl bg-accent text-white hover:opacity-90 transition-all">تواصل</a>
     </div>
   </nav>
 
-  <!-- ========================================== -->
-  <!-- SCENE 1: OPENING -->
-  <!-- ========================================== -->
-  <section id="scene-1" class="pin-scene flex items-center justify-center">
-    <div class="text-center px-4 max-w-4xl mx-auto">
+  <!-- SCENE 1: Opening -->
+  <section id="scene-1" class="pin-scene flex items-center justify-center px-6 pt-24">
+    <div class="text-center max-w-4xl mx-auto">
       <div class="mb-6 flex justify-center items-center gap-4">
         <div class="h-px w-12 bg-gold"></div>
-        <span class="text-gold text-xs font-bold uppercase tracking-widest">Anatomy of a Winning Campaign</span>
+        <span class="text-gold text-xs font-bold uppercase tracking-widest">Anatomy of a Campaign</span>
         <div class="h-px w-12 bg-gold"></div>
       </div>
-      
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight" id="main-title">
-        تشريح الحملة الرابحة
-      </h1>
-      
-      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed" id="sub-title">
-        أنا <strong class="text-white">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة، من خلال دمج التحليل المالي لاقتصاديات الوحدة مع صناعة المحتوى الإعلاني الموجه.
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8" id="main-title">تشريح الحملة الرابحة</h1>
+      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        أنا <strong class="text-white">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة.
       </p>
-
-      <div class="mt-12 flex justify-center gap-6 animate-bounce">
-        <i class="fa-solid fa-arrow-down text-gold text-2xl"></i>
+      <div class="mt-12 flex justify-center">
+        <i class="fa-solid fa-arrow-down text-gold text-2xl animate-bounce"></i>
       </div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- SCENES 2 to 5: PINNED MASTER SEQUENCE -->
-  <!-- ========================================== -->
-  <div id="master-pin" class="pin-scene relative bg-black">
-    
-    <!-- Scene 2: Unit Economics -->
-    <div class="absolute inset-0 flex items-center justify-center px-6 opacity-0 s2-content" id="scene-economics">
+  <!-- SCENES 2-5: Master Pin -->
+  <div id="master-pin">
+    <!-- Scene 2 -->
+    <div class="scene-panel s2-content" data-scene="2">
       <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div>
           <span class="text-accent text-xs font-bold uppercase">02 — Economics</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">الأساس: اقتصاديات الوحدة</h2>
-          <p class="text-slate-400 text-sm leading-relaxed mb-8">
-            الإعلانات مش مجرد "تفاعل". الإعلانات استثمار. عشان كده لازم تحسب اقتصاديات الوحدة قبل ما تصرف أي جنيه. الـ ROAS المنصة مش كل حاجة.
-          </p>
-          <div class="glass-panel p-6 space-y-4">
-            <div class="flex justify-between items-center border-b border-white/10 pb-3">
-              <span class="text-slate-400 text-sm">Max CAC</span>
-              <span class="font-sans font-bold text-gold text-xl">600 EGP</span>
-            </div>
-            <div class="flex justify-between items-center border-b border-white/10 pb-3">
-              <span class="text-slate-400 text-sm">Break-Even ROAS</span>
-              <span class="font-sans font-bold text-accent text-xl">2.5x</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-slate-400 text-sm">LTV</span>
-              <span class="font-sans font-bold text-green-400 text-xl">2,500 EGP</span>
-            </div>
+          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">اقتصاديات الوحدة</h2>
+          <p class="text-slate-400 text-sm leading-relaxed mb-8">الإعلانات استثمار مش مصروف. لازم تحسب Max CAC و Break-Even قبل أي جنيه.</p>
+          <div class="glass-panel p-6 space-y-3">
+            <div class="flex justify-between border-b border-white/10 pb-3"><span class="text-slate-400 text-sm">Max CAC</span><span class="font-sans font-bold text-gold text-xl">600 EGP</span></div>
+            <div class="flex justify-between border-b border-white/10 pb-3"><span class="text-slate-400 text-sm">Break-Even ROAS</span><span class="font-sans font-bold text-accent text-xl">2.5x</span></div>
+            <div class="flex justify-between"><span class="text-slate-400 text-sm">LTV</span><span class="font-sans font-bold text-green-400 text-xl">2,500 EGP</span></div>
           </div>
         </div>
-        <!-- Visual: Glowing rings -->
-        <div class="relative h-64 w-64 mx-auto flex items-center justify-center">
+        <div class="relative h-56 w-56 mx-auto flex items-center justify-center">
           <div class="absolute inset-0 border-2 border-accent/30 rounded-full animate-ping" style="animation-duration: 3s;"></div>
           <div class="absolute inset-8 border-2 border-gold/50 rounded-full animate-ping" style="animation-duration: 2s;"></div>
-          <div class="absolute inset-16 bg-accent/20 rounded-full blur-xl"></div>
           <i class="fa-solid fa-sack-dollar text-5xl text-gold relative z-10"></i>
         </div>
       </div>
     </div>
 
-    <!-- Scene 3: Creative -->
-    <div class="absolute inset-0 flex items-center justify-center px-6 opacity-0 s3-content">
+    <!-- Scene 3 -->
+    <div class="scene-panel s3-content" data-scene="3">
       <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div class="order-2 md:order-1 relative h-80 w-64 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
-           <!-- Phone Mockup -->
-           <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
-           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 border-accent/50 flex items-center justify-center z-20">
-             <i class="fa-solid fa-play text-white"></i>
-           </div>
-           <div class="relative z-20 space-y-2">
-             <div class="h-2 w-3/4 bg-white/20 rounded"></div>
-             <div class="h-2 w-1/2 bg-white/20 rounded"></div>
-           </div>
+        <div class="order-2 md:order-1 relative h-72 w-56 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 border-accent/50 flex items-center justify-center z-20">
+            <i class="fa-solid fa-play text-white"></i>
+          </div>
+          <div class="relative z-20 space-y-2">
+            <div class="h-2 w-3/4 bg-white/20 rounded"></div>
+            <div class="h-2 w-1/2 bg-white/20 rounded"></div>
+          </div>
         </div>
         <div class="order-1 md:order-2">
           <span class="text-accent text-xs font-bold uppercase">03 — Creative</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">أول ثانيتين تحسم القرار</h2>
-          <p class="text-slate-400 text-sm leading-relaxed mb-8">
-            الكرياتيف هو 60% من نجاح الحملة. الـ Hook هو أول 3 ثواني من الفيديو أو أول سطر من النص. لو ممسكتش انتباه العميل، خسرته للأبد.
-          </p>
-          <ul class="space-y-3 text-sm text-slate-300">
+          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">أول ثانيتين</h2>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">الكرياتيف 60% من النجاح. الـ Hook هو أول 3 ثواني، لو ممسكتش الانتباه، خسرت العميل.</p>
+          <ul class="space-y-2 text-sm text-slate-300">
             <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Hook قوي في أول ثانية</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> UGC (محتوى المستخدم) يبني ثقة</li>
+            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> UGC يبني ثقة</li>
             <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Dynamic Creative Testing</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- Scene 4: Funnel -->
-    <div class="absolute inset-0 flex items-center justify-center px-6 opacity-0 s4-content">
-      <div class="max-w-4xl w-full text-center space-y-12">
+    <!-- Scene 4 -->
+    <div class="scene-panel s4-content" data-scene="4">
+      <div class="max-w-3xl w-full text-center space-y-8">
         <div>
           <span class="text-accent text-xs font-bold uppercase">04 — Funnel</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">مسار كامل من الاهتمام للشراء</h2>
+          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">مسار كامل</h2>
         </div>
-        <div class="flex flex-col items-center gap-4">
-          <div class="w-full max-w-md py-6 bg-accent/10 border border-accent/30 rounded-xl text-center relative">
-            <h3 class="text-white font-bold text-lg">TOFU — الوعي</h3>
-            <p class="text-xs text-slate-400 mt-1">Reach, Video Views</p>
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-full max-w-md py-4 bg-accent/10 border border-accent/30 rounded-xl">
+            <h3 class="text-white font-bold">TOFU — الوعي</h3>
           </div>
-          <div class="w-3/4 max-w-sm py-6 bg-gold/10 border border-gold/30 rounded-xl text-center">
-            <h3 class="text-white font-bold text-lg">MOFU — التفكير</h3>
-            <p class="text-xs text-slate-400 mt-1">Traffic, Engagement</p>
+          <div class="w-3/4 max-w-sm py-4 bg-gold/10 border border-gold/30 rounded-xl">
+            <h3 class="text-white font-bold">MOFU — التفكير</h3>
           </div>
-          <div class="w-1/2 max-w-xs py-6 bg-green-500/10 border border-green-500/30 rounded-xl text-center">
-            <h3 class="text-white font-bold text-lg">BOFU — الشراء</h3>
-            <p class="text-xs text-slate-400 mt-1">Sales, Retargeting</p>
+          <div class="w-1/2 max-w-xs py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+            <h3 class="text-white font-bold">BOFU — الشراء</h3>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Scene 5: Scaling -->
-    <div class="absolute inset-0 flex items-center justify-center px-6 opacity-0 s5-content">
-      <div class="max-w-4xl w-full text-center space-y-8">
+    <!-- Scene 5 -->
+    <div class="scene-panel s5-content" data-scene="5">
+      <div class="max-w-4xl w-full text-center space-y-6">
         <div>
           <span class="text-accent text-xs font-bold uppercase">05 — Scaling</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">لما الميزانية تكبر والربح يكبر</h2>
+          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">الميزانية تكبر والربح يكبر</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-          <div class="glass-panel p-8 flex flex-col items-center justify-center">
-            <div class="text-5xl md:text-7xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-gold to-accent mb-2 counter" data-target="30">0</div>
-            <div class="text-slate-300 font-bold">أعلى عائد ROAS محقق</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div class="glass-panel p-8">
+            <div class="text-6xl md:text-7xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-gold to-accent counter" data-target="30">0</div>
+            <div class="text-slate-300 font-bold mt-2">أعلى ROAS</div>
           </div>
-          <div class="glass-panel p-8 flex flex-col items-center justify-center">
-            <div class="text-4xl md:text-6xl font-bold font-sans text-white mb-2 counter" data-target="3000000">0</div>
-            <div class="text-slate-300 font-bold">مبيعات حملة فردية (ج.م)</div>
+          <div class="glass-panel p-8">
+            <div class="text-4xl md:text-6xl font-bold font-sans text-white counter" data-target="3000000">0</div>
+            <div class="text-slate-300 font-bold mt-2">مبيعات حملة</div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- ========================================== -->
-  <!-- SCENE 6: PARTNERS -->
-  <!-- ========================================== -->
-  <section id="scene-partners" class="py-24 bg-[#0E0B1A] relative z-10 border-y border-white/5 overflow-hidden">
-    <div class="text-center mb-12 px-6">
+  <!-- SCENE 6: Partners -->
+  <section class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5 overflow-hidden">
+    <div class="text-center mb-10 px-6">
       <h2 class="text-3xl md:text-5xl font-bold text-white">شركاء النجاح</h2>
-      <p class="text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية وضعت ثقتها في نتائجنا</p>
+      <p class="text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية</p>
     </div>
-    
-    <!-- Marquee -->
     <div class="relative w-full overflow-hidden flex">
-      <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-l from-transparent to-[#0E0B1A] z-10"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-r from-transparent to-[#0E0B1A] z-10"></div>
-      
-      <div class="marquee-track flex gap-6 px-4">
-        <!-- Brand Logos Placeholder (استخدم أسماء برانداتك هنا) -->
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 1</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 2</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 3</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 4</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 5</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 6</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 7</div>
-        <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 font-bold">Brand 8</div>
+      <div class="marquee-track flex gap-6 px-4" style="animation: marquee 30s linear infinite;">
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 1</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 2</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 3</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 4</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 5</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 6</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 7</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 8</div>
       </div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- SCENE 7: HORIZONTAL SCROLL CASE STUDIES -->
-  <!-- ========================================== -->
-  <section id="scene-cases" class="pin-scene bg-black flex items-center overflow-hidden">
-    <div class="absolute top-10 right-10 z-20">
-       <h2 class="text-4xl md:text-6xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
-       <p class="text-slate-400 text-sm mt-2">نتائج حملات موثقة من مدير الإعلانات</p>
+  <!-- SCENE 7: Cases -->
+  <section id="scene-cases" class="below-fold pin-scene bg-black flex items-center overflow-hidden">
+    <div class="absolute top-8 right-6 z-20">
+      <h2 class="text-3xl md:text-5xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
     </div>
-
-    <!-- الحاوية الأفقية -->
-    <div class="horizontal-scroll-container mt-24">
-      
-      <!-- Card 1 -->
-      <div class="w-[80vw] md:w-[400px] h-[400px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between">
+    <div class="horizontal-track mt-20">
+      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
         <div>
-          <div class="flex justify-between text-xs mb-4">
-            <span class="text-accent font-bold">تجارة إلكترونية</span>
-            <span class="text-gold font-bold font-sans">30x ROAS</span>
-          </div>
-          <h3 class="text-2xl font-bold text-white mb-2">براندات لوكسير و B-Smart</h3>
-          <p class="text-sm text-slate-400">إدارة حملات التحويل السريع وتطبيق إعادة الاستهداف لزوار الموقع وتحقيق نمو مبيعات قياسي.</p>
+          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">تجارة إلكترونية</span><span class="text-gold font-bold font-sans">30x ROAS</span></div>
+          <h3 class="text-2xl font-bold text-white mb-2">Luxer & B-Smart</h3>
+          <p class="text-sm text-slate-400">حملات تحويل سريع + إعادة استهداف لزوار الموقع.</p>
         </div>
         <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
-          <div class="flex justify-between"><span class="text-slate-400">الميزانية:</span><span class="text-white font-sans">100K EGP</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="text-green-400 font-sans">3M+ EGP</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">الميزانية:</span><span class="text-white font-sans">100K</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="text-green-400 font-sans">3M+</span></div>
         </div>
       </div>
-
-      <!-- Card 2 -->
-      <div class="w-[80vw] md:w-[400px] h-[400px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between">
+      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
         <div>
-          <div class="flex justify-between text-xs mb-4">
-            <span class="text-accent font-bold">مطابخ وتشطيبات</span>
-            <span class="text-gold font-bold font-sans">2.54 EGP / 1k</span>
-          </div>
-          <h3 class="text-2xl font-bold text-white mb-2">Woody للمطابخ</h3>
-          <p class="text-sm text-slate-400">استهداف دقيق لمالكي الوحدات السكنية والفيلات، وتحقيق أوسع وصول للمعاينات بأقل تكلفة.</p>
+          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">مطابخ</span><span class="text-gold font-bold font-sans">2.54 EGP / 1k</span></div>
+          <h3 class="text-2xl font-bold text-white mb-2">Woody</h3>
+          <p class="text-sm text-slate-400">استهداف دقيق لمالكي الفيلات بأقل تكلفة وصول.</p>
         </div>
         <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
           <div class="flex justify-between"><span class="text-slate-400">الوصول:</span><span class="text-white font-sans">393K</span></div>
           <div class="flex justify-between"><span class="text-slate-400">الظهور:</span><span class="text-green-400 font-sans">406K+</span></div>
         </div>
       </div>
-
-      <!-- Card 3 -->
-      <div class="w-[80vw] md:w-[400px] h-[400px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between">
+      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
         <div>
-          <div class="flex justify-between text-xs mb-4">
-            <span class="text-accent font-bold">سلاسل مطاعم</span>
-            <span class="text-gold font-bold font-sans">0.01 EGP / تفاعل</span>
-          </div>
+          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">مطاعم</span><span class="text-gold font-bold font-sans">0.01 EGP / تفاعل</span></div>
           <h3 class="text-2xl font-bold text-white mb-2">ملك الشاورما</h3>
-          <p class="text-sm text-slate-400">حملات ريلز فيروسية وعروض مجمعة حققت تفاعلاً هائلاً ورفعت اتصالات الدليفري وزيارات الفروع.</p>
+          <p class="text-sm text-slate-400">ريلز فيروسية وعروض مجمعة رفعت الاتصالات.</p>
         </div>
         <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
           <div class="flex justify-between"><span class="text-slate-400">التفاعل:</span><span class="text-white font-sans">43K</span></div>
           <div class="flex justify-between"><span class="text-slate-400">المبيعات:</span><span class="text-green-400 font-sans">17K+</span></div>
         </div>
       </div>
-      
-      <!-- Spacer for end of scroll -->
       <div class="w-[10vw]"></div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- SCENE 8: CALCULATOR -->
-  <!-- ========================================== -->
-  <section id="scene-calculator" class="py-24 relative z-10 bg-[#07050a]">
+  <!-- SCENE 8: Calculator -->
+  <section id="scene-calculator" class="below-fold py-20 bg-[#07050a]">
     <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-12">
+      <div class="text-center mb-10">
         <span class="text-accent text-xs font-bold uppercase">08 — Interactive</span>
-        <h2 class="text-4xl md:text-5xl font-bold text-white mt-2">جرّب أرقامك</h2>
-        <p class="text-slate-400 text-sm mt-2">حاسبة تعتمد على معدلات الأداء الحقيقية في السوق المصري لاتخاذ قرارات واثقة.</p>
+        <h2 class="text-3xl md:text-5xl font-bold text-white mt-2">جرّب أرقامك</h2>
       </div>
-
-      <div class="glass-panel p-6 sm:p-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          <!-- Inputs -->
+      <div class="glass-panel p-6 md:p-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-4 text-xs">
             <div>
-              <label for="industrySelect" class="block font-semibold text-slate-300 mb-1">اختر المجال:</label>
-              <select id="industrySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-semibold focus:outline-none focus:border-accent">
+              <label class="block font-semibold text-slate-300 mb-1">المجال:</label>
+              <select id="industrySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-accent">
                 <option value="fashion">الملابس والأزياء</option>
-                <option value="restaurants">المطاعم والأغذية</option>
-                <option value="cosmetics">مستحضرات التجميل</option>
-                <option value="furniture">الأثاث والديكور</option>
+                <option value="restaurants">المطاعم</option>
+                <option value="cosmetics">التجميل</option>
+                <option value="furniture">الأثاث</option>
                 <option value="realestate">العقارات</option>
-                <option value="healthcare">العيادات والخدمات الطبية</option>
-                <option value="education">التعليم والدورات</option>
-                <option value="b2b">الخدمات B2B</option>
+                <option value="healthcare">العيادات</option>
+                <option value="education">التعليم</option>
+                <option value="b2b">B2B</option>
               </select>
             </div>
             <div>
-              <label for="unitPriceInput" class="block font-semibold text-slate-300 mb-1">سعر الخدمة / الطلب (ج.م):</label>
-              <input type="number" id="unitPriceInput" value="950" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-accent" />
+              <label class="block font-semibold text-slate-300 mb-1">سعر الخدمة (ج.م):</label>
+              <input type="number" id="unitPriceInput" value="950" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-accent" />
             </div>
             <div>
-              <label for="totalBudgetInput" class="block font-semibold text-slate-300 mb-1">الميزانية الشهرية (ج.م):</label>
-              <input type="number" id="totalBudgetInput" value="40000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-accent" />
+              <label class="block font-semibold text-slate-300 mb-1">الميزانية (ج.م):</label>
+              <input type="number" id="totalBudgetInput" value="40000" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-accent" />
             </div>
             <div>
-              <label for="cogsRatioInput" class="block font-semibold text-slate-300 mb-1">نسبة تكلفة البضاعة (%):</label>
-              <input type="number" id="cogsRatioInput" value="45" min="5" max="90" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-accent" />
+              <label class="block font-semibold text-slate-300 mb-1">تكلفة البضاعة (%):</label>
+              <input type="number" id="cogsRatioInput" value="45" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-accent" />
             </div>
           </div>
-
-          <!-- Results -->
           <div class="p-6 rounded-2xl bg-black/50 border border-white/5 space-y-4 text-center">
-            <div id="decisionBadge" class="p-3.5 rounded-xl bg-accent/20 border border-accent/40 text-right text-xs">
-              <div class="font-bold text-white mb-0.5" id="decisionTitle">مؤشر الجدوى</div>
-              <p class="text-[11px] text-slate-300 leading-relaxed" id="decisionDesc">جاري الحساب...</p>
+            <div id="decisionBadge" class="p-3 rounded-xl bg-accent/20 border border-accent/40 text-right text-xs">
+              <div class="font-bold text-white" id="decisionTitle">مؤشر الجدوى</div>
+              <p class="text-[11px] text-slate-300" id="decisionDesc">جاري الحساب...</p>
             </div>
-
-            <div class="grid grid-cols-2 gap-2.5 text-right text-xs">
+            <div class="grid grid-cols-2 gap-2 text-right text-xs">
               <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <span class="text-[11px] text-slate-400 block mb-0.5">Break-Even ROAS</span>
+                <span class="text-[11px] text-slate-400 block">Break-Even ROAS</span>
                 <span id="beRoasOutput" class="text-base font-bold text-gold font-sans">1.82x</span>
               </div>
               <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <span class="text-[11px] text-slate-400 block mb-0.5">Max CAC</span>
+                <span class="text-[11px] text-slate-400 block">Max CAC</span>
                 <span id="maxCacOutput" class="text-base font-bold text-white font-sans">522 ج.م</span>
               </div>
             </div>
-
-            <div class="p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-right flex items-center justify-between text-xs">
-              <div>
-                <span class="text-white font-bold block">صافي الأرباح المتوقعة:</span>
-              </div>
-              <span id="netProfitReal" class="text-lg font-bold text-green-400 font-sans">65,000 ج.م</span>
+            <div class="p-3 rounded-xl bg-green-500/10 border border-green-500/30 flex justify-between items-center text-xs">
+              <span class="text-white font-bold">صافي الأرباح:</span>
+              <span id="netProfitReal" class="text-lg font-bold text-green-400 font-sans">65,000</span>
             </div>
-
-            <div class="pt-2">
-              <canvas id="roasChartCanvas" class="w-full max-h-48"></canvas>
-            </div>
-
-            <div class="space-y-2 pt-2">
-              <a id="consultCalcBtn" href="https://wa.me/201021252183" target="_blank" class="block w-full py-3 rounded-xl bg-gradient-to-r from-gold to-accent text-white font-bold text-xs shadow hover:opacity-95 transition-opacity">
-                <i class="fa-brands fa-whatsapp ml-1"></i> طلب تنفيذ هذه الخطة
-              </a>
-              <button id="downloadPdfBtn" type="button" class="block w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs border border-white/10 transition-colors">
-                <i class="fa-solid fa-file-arrow-down text-gold ml-1"></i> تنزيل تقرير الجدوى (PDF)
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================== -->
-  <!-- SCENE 9: INVITATION (20 SEATS) -->
-  <!-- ========================================== -->
-  <section id="scene-cta" class="py-24 relative z-10 bg-[#0E0B1A] border-y border-white/5">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        
-        <div>
-          <span class="text-gold text-xs font-bold uppercase">09 — Invitation</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">٢٠ مقعد بس</h2>
-          <p class="text-slate-400 text-sm leading-relaxed mb-8">
-            معسكر الميديا باينج وتطبيق الـ 30x ROAS. أوفلاين في القاهرة | الدفعة مغلقة بـ 20 مقعداً فقط. شرط القبول: اجتياز المقابلة الشخصية.
-          </p>
-          
-          <div class="flex items-center gap-4 mb-8">
-            <div class="flex -space-x-2 space-x-reverse">
-              <div class="w-8 h-8 rounded-full bg-accent border-2 border-[#0E0B1A]"></div>
-              <div class="w-8 h-8 rounded-full bg-gold border-2 border-[#0E0B1A]"></div>
-              <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-[#0E0B1A]"></div>
-              <div class="w-8 h-8 rounded-full bg-slate-700 border-2 border-[#0E0B1A] flex items-center justify-center text-[10px] text-white">+17</div>
-            </div>
-            <span class="text-xs text-slate-400">متبقي 3 مقاعد فقط</span>
-          </div>
-        </div>
-
-        <!-- Form -->
-        <div class="glass-panel p-6 md:p-8">
-          <h3 class="text-lg font-bold text-white mb-4">طلب الترشح للمقابلة الشخصية</h3>
-          <form id="waitlistForm" class="space-y-3 text-xs">
-            <div>
-              <input type="text" id="subName" required placeholder="الاسم الكامل" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
-            </div>
-            <div>
-              <input type="tel" id="subPhone" required placeholder="رقم الواتساب" dir="ltr" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-left focus:outline-none focus:border-gold" />
-            </div>
-            <div>
-              <select id="subExperience" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold">
-                <option value="مبتدئ">مبتدئ (أقل من سنة)</option>
-                <option value="متوسط">متوسط (1 - 3 سنوات)</option>
-                <option value="متقدم">متقدم (أكثر من 3 سنوات)</option>
-              </select>
-            </div>
-            <div>
-              <select id="subBudget" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold">
-                <option value="أقل من 20 ألف">أقل من 20,000 ج.م شهرياً</option>
-                <option value="من 20 إلى 100 ألف">من 20,000 إلى 100,000 ج.م شهرياً</option>
-                <option value="أكثر من 100 ألف">أكثر من 100,000 ج.م شهرياً</option>
-              </select>
-            </div>
-            <div>
-              <input type="text" id="subChallenge" required placeholder="التحدي الأكبر المطلوب حله" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
-            </div>
-            <button id="bootcampSubmitBtn" type="submit" class="w-full py-3 rounded-lg bg-gold text-black font-bold text-xs shadow-lg hover:opacity-90 transition-opacity mt-2">
-              إرسال طلب الترشح
+            <canvas id="roasChartCanvas" class="w-full max-h-40"></canvas>
+            <a id="consultCalcBtn" href="https://wa.me/201021252183" target="_blank" class="block w-full py-2.5 rounded-xl bg-gradient-to-r from-gold to-accent text-white font-bold text-xs">
+              <i class="fa-brands fa-whatsapp ml-1"></i> طلب تنفيذ
+            </a>
+            <button id="downloadPdfBtn" type="button" class="block w-full py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs border border-white/10">
+              <i class="fa-solid fa-file-arrow-down text-gold ml-1"></i> تنزيل PDF
             </button>
-          </form>
-          <div id="waitlistSuccess" class="hidden mt-3 p-3 rounded-lg bg-green-500/20 border border-green-500/40 text-center text-xs">
-            <span class="font-bold text-white block">تم استلام طلبك بنجاح</span>
-            <span class="text-slate-300 text-[11px]">يتم توجيهك إلى واتساب لترتيب موعد المقابلة...</span>
           </div>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- SCENE 10: FAQ & FOOTER -->
-  <!-- ========================================== -->
-  <section id="scene-faq" class="py-24 relative z-10 bg-black">
+  <!-- SCENE 9: CTA -->
+  <section id="scene-cta" class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5">
+    <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div>
+        <span class="text-gold text-xs font-bold uppercase">09 — Invitation</span>
+        <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">٢٠ مقعد بس</h2>
+        <p class="text-slate-400 text-sm leading-relaxed mb-6">معسكر الميديا باينج والأوفلاين في القاهرة. الدفعة مغلقة بـ 20 مقعداً فقط. شرط القبول: اجتياز المقابلة الشخصية.</p>
+      </div>
+      <div class="glass-panel p-6 md:p-8">
+        <h3 class="text-lg font-bold text-white mb-4">طلب الترشح</h3>
+        <form id="waitlistForm" class="space-y-3 text-xs">
+          <input type="text" id="subName" required placeholder="الاسم الكامل" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
+          <input type="tel" id="subPhone" required placeholder="رقم الواتساب" dir="ltr" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-left focus:outline-none focus:border-gold" />
+          <select id="subExperience" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold">
+            <option value="مبتدئ">مبتدئ</option>
+            <option value="متوسط">متوسط</option>
+            <option value="متقدم">متقدم</option>
+          </select>
+          <select id="subBudget" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold">
+            <option>أقل من 20 ألف</option>
+            <option>20 - 100 ألف</option>
+            <option>أكثر من 100 ألف</option>
+          </select>
+          <input type="text" id="subChallenge" required placeholder="التحدي الأكبر" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
+          <button id="bootcampSubmitBtn" type="submit" class="w-full py-3 rounded-lg bg-gold text-black font-bold text-xs mt-2">إرسال الطلب</button>
+        </form>
+        <div id="waitlistSuccess" class="hidden mt-3 p-3 rounded-lg bg-green-500/20 border border-green-500/40 text-center text-xs">
+          <span class="font-bold text-white block">تم الاستلام!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 10: FAQ -->
+  <section class="below-fold py-20 bg-black">
     <div class="max-w-3xl mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-5xl font-bold text-white">الأسئلة الشائعة</h2>
-      </div>
+      <h2 class="text-3xl md:text-5xl font-bold text-white text-center mb-10">الأسئلة الشائعة</h2>
       <div class="space-y-3 text-sm">
-        <!-- FAQ 1 -->
         <div class="border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
-          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
-            <span>لماذا تشترط مقابلة شخصية قبل القبول؟</span>
+          <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
+            <span>لماذا مقابلة شخصية قبل القبول؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
           </button>
           <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-            لأن المعسكر عملي ومغلق على 20 مقعداً فقط؛ المقابلة تضمن أن خلفيتك وأهدافك ملائمة تماماً للمستوى المتقدم.
+            لأن المعسكر عملي ومغلق على 20 مقعداً فقط لضمان جودة التطبيق.
           </div>
         </div>
-        <!-- FAQ 2 -->
         <div class="border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
-          <button class="faq-btn w-full p-4 text-right flex items-center justify-between font-semibold text-white">
-            <span>هل المنهجية تناسب كافة الأنشطة؟</span>
+          <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
+            <span>هل المنهجية تناسب كل الأنشطة؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
           </button>
           <div class="faq-content hidden px-4 pb-4 text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-            نعم، قواعد اقتصاديات الوحدة (Break-Even ROAS و Max CAC) هي ركيزة التجارة في كل القطاعات.
+            نعم، اقتصاديات الوحدة هي ركيزة التجارة في كل القطاعات.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="py-8 border-t border-white/10 bg-[#07050a] text-xs text-slate-500 relative z-10 text-center">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div>&copy; 2026 إسلام سعيد. جميع الحقوق محفوظة.</div>
-      <div class="flex items-center gap-4">
-        <a href="https://wa.me/201021252183" class="hover:text-white"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-        <a href="https://linkedin.com/in/islamsaeid" class="hover:text-white"><i class="fa-brands fa-linkedin text-lg"></i></a>
-      </div>
-    </div>
+  <footer class="py-6 border-t border-white/10 bg-[#07050a] text-xs text-slate-500 text-center">
+    &copy; 2026 إسلام سعيد. جميع الحقوق محفوظة.
   </footer>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT & ANIMATIONS -->
-  <!-- ========================================== -->
-  <script src="js/cms-data.js"></script>
-  <script src="js/calculator.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <!-- Scripts -->
+  <script src="js/cms-data.js" defer></script>
+  <script src="js/calculator.js" defer></script>
+  <script src="js/main.js" defer type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <script>
     // ==========================================
-    // 1. Initialization: Lenis & tsParticles
+    // Detection
     // ==========================================
-    const lenis = new Lenis({ lerp: 0.08 });
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
 
-    // Particles Background
-    tsParticles.load("tsparticles", {
-      fpsLimit: 60,
-      particles: {
-        color: { value: ["#D946EF", "#d9b36c"] },
-        links: { enable: false },
-        move: { enable: true, speed: 0.5, direction: "none", outModes: { default: "out" } },
-        number: { density: { enable: true, area: 800 }, value: 30 },
-        opacity: { value: 0.3 },
-        size: { value: { min: 1, max: 3 } }
-      },
-      detectRetina: true
-    });
+    // Register GSAP
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
-    // ==========================================
-    // 2. Progress Bar
-    // ==========================================
-    gsap.to("#progress-bar", {
-      scaleX: 1,
-      transformOrigin: "right center",
-      ease: "none",
-      scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: true }
-    });
-
-    // ==========================================
-    // 3. Scene 1 Animations (Word Stagger)
-    // ==========================================
-    const splitTextToWords = (selector) => {
-      const el = document.querySelector(selector);
-      if (!el) return;
-      const words = el.textContent.trim().split(/\s+/);
-      el.innerHTML = words.map(w => `<span class="word-wrapper"><span class="word-inner inline-block">${w}</span></span>`).join(' ');
-    };
-
-    splitTextToWords("#main-title");
-    
-    const tl1 = gsap.timeline({
-      scrollTrigger: { trigger: "#scene-1", start: "top top", end: "+=100%", scrub: 1, pin: true }
-    });
-    
-    tl1.from("#main-title .word-inner", { y: 100, opacity: 0, rotationX: -90, stagger: 0.1, duration: 1 })
-       .from("#sub-title", { opacity: 0, y: 30 }, "-=0.5");
-
-    // ==========================================
-    // 4. Scenes 2-5 Animations (Pinned Master Sequence)
-    // ==========================================
-    const masterTl = gsap.timeline({
-      scrollTrigger: { trigger: "#master-pin", start: "top top", end: "+=400%", scrub: 1, pin: true }
-    });
-
-    // Scene 2
-    masterTl.to(".s2-content", { opacity: 1, duration: 1 })
-    // Scene 3
-    .to(".s2-content", { opacity: 0, duration: 0.5 })
-    .to(".s3-content", { opacity: 1, duration: 0.5 })
-    // Scene 4
-    .to(".s3-content", { opacity: 0, duration: 0.5 })
-    .to(".s4-content", { opacity: 1, duration: 0.5 })
-    // Scene 5
-    .to(".s4-content", { opacity: 0, duration: 0.5 })
-    .to(".s5-content", { opacity: 1, duration: 0.5 });
-
-    // Counters Animation (Scene 5)
-    gsap.utils.toArray('.counter').forEach(counter => {
-      const target = +counter.getAttribute('data-target');
-      gsap.to(counter, {
-        innerText: target,
-        duration: 3,
-        ease: "power1.out",
-        snap: { innerText: 1 },
-        scrollTrigger: { trigger: ".s5-content", start: "top center" }
+    if (prefersReducedMotion) {
+      // وضع الوصولية: مفيش أنيميشن، كل حاجة ظاهرة
+      document.querySelectorAll('.scene-panel').forEach(p => p.classList.add('active'));
+      document.querySelectorAll('.counter').forEach(c => c.textContent = c.dataset.target);
+      document.getElementById('master-pin').style.height = 'auto';
+      document.getElementById('master-pin').style.overflow = 'visible';
+      document.querySelectorAll('.scene-panel').forEach(p => {
+        p.style.position = 'relative';
+        p.style.visibility = 'visible';
+        p.style.opacity = '1';
+        p.style.marginBottom = '2rem';
       });
-    });
+    } else {
+      // ==========================================
+      // Progress Bar
+      // ==========================================
+      gsap.to("#progress-bar", {
+        scaleX: 1, transformOrigin: "right center", ease: "none",
+        scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 }
+      });
 
-    // ==========================================
-    // 5. Scene 7: Horizontal Scroll Cases
-    // ==========================================
-    const horizontalSection = document.querySelector("#scene-cases");
-    const horizontalContainer = document.querySelector(".horizontal-scroll-container");
-    
-    gsap.to(horizontalContainer, {
-      x: () => -(horizontalContainer.scrollWidth - window.innerWidth),
-      ease: "none",
-      scrollTrigger: {
-        trigger: horizontalSection,
-        start: "top top",
-        end: () => "+=" + (horizontalContainer.scrollWidth - window.innerWidth),
-        scrub: 1,
-        pin: true,
-        invalidateOnRefresh: true
+      // ==========================================
+      // Scene 1 - Word Stagger (خفيف)
+      // ==========================================
+      const titleEl = document.querySelector("#main-title");
+      if (titleEl && !isMobile) {
+        const words = titleEl.textContent.trim().split(/\s+/);
+        titleEl.innerHTML = words.map(w => `<span class="word-inner inline-block">${w}</span>`).join(' ');
+        gsap.from("#main-title .word-inner", {
+          y: 80, opacity: 0, stagger: 0.08, duration: 0.8, ease: "power2.out",
+          scrollTrigger: { trigger: "#scene-1", start: "top 80%", toggleActions: "play none none none" }
+        });
       }
-    });
 
-    // ==========================================
-    // 6. FAQ Accordion Logic
-    // ==========================================
-    document.querySelectorAll('.faq-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const icon = btn.querySelector('i');
-        const isHidden = content.classList.contains('hidden');
-        
-        document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-        document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
-        
-        if (isHidden) {
-          content.classList.remove('hidden');
-          if (icon) icon.style.transform = 'rotate(180deg)';
+      // ==========================================
+      // Master Pin (Scenes 2-5) - محسّنة
+      // ==========================================
+      const panels = document.querySelectorAll('.scene-panel');
+      const masterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#master-pin",
+          start: "top top",
+          end: "+=250%",
+          scrub: 0.3,
+          pin: true,
+          anticipatePin: 1,
+          fastScrollEnd: true,
+          invalidateOnRefresh: false
         }
       });
-    });
+
+      // Show first panel
+      gsap.set(panels[0], { autoAlpha: 1 });
+      
+      // Sequence
+      panels.forEach((panel, i) => {
+        if (i === 0) return; // الأول ظاهر
+        const prev = panels[i - 1];
+        masterTl.to(prev, { autoAlpha: 0, duration: 0.4 })
+                .to(panel, { autoAlpha: 1, duration: 0.4 });
+      });
+
+      // ==========================================
+      // Counters (خفيف)
+      // ==========================================
+      gsap.utils.toArray('.counter').forEach(counter => {
+        const target = +counter.dataset.target;
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target, duration: 2, ease: "power1.out",
+          scrollTrigger: { trigger: ".s5-content", start: "top 60%", toggleActions: "play none none none" },
+          onUpdate: () => {
+            const n = Math.floor(obj.val);
+            counter.textContent = target > 1000 ? (n/1000000).toFixed(1) + 'M' : n;
+          }
+        });
+      });
+
+      // ==========================================
+      // Horizontal Cases (محسّنة)
+      // ==========================================
+      if (!isMobile) {
+        const horizontalSection = document.querySelector("#scene-cases");
+        const horizontalTrack = document.querySelector(".horizontal-track");
+        
+        if (horizontalSection && horizontalTrack) {
+          gsap.to(horizontalTrack, {
+            x: () => -(horizontalTrack.scrollWidth - window.innerWidth),
+            ease: "none",
+            scrollTrigger: {
+              trigger: horizontalSection,
+              start: "top top",
+              end: () => "+=" + (horizontalTrack.scrollWidth - window.innerWidth),
+              scrub: 0.3,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              fastScrollEnd: true
+            }
+          });
+        }
+      }
+
+      // ==========================================
+      // FAQ
+      // ==========================================
+      document.querySelectorAll('.faq-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const content = btn.nextElementSibling;
+          const icon = btn.querySelector('i');
+          const isHidden = content.classList.contains('hidden');
+          document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+          document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
+          if (isHidden) {
+            content.classList.remove('hidden');
+            if (icon) icon.style.transform = 'rotate(180deg)';
+          }
+        });
+      });
+    }
+
+    // Refresh triggers on load
+    window.addEventListener('load', () => ScrollTrigger.refresh());
   </script>
 </body>
 </html>

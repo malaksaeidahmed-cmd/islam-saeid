@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إدارة الطلاب | لوحة الأدمن</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07050a; }
+    .glass-card { background: rgba(14,11,26,0.85); border: 1px solid rgba(217,70,239,0.2); border-radius: 24px; }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen pb-20">
+
+  <header class="border-b border-white/5 py-4 sticky top-0 z-50 bg-[#07050a]/90 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="../logo.png" class="w-8 h-8 rounded-lg" alt="Logo" />
+        <span class="font-bold text-white">لوحة الأدمن</span>
+        <span class="px-2 py-0.5 rounded bg-pink-500/20 text-pink-400 text-[10px] font-bold">ADMIN</span>
+      </div>
+      <nav class="flex items-center gap-4 text-sm">
+        <a href="dashboard.html" class="text-slate-400 hover:text-white">الرئيسية</a>
+        <a href="students.html" class="text-pink-400 font-bold">الطلاب</a>
+        <a href="lessons-manager.html" class="text-slate-400 hover:text-white">الدروس</a>
+        <a href="exams-manager.html" class="text-slate-400 hover:text-white">الامتحانات</a>
+        <a href="progression.html" class="text-slate-400 hover:text-white">التقدم</a>
+        <button onclick="logout()" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-5 py-8 space-y-6">
+
+    <!-- Create Invite -->
+    <section class="glass-card p-6 md:p-8">
+      <h2 class="text-xl font-bold text-white mb-6"><i class="fa-solid fa-user-plus text-pink-400 ml-2"></i> إنشاء دعوة طالب جديد</h2>
+
+      <form id="createInviteForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">الاسم الكامل *</label>
+          <input type="text" id="stdName" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">رقم الواتساب *</label>
+          <input type="tel" id="stdPhone" required dir="ltr" placeholder="+201234567890" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">البريد الإلكتروني (اختياري)</label>
+          <input type="email" id="stdEmail" dir="ltr" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">الخطة</label>
+          <select id="stdPlan" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-pink-500">
+            <option value="academic">أكاديمي (Academic)</option>
+            <option value="business">أعمال (Business)</option>
+            <option value="pro">احترافي (Pro)</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" id="createBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg">
+            <i class="fa-solid fa-link ml-1"></i> إنشاء رابط دعوة
+          </button>
+        </div>
+      </form>
+
+      <!-- Result -->
+      <div id="inviteResult" class="hidden mt-6 p-5 rounded-xl bg-green-500/10 border border-green-500/30">
+        <div class="text-xs text-green-400 font-bold mb-2">✅ تم إنشاء رابط الدعوة (صلاحية 15 دقيقة)</div>
+        <div class="flex items-center gap-2 mb-3">
+          <input type="text" id="inviteUrl" readonly class="flex-1 bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white text-xs" dir="ltr" />
+          <button onclick="copyInvite()" class="px-3 py-2 rounded-lg bg-green-600 text-white text-xs font-bold"><i class="fa-solid fa-copy"></i></button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a id="waLink" href="#" target="_blank" class="px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold">
+            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال واتساب
+          </a>
+          <button onclick="copyInvite()" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs font-bold">
+            <i class="fa-solid fa-copy ml-1"></i> نسخ الرابط
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pending Invites -->
+    <section class="glass-card p-6">
+      <h2 class="text-lg font-bold text-white mb-4">الدعوات النشطة</h2>
+      <div id="pendingInvites" class="space-y-2 text-sm">
+        <div class="text-slate-400 text-center py-6">جاري التحميل...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, onSnapshot, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { firebaseConfig } from '../firebase-config.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let adminUid = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      const userSnap = await getDoc(doc(db, 'users', user.uid));
+      if (!userSnap.exists() || userSnap.data().role !== 'admin') {
+        window.location.href = '../index.html';
+        return;
+      }
+      adminUid = user.uid;
+      loadPendingInvites();
+    });
+
+    document.getElementById('createInviteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('createBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإنشاء...';
+
+      try {
+        const name = document.getElementById('stdName').value.trim();
+        const phone = document.getElementById('stdPhone').value.trim();
+        const email = document.getElementById('stdEmail').value.trim();
+        const plan = document.getElementById('stdPlan').value;
+
+        // Generate token
+        const token = generateToken();
+        const expiresAt = Timestamp.fromMillis(Date.now() + 15 * 60 * 1000);
+
+        await setDoc(doc(db, 'invite_tokens', token), {
+          token: token,
+          studentData: { name, phone, email, plan },
+          createdBy: adminUid,
+          createdAt: serverTimestamp(),
+          expiresAt: expiresAt,
+          used: false,
+          usedAt: null,
+          usedByUid: null,
+          status: 'active'
+        });
+
+        // Show URL
+        const baseUrl = window.location.origin + '/join.html?token=' + token;
+        document.getElementById('inviteUrl').value = baseUrl;
+        document.getElementById('inviteResult').classList.remove('hidden');
+
+        // WhatsApp link
+        const waMsg = encodeURIComponent(`أهلاً ${name}،\n\nتمت الموافقة على انضمامك لأكاديمية إسلام سعيد.\n\nفعّل حسابك من خلال الرابط التالي خلال 15 دقيقة:\n${baseUrl}\n\nبعد انتهاء الصلاحية، يرجى التواصل معنا لطلب رابط جديد.`);
+        document.getElementById('waLink').href = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${waMsg}`;
+
+        // Reset form
+        document.getElementById('createInviteForm').reset();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-link ml-1"></i> إنشاء رابط دعوة';
+
+      } catch (err) {
+        console.error(err);
+        alert('خطأ: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-link ml-1"></i> إنشاء رابط دعوة';
+      }
+    });
+
+    function generateToken() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let token = '';
+      for (let i = 0; i < 32; i++) {
+        token += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return token;
+    }
+
+    window.copyInvite = () => {
+      const input = document.getElementById('inviteUrl');
+      input.select();
+      document.execCommand('copy');
+      alert('تم النسخ!');
+    };
+
+    function loadPendingInvites() {
+      const q = query(
+        collection(db, 'invite_tokens'),
+        where('used', '==', false),
+        where('status', '==', 'active')
+      );
+
+      onSnapshot(q, (snap) => {
+        const container = document.getElementById('pendingInvites');
+        if (snap.empty) {
+          container.innerHTML = '<div class="text-slate-400 text-center py-6">مفيش دعوات نشطة حالياً.</div>';
+          return;
+        }
+
+        container.innerHTML = snap.docs.map(d => {
+          const data = d.data();
+          const expiresAt = data.expiresAt?.toMillis?.() || 0;
+          const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000 / 60));
+          const expired = remaining === 0;
+
+          return `
+            <div class="flex items-center justify-between p-3 rounded-xl ${expired ? 'bg-red-500/5 border border-red-500/20' : 'bg-white/[0.02] border border-white/5'}">
+              <div>
+                <div class="font-bold text-white text-sm">${data.studentData?.name || '—'}</div>
+                <div class="text-[11px] text-slate-400">${data.studentData?.phone || '—'} • ${data.studentData?.plan || '—'}</div>
+              </div>
+              <div class="text-xs ${expired ? 'text-red-400' : 'text-amber-400'}">
+                ${expired ? 'منتهي' : `متبقي ${remaining} دقيقة`}
+              </div>
+            </div>
+          `;
+        }).join('');
+      });
+    }
+
+    window.logout = async () => {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>عرض الدرس | أكاديمية إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07050a; }
+    .glass-card { background: rgba(14,11,26,0.85); border: 1px solid rgba(217,70,239,0.2); border-radius: 24px; }
+    #pdfContainer canvas { display: block; margin: 0 auto 16px auto; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 8px; }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-white/5 py-4 sticky top-0 z-50 bg-[#07050a]/90 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-right text-lg"></i></a>
+        <div>
+          <div class="text-xs text-pink-400 font-bold" id="unitTitle">الوحدة</div>
+          <div class="text-sm font-bold text-white" id="lessonTitle">جاري التحميل...</div>
+        </div>
+      </div>
+      <button id="completeBtn" onclick="markAsComplete()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xs shadow-lg disabled:opacity-50 hidden">
+        <i class="fa-solid fa-check ml-1"></i> تحديد كمكتمل
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+    <!-- Sidebar (Lessons in Unit) -->
+    <aside class="lg:col-span-1 hidden lg:block">
+      <div class="glass-card p-4 sticky top-24">
+        <h3 class="text-sm font-bold text-white mb-3">دروس الوحدة</h3>
+        <div id="lessonsList" class="space-y-1"></div>
+      </div>
+    </aside>
+
+    <!-- PDF Viewer -->
+    <div class="lg:col-span-3">
+      <div id="loadingPdf" class="text-center py-20 text-slate-400">
+        <i class="fa-solid fa-spinner fa-spin text-3xl mb-4 text-pink-500"></i>
+        <p>جاري تحميل الدرس...</p>
+      </div>
+      
+      <div id="pdfContainer" class="hidden space-y-4"></div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, arrayUnion, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { firebaseConfig } from '../firebase-config.js';
+    import { UNITS, getUnitById } from '../js/academy/units-data.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // PDF.js Config
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const unitId = urlParams.get('unit');
+    const lessonIdFromUrl = urlParams.get('lesson');
+
+    let currentUser = null;
+    let currentUnit = null;
+    let currentLesson = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = '../auth.html'; return; }
+      currentUser = user;
+
+      if (!unitId) { window.location.href = 'dashboard.html'; return; }
+      currentUnit = getUnitById(unitId);
+      if (!currentUnit) { window.location.href = 'dashboard.html'; return; }
+
+      // Determine which lesson to load
+      const lessonToLoad = lessonIdFromUrl || currentUnit.lessons[0].id;
+      currentLesson = currentUnit.lessons.find(l => l.id === lessonToLoad);
+
+      if (!currentLesson) {
+        document.getElementById('loadingPdf').innerHTML = 'الدرس غير موجود.';
+        return;
+      }
+
+      document.getElementById('unitTitle').textContent = currentUnit.title;
+      document.getElementById('lessonTitle').textContent = currentLesson.title;
+
+      renderSidebar();
+      await loadPDF(currentLesson);
+    });
+
+    function renderSidebar() {
+      const list = document.getElementById('lessonsList');
+      list.innerHTML = currentUnit.lessons.map(l => {
+        const isActive = l.id === currentLesson.id;
+        return `
+          <a href="lesson-viewer.html?unit=${currentUnit.id}&lesson=${l.id}" 
+             class="block px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors ${isActive ? 'bg-pink-500/20 text-pink-400 border-r-2 border-pink-500' : 'text-slate-400 hover:bg-white/5 hover:text-white'}">
+            ${l.title}
+          </a>
+        `;
+      }).join('');
+    }
+
+    async function loadPDF(lesson) {
+      const loading = document.getElementById('loadingPdf');
+      const container = document.getElementById('pdfContainer');
+
+      // Placeholder URL for testing (since user hasn't uploaded yet)
+      let pdfUrl = lesson.pdfUrl;
+      if (!pdfUrl) {
+        // Use a sample PDF for testing if URL is empty
+        pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf';
+        console.warn('No PDF URL found for', lesson.id, '- using sample PDF for testing.');
+      }
+
+      try {
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+
+        loading.classList.add('hidden');
+        container.classList.remove('hidden');
+        container.innerHTML = ''; // Clear previous
+
+        // Render pages
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1.5 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          const renderContext = { canvasContext: context, viewport: viewport };
+          await page.render(renderContext).promise;
+
+          // Add Watermark
+          context.save();
+          context.font = 'bold 24px IBM Plex Sans Arabic, Arial';
+          context.fillStyle = 'rgba(217, 70, 239, 0.15)'; // Pinkish
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          const text = currentUser.email + ' | ' + new Date().toLocaleDateString('ar-EG');
+          
+          // Diagonal repeat
+          for (let i = 0; i < canvas.width; i += 400) {
+            for (let j = 0; j < canvas.height; j += 400) {
+              context.save();
+              context.translate(i, j);
+              context.rotate(-Math.PI / 6);
+              context.fillText(text, 0, 0);
+              context.restore();
+            }
+          }
+          context.restore();
+
+          container.appendChild(canvas);
+        }
+
+        // Show complete button
+        const btn = document.getElementById('completeBtn');
+        btn.classList.remove('hidden');
+
+        // Check if already completed
+        const progressSnap = await getDoc(doc(db, 'student_progress', currentUser.uid));
+        if (progressSnap.exists() && progressSnap.data().completedLessons?.includes(lesson.id)) {
+          btn.innerHTML = '<i class="fa-solid fa-check-double ml-1"></i> مكتمل';
+          btn.disabled = true;
+          btn.classList.replace('from-green-600', 'from-slate-700');
+          btn.classList.replace('to-emerald-600', 'to-slate-800');
+        }
+
+      } catch (err) {
+        console.error(err);
+        loading.innerHTML = `<div class="text-red-400"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i><br>فشل تحميل الملف: ${err.message}</div>`;
+      }
+    }
+
+    window.markAsComplete = async () => {
+      if (!currentUser || !currentLesson) return;
+      const btn = document.getElementById('completeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري الحفظ...';
+
+      try {
+        // Update progress
+        await updateDoc(doc(db, 'student_progress', currentUser.uid), {
+          completedLessons: arrayUnion(currentLesson.id),
+          updatedAt: serverTimestamp()
+        });
+
+        // Add XP
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          xp: increment(50)
+        });
+
+        btn.innerHTML = '<i class="fa-solid fa-check-double ml-1"></i> مكتمل';
+        btn.classList.replace('from-green-600', 'from-slate-700');
+        btn.classList.replace('to-emerald-600', 'to-slate-800');
+
+        // Show XP notification (simple alert for now, will be replaced by toast)
+        setTimeout(() => {
+          window.location.href = `lesson-viewer.html?unit=${currentUnit.id}&lesson=${currentUnit.lessons[Math.min(currentUnit.lessons.indexOf(currentLesson) + 1, currentUnit.lessons.length - 1)].id}`;
+        }, 1000);
+
+      } catch (err) {
+        console.error(err);
+        alert('حدث خطأ أثناء الحفظ: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check ml-1"></i> تحديد كمكتمل';
+      }
+    };
+  </script>
+</body>
+</html>

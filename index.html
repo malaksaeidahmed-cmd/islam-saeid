@@ -10,7 +10,8 @@
   <!-- Preload Critical Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +26,8 @@
     }
     * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     
+    html { scroll-behavior: smooth; }
+    
     body {
       background-color: var(--bg);
       color: var(--ink);
@@ -35,44 +38,37 @@
     h1, h2, h3 { font-family: "Amiri", serif; font-weight: 700; line-height: 1.15; }
     .font-sans { font-variant-numeric: tabular-nums; font-family: system-ui, -apple-system, sans-serif; }
 
-    /* Progress */
+    /* Progress Bar - pure CSS */
     #progress-bar {
       position: fixed; top: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--gold), var(--accent));
-      width: 100%; transform: scaleX(0); transform-origin: right center;
-      z-index: 10000; will-change: transform;
+      width: 0%; z-index: 10000;
+      transition: width 0.1s linear;
     }
 
-    /* Particles - CSS Only (خفيف جداً) */
+    /* Particles Background */
     .particles-bg {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background-image: 
-        radial-gradient(2px 2px at 20% 30%, rgba(217, 70, 239, 0.4), transparent),
-        radial-gradient(2px 2px at 60% 70%, rgba(217, 179, 108, 0.4), transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(217, 70, 239, 0.3), transparent),
-        radial-gradient(1px 1px at 80% 10%, rgba(217, 179, 108, 0.3), transparent),
-        radial-gradient(2px 2px at 90% 40%, rgba(217, 70, 239, 0.3), transparent),
-        radial-gradient(1px 1px at 30% 80%, rgba(217, 179, 108, 0.3), transparent);
+        radial-gradient(2px 2px at 20% 30%, rgba(217, 70, 239, 0.35), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(217, 179, 108, 0.35), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(217, 70, 239, 0.25), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(217, 179, 108, 0.25), transparent),
+        radial-gradient(2px 2px at 90% 40%, rgba(217, 70, 239, 0.25), transparent),
+        radial-gradient(1px 1px at 30% 80%, rgba(217, 179, 108, 0.25), transparent);
       background-size: 200% 200%;
-      animation: floatParticles 20s ease-in-out infinite;
-      will-change: background-position;
+      animation: floatParticles 25s ease-in-out infinite;
     }
     @keyframes floatParticles {
       0%, 100% { background-position: 0% 0%; }
       50% { background-position: 100% 100%; }
     }
 
-    .scene { position: relative; z-index: 10; width: 100%; }
-    .pin-scene { min-height: 100vh; }
-
-    /* Glass panels - محسّنة */
+    /* Glass */
     .glass-panel {
       background: rgba(14, 11, 26, 0.85);
       border: 1px solid rgba(217, 70, 239, 0.2);
       border-radius: 24px;
-    }
-    @media (min-width: 768px) {
-      .glass-panel { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     }
 
     .text-gold { color: var(--gold); }
@@ -80,43 +76,98 @@
     .bg-accent { background-color: var(--accent); }
     .bg-gold { background-color: var(--gold); }
 
-    /* Pinned container */
-    #master-pin { position: relative; height: 100vh; overflow: hidden; }
-
-    /* Scene panels - استخدام autoAlpha بدل opacity */
-    .scene-panel {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      padding: 0 1.5rem;
-      visibility: hidden; opacity: 0;
-      will-change: opacity, visibility;
-      contain: layout style;
+    /* ==========================================
+       Intersection Observer Reveal System
+       ========================================== */
+    .reveal {
+      opacity: 0;
+      transform: translate3d(0, 40px, 0);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
     }
-    .scene-panel.active { visibility: visible; opacity: 1; }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    .reveal.from-left {
+      transform: translate3d(-40px, 0, 0);
+    }
+    .reveal.from-left.in-view {
+      transform: translate3d(0, 0, 0);
+    }
+    .reveal.from-right {
+      transform: translate3d(40px, 0, 0);
+    }
+    .reveal.from-right.in-view {
+      transform: translate3d(0, 0, 0);
+    }
+    .reveal.delay-1 { transition-delay: 0.1s; }
+    .reveal.delay-2 { transition-delay: 0.2s; }
+    .reveal.delay-3 { transition-delay: 0.3s; }
 
-    /* Case study horizontal */
-    .horizontal-track { display: flex; gap: 1.5rem; padding: 0 5vw; width: max-content; will-change: transform; }
+    /* Word stagger (حسب الكلمة مش الحرف) */
+    .word-stagger .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 30px, 0);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .word-stagger.in-view .word {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Scene panels */
+    .scene-section {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 1.5rem;
+    }
+
+    /* Horizontal Cases */
+    .horizontal-track {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 5vw;
+      will-change: transform;
+    }
+
+    /* Marquee */
+    .marquee-track { animation: marquee 30s linear infinite; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
     /* Reduced Motion */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+      }
+      .reveal, .word-stagger .word {
+        opacity: 1 !important;
+        transform: none !important;
       }
       .particles-bg { animation: none; }
+      .marquee-track { animation: none; }
     }
 
-    /* Mobile optimizations */
+    /* Mobile */
     @media (max-width: 767px) {
-      .particles-bg { opacity: 0.5; }
-      .glass-panel { background: rgba(14, 11, 26, 0.95); }
+      .scene-section { padding: 4rem 1rem; }
       h1 { font-size: 2.5rem; }
+      .particles-bg { opacity: 0.6; }
     }
 
-    /* Content visibility for below-fold */
-    .below-fold { content-visibility: auto; contain-intrinsic-size: 500px; }
+    /* Below fold optimization */
+    .below-fold { content-visibility: auto; contain-intrinsic-size: 800px; }
   </style>
 </head>
 <body>
@@ -125,7 +176,7 @@
   <div class="particles-bg"></div>
 
   <!-- Nav -->
-  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/90 border-b border-white/5">
+  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/95 border-b border-white/5">
     <div class="flex items-center gap-3">
       <img src="logo.png" class="w-10 h-10 object-contain rounded-lg border border-white/10" alt="Islam Saeed" />
       <div>
@@ -141,185 +192,254 @@
     </div>
   </nav>
 
-  <!-- SCENE 1: Opening -->
-  <section id="scene-1" class="pin-scene flex items-center justify-center px-6 pt-24">
+  <!-- ======================================== -->
+  <!-- SCENE 1: HERO -->
+  <!-- ======================================== -->
+  <section class="scene-section pt-32">
     <div class="text-center max-w-4xl mx-auto">
-      <div class="mb-6 flex justify-center items-center gap-4">
+      <div class="reveal mb-6 flex justify-center items-center gap-4">
         <div class="h-px w-12 bg-gold"></div>
         <span class="text-gold text-xs font-bold uppercase tracking-widest">Anatomy of a Campaign</span>
         <div class="h-px w-12 bg-gold"></div>
       </div>
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8" id="main-title">تشريح الحملة الرابحة</h1>
-      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+      <h1 class="word-stagger text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8" id="main-title">
+        <span class="word">تشريح</span>
+        <span class="word">الحملة</span>
+        <span class="word">الرابحة</span>
+      </h1>
+      <p class="reveal delay-2 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
         أنا <strong class="text-white">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة.
       </p>
-      <div class="mt-12 flex justify-center">
-        <i class="fa-solid fa-arrow-down text-gold text-2xl animate-bounce"></i>
+      <div class="reveal delay-3 mt-12 flex justify-center">
+        <a href="#scene-economics" class="text-gold text-2xl animate-bounce">
+          <i class="fa-solid fa-arrow-down"></i>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- SCENES 2-5: Master Pin -->
-  <div id="master-pin">
-    <!-- Scene 2 -->
-    <div class="scene-panel s2-content" data-scene="2">
-      <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
-          <span class="text-accent text-xs font-bold uppercase">02 — Economics</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">اقتصاديات الوحدة</h2>
-          <p class="text-slate-400 text-sm leading-relaxed mb-8">الإعلانات استثمار مش مصروف. لازم تحسب Max CAC و Break-Even قبل أي جنيه.</p>
-          <div class="glass-panel p-6 space-y-3">
-            <div class="flex justify-between border-b border-white/10 pb-3"><span class="text-slate-400 text-sm">Max CAC</span><span class="font-sans font-bold text-gold text-xl">600 EGP</span></div>
-            <div class="flex justify-between border-b border-white/10 pb-3"><span class="text-slate-400 text-sm">Break-Even ROAS</span><span class="font-sans font-bold text-accent text-xl">2.5x</span></div>
-            <div class="flex justify-between"><span class="text-slate-400 text-sm">LTV</span><span class="font-sans font-bold text-green-400 text-xl">2,500 EGP</span></div>
+  <!-- ======================================== -->
+  <!-- SCENE 2: ECONOMICS -->
+  <!-- ======================================== -->
+  <section id="scene-economics" class="scene-section below-fold bg-[#0E0B1A]/40 border-y border-white/5">
+    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="reveal from-right">
+        <span class="text-accent text-xs font-bold uppercase">02 — Economics</span>
+        <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">اقتصاديات الوحدة</h2>
+        <p class="text-slate-400 text-sm leading-relaxed mb-8">الإعلانات استثمار مش مصروف. لازم تحسب Max CAC و Break-Even قبل أي جنيه.</p>
+        <div class="glass-panel p-6 space-y-3">
+          <div class="flex justify-between border-b border-white/10 pb-3">
+            <span class="text-slate-400 text-sm">Max CAC</span>
+            <span class="font-sans font-bold text-gold text-xl">600 EGP</span>
           </div>
-        </div>
-        <div class="relative h-56 w-56 mx-auto flex items-center justify-center">
-          <div class="absolute inset-0 border-2 border-accent/30 rounded-full animate-ping" style="animation-duration: 3s;"></div>
-          <div class="absolute inset-8 border-2 border-gold/50 rounded-full animate-ping" style="animation-duration: 2s;"></div>
-          <i class="fa-solid fa-sack-dollar text-5xl text-gold relative z-10"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scene 3 -->
-    <div class="scene-panel s3-content" data-scene="3">
-      <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div class="order-2 md:order-1 relative h-72 w-56 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
-          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 border-accent/50 flex items-center justify-center z-20">
-            <i class="fa-solid fa-play text-white"></i>
+          <div class="flex justify-between border-b border-white/10 pb-3">
+            <span class="text-slate-400 text-sm">Break-Even ROAS</span>
+            <span class="font-sans font-bold text-accent text-xl">2.5x</span>
           </div>
-          <div class="relative z-20 space-y-2">
-            <div class="h-2 w-3/4 bg-white/20 rounded"></div>
-            <div class="h-2 w-1/2 bg-white/20 rounded"></div>
-          </div>
-        </div>
-        <div class="order-1 md:order-2">
-          <span class="text-accent text-xs font-bold uppercase">03 — Creative</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">أول ثانيتين</h2>
-          <p class="text-slate-400 text-sm leading-relaxed mb-6">الكرياتيف 60% من النجاح. الـ Hook هو أول 3 ثواني، لو ممسكتش الانتباه، خسرت العميل.</p>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Hook قوي في أول ثانية</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> UGC يبني ثقة</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Dynamic Creative Testing</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scene 4 -->
-    <div class="scene-panel s4-content" data-scene="4">
-      <div class="max-w-3xl w-full text-center space-y-8">
-        <div>
-          <span class="text-accent text-xs font-bold uppercase">04 — Funnel</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">مسار كامل</h2>
-        </div>
-        <div class="flex flex-col items-center gap-3">
-          <div class="w-full max-w-md py-4 bg-accent/10 border border-accent/30 rounded-xl">
-            <h3 class="text-white font-bold">TOFU — الوعي</h3>
-          </div>
-          <div class="w-3/4 max-w-sm py-4 bg-gold/10 border border-gold/30 rounded-xl">
-            <h3 class="text-white font-bold">MOFU — التفكير</h3>
-          </div>
-          <div class="w-1/2 max-w-xs py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
-            <h3 class="text-white font-bold">BOFU — الشراء</h3>
+          <div class="flex justify-between">
+            <span class="text-slate-400 text-sm">LTV</span>
+            <span class="font-sans font-bold text-green-400 text-xl">2,500 EGP</span>
           </div>
         </div>
       </div>
+      <div class="reveal from-left relative h-56 w-56 mx-auto flex items-center justify-center">
+        <div class="absolute inset-0 border-2 border-accent/30 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+        <div class="absolute inset-8 border-2 border-gold/50 rounded-full animate-ping" style="animation-duration: 2s;"></div>
+        <i class="fa-solid fa-sack-dollar text-5xl text-gold relative z-10"></i>
+      </div>
     </div>
+  </section>
 
-    <!-- Scene 5 -->
-    <div class="scene-panel s5-content" data-scene="5">
-      <div class="max-w-4xl w-full text-center space-y-6">
-        <div>
-          <span class="text-accent text-xs font-bold uppercase">05 — Scaling</span>
-          <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">الميزانية تكبر والربح يكبر</h2>
+  <!-- ======================================== -->
+  <!-- SCENE 3: CREATIVE -->
+  <!-- ======================================== -->
+  <section class="scene-section below-fold">
+    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="reveal from-right order-2 md:order-1 relative h-72 w-56 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 border-accent/50 flex items-center justify-center z-20">
+          <i class="fa-solid fa-play text-white"></i>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-          <div class="glass-panel p-8">
-            <div class="text-6xl md:text-7xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-gold to-accent counter" data-target="30">0</div>
-            <div class="text-slate-300 font-bold mt-2">أعلى ROAS</div>
-          </div>
-          <div class="glass-panel p-8">
-            <div class="text-4xl md:text-6xl font-bold font-sans text-white counter" data-target="3000000">0</div>
-            <div class="text-slate-300 font-bold mt-2">مبيعات حملة</div>
-          </div>
+        <div class="relative z-20 space-y-2">
+          <div class="h-2 w-3/4 bg-white/20 rounded"></div>
+          <div class="h-2 w-1/2 bg-white/20 rounded"></div>
+        </div>
+      </div>
+      <div class="reveal from-left order-1 md:order-2">
+        <span class="text-accent text-xs font-bold uppercase">03 — Creative</span>
+        <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">أول ثانيتين</h2>
+        <p class="text-slate-400 text-sm leading-relaxed mb-6">الكرياتيف 60% من النجاح. الـ Hook هو أول 3 ثواني، لو ممسكتش الانتباه، خسرت العميل.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Hook قوي في أول ثانية</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> UGC يبني ثقة</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-gold"></i> Dynamic Creative Testing</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- SCENE 4: FUNNEL -->
+  <!-- ======================================== -->
+  <section class="scene-section below-fold bg-[#0E0B1A]/40 border-y border-white/5">
+    <div class="max-w-3xl w-full text-center space-y-8">
+      <div class="reveal">
+        <span class="text-accent text-xs font-bold uppercase">04 — Funnel</span>
+        <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">مسار كامل</h2>
+      </div>
+      <div class="flex flex-col items-center gap-3">
+        <div class="reveal delay-1 w-full max-w-md py-4 bg-accent/10 border border-accent/30 rounded-xl">
+          <h3 class="text-white font-bold">TOFU — الوعي</h3>
+        </div>
+        <div class="reveal delay-2 w-3/4 max-w-sm py-4 bg-gold/10 border border-gold/30 rounded-xl">
+          <h3 class="text-white font-bold">MOFU — التفكير</h3>
+        </div>
+        <div class="reveal delay-3 w-1/2 max-w-xs py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+          <h3 class="text-white font-bold">BOFU — الشراء</h3>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- SCENE 6: Partners -->
+  <!-- ======================================== -->
+  <!-- SCENE 5: SCALING -->
+  <!-- ======================================== -->
+  <section class="scene-section below-fold">
+    <div class="max-w-4xl w-full text-center space-y-6">
+      <div class="reveal">
+        <span class="text-accent text-xs font-bold uppercase">05 — Scaling</span>
+        <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">الميزانية تكبر والربح يكبر</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <div class="reveal from-right glass-panel p-8">
+          <div class="text-6xl md:text-7xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-gold to-accent counter" data-target="30">0</div>
+          <div class="text-slate-300 font-bold mt-2">أعلى ROAS</div>
+        </div>
+        <div class="reveal from-left glass-panel p-8">
+          <div class="text-4xl md:text-6xl font-bold font-sans text-white counter" data-target="3000000">0</div>
+          <div class="text-slate-300 font-bold mt-2">مبيعات حملة</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- SCENE 6: PARTNERS -->
+  <!-- ======================================== -->
   <section class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5 overflow-hidden">
     <div class="text-center mb-10 px-6">
-      <h2 class="text-3xl md:text-5xl font-bold text-white">شركاء النجاح</h2>
-      <p class="text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية</p>
+      <h2 class="reveal text-3xl md:text-5xl font-bold text-white">شركاء النجاح</h2>
+      <p class="reveal delay-1 text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية</p>
     </div>
     <div class="relative w-full overflow-hidden flex">
-      <div class="marquee-track flex gap-6 px-4" style="animation: marquee 30s linear infinite;">
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 1</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 2</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 3</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 4</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 5</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 6</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 7</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400">Logo 8</div>
+      <div class="marquee-track flex gap-6 px-4">
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 1</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 2</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 3</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 4</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 5</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 6</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 7</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 8</div>
+        <!-- Duplicate for seamless loop -->
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 1</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 2</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 3</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 4</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 5</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 6</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 7</div>
+        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 8</div>
       </div>
     </div>
   </section>
 
-  <!-- SCENE 7: Cases -->
-  <section id="scene-cases" class="below-fold pin-scene bg-black flex items-center overflow-hidden">
-    <div class="absolute top-8 right-6 z-20">
-      <h2 class="text-3xl md:text-5xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
+  <!-- ======================================== -->
+  <!-- SCENE 7: CASES (Horizontal Scroll) -->
+  <!-- ======================================== -->
+  <section id="scene-cases" class="below-fold py-20 bg-black overflow-hidden">
+    <div class="px-6 mb-8">
+      <h2 class="reveal text-3xl md:text-5xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
     </div>
-    <div class="horizontal-track mt-20">
-      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
-        <div>
-          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">تجارة إلكترونية</span><span class="text-gold font-bold font-sans">30x ROAS</span></div>
-          <h3 class="text-2xl font-bold text-white mb-2">Luxer & B-Smart</h3>
-          <p class="text-sm text-slate-400">حملات تحويل سريع + إعادة استهداف لزوار الموقع.</p>
+    
+    <!-- Container with horizontal scroll -->
+    <div class="relative">
+      <div id="cases-track" class="horizontal-track">
+        <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
+          <div>
+            <div class="flex justify-between text-xs mb-4">
+              <span class="text-accent font-bold">تجارة إلكترونية</span>
+              <span class="text-gold font-bold font-sans">30x ROAS</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Luxer & B-Smart</h3>
+            <p class="text-sm text-slate-400">حملات تحويل سريع + إعادة استهداف لزوار الموقع.</p>
+          </div>
+          <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-400">الميزانية:</span><span class="text-white font-sans">100K</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="text-green-400 font-sans">3M+</span></div>
+          </div>
         </div>
-        <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
-          <div class="flex justify-between"><span class="text-slate-400">الميزانية:</span><span class="text-white font-sans">100K</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="text-green-400 font-sans">3M+</span></div>
+
+        <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
+          <div>
+            <div class="flex justify-between text-xs mb-4">
+              <span class="text-accent font-bold">مطابخ</span>
+              <span class="text-gold font-bold font-sans">2.54 EGP / 1k</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Woody</h3>
+            <p class="text-sm text-slate-400">استهداف دقيق لمالكي الفيلات بأقل تكلفة وصول.</p>
+          </div>
+          <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-400">الوصول:</span><span class="text-white font-sans">393K</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">الظهور:</span><span class="text-green-400 font-sans">406K+</span></div>
+          </div>
+        </div>
+
+        <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
+          <div>
+            <div class="flex justify-between text-xs mb-4">
+              <span class="text-accent font-bold">مطاعم</span>
+              <span class="text-gold font-bold font-sans">0.01 EGP / تفاعل</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">ملك الشاورما</h3>
+            <p class="text-sm text-slate-400">ريلز فيروسية وعروض مجمعة رفعت الاتصالات.</p>
+          </div>
+          <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-400">التفاعل:</span><span class="text-white font-sans">43K</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">المبيعات:</span><span class="text-green-400 font-sans">17K+</span></div>
+          </div>
+        </div>
+
+        <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
+          <div>
+            <div class="flex justify-between text-xs mb-4">
+              <span class="text-accent font-bold">عقارات</span>
+              <span class="text-gold font-bold font-sans">4.2x ROAS</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Anhagar Egypt</h3>
+            <p class="text-sm text-slate-400">حملات Lead Generation مع Conversion API.</p>
+          </div>
+          <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-400">الليدز:</span><span class="text-white font-sans">2,400+</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">التكلفة:</span><span class="text-green-400 font-sans">80 EGP</span></div>
+          </div>
         </div>
       </div>
-      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
-        <div>
-          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">مطابخ</span><span class="text-gold font-bold font-sans">2.54 EGP / 1k</span></div>
-          <h3 class="text-2xl font-bold text-white mb-2">Woody</h3>
-          <p class="text-sm text-slate-400">استهداف دقيق لمالكي الفيلات بأقل تكلفة وصول.</p>
-        </div>
-        <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
-          <div class="flex justify-between"><span class="text-slate-400">الوصول:</span><span class="text-white font-sans">393K</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">الظهور:</span><span class="text-green-400 font-sans">406K+</span></div>
-        </div>
-      </div>
-      <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
-        <div>
-          <div class="flex justify-between text-xs mb-4"><span class="text-accent font-bold">مطاعم</span><span class="text-gold font-bold font-sans">0.01 EGP / تفاعل</span></div>
-          <h3 class="text-2xl font-bold text-white mb-2">ملك الشاورما</h3>
-          <p class="text-sm text-slate-400">ريلز فيروسية وعروض مجمعة رفعت الاتصالات.</p>
-        </div>
-        <div class="border-t border-white/10 pt-4 space-y-2 text-sm">
-          <div class="flex justify-between"><span class="text-slate-400">التفاعل:</span><span class="text-white font-sans">43K</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">المبيعات:</span><span class="text-green-400 font-sans">17K+</span></div>
-        </div>
-      </div>
-      <div class="w-[10vw]"></div>
+    </div>
+    <div class="text-center mt-6 text-xs text-slate-500 md:hidden">
+      <i class="fa-solid fa-arrows-left-right ml-1"></i> اسحب أفقياً لرؤية المزيد
     </div>
   </section>
 
-  <!-- SCENE 8: Calculator -->
+  <!-- ======================================== -->
+  <!-- SCENE 8: CALCULATOR -->
+  <!-- ======================================== -->
   <section id="scene-calculator" class="below-fold py-20 bg-[#07050a]">
     <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-10">
+      <div class="text-center mb-10 reveal">
         <span class="text-accent text-xs font-bold uppercase">08 — Interactive</span>
         <h2 class="text-3xl md:text-5xl font-bold text-white mt-2">جرّب أرقامك</h2>
       </div>
-      <div class="glass-panel p-6 md:p-10">
+      <div class="reveal glass-panel p-6 md:p-10">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-4 text-xs">
             <div>
@@ -380,15 +500,17 @@
     </div>
   </section>
 
+  <!-- ======================================== -->
   <!-- SCENE 9: CTA -->
+  <!-- ======================================== -->
   <section id="scene-cta" class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5">
     <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-      <div>
+      <div class="reveal from-right">
         <span class="text-gold text-xs font-bold uppercase">09 — Invitation</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">٢٠ مقعد بس</h2>
         <p class="text-slate-400 text-sm leading-relaxed mb-6">معسكر الميديا باينج والأوفلاين في القاهرة. الدفعة مغلقة بـ 20 مقعداً فقط. شرط القبول: اجتياز المقابلة الشخصية.</p>
       </div>
-      <div class="glass-panel p-6 md:p-8">
+      <div class="reveal from-left glass-panel p-6 md:p-8">
         <h3 class="text-lg font-bold text-white mb-4">طلب الترشح</h3>
         <form id="waitlistForm" class="space-y-3 text-xs">
           <input type="text" id="subName" required placeholder="الاسم الكامل" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
@@ -413,12 +535,14 @@
     </div>
   </section>
 
+  <!-- ======================================== -->
   <!-- SCENE 10: FAQ -->
+  <!-- ======================================== -->
   <section class="below-fold py-20 bg-black">
     <div class="max-w-3xl mx-auto px-6">
-      <h2 class="text-3xl md:text-5xl font-bold text-white text-center mb-10">الأسئلة الشائعة</h2>
+      <h2 class="reveal text-3xl md:text-5xl font-bold text-white text-center mb-10">الأسئلة الشائعة</h2>
       <div class="space-y-3 text-sm">
-        <div class="border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
+        <div class="reveal border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
           <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
             <span>لماذا مقابلة شخصية قبل القبول؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
@@ -427,7 +551,7 @@
             لأن المعسكر عملي ومغلق على 20 مقعداً فقط لضمان جودة التطبيق.
           </div>
         </div>
-        <div class="border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
+        <div class="reveal delay-1 border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
           <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
             <span>هل المنهجية تناسب كل الأنشطة؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
@@ -448,143 +572,160 @@
   <script src="js/cms-data.js" defer></script>
   <script src="js/calculator.js" defer></script>
   <script src="js/main.js" defer type="module"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <script>
     // ==========================================
-    // Detection
+    // 1. Progress Bar (خفيف جداً - passive scroll)
     // ==========================================
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768;
+    const progressBar = document.getElementById('progress-bar');
+    let rafId = null;
+    let lastProgress = -1;
 
-    // Register GSAP
-    gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
-
-    if (prefersReducedMotion) {
-      // وضع الوصولية: مفيش أنيميشن، كل حاجة ظاهرة
-      document.querySelectorAll('.scene-panel').forEach(p => p.classList.add('active'));
-      document.querySelectorAll('.counter').forEach(c => c.textContent = c.dataset.target);
-      document.getElementById('master-pin').style.height = 'auto';
-      document.getElementById('master-pin').style.overflow = 'visible';
-      document.querySelectorAll('.scene-panel').forEach(p => {
-        p.style.position = 'relative';
-        p.style.visibility = 'visible';
-        p.style.opacity = '1';
-        p.style.marginBottom = '2rem';
+    window.addEventListener('scroll', () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        if (Math.abs(progress - lastProgress) > 0.1) {
+          progressBar.style.width = progress + '%';
+          lastProgress = progress;
+        }
+        rafId = null;
       });
-    } else {
-      // ==========================================
-      // Progress Bar
-      // ==========================================
-      gsap.to("#progress-bar", {
-        scaleX: 1, transformOrigin: "right center", ease: "none",
-        scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 }
-      });
+    }, { passive: true });
 
-      // ==========================================
-      // Scene 1 - Word Stagger (خفيف)
-      // ==========================================
-      const titleEl = document.querySelector("#main-title");
-      if (titleEl && !isMobile) {
-        const words = titleEl.textContent.trim().split(/\s+/);
-        titleEl.innerHTML = words.map(w => `<span class="word-inner inline-block">${w}</span>`).join(' ');
-        gsap.from("#main-title .word-inner", {
-          y: 80, opacity: 0, stagger: 0.08, duration: 0.8, ease: "power2.out",
-          scrollTrigger: { trigger: "#scene-1", start: "top 80%", toggleActions: "play none none none" }
-        });
-      }
-
-      // ==========================================
-      // Master Pin (Scenes 2-5) - محسّنة
-      // ==========================================
-      const panels = document.querySelectorAll('.scene-panel');
-      const masterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: "#master-pin",
-          start: "top top",
-          end: "+=250%",
-          scrub: 0.3,
-          pin: true,
-          anticipatePin: 1,
-          fastScrollEnd: true,
-          invalidateOnRefresh: false
+    // ==========================================
+    // 2. Reveal on Scroll (Intersection Observer)
+    // ==========================================
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          // Once revealed, stop observing (performance)
+          revealObserver.unobserve(entry.target);
         }
       });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -80px 0px'
+    });
 
-      // Show first panel
-      gsap.set(panels[0], { autoAlpha: 1 });
+    document.querySelectorAll('.reveal, .word-stagger').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // Word stagger (بعد تحويل العنوان لكلمات)
+    document.querySelectorAll('.word-stagger').forEach(el => {
+      if (!el.querySelector('.word')) {
+        const words = el.textContent.trim().split(/\s+/);
+        el.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+      }
+      // Add stagger delay per word
+      el.querySelectorAll('.word').forEach((word, i) => {
+        word.style.transitionDelay = (i * 0.08) + 's';
+      });
+    });
+
+    // ==========================================
+    // 3. Counters (Intersection Observer)
+    // ==========================================
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
+
+    function animateCounter(el) {
+      const target = +el.dataset.target;
+      const duration = 1800;
+      const start = performance.now();
       
-      // Sequence
-      panels.forEach((panel, i) => {
-        if (i === 0) return; // الأول ظاهر
-        const prev = panels[i - 1];
-        masterTl.to(prev, { autoAlpha: 0, duration: 0.4 })
-                .to(panel, { autoAlpha: 1, duration: 0.4 });
-      });
-
-      // ==========================================
-      // Counters (خفيف)
-      // ==========================================
-      gsap.utils.toArray('.counter').forEach(counter => {
-        const target = +counter.dataset.target;
-        const obj = { val: 0 };
-        gsap.to(obj, {
-          val: target, duration: 2, ease: "power1.out",
-          scrollTrigger: { trigger: ".s5-content", start: "top 60%", toggleActions: "play none none none" },
-          onUpdate: () => {
-            const n = Math.floor(obj.val);
-            counter.textContent = target > 1000 ? (n/1000000).toFixed(1) + 'M' : n;
-          }
-        });
-      });
-
-      // ==========================================
-      // Horizontal Cases (محسّنة)
-      // ==========================================
-      if (!isMobile) {
-        const horizontalSection = document.querySelector("#scene-cases");
-        const horizontalTrack = document.querySelector(".horizontal-track");
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // easeOutQuart
+        const eased = 1 - Math.pow(1 - progress, 4);
+        const value = Math.floor(eased * target);
         
-        if (horizontalSection && horizontalTrack) {
-          gsap.to(horizontalTrack, {
-            x: () => -(horizontalTrack.scrollWidth - window.innerWidth),
-            ease: "none",
-            scrollTrigger: {
-              trigger: horizontalSection,
-              start: "top top",
-              end: () => "+=" + (horizontalTrack.scrollWidth - window.innerWidth),
-              scrub: 0.3,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              fastScrollEnd: true
-            }
-          });
+        if (target >= 1000000) {
+          el.textContent = (value / 1000000).toFixed(1) + 'M';
+        } else {
+          el.textContent = value;
         }
+        
+        if (progress < 1) requestAnimationFrame(update);
       }
-
-      // ==========================================
-      // FAQ
-      // ==========================================
-      document.querySelectorAll('.faq-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const content = btn.nextElementSibling;
-          const icon = btn.querySelector('i');
-          const isHidden = content.classList.contains('hidden');
-          document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-          document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
-          if (isHidden) {
-            content.classList.remove('hidden');
-            if (icon) icon.style.transform = 'rotate(180deg)';
-          }
-        });
-      });
+      
+      requestAnimationFrame(update);
     }
 
-    // Refresh triggers on load
-    window.addEventListener('load', () => ScrollTrigger.refresh());
+    // ==========================================
+    // 4. Horizontal Scroll for Cases (Native - Smooth)
+    // ==========================================
+    const casesTrack = document.getElementById('cases-track');
+    if (casesTrack) {
+      // On mobile: use native horizontal scroll (touch swipe)
+      // On desktop: mouse wheel → horizontal
+      if (window.innerWidth >= 768) {
+        // Convert vertical scroll to horizontal when hovering over the track
+        casesTrack.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            const maxScroll = casesTrack.scrollWidth - casesTrack.clientWidth;
+            const currentScroll = casesTrack.scrollLeft;
+            
+            // Only hijack scroll if not at edges
+            if ((e.deltaY > 0 && currentScroll < maxScroll) || 
+                (e.deltaY < 0 && currentScroll > 0)) {
+              e.preventDefault();
+              casesTrack.scrollLeft += e.deltaY;
+            }
+          }
+        }, { passive: false });
+        
+        // Make container scrollable
+        casesTrack.style.overflowX = 'auto';
+        casesTrack.style.scrollBehavior = 'smooth';
+        casesTrack.style.scrollbarWidth = 'none';
+        casesTrack.style.msOverflowStyle = 'none';
+        // Hide scrollbar
+        const style = document.createElement('style');
+        style.textContent = '.horizontal-track::-webkit-scrollbar { display: none; }';
+        document.head.appendChild(style);
+      } else {
+        // On mobile: just make it scrollable natively
+        casesTrack.style.overflowX = 'auto';
+        casesTrack.style.scrollSnapType = 'x mandatory';
+        casesTrack.style.scrollbarWidth = 'none';
+        casesTrack.querySelectorAll('> div').forEach(card => {
+          card.style.scrollSnapAlign = 'start';
+        });
+      }
+    }
+
+    // ==========================================
+    // 5. FAQ Accordion
+    // ==========================================
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('i');
+        const isHidden = content.classList.contains('hidden');
+        
+        document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.faq-btn i').forEach(i => i.style.transform = 'rotate(0deg)');
+        
+        if (isHidden) {
+          content.classList.remove('hidden');
+          if (icon) icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
   </script>
 </body>
 </html>

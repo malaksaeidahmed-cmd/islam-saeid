@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<html lang="ar" dir="rtl" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,15 +7,19 @@
   <meta name="description" content="الموقع الرسمي لإسلام سعيد - خبير الميديا باينج والنمو الإعلاني." />
   <link rel="icon" type="image/png" href="logo.png" />
 
-  <!-- Preload Critical Fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- GSAP & Lenis (للسلاسة) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
   <style>
     :root {
@@ -24,47 +28,46 @@
       --accent: #D946EF;
       --gold: #d9b36c;
     }
-    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     
-    html { scroll-behavior: smooth; }
-    
+    /* إخفاء سكرول المتصفح الافتراضي عشان Lenis */
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+
     body {
       background-color: var(--bg);
       color: var(--ink);
       font-family: "IBM Plex Sans Arabic", sans-serif;
       overflow-x: hidden;
       margin: 0; padding: 0;
+      -webkit-font-smoothing: antialiased;
     }
     h1, h2, h3 { font-family: "Amiri", serif; font-weight: 700; line-height: 1.15; }
     .font-sans { font-variant-numeric: tabular-nums; font-family: system-ui, -apple-system, sans-serif; }
 
-    /* Progress Bar - pure CSS */
+    /* Progress */
     #progress-bar {
       position: fixed; top: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--gold), var(--accent));
-      width: 0%; z-index: 10000;
-      transition: width 0.1s linear;
+      width: 100%; transform: scaleX(0); transform-origin: right center;
+      z-index: 10000;
     }
 
-    /* Particles Background */
     .particles-bg {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background-image: 
-        radial-gradient(2px 2px at 20% 30%, rgba(217, 70, 239, 0.35), transparent),
-        radial-gradient(2px 2px at 60% 70%, rgba(217, 179, 108, 0.35), transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(217, 70, 239, 0.25), transparent),
-        radial-gradient(1px 1px at 80% 10%, rgba(217, 179, 108, 0.25), transparent),
-        radial-gradient(2px 2px at 90% 40%, rgba(217, 70, 239, 0.25), transparent),
-        radial-gradient(1px 1px at 30% 80%, rgba(217, 179, 108, 0.25), transparent);
+        radial-gradient(2px 2px at 20% 30%, rgba(217, 70, 239, 0.3), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(217, 179, 108, 0.3), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(217, 70, 239, 0.2), transparent);
       background-size: 200% 200%;
-      animation: floatParticles 25s ease-in-out infinite;
+      animation: floatParticles 20s ease-in-out infinite;
     }
     @keyframes floatParticles {
       0%, 100% { background-position: 0% 0%; }
       50% { background-position: 100% 100%; }
     }
 
-    /* Glass */
     .glass-panel {
       background: rgba(14, 11, 26, 0.85);
       border: 1px solid rgba(217, 70, 239, 0.2);
@@ -76,61 +79,37 @@
     .bg-accent { background-color: var(--accent); }
     .bg-gold { background-color: var(--gold); }
 
-    /* ==========================================
-       Intersection Observer Reveal System
-       ========================================== */
-    .reveal {
-      opacity: 0;
-      transform: translate3d(0, 40px, 0);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-    .reveal.in-view {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-    .reveal.from-left {
-      transform: translate3d(-40px, 0, 0);
-    }
-    .reveal.from-left.in-view {
-      transform: translate3d(0, 0, 0);
-    }
-    .reveal.from-right {
-      transform: translate3d(40px, 0, 0);
-    }
-    .reveal.from-right.in-view {
-      transform: translate3d(0, 0, 0);
-    }
-    .reveal.delay-1 { transition-delay: 0.1s; }
-    .reveal.delay-2 { transition-delay: 0.2s; }
-    .reveal.delay-3 { transition-delay: 0.3s; }
-
-    /* Word stagger (حسب الكلمة مش الحرف) */
-    .word-stagger .word {
-      display: inline-block;
-      opacity: 0;
-      transform: translate3d(0, 30px, 0);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .word-stagger.in-view .word {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-
-    /* Scene panels */
     .scene-section {
       position: relative;
       z-index: 10;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6rem 1.5rem;
+      padding: 8rem 1.5rem;
+      overflow: hidden;
     }
 
-    /* Horizontal Cases */
+    /* Marquee Fix */
+    .marquee-wrapper {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding-inline: 0.75rem;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+
+    /* Horizontal Scroll Track */
+    .horizontal-container {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
     .horizontal-track {
       display: flex;
       gap: 1.5rem;
@@ -138,36 +117,24 @@
       will-change: transform;
     }
 
-    /* Marquee */
-    .marquee-track { animation: marquee 30s linear infinite; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    /* Splitting Text Fix */
+    .split-word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+    .split-word span {
+      display: inline-block;
+      will-change: transform;
     }
 
-    /* Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-      .reveal, .word-stagger .word {
-        opacity: 1 !important;
-        transform: none !important;
-      }
-      .particles-bg { animation: none; }
-      .marquee-track { animation: none; }
-    }
-
-    /* Mobile */
+    /* Mobile Swipe */
     @media (max-width: 767px) {
-      .scene-section { padding: 4rem 1rem; }
-      h1 { font-size: 2.5rem; }
-      .particles-bg { opacity: 0.6; }
+      .horizontal-container { height: auto; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+      .horizontal-container::-webkit-scrollbar { display: none; }
+      .horizontal-track { transform: none !important; }
+      .horizontal-track > div { scroll-snap-align: center; }
     }
-
-    /* Below fold optimization */
-    .below-fold { content-visibility: auto; contain-intrinsic-size: 800px; }
   </style>
 </head>
 <body>
@@ -176,7 +143,7 @@
   <div class="particles-bg"></div>
 
   <!-- Nav -->
-  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/95 border-b border-white/5">
+  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center bg-[#07050a]/90 backdrop-blur-sm border-b border-white/5">
     <div class="flex items-center gap-3">
       <img src="logo.png" class="w-10 h-10 object-contain rounded-lg border border-white/10" alt="Islam Saeed" />
       <div>
@@ -192,25 +159,21 @@
     </div>
   </nav>
 
-  <!-- ======================================== -->
   <!-- SCENE 1: HERO -->
-  <!-- ======================================== -->
-  <section class="scene-section pt-32">
+  <section class="scene-section min-h-screen flex items-center justify-center pt-20">
     <div class="text-center max-w-4xl mx-auto">
-      <div class="reveal mb-6 flex justify-center items-center gap-4">
+      <div class="mb-6 flex justify-center items-center gap-4 animate-fade-in">
         <div class="h-px w-12 bg-gold"></div>
         <span class="text-gold text-xs font-bold uppercase tracking-widest">Anatomy of a Campaign</span>
         <div class="h-px w-12 bg-gold"></div>
       </div>
-      <h1 class="word-stagger text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8" id="main-title">
-        <span class="word">تشريح</span>
-        <span class="word">الحملة</span>
-        <span class="word">الرابحة</span>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8" id="main-title">
+        تشريح الحملة الرابحة
       </h1>
-      <p class="reveal delay-2 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+      <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style="animation-delay: 0.5s;">
         أنا <strong class="text-white">إسلام سعيد</strong>. متخصص في تحويل ميزانيات إعلانات Meta و TikTok إلى مبيعات وأرباح صافية مستدامة.
       </p>
-      <div class="reveal delay-3 mt-12 flex justify-center">
+      <div class="mt-12 flex justify-center animate-fade-in-up" style="animation-delay: 0.8s;">
         <a href="#scene-economics" class="text-gold text-2xl animate-bounce">
           <i class="fa-solid fa-arrow-down"></i>
         </a>
@@ -218,12 +181,10 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 2: ECONOMICS -->
-  <!-- ======================================== -->
-  <section id="scene-economics" class="scene-section below-fold bg-[#0E0B1A]/40 border-y border-white/5">
-    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      <div class="reveal from-right">
+  <section id="scene-economics" class="scene-section bg-[#0E0B1A]/40 border-y border-white/5">
+    <div class="max-w-4xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="gsap-fade-right">
         <span class="text-accent text-xs font-bold uppercase">02 — Economics</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">اقتصاديات الوحدة</h2>
         <p class="text-slate-400 text-sm leading-relaxed mb-8">الإعلانات استثمار مش مصروف. لازم تحسب Max CAC و Break-Even قبل أي جنيه.</p>
@@ -242,7 +203,7 @@
           </div>
         </div>
       </div>
-      <div class="reveal from-left relative h-56 w-56 mx-auto flex items-center justify-center">
+      <div class="gsap-fade-left relative h-56 w-56 mx-auto flex items-center justify-center">
         <div class="absolute inset-0 border-2 border-accent/30 rounded-full animate-ping" style="animation-duration: 3s;"></div>
         <div class="absolute inset-8 border-2 border-gold/50 rounded-full animate-ping" style="animation-duration: 2s;"></div>
         <i class="fa-solid fa-sack-dollar text-5xl text-gold relative z-10"></i>
@@ -250,12 +211,10 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 3: CREATIVE -->
-  <!-- ======================================== -->
-  <section class="scene-section below-fold">
-    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      <div class="reveal from-right order-2 md:order-1 relative h-72 w-56 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
+  <section class="scene-section">
+    <div class="max-w-4xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="gsap-fade-right order-2 md:order-1 relative h-72 w-56 mx-auto bg-[#0E0B1A] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-end p-4">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 border-accent/50 flex items-center justify-center z-20">
           <i class="fa-solid fa-play text-white"></i>
         </div>
@@ -264,7 +223,7 @@
           <div class="h-2 w-1/2 bg-white/20 rounded"></div>
         </div>
       </div>
-      <div class="reveal from-left order-1 md:order-2">
+      <div class="gsap-fade-left order-1 md:order-2">
         <span class="text-accent text-xs font-bold uppercase">03 — Creative</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">أول ثانيتين</h2>
         <p class="text-slate-400 text-sm leading-relaxed mb-6">الكرياتيف 60% من النجاح. الـ Hook هو أول 3 ثواني، لو ممسكتش الانتباه، خسرت العميل.</p>
@@ -277,44 +236,40 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 4: FUNNEL -->
-  <!-- ======================================== -->
-  <section class="scene-section below-fold bg-[#0E0B1A]/40 border-y border-white/5">
-    <div class="max-w-3xl w-full text-center space-y-8">
-      <div class="reveal">
+  <section class="scene-section bg-[#0E0B1A]/40 border-y border-white/5">
+    <div class="max-w-3xl w-full mx-auto text-center space-y-8">
+      <div class="gsap-fade-up">
         <span class="text-accent text-xs font-bold uppercase">04 — Funnel</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">مسار كامل</h2>
       </div>
       <div class="flex flex-col items-center gap-3">
-        <div class="reveal delay-1 w-full max-w-md py-4 bg-accent/10 border border-accent/30 rounded-xl">
+        <div class="gsap-fade-up w-full max-w-md py-4 bg-accent/10 border border-accent/30 rounded-xl">
           <h3 class="text-white font-bold">TOFU — الوعي</h3>
         </div>
-        <div class="reveal delay-2 w-3/4 max-w-sm py-4 bg-gold/10 border border-gold/30 rounded-xl">
+        <div class="gsap-fade-up w-3/4 max-w-sm py-4 bg-gold/10 border border-gold/30 rounded-xl">
           <h3 class="text-white font-bold">MOFU — التفكير</h3>
         </div>
-        <div class="reveal delay-3 w-1/2 max-w-xs py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+        <div class="gsap-fade-up w-1/2 max-w-xs py-4 bg-green-500/10 border border-green-500/30 rounded-xl">
           <h3 class="text-white font-bold">BOFU — الشراء</h3>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 5: SCALING -->
-  <!-- ======================================== -->
-  <section class="scene-section below-fold">
-    <div class="max-w-4xl w-full text-center space-y-6">
-      <div class="reveal">
+  <section class="scene-section">
+    <div class="max-w-4xl w-full mx-auto text-center space-y-6">
+      <div class="gsap-fade-up">
         <span class="text-accent text-xs font-bold uppercase">05 — Scaling</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2">الميزانية تكبر والربح يكبر</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-        <div class="reveal from-right glass-panel p-8">
+        <div class="gsap-fade-right glass-panel p-8">
           <div class="text-6xl md:text-7xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-gold to-accent counter" data-target="30">0</div>
           <div class="text-slate-300 font-bold mt-2">أعلى ROAS</div>
         </div>
-        <div class="reveal from-left glass-panel p-8">
+        <div class="gsap-fade-left glass-panel p-8">
           <div class="text-4xl md:text-6xl font-bold font-sans text-white counter" data-target="3000000">0</div>
           <div class="text-slate-300 font-bold mt-2">مبيعات حملة</div>
         </div>
@@ -322,48 +277,30 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
-  <!-- SCENE 6: PARTNERS -->
-  <!-- ======================================== -->
-  <section class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5 overflow-hidden">
+  <!-- SCENE 6: PARTNERS (Brands) -->
+  <section class="py-20 bg-[#0E0B1A] border-y border-white/5 overflow-hidden">
     <div class="text-center mb-10 px-6">
-      <h2 class="reveal text-3xl md:text-5xl font-bold text-white">شركاء النجاح</h2>
-      <p class="reveal delay-1 text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية</p>
+      <h2 class="gsap-fade-up text-3xl md:text-5xl font-bold text-white">شركاء النجاح</h2>
+      <p class="gsap-fade-up text-slate-400 text-sm mt-2">أكثر من 50+ علامة تجارية</p>
     </div>
-    <div class="relative w-full overflow-hidden flex">
-      <div class="marquee-track flex gap-6 px-4">
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 1</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 2</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 3</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 4</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 5</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 6</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 7</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 8</div>
-        <!-- Duplicate for seamless loop -->
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 1</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 2</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 3</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 4</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 5</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 6</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 7</div>
-        <div class="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">Logo 8</div>
-      </div>
+    
+    <!-- Marquee Wrapper -->
+    <div class="marquee-wrapper relative">
+      <!-- نضع اللوجوهات هنا عن طريق JS -->
+      <div id="brandsGroup1" class="marquee-group"></div>
+      <div id="brandsGroup2" class="marquee-group" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 7: CASES (Horizontal Scroll) -->
-  <!-- ======================================== -->
-  <section id="scene-cases" class="below-fold py-20 bg-black overflow-hidden">
-    <div class="px-6 mb-8">
-      <h2 class="reveal text-3xl md:text-5xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
+  <section id="scene-cases" class="bg-black relative">
+    <div class="px-6 pt-20">
+      <h2 class="gsap-fade-up text-3xl md:text-5xl font-bold text-white">سجلات <span class="text-accent">الأداء</span></h2>
     </div>
     
-    <!-- Container with horizontal scroll -->
-    <div class="relative">
-      <div id="cases-track" class="horizontal-track">
+    <div class="horizontal-container mt-8">
+      <div class="horizontal-track" id="cases-track">
+        <!-- Card 1 -->
         <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
           <div>
             <div class="flex justify-between text-xs mb-4">
@@ -378,7 +315,7 @@
             <div class="flex justify-between"><span class="text-slate-400">النتائج:</span><span class="text-green-400 font-sans">3M+</span></div>
           </div>
         </div>
-
+        <!-- Card 2 -->
         <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
           <div>
             <div class="flex justify-between text-xs mb-4">
@@ -393,7 +330,7 @@
             <div class="flex justify-between"><span class="text-slate-400">الظهور:</span><span class="text-green-400 font-sans">406K+</span></div>
           </div>
         </div>
-
+        <!-- Card 3 -->
         <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
           <div>
             <div class="flex justify-between text-xs mb-4">
@@ -408,7 +345,7 @@
             <div class="flex justify-between"><span class="text-slate-400">المبيعات:</span><span class="text-green-400 font-sans">17K+</span></div>
           </div>
         </div>
-
+        <!-- Card 4 -->
         <div class="w-[85vw] md:w-[400px] h-[380px] rounded-3xl bg-[#0E0B1A] border border-white/10 p-8 flex flex-col justify-between flex-shrink-0">
           <div>
             <div class="flex justify-between text-xs mb-4">
@@ -423,23 +360,20 @@
             <div class="flex justify-between"><span class="text-slate-400">التكلفة:</span><span class="text-green-400 font-sans">80 EGP</span></div>
           </div>
         </div>
+        <!-- Spacer -->
+        <div class="w-[5vw] flex-shrink-0"></div>
       </div>
-    </div>
-    <div class="text-center mt-6 text-xs text-slate-500 md:hidden">
-      <i class="fa-solid fa-arrows-left-right ml-1"></i> اسحب أفقياً لرؤية المزيد
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 8: CALCULATOR -->
-  <!-- ======================================== -->
-  <section id="scene-calculator" class="below-fold py-20 bg-[#07050a]">
+  <section id="scene-calculator" class="scene-section bg-[#07050a]">
     <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-10 reveal">
+      <div class="text-center mb-10 gsap-fade-up">
         <span class="text-accent text-xs font-bold uppercase">08 — Interactive</span>
         <h2 class="text-3xl md:text-5xl font-bold text-white mt-2">جرّب أرقامك</h2>
       </div>
-      <div class="reveal glass-panel p-6 md:p-10">
+      <div class="gsap-fade-up glass-panel p-6 md:p-10">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-4 text-xs">
             <div>
@@ -500,17 +434,15 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 9: CTA -->
-  <!-- ======================================== -->
-  <section id="scene-cta" class="below-fold py-20 bg-[#0E0B1A] border-y border-white/5">
-    <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-      <div class="reveal from-right">
+  <section id="scene-cta" class="scene-section bg-[#0E0B1A] border-y border-white/5">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div class="gsap-fade-right">
         <span class="text-gold text-xs font-bold uppercase">09 — Invitation</span>
         <h2 class="text-4xl md:text-6xl font-bold text-white mt-2 mb-6">٢٠ مقعد بس</h2>
         <p class="text-slate-400 text-sm leading-relaxed mb-6">معسكر الميديا باينج والأوفلاين في القاهرة. الدفعة مغلقة بـ 20 مقعداً فقط. شرط القبول: اجتياز المقابلة الشخصية.</p>
       </div>
-      <div class="reveal from-left glass-panel p-6 md:p-8">
+      <div class="gsap-fade-left glass-panel p-6 md:p-8">
         <h3 class="text-lg font-bold text-white mb-4">طلب الترشح</h3>
         <form id="waitlistForm" class="space-y-3 text-xs">
           <input type="text" id="subName" required placeholder="الاسم الكامل" class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-gold" />
@@ -535,14 +467,12 @@
     </div>
   </section>
 
-  <!-- ======================================== -->
   <!-- SCENE 10: FAQ -->
-  <!-- ======================================== -->
-  <section class="below-fold py-20 bg-black">
+  <section class="scene-section bg-black">
     <div class="max-w-3xl mx-auto px-6">
-      <h2 class="reveal text-3xl md:text-5xl font-bold text-white text-center mb-10">الأسئلة الشائعة</h2>
+      <h2 class="gsap-fade-up text-3xl md:text-5xl font-bold text-white text-center mb-10">الأسئلة الشائعة</h2>
       <div class="space-y-3 text-sm">
-        <div class="reveal border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
+        <div class="gsap-fade-up border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
           <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
             <span>لماذا مقابلة شخصية قبل القبول؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
@@ -551,7 +481,7 @@
             لأن المعسكر عملي ومغلق على 20 مقعداً فقط لضمان جودة التطبيق.
           </div>
         </div>
-        <div class="reveal delay-1 border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
+        <div class="gsap-fade-up border border-white/10 rounded-xl overflow-hidden bg-[#0E0B1A]">
           <button class="faq-btn w-full p-4 text-right flex justify-between font-semibold text-white">
             <span>هل المنهجية تناسب كل الأنشطة؟</span>
             <i class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
@@ -569,147 +499,145 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/cms-data.js" defer></script>
-  <script src="js/calculator.js" defer></script>
-  <script src="js/main.js" defer type="module"></script>
+  <script src="js/cms-data.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/main.js" type="module"></script>
 
   <script>
     // ==========================================
-    // 1. Progress Bar (خفيف جداً - passive scroll)
+    // 1. Lenis (سكرول ناعم جداً)
     // ==========================================
-    const progressBar = document.getElementById('progress-bar');
-    let rafId = null;
-    let lastProgress = -1;
-
-    window.addEventListener('scroll', () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        if (Math.abs(progress - lastProgress) > 0.1) {
-          progressBar.style.width = progress + '%';
-          lastProgress = progress;
-        }
-        rafId = null;
-      });
-    }, { passive: true });
-
-    // ==========================================
-    // 2. Reveal on Scroll (Intersection Observer)
-    // ==========================================
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          // Once revealed, stop observing (performance)
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -80px 0px'
+    const lenis = new Lenis({
+      lerp: 0.08,
+      wheelMultiplier: 1,
+      smoothWheel: true
     });
-
-    document.querySelectorAll('.reveal, .word-stagger').forEach(el => {
-      revealObserver.observe(el);
-    });
-
-    // Word stagger (بعد تحويل العنوان لكلمات)
-    document.querySelectorAll('.word-stagger').forEach(el => {
-      if (!el.querySelector('.word')) {
-        const words = el.textContent.trim().split(/\s+/);
-        el.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
-      }
-      // Add stagger delay per word
-      el.querySelectorAll('.word').forEach((word, i) => {
-        word.style.transitionDelay = (i * 0.08) + 's';
-      });
-    });
-
-    // ==========================================
-    // 3. Counters (Intersection Observer)
-    // ==========================================
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          counterObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
-
-    function animateCounter(el) {
-      const target = +el.dataset.target;
-      const duration = 1800;
-      const start = performance.now();
-      
-      function update(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        // easeOutQuart
-        const eased = 1 - Math.pow(1 - progress, 4);
-        const value = Math.floor(eased * target);
-        
-        if (target >= 1000000) {
-          el.textContent = (value / 1000000).toFixed(1) + 'M';
-        } else {
-          el.textContent = value;
-        }
-        
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      
-      requestAnimationFrame(update);
+    
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
     }
+    requestAnimationFrame(raf);
 
     // ==========================================
-    // 4. Horizontal Scroll for Cases (Native - Smooth)
+    // 2. GSAP Animations
     // ==========================================
-    const casesTrack = document.getElementById('cases-track');
-    if (casesTrack) {
-      // On mobile: use native horizontal scroll (touch swipe)
-      // On desktop: mouse wheel → horizontal
-      if (window.innerWidth >= 768) {
-        // Convert vertical scroll to horizontal when hovering over the track
-        casesTrack.addEventListener('wheel', (e) => {
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            const maxScroll = casesTrack.scrollWidth - casesTrack.clientWidth;
-            const currentScroll = casesTrack.scrollLeft;
-            
-            // Only hijack scroll if not at edges
-            if ((e.deltaY > 0 && currentScroll < maxScroll) || 
-                (e.deltaY < 0 && currentScroll > 0)) {
-              e.preventDefault();
-              casesTrack.scrollLeft += e.deltaY;
-            }
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Progress Bar
+    gsap.to("#progress-bar", {
+      scaleX: 1,
+      transformOrigin: "right center",
+      ease: "none",
+      scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 }
+    });
+
+    // Hero Text Stagger
+    const titleEl = document.getElementById('main-title');
+    const words = titleEl.textContent.trim().split(/\s+/);
+    titleEl.innerHTML = words.map(w => `<span class="split-word"><span>${w}</span></span>`).join(' ');
+
+    gsap.from("#main-title .split-word span", {
+      y: "100%",
+      opacity: 0,
+      rotation: 5,
+      duration: 1,
+      ease: "power4.out",
+      stagger: 0.1,
+      delay: 0.2
+    });
+
+    // GSAP Reveal Helper
+    const revealElements = (selector, yVal = 40) => {
+      gsap.utils.toArray(selector).forEach(el => {
+        gsap.from(el, {
+          y: yVal,
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" }
+        });
+      });
+    };
+
+    revealElements('.gsap-fade-up');
+    revealElements('.gsap-fade-right', 0); // X-based
+    revealElements('.gsap-fade-left', 0);
+
+    gsap.utils.toArray('.gsap-fade-right').forEach(el => {
+      gsap.fromTo(el, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } });
+    });
+    
+    gsap.utils.toArray('.gsap-fade-left').forEach(el => {
+      gsap.fromTo(el, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } });
+    });
+
+    // Counters
+    gsap.utils.toArray('.counter').forEach(el => {
+      const target = +el.dataset.target;
+      gsap.to(el, {
+        innerText: target,
+        duration: 2,
+        ease: "power2.out",
+        snap: { innerText: 1 },
+        scrollTrigger: { trigger: el, start: "top 85%", once: true },
+        onUpdate: function() {
+          if (target >= 1000000) {
+            el.innerText = (el.innerText / 1000000).toFixed(1) + 'M';
           }
-        }, { passive: false });
+        }
+      });
+    });
+
+    // ==========================================
+    // 3. Horizontal Scroll (Desktop only)
+    // ==========================================
+    if (window.innerWidth >= 768) {
+      const track = document.getElementById('cases-track');
+      const container = document.querySelector('.horizontal-container');
+      
+      if (track && container) {
+        const getScrollAmount = () => track.scrollWidth - window.innerWidth;
         
-        // Make container scrollable
-        casesTrack.style.overflowX = 'auto';
-        casesTrack.style.scrollBehavior = 'smooth';
-        casesTrack.style.scrollbarWidth = 'none';
-        casesTrack.style.msOverflowStyle = 'none';
-        // Hide scrollbar
-        const style = document.createElement('style');
-        style.textContent = '.horizontal-track::-webkit-scrollbar { display: none; }';
-        document.head.appendChild(style);
-      } else {
-        // On mobile: just make it scrollable natively
-        casesTrack.style.overflowX = 'auto';
-        casesTrack.style.scrollSnapType = 'x mandatory';
-        casesTrack.style.scrollbarWidth = 'none';
-        casesTrack.querySelectorAll('> div').forEach(card => {
-          card.style.scrollSnapAlign = 'start';
+        gsap.to(track, {
+          x: () => -getScrollAmount(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: container,
+            start: "top top",
+            end: () => `+=${getScrollAmount()}`,
+            pin: true,
+            scrub: 0.5,
+            invalidateOnRefresh: true,
+            anticipatePin: 1
+          }
         });
       }
     }
 
     // ==========================================
-    // 5. FAQ Accordion
+    // 4. Brands Marquee (عرض اللوجوهات)
+    // ==========================================
+    const brandIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+    const group1 = document.getElementById('brandsGroup1');
+    const group2 = document.getElementById('brandsGroup2');
+    
+    if (group1 && group2) {
+      const logosHTML = brandIds.map(id => `
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/[0.03] border border-white/10 p-4 flex items-center justify-center flex-shrink-0 hover:border-gold/50 transition-colors group">
+          <img src="assets/${id}.webp" alt="Brand ${id}"
+            class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300"
+            loading="lazy"
+            onError="this.onerror=null; this.src='assets/${id}.png';" />
+        </div>
+      `).join('');
+      
+      group1.innerHTML = logosHTML;
+      group2.innerHTML = logosHTML;
+    }
+
+    // ==========================================
+    // 5. FAQ
     // ==========================================
     document.querySelectorAll('.faq-btn').forEach(btn => {
       btn.addEventListener('click', () => {

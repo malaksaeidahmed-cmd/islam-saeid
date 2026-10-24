@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تفعيل الحساب | أكاديمية إسلام سعيد</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #07050a; }
+    .glass-card { background: rgba(14,11,26,0.85); border: 1px solid rgba(217,70,239,0.2); border-radius: 24px; }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <img src="logo.png" class="w-16 h-16 mx-auto mb-4 rounded-xl" alt="Logo" />
+      <h1 class="text-2xl font-bold text-white mb-2">أهلاً بيك في الأكاديمية</h1>
+      <p class="text-sm text-slate-400">فعّل حسابك في خلال 15 دقيقة</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingBox" class="glass-card p-8 text-center">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-pink-500 mb-4"></i>
+      <p class="text-slate-300">جاري التحقق من رابط الدعوة...</p>
+    </div>
+
+    <!-- Error -->
+    <div id="errorBox" class="glass-card p-8 text-center hidden">
+      <i class="fa-solid fa-triangle-exclamation text-3xl text-red-400 mb-4"></i>
+      <h2 class="text-lg font-bold text-white mb-2">الرابط غير صالح</h2>
+      <p id="errorText" class="text-sm text-slate-400"></p>
+      <a href="index.html" class="inline-block mt-6 px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-bold">
+        العودة للرئيسية
+      </a>
+    </div>
+
+    <!-- Form -->
+    <div id="formBox" class="glass-card p-8 hidden">
+      <div class="mb-6 p-4 rounded-xl bg-pink-500/10 border border-pink-500/30">
+        <div class="text-xs text-slate-400 mb-1">الدعوة لـ</div>
+        <div class="text-white font-bold" id="inviteName">—</div>
+        <div class="text-[11px] text-slate-400 mt-1" id="inviteEmail">—</div>
+      </div>
+
+      <form id="joinForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">اسم المستخدم</label>
+          <input type="text" id="username" required minlength="4" maxlength="20"
+            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500"
+            placeholder="حروف إنجليزية وأرقام فقط" dir="ltr" />
+          <p class="text-[10px] text-slate-500 mt-1">هتستخدمه في تسجيل الدخول بعد كده</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور</label>
+          <input type="password" id="password" required minlength="8"
+            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500"
+            placeholder="8 أحرف على الأقل" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">تأكيد كلمة المرور</label>
+          <input type="password" id="passwordConfirm" required minlength="8"
+            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500"
+            placeholder="أعد كتابتها" />
+        </div>
+
+        <div id="formError" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs"></div>
+
+        <button type="submit" id="submitBtn"
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg disabled:opacity-50">
+          إنشاء الحساب
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { firebaseConfig } from './firebase-config.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    let inviteData = null;
+
+    async function init() {
+      if (!token) {
+        showError('الرابط لا يحتوي على توكن الدعوة.');
+        return;
+      }
+
+      try {
+        const tokenRef = doc(db, 'invite_tokens', token);
+        const tokenSnap = await getDoc(tokenRef);
+
+        if (!tokenSnap.exists()) {
+          showError('رابط الدعوة غير موجود.');
+          return;
+        }
+
+        inviteData = tokenSnap.data();
+
+        if (inviteData.used) {
+          showError('رابط الدعوة مستخدم بالفعل. لو عندك حساب، سجل دخول من صفحة auth.html.');
+          return;
+        }
+
+        // Check expiry
+        const expiresAt = inviteData.expiresAt?.toMillis?.() || inviteData.expiresAt?.seconds * 1000;
+        if (Date.now() > expiresAt) {
+          showError('انتهت صلاحية رابط الدعوة (15 دقيقة). اطلب رابط جديد من الأدمن.');
+          return;
+        }
+
+        // Show form
+        document.getElementById('loadingBox').classList.add('hidden');
+        document.getElementById('formBox').classList.remove('hidden');
+        document.getElementById('inviteName').textContent = inviteData.studentData?.name || '—';
+        document.getElementById('inviteEmail').textContent = inviteData.studentData?.email || '—';
+
+      } catch (err) {
+        console.error(err);
+        showError('حدث خطأ في التحقق من الدعوة: ' + err.message);
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById('loadingBox').classList.add('hidden');
+      document.getElementById('formBox').classList.add('hidden');
+      document.getElementById('errorBox').classList.remove('hidden');
+      document.getElementById('errorText').textContent = msg;
+    }
+
+    document.getElementById('joinForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formError = document.getElementById('formError');
+      formError.classList.add('hidden');
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+      if (!/^[a-zA-Z0-9]{4,20}$/.test(username)) {
+        formError.textContent = 'اسم المستخدم: حروف إنجليزية وأرقام فقط (4-20 حرف)';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        formError.textContent = 'كلمتا المرور غير متطابقتين.';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      if (password.length < 8) {
+        formError.textContent = 'كلمة المرور 8 أحرف على الأقل.';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'جاري إنشاء الحساب...';
+
+      try {
+        const email = `${username}@islamsaeid.local`;
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        // Update display name
+        await updateProfile(userCred.user, {
+          displayName: inviteData.studentData?.name || username
+        });
+
+        // Create user profile
+        await setDoc(doc(db, 'users', uid), {
+          uid: uid,
+          email: email,
+          username: username,
+          displayName: inviteData.studentData?.name || username,
+          phone: inviteData.studentData?.phone || '',
+          plan: inviteData.studentData?.plan || 'academic',
+          role: 'student',
+          xp: 0,
+          createdAt: serverTimestamp()
+        });
+
+        // Create student progress
+        await setDoc(doc(db, 'student_progress', uid), {
+          uid: uid,
+          currentUnit: 1,
+          unlockedUnits: [1],
+          completedLessons: [],
+          practicalExamResults: [],
+          unitExamResults: [],
+          certificates: [],
+          lastLogin: serverTimestamp(),
+          totalTimeSpent: 0,
+          platformSimulations: [],
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+        // Mark token as used
+        await updateDoc(doc(db, 'invite_tokens', token), {
+          used: true,
+          usedAt: serverTimestamp(),
+          usedByUid: uid,
+          status: 'used'
+        });
+
+        // Redirect
+        window.location.href = 'academy.html';
+
+      } catch (err) {
+        console.error(err);
+        let msg = err.message;
+        if (err.code === 'auth/email-already-in-use') msg = 'اسم المستخدم مستخدم بالفعل. جرب اسم آخر.';
+        if (err.code === 'auth/weak-password') msg = 'كلمة المرور ضعيفة جداً.';
+        formError.textContent = msg;
+        formError.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'إنشاء الحساب';
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
